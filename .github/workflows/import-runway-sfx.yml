@@ -1,0 +1,64 @@
+name: Import Runway SFX
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-runway-sfx.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-sfx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install audio tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Download and master Runway sound effects
+        run: |
+          set -e
+          mkdir -p tmp assets/sfx
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/0dd581dc-c3a7-465d-b2a4-40d091c8cb63/break_survivors_gun_fire.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNDJjOTJjOTNhZjJhOTdlNyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDMzOTYwM30.E8FTdW_GuN7C9LFr2xhoEDqghVbSWHNt_WtxZwK1d-4' -o "tmp/gun_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/gun_fire.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/gun_fire.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/00a48cd2-3ace-4397-b365-2ef4c10a362d/break_survivors_gun_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDExNTk5NTNjOWUzNjQ5NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM0MzEyM30.wFwcdRF4DbjrpBmNiWWgmUS4sgSDFKlrT8I5ZJsVjBw' -o "tmp/gun_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/gun_hit.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/gun_hit.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/6e21dd1d-1ad7-4219-8466-f8b90107d6ec/break_survivors_bomb_launch.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzlmMzQ2ZTI0NDQ0NGIzYiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM2NjMwNn0.JrL__XfNeYICPUMCGZfD_arKMMQTbDxBN2fBy5NJGm4' -o "tmp/bomb_launch.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/bomb_launch.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/bomb_launch.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/0e84a489-2de7-4fc6-9788-3d61639de7f7/break_survivors_bomb_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjBjYWQzZDczZDg5YzM2YSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM1MTMxOX0._ni_QB59l_-mYkuHlYwjCbCDa96UAHLe4Vbq61GzWiA' -o "tmp/bomb_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/bomb_hit.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/bomb_hit.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/82ca1bec-18f4-4d45-92d0-7e5911d2d05b/break_survivors_lightning_fire.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNmU1NzMyNzQyZThlYWI2MCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDI5NjMwOH0.VvL1YDeSyFtxAHUzLLUEcoTqIsuZCj4BSMLXXW5ojBA' -o "tmp/lightning_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/lightning_fire.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/lightning_fire.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/769be8ae-928f-4f75-86e7-78ac292c4628/break_survivors_lightning_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNDIxMzY4NTUzNjQ3NDM4OCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM1MDU0OX0.8qehUCY_mO_7wucUXQ8thO-kjeaAl_-ZEVcINuwSexo' -o "tmp/lightning_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/lightning_hit.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/lightning_hit.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/455bfa32-7cf9-4b41-8cdf-f472792e25b9/break_survivors_slash_fire.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzJmODljOGFkYTQyMmZlYSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM0NzQwMn0.7tenIa79zmSuq4ZlBw_8HXw3YeWvmhORlaRw08k3lRs' -o "tmp/slash_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/slash_fire.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/slash_fire.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/0597acff-e13a-4b12-a19f-e4cc0fecf67f/break_survivors_slash_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODBjYmM2MzFhYzc2ZTBkMiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM1NDk5M30.A7Soaeq1wjXiY2AR979dBh0h7yZKrtB2dPdleK-zAzg' -o "tmp/slash_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/slash_hit.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/slash_hit.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/490f26e6-3afc-475e-9512-d0ec67b482c4/break_survivors_laser_fire.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjRmYzVjMDYwNzQ3NDljNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM3NDQwNn0.UpjFIJRoAYSTHcpm24ykZ_3AWUtyiGOXjMhrTJIJGYs' -o "tmp/laser_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/laser_fire.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/laser_fire.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/993e4eda-9769-4e79-9561-9cd7047d4bc1/break_survivors_laser_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODVhMjA3MzUxYmMxMWQxOSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDI4OTIwNX0.F_GEl1pQhyQg9h7TpzwPsHxlkDtS1OUBMXTe_zbtkpg' -o "tmp/laser_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/laser_hit.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/laser_hit.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/abda62b7-424e-4972-bb31-059cfd5f1dc6/break_survivors_missile_fire.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYmU5ZTdjYmM5NjRkNGEyNiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM0MjQ2MH0.lFWcDfiiLc4rDab8FMT9mOIV2KlegJ8upeIPE4vUpaM' -o "tmp/missile_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/missile_fire.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/missile_fire.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/31c1be04-f190-4a74-ac6b-a180451eca41/break_survivors_missile_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYWM3NjA1NDc3ZDY3Y2E4OSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM0Njk1MX0.VUgkYtcIuZOtXMA3mflnsRPOZcJFxlQjtSS07WnflhY' -o "tmp/missile_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/missile_hit.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.40:d=0.08,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/missile_hit.mp3"
+
+      - name: Verify sound assets
+        run: |
+          set -e
+          test "$(find assets/sfx -name '*.mp3' | wc -l)" -eq 12
+          ls -lh assets/sfx
+
+      - name: Commit mastered sound effects
+        run: |
+          git config user.name "BREAK SURVIVORS Bot"
+          git config user.email "actions@github.com"
+          git add assets/sfx
+          git commit -m "Add mastered Runway attack SFX" || exit 0
+          git push
