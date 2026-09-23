@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 4.0</title>
+<title>BREAK SURVIVORS - Stage 4.1</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -403,7 +403,7 @@
   }
 
 
-  /* Stage 4.0 — Character Growth / Ability Road / Ultimate */
+  /* Stage 4.1 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -593,7 +593,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 4.0</h1>
+    <h1>BREAK SURVIVORS — Stage 4.1</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -602,6 +602,8 @@
         <button id="openGacha" class="gold">Gacha</button>
       </div>
       <button id="toggleSound" class="full" style="margin-top:8px">Attack SFX: ON</button>
+      <div class="stat" style="margin-top:10px">Attack SFX Volume <b id="sfxVolumeText">48%</b></div>
+      <input id="sfxVolume" type="range" min="0" max="100" value="48" step="1"/>
     </div>
 
     <div class="section">
@@ -1011,7 +1013,7 @@ function nearestEnemy(x=player.x,y=player.y,exclude=new Set()){
 function damageEnemy(e,dmg,impact=true){
   if(!e || e.dead) return false;
   e.hp-=dmg;
-  if(impact && Math.random()<0.32) playWeaponImpactSfx(activeWeaponKey(), dmg>ps.damage*1.2);
+  if(impact && Math.random()<0.18) playWeaponImpactSfx(activeWeaponKey(), dmg>ps.damage*1.2);
   e.flash=.08;
   if(impact) for(let i=0;i<4;i++) particles.push({x:e.x,y:e.y,vx:rnd(-80,80),vy:rnd(-80,80),life:.28,size:rnd(2,5),color:e.color});
   if(e.hp<=0){ killEnemy(e); return true; }
@@ -1046,17 +1048,46 @@ function aimVector(){
 
 let audioCtx = null;
 let audioMaster = null;
+let attackBus = null;
+let attackCompressor = null;
+let attackFilter = null;
 let soundEnabled = true;
 let audioUnlocked = false;
 let lastSfxAt = {};
+let attackBuffers = {};
+let attackLoadPromise = null;
+let activeAttackVoices = 0;
+const MAX_ATTACK_VOICES = 5;
+let attackSfxVolume = clamp(Number(localStorage.getItem('break_survivors_attack_sfx_volume') ?? 48) / 100, 0, 1);
 
 function getAudio(){
   const AC = window.AudioContext || window.webkitAudioContext;
   if(!AC) return null;
   if(!audioCtx){
     audioCtx = new AC();
+
     audioMaster = audioCtx.createGain();
     audioMaster.gain.value = 0.52;
+
+    // Dedicated attack bus: keeps rapid-fire weapon sounds from stacking into harsh clipping.
+    attackBus = audioCtx.createGain();
+    attackBus.gain.value = attackSfxVolume;
+
+    attackFilter = audioCtx.createBiquadFilter();
+    attackFilter.type = 'lowpass';
+    attackFilter.frequency.value = 8500;
+    attackFilter.Q.value = 0.45;
+
+    attackCompressor = audioCtx.createDynamicsCompressor();
+    attackCompressor.threshold.value = -22;
+    attackCompressor.knee.value = 18;
+    attackCompressor.ratio.value = 4.5;
+    attackCompressor.attack.value = 0.004;
+    attackCompressor.release.value = 0.12;
+
+    attackFilter.connect(attackCompressor);
+    attackCompressor.connect(attackBus);
+    attackBus.connect(audioMaster);
     audioMaster.connect(audioCtx.destination);
   }
   if(audioCtx.state === 'suspended'){
@@ -1070,7 +1101,8 @@ function unlockAudio(){
   const ac=getAudio();
   if(!ac) return;
   audioUnlocked=true;
-  // A nearly silent oscillator makes the unlock reliable on local-file/mobile browsers.
+  loadAttackSfx().catch(()=>{});
+  // A nearly silent oscillator makes the unlock reliable on mobile browsers.
   try{
     const o=ac.createOscillator(), g=ac.createGain();
     g.gain.value=.00001;o.connect(g).connect(audioMaster);
@@ -1133,110 +1165,100 @@ function characterSfxAllowed(id,gap){
   lastSfxAt[id]=now;return true;
 }
 
+const attackSfxFiles = {
+  pierce:   {fire:'assets/sfx/gun_fire.mp3',       hit:'assets/sfx/gun_hit.mp3'},
+  explosion:{fire:'assets/sfx/bomb_launch.mp3',    hit:'assets/sfx/bomb_hit.mp3'},
+  lightning:{fire:'assets/sfx/lightning_fire.mp3', hit:'assets/sfx/lightning_hit.mp3'},
+  slash:    {fire:'assets/sfx/slash_fire.mp3',     hit:'assets/sfx/slash_hit.mp3'},
+  laser:    {fire:'assets/sfx/laser_fire.mp3',     hit:'assets/sfx/laser_hit.mp3'},
+  missile:  {fire:'assets/sfx/missile_fire.mp3',   hit:'assets/sfx/missile_hit.mp3'}
+};
+
+function decodeAudio(ac,arrayBuffer){
+  return new Promise((resolve,reject)=>{
+    const copy=arrayBuffer.slice(0);
+    const maybe=ac.decodeAudioData(copy,resolve,reject);
+    if(maybe && typeof maybe.then==='function') maybe.then(resolve).catch(reject);
+  });
+}
+
+function loadAttackSfx(){
+  if(attackLoadPromise) return attackLoadPromise;
+  const ac=getAudio();
+  if(!ac) return Promise.resolve(false);
+
+  const jobs=[];
+  for(const [weapon,files] of Object.entries(attackSfxFiles)){
+    for(const [phase,url] of Object.entries(files)){
+      const key=weapon+'_'+phase;
+      jobs.push(
+        fetch(url,{cache:'force-cache'})
+          .then(r=>{if(!r.ok)throw new Error('SFX '+r.status);return r.arrayBuffer()})
+          .then(buf=>decodeAudio(ac,buf))
+          .then(decoded=>{attackBuffers[key]=decoded})
+          .catch(()=>{})
+      );
+    }
+  }
+  attackLoadPromise=Promise.all(jobs).then(()=>true);
+  return attackLoadPromise;
+}
+
+function setAttackSfxVolume(v){
+  attackSfxVolume=clamp(v,0,1);
+  localStorage.setItem('break_survivors_attack_sfx_volume',String(Math.round(attackSfxVolume*100)));
+  if(attackBus && audioCtx){
+    attackBus.gain.cancelScheduledValues(audioCtx.currentTime);
+    attackBus.gain.setTargetAtTime(attackSfxVolume,audioCtx.currentTime,.025);
+  }
+}
+
+function playAttackSample(key,volume=1,rate=1){
+  if(!soundEnabled)return;
+  const ac=getAudio(); if(!ac || !attackFilter)return;
+  const buffer=attackBuffers[key];
+  if(!buffer){loadAttackSfx().catch(()=>{});return}
+  if(activeAttackVoices>=MAX_ATTACK_VOICES)return;
+
+  // Faster builds automatically get quieter so rapid attacks do not become a wall of sound.
+  const atk=(typeof ps!=='undefined' && ps && ps.attackRate)?ps.attackRate:2.7;
+  const rapidDuck=clamp(1/Math.sqrt(Math.max(1,atk/2.7)),.55,1);
+  const overlapDuck=activeAttackVoices>=3?.72:activeAttackVoices>=2?.84:1;
+
+  const src=ac.createBufferSource();
+  const gain=ac.createGain();
+  src.buffer=buffer;
+  src.playbackRate.value=rate*(.985+Math.random()*.03);
+  gain.gain.value=clamp(volume*rapidDuck*overlapDuck,0,.9);
+  src.connect(gain).connect(attackFilter);
+
+  activeAttackVoices++;
+  src.onended=()=>{activeAttackVoices=Math.max(0,activeAttackVoices-1)};
+  src.start();
+}
+
 function activeWeaponKey(){
   return attackType || currentCharacter?.attack || 'pierce';
 }
 function playWeaponFireSfx(kind,special=false){
   if(!soundEnabled) return;
-  const gap=special?0:({pierce:54,explosion:160,lightning:100,slash:120,laser:120,missile:180}[kind]||90);
+  const gap=special?70:({pierce:92,explosion:190,lightning:135,slash:145,laser:145,missile:190}[kind]||120);
   if(!characterSfxAllowed('fire_'+kind,gap)) return;
 
-  switch(kind){
-    case 'pierce':
-      // Pleasant clean shot: small click + soft body, short and satisfying.
-      oscTone(special?260:220,special?.028:.020,'triangle',special?.014:.010,special?200:170,0,.0015);
-      softNoise(special?.024:.016,special?.010:.006,2600,1.0,.002);
-      bloom(special?135:120,special?.080:.050,special?.010:.007,.003);
-      if(special){
-        oscTone(180,.045,'sine',.008,130,.012,.003);
-      }
-      break;
-
-    case 'explosion':
-      // Warm launcher thunk that hints at a coming boom, not a harsh pop.
-      bloom(special?110:125,special?.130:.090,special?.014:.010,0);
-      softNoise(special?.040:.025,special?.010:.007,900,.8,.006);
-      oscTone(special?175:155,special?.070:.050,'triangle',special?.007:.005,120,.012,.004);
-      break;
-
-    case 'lightning':
-      // Soft electric snap + shimmering arc.
-      oscTone(special?1280:1120,special?.030:.022,'sine',special?.010:.007,special?700:760,0,.0015);
-      oscTone(special?760:640,special?.060:.045,'triangle',special?.009:.006,special?240:280,.010,.003);
-      softNoise(special?.030:.020,special?.008:.005,3600,1.2,.004);
-      if(special){
-        oscTone(980,.040,'sine',.006,520,.030,.002);
-        oscTone(860,.045,'sine',.005,430,.058,.002);
-      }
-      break;
-
-    case 'slash':
-      // Airy whoosh + tasteful blade ring.
-      softNoise(special?.080:.060,special?.012:.008,1500,0.8,0);
-      oscTone(special?980:860,special?.060:.040,'triangle',special?.008:.005,360,.006,.002);
-      metallicPing(special?1380:1240,special?.010:.007,.016);
-      break;
-
-    case 'laser':
-      // Smooth sci-fi beam: charge and glide, no harsh crack.
-      oscTone(special?180:220,special?.070:.050,'sine',special?.006:.004,special?260:300,0,.01);
-      oscTone(special?420:500,special?.160:.110,'triangle',special?.012:.008,special?1500:1200,.018,.015);
-      oscTone(special?920:1020,special?.120:.085,'sine',special?.007:.005,special?1900:1600,.040,.01);
-      break;
-
-    case 'missile':
-      // Gentle lock chirp + soft rocket ignition/whoosh.
-      oscTone(special?760:700,.032,'sine',special?.010:.007,special?960:860);
-      oscTone(special?980:900,.028,'sine',special?.008:.005,special?1180:1060,.030);
-      softNoise(special?.055:.038,special?.010:.007,720,0.7,.028);
-      oscTone(special?210:240,special?.120:.085,'triangle',special?.010:.007,special?95:120,.032,.006);
-      break;
-  }
+  const vols={pierce:.72,explosion:.82,lightning:.58,slash:.67,laser:.62,missile:.76};
+  const base=vols[kind]||.65;
+  playAttackSample(kind+'_fire',base*(special?1.08:1),special?1.02:1);
 }
 
 function playWeaponImpactSfx(kind,strong=false){
   if(!soundEnabled) return;
+  const gap=({pierce:135,explosion:175,lightning:155,slash:165,laser:170,missile:190}[kind]||160);
   const key='hit_'+kind+(strong?'_s':'');
-  if(!characterSfxAllowed(key,strong?40:26)) return;
+  if(!characterSfxAllowed(key,gap)) return;
 
-  switch(kind){
-    case 'pierce':
-      // Crisp but soft bullet hit.
-      oscTone(strong?520:620,strong?.030:.022,'triangle',strong?.007:.004,strong?300:360);
-      softNoise(strong?.020:.014,strong?.006:.004,1600,1.0,.002);
-      break;
-
-    case 'explosion':
-      // Round, satisfying boom.
-      bloom(strong?82:95,strong?.180:.120,strong?.024:.014,0);
-      softNoise(strong?.080:.050,strong?.012:.007,700,.7,.012);
-      break;
-
-    case 'lightning':
-      // Bite + spark, cleaner than before.
-      oscTone(strong?960:1080,strong?.030:.022,'sine',strong?.008:.005,420);
-      softNoise(strong?.026:.018,strong?.007:.004,4200,1.25,.002);
-      break;
-
-    case 'slash':
-      // Slice confirmation with elegant metal resonance.
-      metallicPing(strong?1260:1420,strong?.009:.006,.002);
-      softNoise(strong?.028:.018,strong?.006:.003,1800,.9,0);
-      break;
-
-    case 'laser':
-      // Glowing energy impact.
-      oscTone(strong?700:820,strong?.050:.034,'sine',strong?.007:.004,1450,.002,.004);
-      softNoise(strong?.020:.014,strong?.004:.003,5200,1.4,.004);
-      break;
-
-    case 'missile':
-      // Fuller detonation than bombcat, but still smooth.
-      bloom(strong?74:88,strong?.220:.145,strong?.028:.017,0);
-      softNoise(strong?.100:.060,strong?.014:.008,640,.7,.012);
-      oscTone(strong?128:150,strong?.070:.045,'triangle',strong?.006:.004,72,.015,.003);
-      break;
-  }
+  const vols={pierce:.24,explosion:.62,lightning:.31,slash:.34,laser:.30,missile:.64};
+  const base=vols[kind]||.34;
+  playAttackSample(kind+'_hit',base*(strong?1.08:1),strong?.985:1);
 }
 
 function playGachaSfx(kind){
@@ -2092,8 +2114,18 @@ document.getElementById('toggleSound').onclick=e=>{
   e.target.textContent='Attack SFX: '+(soundEnabled?'ON':'OFF');
   e.target.classList.toggle('active',soundEnabled);
   if(soundEnabled){
-    try{ unlockAudio(); playWeaponFireSfx(activeWeaponKey(), false); }catch(_){}
+    unlockAudio();
+    loadAttackSfx().then(()=>setTimeout(()=>playWeaponFireSfx(activeWeaponKey(),false),40)).catch(()=>{});
   }
+};
+const sfxVolumeEl=document.getElementById('sfxVolume');
+const sfxVolumeText=document.getElementById('sfxVolumeText');
+sfxVolumeEl.value=String(Math.round(attackSfxVolume*100));
+sfxVolumeText.textContent=Math.round(attackSfxVolume*100)+'%';
+sfxVolumeEl.oninput=()=>{
+  const pct=Number(sfxVolumeEl.value);
+  sfxVolumeText.textContent=pct+'%';
+  setAttackSfxVolume(pct/100);
 };
 document.getElementById('addGems').onclick=()=>{save.gems+=10000;persist();updateHud()};
 document.getElementById('openGacha').onclick=()=>{
