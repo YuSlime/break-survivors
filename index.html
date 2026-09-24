@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 9.4</title>
+<title>BREAK SURVIVORS - Stage 9.5</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 9.4 — Character Growth / Ability Road / Ultimate */
+  /* Stage 9.5 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 9.4 — Combat HUD / compact UI overhaul
+  /* Stage 9.5 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 9.4 — one-line top HUD + high-visibility touch controls */
+  /* Stage 9.5 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 9.4 — iPhone / mobile bottom clipping fix */
+  /* Stage 9.5 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 9.4 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 9.5 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -964,7 +964,7 @@
   }
 
 
-  /* Stage 9.4 — ADMIN bottom drawer, clearly separated from top HUD */
+  /* Stage 9.5 — ADMIN bottom drawer, clearly separated from top HUD */
   #sidebar{
     left:50%!important;
     right:auto!important;
@@ -1001,7 +1001,7 @@
   }
 
 
-  /* Stage 9.4 — standalone ADMIN launcher, away from top HUD/popovers */
+  /* Stage 9.5 — standalone ADMIN launcher, away from top HUD/popovers */
   #openSidebar.adminLauncher{
     display:inline-flex;
     position:absolute!important;
@@ -1042,7 +1042,7 @@
   }
 
 
-  /* Stage 9.4 — app-like touch behavior: no double-tap zoom / no text selection */
+  /* Stage 9.5 — app-like touch behavior: no double-tap zoom / no text selection */
   html,body,#app,#gameWrap,canvas{
     touch-action:none!important;
     -ms-touch-action:none!important;
@@ -1066,7 +1066,7 @@
   }
 
 
-  /* Stage 9.4 — temporary drop buffs */
+  /* Stage 9.5 — temporary drop buffs */
   #itemBuffHud{
     position:absolute;left:10px;top:66px;z-index:7;
     display:flex;gap:5px;flex-wrap:wrap;max-width:42vw;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 9.4</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 9.5</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1339,11 +1339,11 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 9.4 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
+// Stage 9.5 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
 const CAMERA_ZOOM = 0.40;
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
-// Stage 9.4 finite battlefield.
+// Stage 9.5 finite battlefield.
 const WORLD_W = 5200;
 const WORLD_H = 3400;
 const WORLD_EDGE_PAD = 18;
@@ -1591,25 +1591,25 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 9.4 — Rookie Gunner sustained-fire identity.
+// Stage 9.5 — Rookie Gunner sustained-fire identity.
 let gunnerMomentum=0;
 let gunnerMomentumIdle=0;
 let gunnerRecoil=0;
 const GUNNER_MOMENTUM_MAX_BONUS=.22;
 const gunnerMomentumMul=()=>1+GUNNER_MOMENTUM_MAX_BONUS*clamp(gunnerMomentum/100,0,1);
 
-// Stage 9.4 — BREAK RUSH
+// Stage 9.5 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 9.4 — CHAOS HUNT
+// Stage 9.5 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
 
-// Stage 9.4 temporary item buffs.
+// Stage 9.5 temporary item buffs.
 let itemBuffs={boots:0,drink:0,sword:0};
 const chaosEvents={
   gold:{name:'GOLD RUSH',duration:12,color:'#ffd65c',desc:'COINS ×2'},
@@ -2502,12 +2502,12 @@ const attackSfxFiles = {
   pierce:{
     fire:['assets/sfx/v3/pierce_fire.mp3'],
     hit:['assets/sfx/v3/pierce_hit.mp3'],
-    gunner_fire:['assets/sfx/v13/gunner_primary_ref_a.mp3','assets/sfx/v13/gunner_primary_ref_b.mp3'],
-    gunner_hot:['assets/sfx/v13/gunner_primary_ref_hot.mp3'],
-    gunner_triple:['assets/sfx/v11/gunner_triple.mp3'],
-    gunner_hit:['assets/sfx/v11/gunner_hit.mp3'],
-    gunner_rail_fire:['assets/sfx/v11/gunner_rail_fire.mp3'],
-    gunner_rail_hit:['assets/sfx/v11/gunner_rail_hit.mp3']
+    gunner_fire:['assets/sfx/v14/gunner_soft_a.mp3','assets/sfx/v14/gunner_soft_b.mp3'],
+    gunner_hot:['assets/sfx/v14/gunner_soft_hot.mp3'],
+    gunner_triple:['assets/sfx/v14/gunner_soft_triple.mp3'],
+    gunner_hit:['assets/sfx/v14/gunner_soft_hit.mp3'],
+    gunner_rail_fire:['assets/sfx/v14/gunner_soft_rail_fire.mp3'],
+    gunner_rail_hit:['assets/sfx/v14/gunner_soft_rail_hit.mp3']
   },
   explosion:{
     fire:['assets/sfx/v3/explosion_fire.mp3'],
@@ -2809,7 +2809,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 9.4: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 9.5: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -2899,65 +2899,91 @@ function playGunnerSample(phase,volume=.5,rate=1,opts={}){
 
 function playGunnerPrimarySfx(triple=false){
   if(!soundEnabled)return;
+
   if(triple){
-    if(!characterSfxAllowed('gunner_triple',92))return;
-    playGunnerSample('gunner_triple',.56,.99,{
-      lowpass:6650,bodyFreq:215,bodyGain:1.05,harshFreq:3500,harshGain:-2.35,minDuck:.65
+    if(!characterSfxAllowed('gunner_triple',96))return;
+    playGunnerSample('gunner_triple',.50,.98,{
+      lowpass:5000,
+      bodyFreq:205,
+      bodyGain:1.15,
+      harshFreq:2850,
+      harshGain:-3.1,
+      minDuck:.68
     });
     return;
   }
 
-  if(!characterSfxAllowed('gunner_fire',44))return;
+  if(!characterSfxAllowed('gunner_fire',46))return;
 
-  // Stage 9.4: reference-inspired beam snap.
-  // Preserve the uploaded sample's fast descending energy sweep, with a stronger trigger punch.
+  // Stage 9.5: entirely new soft-pressure identity.
+  // No beam sweep, chirp, metallic snap or sharp high-frequency cue.
   const m=clamp(gunnerMomentum/100,0,1);
   const hot=m>=.80;
   const mid=m>=.45;
   const phase=hot?'gunner_hot':'gunner_fire';
-  const volume=.49+m*.03;
-  const rate=.99+m*.02;
 
-  playGunnerSample(phase,volume,rate,{
-    lowpass:hot?7350:mid?7100:6900,
-    bodyFreq:hot?190:mid?205:220,
-    bodyGain:hot?1.28:mid?1.08:.92,
-    harshFreq:3500,
-    harshGain:hot?-1.75:mid?-2.00:-2.20,
-    minDuck:.61
+  playGunnerSample(phase,.47+m*.025,.985+m*.012,{
+    lowpass:hot?5350:mid?5150:4950,
+    bodyFreq:hot?180:mid?195:215,
+    bodyGain:hot?1.45:mid?1.22:1.02,
+    harshFreq:2850,
+    harshGain:hot?-2.55:mid?-2.85:-3.15,
+    minDuck:.64
   });
 }
 
 function playGunnerRailFireSfx(ult=false){
   if(!soundEnabled)return;
-  if(!characterSfxAllowed(ult?'gunner_rail_ult':'gunner_rail_fire',ult?135:190))return;
-  playGunnerSample('gunner_rail_fire',ult?.46:.80,ult?.99:.94,{
-    lowpass:6500,bodyFreq:175,bodyGain:2.4,harshFreq:3200,harshGain:-2.2,minDuck:ult?.66:.76
+  if(!characterSfxAllowed(ult?'gunner_rail_ult':'gunner_rail_fire',ult?150:205))return;
+  playGunnerSample('gunner_rail_fire',ult?.42:.68,ult?.96:.92,{
+    lowpass:5000,
+    bodyFreq:160,
+    bodyGain:2.15,
+    harshFreq:2750,
+    harshGain:-3.0,
+    minDuck:ult?.70:.78
   });
 }
 
 function playGunnerHitSfx(rail=false,ult=false){
   if(!soundEnabled)return;
+
   if(ult){
-    if(!characterSfxAllowed('gunner_ult_hit',210))return;
-    playGunnerSample('gunner_hit',.09,1,{lowpass:5000,bodyGain:.45,harshGain:-3.0,minDuck:.70});
+    if(!characterSfxAllowed('gunner_ult_hit',240))return;
+    playGunnerSample('gunner_hit',.06,.98,{
+      lowpass:3600,bodyFreq:200,bodyGain:.45,harshFreq:2500,harshGain:-4.0,minDuck:.74
+    });
     return;
   }
+
   if(rail){
-    if(!characterSfxAllowed('gunner_rail_hit',175))return;
-    playGunnerSample('gunner_rail_hit',.43,.96,{lowpass:5600,bodyFreq:185,bodyGain:1.8,harshGain:-2.7,minDuck:.76});
+    if(!characterSfxAllowed('gunner_rail_hit',200))return;
+    playGunnerSample('gunner_rail_hit',.30,.94,{
+      lowpass:4200,bodyFreq:170,bodyGain:1.55,harshFreq:2600,harshGain:-3.6,minDuck:.80
+    });
     return;
   }
-  if(!characterSfxAllowed('gunner_hit',118))return;
-  playGunnerSample('gunner_hit',.12,1,{lowpass:5000,bodyGain:.55,harshGain:-3.2,minDuck:.68});
+
+  if(!characterSfxAllowed('gunner_hit',145))return;
+  playGunnerSample('gunner_hit',.075,.98,{
+    lowpass:3500,bodyFreq:205,bodyGain:.40,harshFreq:2450,harshGain:-4.1,minDuck:.72
+  });
 }
 
 function playGunnerUltimateWave(wave=0){
   if(!soundEnabled)return;
-  if(wave===0)playGunnerRailFireSfx(true);
-  else if(characterSfxAllowed('gunner_ult_wave',72)){
-    playGunnerSample(wave===4?'gunner_hot':'gunner_triple',wave===4?.44:.34,wave===4?.98:1.03,{
-      lowpass:6900,bodyFreq:215,bodyGain:wave===4?1.2:.65,harshGain:-2.1,minDuck:.72
+  if(wave===0){
+    playGunnerRailFireSfx(true);
+    return;
+  }
+  if(characterSfxAllowed('gunner_ult_wave',84)){
+    playGunnerSample(wave===4?'gunner_hot':'gunner_triple',wave===4?.34:.25,wave===4?.96:.99,{
+      lowpass:5000,
+      bodyFreq:wave===4?180:205,
+      bodyGain:wave===4?1.2:.65,
+      harshFreq:2800,
+      harshGain:-3.1,
+      minDuck:.76
     });
   }
 }
