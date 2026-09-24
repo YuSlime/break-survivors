@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 6.0</title>
+<title>BREAK SURVIVORS - Stage 6.1</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 6.0 — Character Growth / Ability Road / Ultimate */
+  /* Stage 6.1 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 6.0</h1>
+    <h1>BREAK SURVIVORS — Stage 6.1</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -654,7 +654,7 @@
       </div>
       <button id="toggleSound" class="full" style="margin-top:8px">Attack SFX: ON</button>
       <div class="stat" style="margin-top:10px">Attack SFX Volume <b id="sfxVolumeText">48%</b></div>
-      <input id="sfxVolume" type="range" min="0" max="100" value="48" step="1"/>
+      <input id="sfxVolume" type="range" min="0" max="100" value="44" step="1"/>
     </div>
 
     <div class="section">
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 6.0 — BREAK RUSH
+// Stage 6.1 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 6.0 — CHAOS HUNT
+// Stage 6.1 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1432,7 +1432,11 @@ function damageEnemy(e,dmg,impact=true){
   const actualDmg=dmg*(crit?1.85:1);
   e.hp-=actualDmg;
 
-  if(impact && Math.random()<0.18) playWeaponImpactSfx(activeWeaponKey(), crit||actualDmg>ps.damage*1.2);
+  if(impact){
+    const weapon=activeWeaponKey();
+    const impactChance={pierce:.13,explosion:.015,lightning:.07,slash:.10,laser:.06,missile:.015}[weapon]??.08;
+    if(Math.random()<impactChance)playWeaponImpactSfx(weapon,crit||actualDmg>ps.damage*1.2);
+  }
   e.flash=crit?.12:.08;
 
   if(impact){
@@ -1537,13 +1541,14 @@ let attackFilter = null;
 let soundEnabled = true;
 let audioUnlocked = false;
 let lastSfxAt = {};
+let lastSfxVariant = {};
 let attackBuffers = {};
 let attackLoadPromise = null;
 let activeAttackVoices = 0;
 let activeEventVoices = 0;
 const MAX_ATTACK_VOICES = 5;
 const MAX_EVENT_VOICES = 3;
-let attackSfxVolume = clamp(Number(localStorage.getItem('break_survivors_attack_sfx_volume') ?? 48) / 100, 0, 1);
+let attackSfxVolume = clamp(Number(localStorage.getItem('break_survivors_attack_sfx_volume') ?? 44) / 100, 0, 1);
 
 function getAudio(){
   const AC = window.AudioContext || window.webkitAudioContext;
@@ -1660,12 +1665,30 @@ const eventSfxFiles={
 };
 
 const attackSfxFiles = {
-  pierce:   {fire:'assets/sfx/gun_fire.mp3',       hit:'assets/sfx/gun_hit.mp3'},
-  explosion:{fire:'assets/sfx/bomb_launch.mp3',    hit:'assets/sfx/bomb_hit.mp3'},
-  lightning:{fire:'assets/sfx/lightning_fire.mp3', hit:'assets/sfx/lightning_hit.mp3'},
-  slash:    {fire:'assets/sfx/slash_fire.mp3',     hit:'assets/sfx/slash_hit.mp3'},
-  laser:    {fire:'assets/sfx/laser_fire.mp3',     hit:'assets/sfx/laser_hit.mp3'},
-  missile:  {fire:'assets/sfx/missile_fire.mp3',   hit:'assets/sfx/missile_hit.mp3'}
+  pierce:{
+    fire:['assets/sfx/v2/pierce_fire_a.mp3','assets/sfx/v2/pierce_fire_b.mp3'],
+    hit:['assets/sfx/v2/pierce_hit_a.mp3','assets/sfx/v2/pierce_hit_b.mp3']
+  },
+  explosion:{
+    fire:['assets/sfx/v2/explosion_fire_a.mp3','assets/sfx/v2/explosion_fire_b.mp3'],
+    hit:['assets/sfx/v2/explosion_hit_a.mp3','assets/sfx/v2/explosion_hit_b.mp3']
+  },
+  lightning:{
+    fire:['assets/sfx/v2/lightning_fire_a.mp3','assets/sfx/v2/lightning_fire_b.mp3'],
+    hit:['assets/sfx/v2/lightning_hit_a.mp3','assets/sfx/v2/lightning_hit_b.mp3']
+  },
+  slash:{
+    fire:['assets/sfx/v2/slash_fire_a.mp3','assets/sfx/v2/slash_fire_b.mp3'],
+    hit:['assets/sfx/v2/slash_hit_a.mp3','assets/sfx/v2/slash_hit_b.mp3']
+  },
+  laser:{
+    fire:['assets/sfx/v2/laser_fire_a.mp3','assets/sfx/v2/laser_fire_b.mp3'],
+    hit:['assets/sfx/v2/laser_hit_a.mp3','assets/sfx/v2/laser_hit_b.mp3']
+  },
+  missile:{
+    fire:['assets/sfx/v2/missile_fire_a.mp3','assets/sfx/v2/missile_fire_b.mp3'],
+    hit:['assets/sfx/v2/missile_hit_a.mp3','assets/sfx/v2/missile_hit_b.mp3']
+  }
 };
 
 function decodeAudio(ac,arrayBuffer){
@@ -1683,15 +1706,18 @@ function loadAttackSfx(){
 
   const jobs=[];
   for(const [weapon,files] of Object.entries(attackSfxFiles)){
-    for(const [phase,url] of Object.entries(files)){
-      const key=weapon+'_'+phase;
-      jobs.push(
-        fetch(url,{cache:'force-cache'})
-          .then(r=>{if(!r.ok)throw new Error('SFX '+r.status);return r.arrayBuffer()})
-          .then(buf=>decodeAudio(ac,buf))
-          .then(decoded=>{attackBuffers[key]=decoded})
-          .catch(()=>{})
-      );
+    for(const [phase,urls] of Object.entries(files)){
+      const list=Array.isArray(urls)?urls:[urls];
+      list.forEach((url,idx)=>{
+        const key=weapon+'_'+phase+'_'+idx;
+        jobs.push(
+          fetch(url,{cache:'force-cache'})
+            .then(r=>{if(!r.ok)throw new Error('SFX '+r.status);return r.arrayBuffer()})
+            .then(buf=>decodeAudio(ac,buf))
+            .then(decoded=>{attackBuffers[key]=decoded})
+            .catch(()=>{})
+        );
+      });
     }
   }
   for(const [key,url] of Object.entries(eventSfxFiles)){
@@ -1756,28 +1782,70 @@ function playEventSfx(key,volume=.6,rate=1){
   src.start();
 }
 
+
+function pickWeaponSfx(kind,phase){
+  const list=attackSfxFiles[kind]?.[phase];
+  if(!Array.isArray(list)||!list.length)return kind+'_'+phase+'_0';
+  const slot=kind+'_'+phase;
+  let idx=Math.floor(Math.random()*list.length);
+  if(list.length>1 && lastSfxVariant[slot]===idx)idx=(idx+1)%list.length;
+  lastSfxVariant[slot]=idx;
+  return kind+'_'+phase+'_'+idx;
+}
+
+function playSubBody(kind,strong=false){
+  if(!soundEnabled || (kind!=='explosion'&&kind!=='missile'))return;
+  const gap=kind==='explosion'?175:195;
+  if(!characterSfxAllowed('sub_'+kind,gap))return;
+
+  const ac=getAudio();if(!ac||!attackFilter)return;
+  const now=ac.currentTime;
+  const osc=ac.createOscillator(),filter=ac.createBiquadFilter(),gain=ac.createGain();
+
+  // Kept in the ~70–90 Hz region so it still reads on phones/headphones without becoming boomy.
+  const start=kind==='missile'?76:86;
+  const end=kind==='missile'?52:58;
+  osc.type='sine';
+  osc.frequency.setValueAtTime(start,now);
+  osc.frequency.exponentialRampToValueAtTime(end,now+.17);
+
+  filter.type='lowpass';filter.frequency.value=145;filter.Q.value=.4;
+  gain.gain.setValueAtTime(.0001,now);
+  gain.gain.exponentialRampToValueAtTime(strong?.024:.017,now+.009);
+  gain.gain.exponentialRampToValueAtTime(.0001,now+.19);
+
+  osc.connect(filter).connect(gain).connect(attackFilter);
+  osc.start(now);osc.stop(now+.21);
+}
+
 function activeWeaponKey(){
   return attackType || currentCharacter?.attack || 'pierce';
 }
 function playWeaponFireSfx(kind,special=false){
   if(!soundEnabled) return;
-  const gap=special?70:({pierce:92,explosion:190,lightning:135,slash:145,laser:145,missile:190}[kind]||120);
+
+  // Match sound density to the visual cadence of each weapon.
+  const gap=special?85:({pierce:78,explosion:185,lightning:122,slash:142,laser:148,missile:185}[kind]||125);
   if(!characterSfxAllowed('fire_'+kind,gap)) return;
 
-  const vols={pierce:.72,explosion:.82,lightning:.58,slash:.67,laser:.62,missile:.76};
-  const base=vols[kind]||.65;
-  playAttackSample(kind+'_fire',base*(special?1.08:1),special?1.02:1);
+  const vols={pierce:.50,explosion:.60,lightning:.43,slash:.55,laser:.50,missile:.57};
+  const base=vols[kind]||.48;
+  playAttackSample(pickWeaponSfx(kind,'fire'),base*(special?1.04:1),special?1.01:1);
 }
 
 function playWeaponImpactSfx(kind,strong=false){
   if(!soundEnabled) return;
-  const gap=({pierce:135,explosion:175,lightning:155,slash:165,laser:170,missile:190}[kind]||160);
-  const key='hit_'+kind+(strong?'_s':'');
-  if(!characterSfxAllowed(key,gap)) return;
 
-  const vols={pierce:.24,explosion:.62,lightning:.31,slash:.34,laser:.30,missile:.64};
-  const base=vols[kind]||.34;
-  playAttackSample(kind+'_hit',base*(strong?1.08:1),strong?.985:1);
+  const gap=({pierce:118,explosion:185,lightning:132,slash:148,laser:152,missile:195}[kind]||150);
+  const gate='hit_'+kind+(strong?'_strong':'');
+  if(!characterSfxAllowed(gate,gap)) return;
+
+  const vols={pierce:.18,explosion:.64,lightning:.22,slash:.27,laser:.22,missile:.66};
+  const base=vols[kind]||.24;
+  playAttackSample(pickWeaponSfx(kind,'hit'),base*(strong?1.04:1),strong?.99:1);
+
+  // Heavy attacks get a restrained sub layer rather than simply making the sample louder.
+  if(kind==='explosion'||kind==='missile')playSubBody(kind,strong);
 }
 
 function playGachaSfx(kind){
