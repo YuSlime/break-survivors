@@ -1,0 +1,49 @@
+name: Import Stage 6 SFX
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-stage6-sfx.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-sfx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install audio tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Download and master Stage 6 Runway SFX
+        run: |
+          set -e
+          mkdir -p tmp assets/sfx
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/2d641044-0033-4ed6-bd95-2f32a0378fab/break_survivors_event_warning.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2Y0ZWM5OGRlMTE1MjY4MSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM1NjIzN30.ryvtVHBbi9AiRPZBk1iMfPldw4-7ECzYy0i4pkfH8eU' -o "tmp/event_warning.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/event_warning.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.58:d=0.10,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/event_warning.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/ce7eb0f6-457c-4fcf-bfd8-ab8e3008aad0/break_survivors_treasure_spawn.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOTdjM2QyZDc3NDI4ZWEzYiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM2NTkxMX0.f3x7Cvmev4IWAZJWiUvc4lw20zQUDowd5qkc2wJyCNw' -o "tmp/treasure_spawn.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/treasure_spawn.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.58:d=0.10,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/treasure_spawn.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/9c25421f-c9a9-40b5-94c0-fe3d15cceb38/break_survivors_treasure_kill.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDlhMDRmNWI1NDM0MzI5YiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQwMDIxOX0.MmqmhcAl-uMU_uoAXj2FOIOwobmWA8-XyZ0Qx-kUptg' -o "tmp/treasure_kill.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/treasure_kill.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.58:d=0.10,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/treasure_kill.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/9e7ce984-9d40-43ce-b2ca-c49e097d562b/break_survivors_boss_warning.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMGY3ZGQ5ZTkwYWM5Njc0MCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5NTYyNX0.YgZ_K3OjfxlTYPuKdHI7G_2wNDEC-QoRZ0XXEWx0QAk' -o "tmp/boss_warning.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/boss_warning.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.58:d=0.10,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/boss_warning.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/1ff50f5d-4f05-46be-9865-de4d916e5524/break_survivors_boss_phase.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZmM3NWUxNjE0Y2MyY2Y5MiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM3NzQ0MX0.8pY7gA-VkuB7PM0-9rDyf3L9tZn49kMhQxZQ8JJLpxU' -o "tmp/boss_phase.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/boss_phase.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.58:d=0.10,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/boss_phase.mp3"
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/7c1001b3-3e7d-4bf1-8214-82ef1af75c19/break_survivors_loot_vacuum.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzViYTBiYTBlNDk1NzFkZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM1NzAyNH0.9AZNZJyo7fW3QjxHHlhnswCGfRZBcfiRiJkKYhdukZ0' -o "tmp/loot_vacuum.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/loot_vacuum.mp3" -af "highpass=f=45,lowpass=f=9000,afade=t=out:st=0.58:d=0.10,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/loot_vacuum.mp3"
+      - name: Verify
+        run: |
+          set -e
+          for f in event_warning treasure_spawn treasure_kill boss_warning boss_phase loot_vacuum; do
+            test -s "assets/sfx/$f.mp3"
+          done
+      - name: Commit
+        run: |
+          git config user.name "BREAK SURVIVORS Bot"
+          git config user.email "actions@github.com"
+          git add assets/sfx
+          git commit -m "Add Stage 6 Runway event SFX" || exit 0
+          git push
