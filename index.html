@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 7.4</title>
+<title>BREAK SURVIVORS - Stage 7.5</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 7.4 — Character Growth / Ability Road / Ultimate */
+  /* Stage 7.5 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 7.4</h1>
+    <h1>BREAK SURVIVORS — Stage 7.5</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 7.4 — BREAK RUSH
+// Stage 7.5 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 7.4 — CHAOS HUNT
+// Stage 7.5 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1905,6 +1905,58 @@ function playSubBody(kind,strong=false){
 function activeWeaponKey(){
   return attackType || currentCharacter?.attack || 'pierce';
 }
+function playBladeSample(phase,volume=.5,rate=1,opts={}){
+  if(!soundEnabled)return;
+  const ac=getAudio();if(!ac||!attackFilter)return;
+  const key=pickWeaponSfx('slash',phase);
+  const buffer=attackBuffers[key];
+  if(!buffer){loadAttackSfx().catch(()=>{});return}
+  if(activeAttackVoices>=MAX_ATTACK_VOICES)return;
+
+  const atk=(typeof ps!=='undefined'&&ps&&ps.attackRate)?ps.attackRate:2.7;
+  const rapidDuck=clamp(1/Math.sqrt(Math.max(1,atk/2.7)),.62,1);
+  const overlapDuck=activeAttackVoices>=3?.70:activeAttackVoices>=2?.84:1;
+
+  const src=ac.createBufferSource();
+  const lowpass=ac.createBiquadFilter();
+  const harshCut=ac.createBiquadFilter();
+  const body=ac.createBiquadFilter();
+  const gain=ac.createGain();
+
+  src.buffer=buffer;
+  src.playbackRate.value=rate;
+
+  lowpass.type='lowpass';
+  lowpass.frequency.value=opts.lowpass||6900;
+  lowpass.Q.value=.55;
+
+  harshCut.type='peaking';
+  harshCut.frequency.value=opts.harshFreq||3200;
+  harshCut.Q.value=opts.harshQ||.82;
+  harshCut.gain.value=opts.harshGain??-2.2;
+
+  body.type='peaking';
+  body.frequency.value=opts.bodyFreq||240;
+  body.Q.value=.72;
+  body.gain.value=opts.bodyGain||1.0;
+
+  const now=ac.currentTime;
+  const finalVol=clamp(volume*rapidDuck*overlapDuck,0,.82);
+  gain.gain.setValueAtTime(finalVol,now);
+
+  const duration=Math.min(opts.duration||buffer.duration,buffer.duration);
+  if(opts.fadeOut){
+    const fadeStart=Math.max(.04,duration-opts.fadeOut);
+    gain.gain.setValueAtTime(finalVol,now+fadeStart);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+  }
+
+  src.connect(lowpass).connect(harshCut).connect(body).connect(gain).connect(attackFilter);
+  activeAttackVoices++;
+  src.onended=()=>{activeAttackVoices=Math.max(0,activeAttackVoices-1)};
+  src.start(0,opts.offset||0,duration);
+}
+
 function playBladeSwingSfx(stage=1,special=false){
   if(!soundEnabled)return;
   const gap=special?70:88;
@@ -1917,17 +1969,29 @@ function playBladeSwingSfx(stage=1,special=false){
   else if(stage>=5){phase='crescent';volume=.76;rate=.91}
 
   if(special){phase='cross';volume=.76;rate=.96}
-  playAttackSample(pickWeaponSfx('slash',phase),volume,rate);
+  playBladeSample(phase,volume,rate,{
+    lowpass:phase==='cross'?6800:7200,
+    harshFreq:3500,
+    harshGain:-2.6,
+    bodyFreq:260,
+    bodyGain:.8,
+    fadeOut:.045
+  });
 }
 
 function playBladeHitSfx(finisher=false){
   if(!soundEnabled)return;
-  const gap=finisher?175:112;
+  const gap=finisher?210:140;
   if(!characterSfxAllowed(finisher?'blade_finisher_hit':'blade_hit',gap))return;
-  playAttackSample(
-    pickWeaponSfx('slash',finisher?'finisher':'hit'),
-    finisher?.68:.54,
-    finisher?.96:1
+
+  // Ear-friendly contact: remove the metallic ring and keep a short, warm "slice" body.
+  playBladeSample(
+    finisher?'finisher':'hit',
+    finisher?.50:.38,
+    finisher?.90:.94,
+    finisher
+      ? {lowpass:4200,harshFreq:2850,harshQ:.72,harshGain:-7.0,bodyFreq:185,bodyGain:3.2,duration:.46,fadeOut:.12}
+      : {lowpass:4800,harshFreq:3150,harshQ:.78,harshGain:-6.5,bodyFreq:230,bodyGain:2.2,duration:.34,fadeOut:.10}
   );
 }
 
