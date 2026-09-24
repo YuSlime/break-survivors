@@ -1,0 +1,40 @@
+name: Import Blade Practice SFX v9
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-blade-practice-sfx-v9.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download realistic Blade Master practice-swing SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/sfx/v9
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/79f5a84a-352c-49bb-a80b-ea8fb4d36b25/blade_practice_light_a.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmFjM2ZmYzAwOTNhM2RiZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQwMzI2NH0.RQzBZihMzPj5Ys_ue3GlTLuoaAI5kMbf6xe5U65R70c' -o assets/sfx/v9/blade_practice_light_a.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/8cc8cbd9-db91-4141-ae8b-b58938a81a68/blade_practice_light_b.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDAwMTMzOTEwYzNiM2I5NyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM3MzEzN30.-KjoTgXXCcUnEJ9rH9y5rVFx0_q4rMbHuMYtzwkDC1I' -o assets/sfx/v9/blade_practice_light_b.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/6a8ad74c-a0f7-46ac-845e-14f6aebec249/blade_practice_crescent.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTJlYjJkN2NiMmQ5NjNkYiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQzNjA5Mn0.N8b_WIkNnT5z-M_yUCd8fMCMG_-1StH82Yv9rlqOADY' -o assets/sfx/v9/blade_practice_crescent.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/f5f8dfb7-fb39-456d-b2de-4f4a9f195195/blade_practice_cross.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYzEwMTQ3MjY4NzQwMzQ5MSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM2ODAzOH0.3QHKBAUv9nxlH5Dh9zkHmmZCFyHW2cAThDEMHuN1TKM' -o assets/sfx/v9/blade_practice_cross.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/afb0c9b0-5edc-4619-a6d9-1ef74825bf67/blade_practice_heavy.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYTg2MTgyYmUwYzAzZDJlMiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQwOTE1MH0.P2wjhZP4qOwBH-uphXTja9UfDExMx16OK9nXm7NPZZ8' -o assets/sfx/v9/blade_practice_heavy.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/e9e586f9-6090-4275-b2a0-274327149286/blade_practice_special.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZWExNmUzODE5N2Y4M2QwMCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQzNzM3N30.LimZRlwc7PrBdXtsdQ8WSWNohWLpSg5Rn94okK59mus' -o assets/sfx/v9/blade_practice_special.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/19a6e31f-2965-45b7-ba13-bfd75d8b8cc9/blade_practice_ult.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjM3YTY0OGRmMTQyMTI5NyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5NDg5M30.-baAjdSkORI24Fd0x3d3u6TCwmq8vlA8uhAYzDMRPzE' -o assets/sfx/v9/blade_practice_ult.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/3fea58b0-5ab9-4a85-afe2-68ec565db809/blade_practice_ult_finish.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjQzMDI5YmY5MzA4MmU1YiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM4NDE5MX0.P3MIq8pvE14lCu8R1IBKACpJkBjtb8YP-Q3jKryuH3o' -o assets/sfx/v9/blade_practice_ult_finish.mp3
+
+      - name: Commit SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v9/*.mp3
+          git commit -m "Import realistic Blade Master practice-swing SFX v9"
+          git push
