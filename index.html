@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 7.2</title>
+<title>BREAK SURVIVORS - Stage 7.3</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 7.2 — Character Growth / Ability Road / Ultimate */
+  /* Stage 7.3 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 7.2</h1>
+    <h1>BREAK SURVIVORS — Stage 7.3</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 7.2 — BREAK RUSH
+// Stage 7.3 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 7.2 — CHAOS HUNT
+// Stage 7.3 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1985,7 +1985,7 @@ function firePrimary(force=false){
   // Forced/admin attacks intentionally bypass this gate.
   if(!force && attackType==='slash' && currentCharacter.id==='blademaster' && ownGrowthActive()){
     const lvNow=charLevel('blademaster');
-    const engageRange=lvNow>=50?410:lvNow>=5?385:350;
+    const engageRange=lvNow>=50?240:lvNow>=5?215:190;
     const info=nearestEnemyInfo();
     if(!info.enemy || info.dist>engageRange+info.enemy.r) return;
   }
