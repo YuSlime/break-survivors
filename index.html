@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 9.1</title>
+<title>BREAK SURVIVORS - Stage 9.2</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 9.1 — Character Growth / Ability Road / Ultimate */
+  /* Stage 9.2 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 9.1 — Combat HUD / compact UI overhaul
+  /* Stage 9.2 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 9.1 — one-line top HUD + high-visibility touch controls */
+  /* Stage 9.2 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 9.1 — iPhone / mobile bottom clipping fix */
+  /* Stage 9.2 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 9.1 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 9.2 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -964,7 +964,7 @@
   }
 
 
-  /* Stage 9.1 — ADMIN bottom drawer, clearly separated from top HUD */
+  /* Stage 9.2 — ADMIN bottom drawer, clearly separated from top HUD */
   #sidebar{
     left:50%!important;
     right:auto!important;
@@ -1001,7 +1001,7 @@
   }
 
 
-  /* Stage 9.1 — standalone ADMIN launcher, away from top HUD/popovers */
+  /* Stage 9.2 — standalone ADMIN launcher, away from top HUD/popovers */
   #openSidebar.adminLauncher{
     display:inline-flex;
     position:absolute!important;
@@ -1042,7 +1042,7 @@
   }
 
 
-  /* Stage 9.1 — app-like touch behavior: no double-tap zoom / no text selection */
+  /* Stage 9.2 — app-like touch behavior: no double-tap zoom / no text selection */
   html,body,#app,#gameWrap,canvas{
     touch-action:none!important;
     -ms-touch-action:none!important;
@@ -1066,7 +1066,7 @@
   }
 
 
-  /* Stage 9.1 — temporary drop buffs */
+  /* Stage 9.2 — temporary drop buffs */
   #itemBuffHud{
     position:absolute;left:10px;top:66px;z-index:7;
     display:flex;gap:5px;flex-wrap:wrap;max-width:42vw;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 9.1</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 9.2</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1283,6 +1283,8 @@
         <button id="adminLv50" class="good">Current Lv50</button>
         <button id="adminFillUlt" class="good">Fill ULT</button>
         <button id="adminResetGrowth" class="danger">Reset Growth</button>
+        <button id="adminPermMax" class="good">PERM MAX Lv10</button>
+        <button id="adminPermReset" class="danger">PERM RESET Lv0</button>
       </div>
 
       <div class="stat" style="margin-top:11px">Damage × <b id="dmgMulText">1</b></div>
@@ -1337,11 +1339,11 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 9.1 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
+// Stage 9.2 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
 const CAMERA_ZOOM = 0.40;
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
-// Stage 9.1 finite battlefield.
+// Stage 9.2 finite battlefield.
 const WORLD_W = 5200;
 const WORLD_H = 3400;
 const WORLD_EDGE_PAD = 18;
@@ -1405,6 +1407,7 @@ function ensureCharacterSave(){
 
 function persist(){ localStorage.setItem(STORAGE, JSON.stringify(save)); }
 
+const PERM_UPGRADE_MAX=10;
 const upgrades = {
   damage:{name:'Damage',desc:'+24% damage / Lv',base:120,growth:1.55},
   attackSpeed:{name:'Attack Speed',desc:'+9% attack speed / Lv',base:150,growth:1.58},
@@ -1413,7 +1416,13 @@ const upgrades = {
   coinBonus:{name:'Coin Bonus',desc:'+10% coins / Lv',base:170,growth:1.62},
   area:{name:'Attack Area',desc:'+8% radius / Lv',base:160,growth:1.60}
 };
-function upCost(k){ const u=upgrades[k], lv=save.upgrades[k]||0; return Math.floor(u.base*Math.pow(u.growth,lv)); }
+for(const k of Object.keys(upgrades)){
+  save.upgrades[k]=clamp(Math.floor(save.upgrades[k]||0),0,PERM_UPGRADE_MAX);
+}
+function upCost(k){
+  const u=upgrades[k], lv=save.upgrades[k]||0;
+  return lv>=PERM_UPGRADE_MAX?Infinity:Math.floor(u.base*Math.pow(u.growth,lv));
+}
 
 const enemyDefs = {
   normal:{hp:18,speed:55,reward:3,touch:8,r:12,color:'#ff596d'},
@@ -1582,25 +1591,25 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 9.1 — Rookie Gunner sustained-fire identity.
+// Stage 9.2 — Rookie Gunner sustained-fire identity.
 let gunnerMomentum=0;
 let gunnerMomentumIdle=0;
 let gunnerRecoil=0;
 const GUNNER_MOMENTUM_MAX_BONUS=.22;
 const gunnerMomentumMul=()=>1+GUNNER_MOMENTUM_MAX_BONUS*clamp(gunnerMomentum/100,0,1);
 
-// Stage 9.1 — BREAK RUSH
+// Stage 9.2 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 9.1 — CHAOS HUNT
+// Stage 9.2 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
 
-// Stage 9.1 temporary item buffs.
+// Stage 9.2 temporary item buffs.
 let itemBuffs={boots:0,drink:0,sword:0};
 const chaosEvents={
   gold:{name:'GOLD RUSH',duration:12,color:'#ffd65c',desc:'COINS ×2'},
@@ -2800,7 +2809,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 9.1: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 9.2: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -4337,12 +4346,22 @@ function buildShop(){
   Object.entries(upgrades).forEach(([k,u])=>{
     const row=document.createElement('div');row.className='upgrade';
     const left=document.createElement('div');
-    left.innerHTML=`<b>${u.name} Lv.${save.upgrades[k]||0}</b><div class="small">${u.desc}</div>`;
-    const btn=document.createElement('button');btn.textContent=upCost(k).toLocaleString()+' Coins';
-    btn.onclick=()=>{
-      const c=upCost(k);if(save.coins<c)return;
-      save.coins-=c;save.upgrades[k]=(save.upgrades[k]||0)+1;persist();ps=playerStats();buildShop();updateHud();
-    };
+    const lv=save.upgrades[k]||0;
+    left.innerHTML=`<b>${u.name} Lv.${lv}/${PERM_UPGRADE_MAX}</b><div class="small">${u.desc}</div>`;
+    const btn=document.createElement('button');
+    if(lv>=PERM_UPGRADE_MAX){
+      btn.textContent='MAX';
+      btn.disabled=true;
+      btn.classList.add('good');
+    }else{
+      btn.textContent=upCost(k).toLocaleString()+' Coins';
+      btn.onclick=()=>{
+        const c=upCost(k);if(save.coins<c)return;
+        save.coins-=c;
+        save.upgrades[k]=Math.min(PERM_UPGRADE_MAX,(save.upgrades[k]||0)+1);
+        persist();ps=playerStats();buildShop();updateHud();
+      };
+    }
     row.append(left,btn);wrap.appendChild(row);
   });
 }
@@ -4412,6 +4431,26 @@ document.getElementById('adminFillUlt').onclick=()=>{ultCharge=100;updateHud();s
 document.getElementById('adminResetGrowth').onclick=()=>{
   const d=charData(currentCharacter.id);d.level=1;d.branch=null;ultCharge=0;attackCounters={};
   persist();ps=playerStats();buildCharacterList();updateHud();showGrowthToast('ADMIN','Growth Reset');
+};
+
+document.getElementById('adminPermMax').onclick=()=>{
+  for(const k of Object.keys(upgrades))save.upgrades[k]=PERM_UPGRADE_MAX;
+  persist();
+  ps=playerStats();
+  player.hp=ps.maxHp;
+  if(document.getElementById('shop').style.display!=='none')buildShop();
+  updateHud();
+  showGrowthToast('ADMIN','Permanent Upgrades → MAX Lv'+PERM_UPGRADE_MAX);
+};
+
+document.getElementById('adminPermReset').onclick=()=>{
+  for(const k of Object.keys(upgrades))save.upgrades[k]=0;
+  persist();
+  ps=playerStats();
+  player.hp=Math.min(player.hp,ps.maxHp);
+  if(document.getElementById('shop').style.display!=='none')buildShop();
+  updateHud();
+  showGrowthToast('ADMIN','Permanent Upgrades → Lv0');
 };
 
 document.getElementById('dmgMul').oninput=e=>{dmgMul=+e.target.value;document.getElementById('dmgMulText').textContent=dmgMul;ps=playerStats()};
