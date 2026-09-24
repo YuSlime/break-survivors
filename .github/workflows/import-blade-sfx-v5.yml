@@ -26,6 +26,12 @@ jobs:
           curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/8d1aab47-e399-4dbd-8daa-1041b65232f4/blade_hit_v1.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZmQ0NTE1ZjZlM2Y1ZGI2YiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5MjA1NH0.z6mSC0tQlTeOs6Rr8FCX2IZkNfnXF8jHNwrRNz5Fiek' -o /tmp/blade/hit.mp3
           curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/40c9777d-42d5-4ea1-a2a1-5dc6bccb549d/blade_finisher_v1.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZGNhMWUwNmFkOWVkNDQzOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQyODI2Nn0.Q-auAV3Yp1IrjA8wik1nkPA5C1z-9tKhkiWlRIvVW8o' -o /tmp/blade/finisher.mp3
 
+      - name: Install ffmpeg
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
       - name: Master for fast action gameplay
         shell: bash
         run: |
