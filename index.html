@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 6.6</title>
+<title>BREAK SURVIVORS - Stage 6.7</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 6.6 — Character Growth / Ability Road / Ultimate */
+  /* Stage 6.7 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 6.6</h1>
+    <h1>BREAK SURVIVORS — Stage 6.7</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 6.6 — BREAK RUSH
+// Stage 6.7 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 6.6 — CHAOS HUNT
+// Stage 6.7 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1787,13 +1787,13 @@ function playLightningSample(phase,volume=.5,rate=1,delayMs=0,offset=0,duration=
 
     // Keep the reference Timbre1 character, but shift its weight slightly downward.
     lowShelf.type='lowshelf';
-    lowShelf.frequency.value=125;
-    lowShelf.gain.value=3.0*bassBoost;
+    lowShelf.frequency.value=92;
+    lowShelf.gain.value=4.2*bassBoost;
 
     body.type='peaking';
-    body.frequency.value=205;
-    body.Q.value=.72;
-    body.gain.value=1.6*bassBoost;
+    body.frequency.value=165;
+    body.Q.value=.78;
+    body.gain.value=2.4*bassBoost;
 
     gain.gain.value=clamp(volume*rapidDuck*overlapDuck,0,.9);
     src.connect(lowShelf).connect(body).connect(gain).connect(attackFilter);
@@ -1811,30 +1811,30 @@ function playLightningSample(phase,volume=.5,rate=1,delayMs=0,offset=0,duration=
 
 function playLightningFire(strong=false){
   // Reference Timbre1 Short: remove its leading silence and bring the electrical buzz slightly forward.
-  playLightningSample('fire',strong?.72:.68,strong?.97:1,0,.095,1.03,strong?1.18:1.0);
+  playLightningSample('fire',strong?.72:.68,strong?.90:.92,0,.095,1.10,strong?1.24:1.08);
 }
 
 function playLightningElectrocution(hitCount=1){
   if(!characterSfxAllowed('lightning_electrocution',420))return;
 
   // Timbre1 Long remains the main sound: immediate "bzzzt -> bachi-bachi" electrocution.
-  playLightningSample('hit',.53,.985,55,.085,1.96,1.10);
+  playLightningSample('hit',.54,.92,55,.085,2.10,1.18);
 
   // Large chains get extra copies of the SAME timbre, not a different sound,
   // so it feels like electricity spreading across many enemies instead of changing weapon identity.
   if(hitCount>=6){
-    playLightningSample('hit',.19,.94,92,.085,2.02,.92);
+    playLightningSample('hit',.19,.88,92,.085,2.12,1.00);
   }
   if(hitCount>=11){
-    playLightningSample('hit',.11,1.07,145,.085,1.68,.78);
+    playLightningSample('hit',.11,.98,145,.085,1.82,.86);
   }
 }
 
 function playLightningUltimateSurge(){
   // Same reference sound, layered lower/slower for a higher-voltage ULT rather than a new SFX.
-  playLightningSample('fire',.46,.86,18,.095,1.08,1.48);
-  playLightningSample('hit',.58,.87,72,.085,2.08,1.52);
-  playLightningSample('hit',.25,1.02,138,.085,1.82,1.05);
+  playLightningSample('fire',.47,.79,18,.095,1.18,1.62);
+  playLightningSample('hit',.59,.81,72,.085,2.24,1.68);
+  playLightningSample('hit',.24,.93,138,.085,1.94,1.18);
 }
 
 
