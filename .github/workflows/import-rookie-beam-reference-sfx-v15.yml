@@ -1,0 +1,53 @@
+name: Import Rookie Beam Reference SFX v15
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-rookie-beam-reference-sfx-v15.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Download Kurage Kosho beam-gun01 reference
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rookie-v15 assets/sfx/v15
+          curl -L --fail --retry 4 --retry-all-errors --http1.1             'https://www.kurage-kosho.info/mp3/beam-gun01.mp3'             -o /tmp/rookie-v15/ref.mp3           || curl -L --fail --retry 4 --retry-all-errors --http1.1             'http://www.kurage-kosho.info/mp3/beam-gun01.mp3'             -o /tmp/rookie-v15/ref.mp3
+          ffprobe -v error -show_entries format=duration:stream=sample_rate,channels,bit_rate -of default=nw=1 /tmp/rookie-v15/ref.mp3
+
+      - name: Build game-ready reference-derived variants
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ffmpeg -y -i /tmp/rookie-v15/ref.mp3 -af             "silenceremove=start_periods=1:start_duration=0.002:start_threshold=-52dB,aresample=44100,atrim=duration=0.34,highpass=f=68,lowpass=f=8600,equalizer=f=190:t=q:w=0.85:g=1.0,equalizer=f=3500:t=q:w=0.9:g=-1.6,acompressor=threshold=-21dB:ratio=1.8:attack=1.5:release=38,afade=t=out:st=0.295:d=0.045,loudnorm=I=-25:TP=-8:LRA=5"             -ar 44100 -ac 2 -b:a 160k assets/sfx/v15/gunner_beam_ref_a.mp3
+
+          ffmpeg -y -i /tmp/rookie-v15/ref.mp3 -af             "silenceremove=start_periods=1:start_duration=0.002:start_threshold=-52dB,aresample=44100,asetrate=42777,aresample=44100,atrim=duration=0.35,highpass=f=66,lowpass=f=8200,equalizer=f=185:t=q:w=0.85:g=1.25,equalizer=f=3400:t=q:w=0.9:g=-1.9,acompressor=threshold=-21dB:ratio=1.9:attack=1.5:release=40,afade=t=out:st=0.302:d=0.048,loudnorm=I=-25:TP=-8:LRA=5"             -ar 44100 -ac 2 -b:a 160k assets/sfx/v15/gunner_beam_ref_b.mp3
+
+          ffmpeg -y -i /tmp/rookie-v15/ref.mp3 -af             "silenceremove=start_periods=1:start_duration=0.002:start_threshold=-52dB,aresample=44100,asetrate=41013,aresample=44100,atrim=duration=0.37,highpass=f=58,lowpass=f=8000,equalizer=f=175:t=q:w=0.82:g=1.9,equalizer=f=3300:t=q:w=0.9:g=-1.8,acompressor=threshold=-20dB:ratio=2.0:attack=1.4:release=42,afade=t=out:st=0.315:d=0.055,loudnorm=I=-24:TP=-8:LRA=5"             -ar 44100 -ac 2 -b:a 160k assets/sfx/v15/gunner_beam_ref_hot.mp3
+
+          # Build Triple Tap from the same exact source timbre: three short hits at 0 / 44 / 88 ms.
+          ffmpeg -y             -i assets/sfx/v15/gunner_beam_ref_a.mp3             -i assets/sfx/v15/gunner_beam_ref_b.mp3             -filter_complex             "[0:a]volume=0.78[a0];[1:a]adelay=44|44,volume=0.68[a1];[0:a]adelay=88|88,volume=0.62[a2];[a0][a1][a2]amix=inputs=3:normalize=0,atrim=duration=0.46,acompressor=threshold=-20dB:ratio=2.2:attack=1:release=45,loudnorm=I=-24.5:TP=-8:LRA=5[out]"             -map "[out]" -ar 44100 -ac 2 -b:a 160k assets/sfx/v15/gunner_beam_ref_triple.mp3
+
+      - name: Commit reference-derived SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v15/*.mp3
+          git commit -m "Import Rookie Gunner beam-gun01 reference SFX v15"
+          git push
