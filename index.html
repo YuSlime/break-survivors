@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 9.2</title>
+<title>BREAK SURVIVORS - Stage 9.3</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 9.2 — Character Growth / Ability Road / Ultimate */
+  /* Stage 9.3 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 9.2 — Combat HUD / compact UI overhaul
+  /* Stage 9.3 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 9.2 — one-line top HUD + high-visibility touch controls */
+  /* Stage 9.3 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 9.2 — iPhone / mobile bottom clipping fix */
+  /* Stage 9.3 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 9.2 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 9.3 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -964,7 +964,7 @@
   }
 
 
-  /* Stage 9.2 — ADMIN bottom drawer, clearly separated from top HUD */
+  /* Stage 9.3 — ADMIN bottom drawer, clearly separated from top HUD */
   #sidebar{
     left:50%!important;
     right:auto!important;
@@ -1001,7 +1001,7 @@
   }
 
 
-  /* Stage 9.2 — standalone ADMIN launcher, away from top HUD/popovers */
+  /* Stage 9.3 — standalone ADMIN launcher, away from top HUD/popovers */
   #openSidebar.adminLauncher{
     display:inline-flex;
     position:absolute!important;
@@ -1042,7 +1042,7 @@
   }
 
 
-  /* Stage 9.2 — app-like touch behavior: no double-tap zoom / no text selection */
+  /* Stage 9.3 — app-like touch behavior: no double-tap zoom / no text selection */
   html,body,#app,#gameWrap,canvas{
     touch-action:none!important;
     -ms-touch-action:none!important;
@@ -1066,7 +1066,7 @@
   }
 
 
-  /* Stage 9.2 — temporary drop buffs */
+  /* Stage 9.3 — temporary drop buffs */
   #itemBuffHud{
     position:absolute;left:10px;top:66px;z-index:7;
     display:flex;gap:5px;flex-wrap:wrap;max-width:42vw;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 9.2</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 9.3</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1339,11 +1339,11 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 9.2 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
+// Stage 9.3 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
 const CAMERA_ZOOM = 0.40;
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
-// Stage 9.2 finite battlefield.
+// Stage 9.3 finite battlefield.
 const WORLD_W = 5200;
 const WORLD_H = 3400;
 const WORLD_EDGE_PAD = 18;
@@ -1591,25 +1591,25 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 9.2 — Rookie Gunner sustained-fire identity.
+// Stage 9.3 — Rookie Gunner sustained-fire identity.
 let gunnerMomentum=0;
 let gunnerMomentumIdle=0;
 let gunnerRecoil=0;
 const GUNNER_MOMENTUM_MAX_BONUS=.22;
 const gunnerMomentumMul=()=>1+GUNNER_MOMENTUM_MAX_BONUS*clamp(gunnerMomentum/100,0,1);
 
-// Stage 9.2 — BREAK RUSH
+// Stage 9.3 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 9.2 — CHAOS HUNT
+// Stage 9.3 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
 
-// Stage 9.2 temporary item buffs.
+// Stage 9.3 temporary item buffs.
 let itemBuffs={boots:0,drink:0,sword:0};
 const chaosEvents={
   gold:{name:'GOLD RUSH',duration:12,color:'#ffd65c',desc:'COINS ×2'},
@@ -2502,8 +2502,8 @@ const attackSfxFiles = {
   pierce:{
     fire:['assets/sfx/v3/pierce_fire.mp3'],
     hit:['assets/sfx/v3/pierce_hit.mp3'],
-    gunner_fire:['assets/sfx/v11/gunner_fire_a.mp3','assets/sfx/v11/gunner_fire_b.mp3'],
-    gunner_hot:['assets/sfx/v11/gunner_fire_hot.mp3'],
+    gunner_fire:['assets/sfx/v12/gunner_primary_a.mp3','assets/sfx/v12/gunner_primary_b.mp3'],
+    gunner_hot:['assets/sfx/v12/gunner_primary_hot.mp3'],
     gunner_triple:['assets/sfx/v11/gunner_triple.mp3'],
     gunner_hit:['assets/sfx/v11/gunner_hit.mp3'],
     gunner_rail_fire:['assets/sfx/v11/gunner_rail_fire.mp3'],
@@ -2809,7 +2809,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 9.2: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 9.3: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -2901,20 +2901,29 @@ function playGunnerPrimarySfx(triple=false){
   if(!soundEnabled)return;
   if(triple){
     if(!characterSfxAllowed('gunner_triple',92))return;
-    playGunnerSample('gunner_triple',.62,1,{
-      lowpass:7000,bodyFreq:225,bodyGain:1.0,harshGain:-1.8,minDuck:.62
+    playGunnerSample('gunner_triple',.58,.99,{
+      lowpass:6600,bodyFreq:220,bodyGain:1.05,harshGain:-2.25,minDuck:.64
     });
     return;
   }
 
-  if(!characterSfxAllowed('gunner_fire',46))return;
-  const hot=gunnerMomentum>=80;
-  playGunnerSample(hot?'gunner_hot':'gunner_fire',hot?.57:.53,hot?1.01:1,{
-    lowpass:hot?7200:6900,
-    bodyFreq:hot?210:235,
-    bodyGain:hot?1.15:.82,
-    harshGain:hot?-1.5:-1.8,
-    minDuck:.58
+  if(!characterSfxAllowed('gunner_fire',44))return;
+
+  // Stage 9.3: keep the same rifle identity while the shot gets tighter as MOMENTUM rises.
+  const m=clamp(gunnerMomentum/100,0,1);
+  const hot=m>=.80;
+  const mid=m>=.45;
+  const phase=hot?'gunner_hot':'gunner_fire';
+  const volume=.50+m*.035;
+  const rate=.985+m*.025;
+
+  playGunnerSample(phase,volume,rate,{
+    lowpass:hot?6500:mid?6350:6100,
+    bodyFreq:hot?195:mid?210:225,
+    bodyGain:hot?1.35:mid?1.12:.96,
+    harshFreq:3300,
+    harshGain:hot?-2.05:mid?-2.3:-2.55,
+    minDuck:.60
   });
 }
 
