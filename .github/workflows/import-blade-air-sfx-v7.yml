@@ -1,0 +1,43 @@
+name: Import Blade Air SFX v7
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-blade-air-sfx-v7.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Download
+        run: |
+          set -e
+          mkdir -p /tmp/blade-air assets/sfx/v7
+          curl -L --fail 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/aaaea019-80b2-4ce8-a6cb-7498af92ea4b/blade_air_swift_v2.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDM5NWMyZTgzOGU4M2MxNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM1NzczNn0.kqAGStA0bT17RUyi6yl2iZcab4fUOWcxPkWvZtwFzxY' -o /tmp/blade-air/swift.mp3
+          curl -L --fail 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/0b7ae1a3-4b3f-4b78-aab3-40fd1cd0855c/blade_air_crescent_v2.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiOGU3MThlM2IyZDY4MDY1MSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM2MzQ1MX0.bmhpfFJKmvV_fJNEgN-SvkhD5ZIpSaYvvL6SCidFID4' -o /tmp/blade-air/crescent.mp3
+          curl -L --fail 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/9f6ad9d2-1074-4538-ad15-0988c51db345/blade_air_cross_v2.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2M5MmM3YTA2ZTViNzM4YyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM1ODk0NH0.31airM0-9ybCGtJ8DqGCGpG1SDSBarYyFehB-2byZIU' -o /tmp/blade-air/cross.mp3
+
+      - name: Master
+        run: |
+          ffmpeg -y -i /tmp/blade-air/swift.mp3 -af "highpass=f=70,lowpass=f=7600,equalizer=f=3400:t=q:w=0.9:g=-1.5,loudnorm=I=-25:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 128k assets/sfx/v7/blade_swift_air.mp3
+          ffmpeg -y -i /tmp/blade-air/crescent.mp3 -af "highpass=f=60,lowpass=f=7200,equalizer=f=3200:t=q:w=0.9:g=-1.8,loudnorm=I=-24:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 128k assets/sfx/v7/blade_crescent_air.mp3
+          ffmpeg -y -i /tmp/blade-air/cross.mp3 -af "highpass=f=70,lowpass=f=7400,equalizer=f=3300:t=q:w=0.9:g=-1.6,loudnorm=I=-24:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 128k assets/sfx/v7/blade_cross_air.mp3
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v7/*.mp3
+          git commit -m "Import pure air-slice Blade Master SFX v7"
+          git push
