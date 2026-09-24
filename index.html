@@ -2251,7 +2251,9 @@ function damageEnemy(e,dmg,impact=true){
 
   if(impact){
     const weapon=activeWeaponKey();
-    const impactChance={pierce:.09,explosion:.008,lightning:0,slash:0,laser:.025,missile:.008}[weapon]??.05;
+    const impactChance=(weapon==='pierce'&&currentCharacter.id==='gunner')
+      ?0
+      :({pierce:.09,explosion:.008,lightning:0,slash:0,laser:.025,missile:.008}[weapon]??.05);
     if(Math.random()<impactChance)playWeaponImpactSfx(weapon,crit||actualDmg>ps.damage*1.2);
   }
   e.flash=crit?.12:.08;
@@ -2970,6 +2972,7 @@ function playWeaponImpactSfx(kind,strong=false){
   const base=vols[kind]||.22;
   if(kind==='lightning'){playLightningElectrocution(strong?8:1);return}
   if(kind==='slash')return
+  if(kind==='pierce'&&currentCharacter.id==='gunner')return
   playAttackSample(pickWeaponSfx(kind,'hit'),base*(strong?1.03:1),1);
 }
 
