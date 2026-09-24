@@ -1,0 +1,57 @@
+name: Import Rookie Gunner SFX v11
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-rookie-gunner-sfx-v11.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Download Rookie Gunner SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/gunner assets/sfx/v11
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/aae3452c-f96d-4b01-b7e3-0aa7477fd66c/rookie_rifle_a.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZmI5MGMzMTVkMGNkZDJjMiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5NTU0MX0.IaqV_8UcWXJEVSq6eej-SyNUXPM4r6GJ3F0KnUkXHe0' -o /tmp/gunner/rifle_a.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/b3cb3620-5856-471f-ad37-7cba67b27a85/rookie_rifle_b.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2Y5OTJjODhkZjY2OTIxMiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQzMDIxNn0.dU2IQ7JP9Md8_L3b3mMijohXV1PT32CY-Kf3zjT2q_o' -o /tmp/gunner/rifle_b.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/f5ae4526-8f29-42a6-a6b3-5faebb1611b1/rookie_rifle_hot.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNjUwYWIwY2YyYWYzZWFlMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQxMjIzOX0._Xx7zodDZ4Pn5Fx0e6RUrgViSOBgR5Be6OmtyW82fwE' -o /tmp/gunner/rifle_hot.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/4c6be2f3-168d-47da-aceb-0f966b9ed066/rookie_triple_burst.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDUxNDNiMDg3MWU0OTdkOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM2NzI0MH0.LUb4Z3LtkWWOSiero2fIdnQXcxVGm6qti-6vUG99ZX0' -o /tmp/gunner/triple.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/ce574968-e9fa-4a10-9cfc-9c1dc49ea77d/rookie_hit_soft.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYjVkM2M0OGQ2NzQ3ZDJhMyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQxMDUwOX0.U-HPl9eGXB5IiCeMUe0ET3lqm8Hj66SaAg6MTwnlNsU' -o /tmp/gunner/hit.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/fea659a9-a108-4850-99f0-aea9cf4fe9cc/rookie_rail_fire.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNjdkMDRjNmNjZjBjODhiNSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQzMzkwMH0.uM-aIJ0jBefCOolqQ2rHdJLVNLXIfPaLYMQpG1g5W-g' -o /tmp/gunner/rail_fire.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/445c7336-0366-4831-bece-a3fa63541b9a/rookie_rail_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZDY2MzYyNDZkMjIwMjJlMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM4NjI0Nn0.3OoQUm62K3GpKiETA5ypM0CzgtvV694fWkuCDQ8pn2g' -o /tmp/gunner/rail_hit.mp3
+
+      - name: Master for repeated firing feel
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffmpeg -y -i /tmp/gunner/rifle_a.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-52dB,highpass=f=58,lowpass=f=6900,equalizer=f=3300:t=q:w=0.9:g=-2.0,atrim=duration=.34,afade=t=out:st=.29:d=.05,loudnorm=I=-25:TP=-8:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v11/gunner_fire_a.mp3
+          ffmpeg -y -i /tmp/gunner/rifle_b.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-52dB,highpass=f=58,lowpass=f=6900,equalizer=f=3300:t=q:w=0.9:g=-2.0,atrim=duration=.34,afade=t=out:st=.29:d=.05,loudnorm=I=-25:TP=-8:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v11/gunner_fire_b.mp3
+          ffmpeg -y -i /tmp/gunner/rifle_hot.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-52dB,highpass=f=55,lowpass=f=7100,equalizer=f=3400:t=q:w=0.9:g=-1.8,equalizer=f=220:t=q:w=.8:g=1.2,atrim=duration=.34,afade=t=out:st=.29:d=.05,loudnorm=I=-24:TP=-8:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v11/gunner_fire_hot.mp3
+          ffmpeg -y -i /tmp/gunner/triple.mp3 -af "highpass=f=58,lowpass=f=6900,equalizer=f=3300:t=q:w=.9:g=-2.1,atrim=duration=.52,afade=t=out:st=.46:d=.06,loudnorm=I=-24:TP=-8:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v11/gunner_triple.mp3
+          ffmpeg -y -i /tmp/gunner/hit.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-52dB,highpass=f=60,lowpass=f=5300,equalizer=f=3000:t=q:w=.85:g=-3.0,atrim=duration=.25,afade=t=out:st=.20:d=.05,loudnorm=I=-30:TP=-9:LRA=5" -ar 44100 -ac 2 -b:a 128k assets/sfx/v11/gunner_hit.mp3
+          ffmpeg -y -i /tmp/gunner/rail_fire.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-52dB,highpass=f=42,lowpass=f=6800,equalizer=f=180:t=q:w=.8:g=2.4,equalizer=f=3200:t=q:w=.9:g=-1.4,atrim=duration=.62,afade=t=out:st=.54:d=.08,loudnorm=I=-22:TP=-7:LRA=6" -ar 44100 -ac 2 -b:a 160k assets/sfx/v11/gunner_rail_fire.mp3
+          ffmpeg -y -i /tmp/gunner/rail_hit.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-52dB,highpass=f=45,lowpass=f=5800,equalizer=f=190:t=q:w=.8:g=2.0,equalizer=f=3100:t=q:w=.9:g=-2.5,atrim=duration=.40,afade=t=out:st=.34:d=.06,loudnorm=I=-26:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 160k assets/sfx/v11/gunner_rail_hit.mp3
+
+      - name: Commit SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v11/*.mp3
+          git commit -m "Import Rookie Gunner dedicated SFX v11"
+          git push
