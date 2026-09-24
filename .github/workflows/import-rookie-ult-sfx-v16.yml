@@ -1,0 +1,52 @@
+name: Import Rookie ULT SFX v16
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-rookie-ult-sfx-v16.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Download beam-gun01 reference
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rookie-ult-v16 assets/sfx/v16
+          curl -L --fail --retry 4 --retry-all-errors --http1.1             'https://www.kurage-kosho.info/mp3/beam-gun01.mp3'             -o /tmp/rookie-ult-v16/ref.mp3           || curl -L --fail --retry 4 --retry-all-errors --http1.1             'http://www.kurage-kosho.info/mp3/beam-gun01.mp3'             -o /tmp/rookie-ult-v16/ref.mp3
+
+      - name: Build dedicated Rookie ULT family
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Charge: reversed/low-pitched beam texture -> compact rising pressure cue.
+          ffmpeg -y -i /tmp/rookie-ult-v16/ref.mp3 -filter_complex             "[0:a]silenceremove=start_periods=1:start_duration=0.002:start_threshold=-52dB,aresample=44100,atrim=duration=0.34,areverse,asetrate=37044,aresample=44100,lowpass=f=6500,highpass=f=55,equalizer=f=175:t=q:w=0.85:g=1.8,volume=0.72[rev];              [0:a]silenceremove=start_periods=1:start_duration=0.002:start_threshold=-52dB,aresample=44100,atrim=duration=0.18,asetrate=33075,aresample=44100,lowpass=f=1200,highpass=f=45,volume=0.28,adelay=110|110[body];              [rev][body]amix=inputs=2:normalize=0,atrim=duration=0.48,afade=t=in:st=0:d=0.025,afade=t=out:st=0.42:d=0.06,acompressor=threshold=-20dB:ratio=2.1:attack=2:release=45,loudnorm=I=-24:TP=-8:LRA=5[out]"             -map "[out]" -ar 44100 -ac 2 -b:a 160k assets/sfx/v16/gunner_ult_charge.mp3
+
+          # Wave: same beam timbre layered very tightly to feel like a full radial volley.
+          ffmpeg -y             -i assets/sfx/v15/gunner_beam_ref_a.mp3             -i assets/sfx/v15/gunner_beam_ref_b.mp3             -filter_complex             "[0:a]volume=0.72[a0];              [1:a]adelay=18|18,volume=0.58[a1];              [0:a]asetrate=42336,aresample=44100,adelay=36|36,volume=0.42[a2];              [a0][a1][a2]amix=inputs=3:normalize=0,atrim=duration=0.38,equalizer=f=190:t=q:w=0.85:g=1.0,equalizer=f=3500:t=q:w=0.9:g=-1.7,acompressor=threshold=-19dB:ratio=2.3:attack=1:release=42,loudnorm=I=-23.5:TP=-8:LRA=5[out]"             -map "[out]" -ar 44100 -ac 2 -b:a 160k assets/sfx/v16/gunner_ult_wave.mp3
+
+          # Final: lower, wider, denser version for the fifth wave.
+          ffmpeg -y             -i assets/sfx/v15/gunner_beam_ref_hot.mp3             -i assets/sfx/v15/gunner_beam_ref_a.mp3             -filter_complex             "[0:a]asetrate=37926,aresample=44100,volume=0.86[a0];              [1:a]adelay=20|20,volume=0.62[a1];              [0:a]asetrate=33075,aresample=44100,lowpass=f=1700,highpass=f=42,adelay=35|35,volume=0.34[a2];              [a0][a1][a2]amix=inputs=3:normalize=0,atrim=duration=0.52,equalizer=f=165:t=q:w=0.8:g=2.0,equalizer=f=3400:t=q:w=0.9:g=-1.9,acompressor=threshold=-18dB:ratio=2.4:attack=1:release=50,afade=t=out:st=0.45:d=0.07,loudnorm=I=-22.5:TP=-7:LRA=6[out]"             -map "[out]" -ar 44100 -ac 2 -b:a 160k assets/sfx/v16/gunner_ult_final.mp3
+
+      - name: Commit Rookie ULT SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v16/*.mp3
+          git commit -m "Import Rookie Gunner dedicated ULT SFX v16"
+          git push
