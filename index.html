@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 8.8</title>
+<title>BREAK SURVIVORS - Stage 9.0</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 8.8 — Character Growth / Ability Road / Ultimate */
+  /* Stage 9.0 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 8.8 — Combat HUD / compact UI overhaul
+  /* Stage 9.0 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 8.8 — one-line top HUD + high-visibility touch controls */
+  /* Stage 9.0 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 8.8 — iPhone / mobile bottom clipping fix */
+  /* Stage 9.0 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 8.8 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 9.0 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -964,7 +964,7 @@
   }
 
 
-  /* Stage 8.8 — ADMIN bottom drawer, clearly separated from top HUD */
+  /* Stage 9.0 — ADMIN bottom drawer, clearly separated from top HUD */
   #sidebar{
     left:50%!important;
     right:auto!important;
@@ -1001,7 +1001,7 @@
   }
 
 
-  /* Stage 8.8 — standalone ADMIN launcher, away from top HUD/popovers */
+  /* Stage 9.0 — standalone ADMIN launcher, away from top HUD/popovers */
   #openSidebar.adminLauncher{
     display:inline-flex;
     position:absolute!important;
@@ -1042,7 +1042,7 @@
   }
 
 
-  /* Stage 8.8 — app-like touch behavior: no double-tap zoom / no text selection */
+  /* Stage 9.0 — app-like touch behavior: no double-tap zoom / no text selection */
   html,body,#app,#gameWrap,canvas{
     touch-action:none!important;
     -ms-touch-action:none!important;
@@ -1066,7 +1066,7 @@
   }
 
 
-  /* Stage 8.8 — temporary drop buffs */
+  /* Stage 9.0 — temporary drop buffs */
   #itemBuffHud{
     position:absolute;left:10px;top:66px;z-index:7;
     display:flex;gap:5px;flex-wrap:wrap;max-width:42vw;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 8.8</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 9.0</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1337,11 +1337,11 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 8.8 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
+// Stage 9.0 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
 const CAMERA_ZOOM = 0.40;
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
-// Stage 8.8 finite battlefield.
+// Stage 9.0 finite battlefield.
 const WORLD_W = 5200;
 const WORLD_H = 3400;
 const WORLD_EDGE_PAD = 18;
@@ -1429,7 +1429,7 @@ const enemyDefs = {
 const characterDefs = [
   {
     id:'gunner', name:'Rookie Gunner', rarity:'Common', attack:'pierce', icon:'🔫', color:'#6ee7ff',
-    passive:'Rapid Loader — Attack Speed +12%',
+    passive:'Rapid Loader — Attack Speed +12% / sustained fire builds MOMENTUM',
     abilities:['Main','Lv5','Lv10','Lv20','Lv30','Lv40','Lv50']
   },
   {
@@ -1465,7 +1465,7 @@ const rarityWeights={Common:45,Rare:30,Epic:18,Legendary:7};
 const growthDefs = {
   gunner:{
     nodes:[
-      [1,'Main','Piercing Shot'],
+      [1,'Main','Piercing Shot + MOMENTUM'],
       [5,'Hollow Point','貫通数 +3'],
       [10,'Triple Tap','一定間隔で3方向射撃'],
       [20,'Branch','精密射撃 / 制圧射撃'],
@@ -1477,7 +1477,7 @@ const growthDefs = {
       precision:{name:'PRECISION',desc:'Damage +30% / 弾速 +25%。重い一発を伸ばす。'},
       barrage:{name:'BARRAGE',desc:'Attack Speed +22%。Triple Tapの発生頻度UP。'}
     },
-    ultimate:'BULLET HEAVEN — 全方向へ5連続の弾幕を放つ。'
+    ultimate:'BULLET HEAVEN — 全方向へ5連続の高速貫通弾幕。MOMENTUM MAX演出付き。'
   },
   bombcat:{
     nodes:[
@@ -1582,18 +1582,24 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 8.8 — BREAK RUSH
+// Stage 9.0 — Rookie Gunner sustained-fire identity.
+let gunnerMomentum=0;
+let gunnerMomentumIdle=0;
+const GUNNER_MOMENTUM_MAX_BONUS=.22;
+const gunnerMomentumMul=()=>1+GUNNER_MOMENTUM_MAX_BONUS*clamp(gunnerMomentum/100,0,1);
+
+// Stage 9.0 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 8.8 — CHAOS HUNT
+// Stage 9.0 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
 
-// Stage 8.8 temporary item buffs.
+// Stage 9.0 temporary item buffs.
 let itemBuffs={boots:0,drink:0,sword:0};
 const chaosEvents={
   gold:{name:'GOLD RUSH',duration:12,color:'#ffd65c',desc:'COINS ×2'},
@@ -1854,6 +1860,7 @@ function resetRun(){
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
   enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
+  gunnerMomentum=0;gunnerMomentumIdle=0;
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
   activeEvent=null;eventTime=0;eventPulse=0;nextEventAt=rnd(38,48);
   treasureTimer=rnd(24,34);bossPending=false;bossWarningTime=0;lootStreak=0;lootStreakTimer=0;
@@ -2782,7 +2789,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 8.8: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 9.0: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -2898,8 +2905,44 @@ function addBullet(v,dmg,pierce=6,opts={}){
     x:player.x,y:player.y,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed,
     r:opts.r||5,life:opts.life||1.7,dmg,pierce,kind:opts.kind||'pierce',
     color:opts.color||null,radius:opts.radius||0,clusterCount:opts.clusterCount||0,
-    aftershock:!!opts.aftershock,nuke:!!opts.nuke
+    aftershock:!!opts.aftershock,nuke:!!opts.nuke,
+    gunner:!!opts.gunner,ult:!!opts.ult,trail:opts.trail??!!opts.gunner
   });
+}
+
+function gunnerMuzzle(v,strong=false){
+  const ang=Math.atan2(v.y,v.x);
+  const ox=player.x+Math.cos(ang)*(player.r+11),oy=player.y+Math.sin(ang)*(player.r+11);
+  const color=strong?'#efffff':gunnerMomentum>=80?'#d8ffff':'#75eaff';
+  rings.push({x:ox,y:oy,r:2,max:strong?28:17,life:strong?.16:.10,total:strong?.16:.10,color});
+  const pieces=strong?12:7;
+  for(let i=0;i<pieces;i++){
+    const a=ang+rnd(-.26,.26),spd=rnd(strong?150:95,strong?360:235);
+    particles.push({
+      x:ox,y:oy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,
+      life:rnd(.08,strong?.24:.16),size:rnd(1.5,strong?5.5:3.8),color
+    });
+  }
+}
+
+function gunnerImpactFx(b,e){
+  if(!b.gunner)return;
+  if(b.ult&&Math.random()>.12)return;
+  const rail=b.kind==='rail';
+  const color=rail?'#eaffff':gunnerMomentum>=80?'#cfffff':'#75eaff';
+  rings.push({
+    x:b.x,y:b.y,r:1,max:rail?26:13,
+    life:rail?.14:.09,total:rail?.14:.09,color
+  });
+  const pieces=rail?5:2;
+  for(let i=0;i<pieces;i++){
+    const a=Math.atan2(b.vy,b.vx)+Math.PI+rnd(-.75,.75),spd=rnd(45,rail?180:100);
+    particles.push({
+      x:b.x,y:b.y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,
+      life:rnd(.08,rail?.22:.14),size:rnd(1.4,rail?4.5:2.8),color
+    });
+  }
+  if(rail&&!b.ult)shake=Math.min(12,shake+1.7);
 }
 function firePrimary(force=false){
   if(!running || (!force && player.attackCd>0)) return;
@@ -2913,7 +2956,8 @@ function firePrimary(force=false){
     if(!info.enemy || info.dist>engageRange+info.enemy.r) return;
   }
 
-  const rate=ps.attackRate*(feverActive()?1.35:1)*(itemBuffs.drink>0?2:1);
+  const gunnerRate=(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive())?gunnerMomentumMul():1;
+  const rate=ps.attackRate*(feverActive()?1.35:1)*(itemBuffs.drink>0?2:1)*gunnerRate;
   player.attackCd=1/rate;
   const v=aimVector(); player.angle=Math.atan2(v.y,v.x);
   const base=ps.damage;
@@ -2922,20 +2966,52 @@ function firePrimary(force=false){
   if(!bladeOwn)playWeaponFireSfx(activeWeaponKey(), false);
 
   if(attackType==='pierce'){
-    const count=own&&currentCharacter.id==='gunner'?nextAttackCount('gunner'):0;
+    const isGunner=own&&currentCharacter.id==='gunner';
+    const count=isGunner?nextAttackCount('gunner'):0;
     let pierce=currentCharacter.id==='gunner'?8:6;
-    if(own&&currentCharacter.id==='gunner'&&lv>=5)pierce+=3;
-    const speed=own&&currentCharacter.id==='gunner'&&lv>=20&&br==='precision'?650:520;
-    const tripleEvery=own&&currentCharacter.id==='gunner'&&lv>=20&&br==='barrage'?4:5;
-    let offsets=[0];
-    if(own&&currentCharacter.id==='gunner'&&lv>=50) offsets=[-.045,.045];
-    if(own&&currentCharacter.id==='gunner'&&lv>=10&&count%tripleEvery===0) offsets=[-.11,0,.11];
-    for(const angle of offsets) addBullet(v,base,pierce,{speed,angle,r:lv>=50&&own?6:5,color:'#7de7ff'});
-    if(own&&currentCharacter.id==='gunner'&&lv>=40&&count%(lv>=50?5:8)===0){
-      addBullet(v,base*2.4,24,{speed:760,r:11,life:1.45,kind:'rail',color:'#e9ffff'});
-      shake=Math.min(10,shake+2.5);
+    if(isGunner&&lv>=5)pierce+=3;
+
+    const speed=isGunner&&lv>=20&&br==='precision'?650:520;
+    const tripleEvery=isGunner&&lv>=20&&br==='barrage'?4:5;
+    const triple=isGunner&&lv>=10&&count%tripleEvery===0;
+    const awakened=isGunner&&lv>=50;
+
+    if(isGunner){
+      const gain=br==='barrage'?10:8;
+      gunnerMomentum=clamp(gunnerMomentum+gain,0,100);
+      gunnerMomentumIdle=.62;
     }
-    muzzle('#7de3ff');
+
+    if(triple){
+      // Triple Tap is a micro-burst rather than three identical simultaneous lines.
+      addBullet(v,base,pierce,{speed,angle:0,r:awakened?6:5,color:gunnerMomentum>=80?'#dfffff':'#7de7ff',gunner:isGunner});
+      setTimeout(()=>{if(running&&currentCharacter.id==='gunner'){
+        addBullet(v,base,pierce,{speed,angle:-.115,r:awakened?6:5,color:'#8feeff',gunner:true});
+        gunnerMuzzle({x:Math.cos(player.angle-.115),y:Math.sin(player.angle-.115)},false);
+      }},28);
+      setTimeout(()=>{if(running&&currentCharacter.id==='gunner'){
+        addBullet(v,base,pierce,{speed,angle:.115,r:awakened?6:5,color:'#b8f7ff',gunner:true});
+        gunnerMuzzle({x:Math.cos(player.angle+.115),y:Math.sin(player.angle+.115)},false);
+      }},56);
+    }else{
+      const offsets=awakened?[-.045,.045]:[0];
+      for(const angle of offsets)addBullet(v,base,pierce,{
+        speed,angle,r:awakened?6:5,
+        color:gunnerMomentum>=80?'#dfffff':'#7de7ff',gunner:isGunner
+      });
+    }
+
+    gunnerMuzzle(v,false);
+
+    if(isGunner&&lv>=40&&count%(awakened?5:8)===0){
+      addBullet(v,base*2.4,24,{
+        speed:790,r:12,life:1.55,kind:'rail',color:'#f2ffff',
+        gunner:true,trail:true
+      });
+      gunnerMuzzle(v,true);
+      rings.push({x:player.x,y:player.y,r:6,max:46,life:.18,total:.18,color:'#dfffff'});
+      shake=Math.min(13,shake+4.2);
+    }
   }
   else if(attackType==='explosion'){
     const count=own&&currentCharacter.id==='bombcat'?nextAttackCount('bombcat'):0;
@@ -3288,9 +3364,18 @@ function useUltimate(){
   showGrowthToast(growthDefs[id].nodes.find(n=>n[0]===30)[2],growthDefs[id].ultimate);
 
   if(id==='gunner'){
+    gunnerMomentum=100;gunnerMomentumIdle=1.15;
     for(let w=0;w<5;w++)setTimeout(()=>{
       if(!running)return;
-      for(let i=0;i<20;i++){const ang=i*Math.PI*2/20+w*.07;bullets.push({x:player.x,y:player.y,vx:Math.cos(ang)*620,vy:Math.sin(ang)*620,r:6,life:1.65,dmg:ps.damage*.92,pierce:14,kind:'rail',color:'#dfffff'})}
+      rings.push({x:player.x,y:player.y,r:12,max:90+w*9,life:.22,total:.22,color:w===4?'#ffffff':'#9ef5ff'});
+      for(let i=0;i<20;i++){
+        const ang=i*Math.PI*2/20+w*.07;
+        addBullet({x:Math.cos(ang),y:Math.sin(ang)},ps.damage*.92,14,{
+          speed:650,r:6,life:1.7,kind:'rail',color:w===4?'#ffffff':'#dfffff',
+          gunner:true,ult:true,trail:true
+        });
+      }
+      shake=Math.min(16,shake+2.4);
     },w*95);
   }else if(id==='bombcat'){
     for(let i=0;i<14;i++)setTimeout(()=>{
@@ -3335,6 +3420,14 @@ function update(dt){
   if(!updateBreakRush(dt)){updateHud();return}
   gameTime+=dt; player.attackCd-=dt; player.hitCd-=dt;
   for(const k of ['boots','drink','sword'])if(itemBuffs[k]>0)itemBuffs[k]=Math.max(0,itemBuffs[k]-dt);
+
+  if(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive()){
+    gunnerMomentumIdle=Math.max(0,gunnerMomentumIdle-dt);
+    if(gunnerMomentumIdle<=0)gunnerMomentum=Math.max(0,gunnerMomentum-dt*38);
+  }else{
+    gunnerMomentum=Math.max(0,gunnerMomentum-dt*90);
+    gunnerMomentumIdle=0;
+  }
   updateChaosDirector(dt);
 
   let mx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);
@@ -3369,6 +3462,7 @@ function update(dt){
       if(Math.hypot(e.x-b.x,e.y-b.y)<=e.r+b.r){
         if(!b.hit) b.hit=new Set(); b.hit.add(e);
         damageEnemy(e,b.dmg);
+        if(b.gunner)gunnerImpactFx(b,e);
         if(b.kind==='explosion'){
           const boomDmg=b.dmg*1.5*(b.nuke?2.3:1);
           explode(b.x,b.y,b.radius,boomDmg,b.nuke?'#fff1a0':'#ffb24a',{aftershock:b.aftershock});
@@ -3672,7 +3766,25 @@ function draw(){
   drawPickups();
 
   for(const b of bullets){
-    ctx.fillStyle=b.color||(b.kind==='explosion'?'#ffb84f':b.kind==='rail'?'#e9ffff':'#7de7ff');ctx.shadowBlur=b.kind==='rail'?22:12;ctx.shadowColor=ctx.fillStyle;
+    const bulletColor=b.color||(b.kind==='explosion'?'#ffb84f':b.kind==='rail'?'#e9ffff':'#7de7ff');
+    if(b.trail){
+      const speed=Math.hypot(b.vx,b.vy)||1;
+      const nx=b.vx/speed,ny=b.vy/speed;
+      const rail=b.kind==='rail';
+      const trailLen=rail?(b.ult?72:105):38;
+      ctx.save();
+      ctx.globalAlpha=rail?.74:.52;
+      ctx.strokeStyle=bulletColor;
+      ctx.lineCap='round';
+      ctx.shadowBlur=rail?28:14;ctx.shadowColor=bulletColor;
+      ctx.lineWidth=rail?(b.ult?7:10):4;
+      ctx.beginPath();ctx.moveTo(b.x-nx*trailLen,b.y-ny*trailLen);ctx.lineTo(b.x,b.y);ctx.stroke();
+      ctx.globalAlpha=rail?.34:.25;
+      ctx.lineWidth=rail?(b.ult?14:20):8;
+      ctx.beginPath();ctx.moveTo(b.x-nx*trailLen*.72,b.y-ny*trailLen*.72);ctx.lineTo(b.x,b.y);ctx.stroke();
+      ctx.restore();
+    }
+    ctx.fillStyle=bulletColor;ctx.shadowBlur=b.kind==='rail'?26:12;ctx.shadowColor=bulletColor;
     ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();
   }
   ctx.shadowBlur=0;
@@ -3692,9 +3804,25 @@ function draw(){
   ctx.globalAlpha=1;
 
   ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.angle);
-  ctx.shadowBlur=feverActive()?32:18;ctx.shadowColor=feverActive()?'#ffd85c':currentCharacter.color;ctx.fillStyle=feverActive()?'#fff0a0':currentCharacter.color;
+  const gunnerHot=currentCharacter.id==='gunner'&&gunnerMomentum>=80;
+  ctx.shadowBlur=feverActive()?32:gunnerHot?30:18;
+  ctx.shadowColor=feverActive()?'#ffd85c':gunnerHot?'#c9ffff':currentCharacter.color;
+  ctx.fillStyle=feverActive()?'#fff0a0':gunnerHot?'#eaffff':currentCharacter.color;
   ctx.beginPath();ctx.arc(0,0,player.r,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#6ce5ff';ctx.fillRect(6,-4,15,8);
+  ctx.fillStyle=gunnerHot?'#ffffff':'#6ce5ff';ctx.fillRect(6,-4,15,8);
+
+  if(currentCharacter.id==='gunner'&&attackType==='pierce'){
+    const pct=clamp(gunnerMomentum/100,0,1);
+    ctx.rotate(-player.angle);
+    ctx.globalAlpha=.35+.65*pct;
+    ctx.strokeStyle=pct>=.8?'#e8ffff':'#65eaff';
+    ctx.lineWidth=3.5;
+    ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.arc(0,0,player.r+8,-Math.PI/2,-Math.PI/2+Math.PI*2*pct);
+    ctx.stroke();
+    ctx.globalAlpha=1;
+  }
   ctx.restore();ctx.shadowBlur=0;
 
   ctx.restore();
@@ -3769,6 +3897,20 @@ function updateHud(){
     itemHud.innerHTML=chips.join('');
   }
 
+  const attackBannerEl=document.getElementById('attackBanner');
+  if(attackBannerEl){
+    if(currentCharacter.id==='gunner'&&attackType==='pierce'){
+      attackBannerEl.textContent='Pierce  •  MOMENTUM '+Math.round(gunnerMomentum)+'%';
+      attackBannerEl.style.borderColor=gunnerMomentum>=80?'#9ffcff':'#40577c88';
+      attackBannerEl.style.boxShadow=gunnerMomentum>=80?'0 0 18px #70efff66,0 7px 20px #0007':'0 7px 20px #0007';
+    }else{
+      const atk=attacks.find(x=>x.id===attackType);
+      attackBannerEl.textContent=atk?atk.name.replace(/^\d+\.\s*/,''):attackType;
+      attackBannerEl.style.borderColor='';
+      attackBannerEl.style.boxShadow='';
+    }
+  }
+
   document.getElementById('charText').textContent=currentCharacter.name;
   const hudLevel=document.getElementById('hudLevel');
   if(hudLevel)hudLevel.textContent='LV.'+charLevel(currentCharacter.id);
@@ -3794,7 +3936,7 @@ function updateHud(){
 function equipCharacter(id){
   const c=characterDefs.find(x=>x.id===id);
   if(!c || !save.characters[id]?.owned) return;
-  currentCharacter=c;save.selectedCharacter=id;attackType=c.attack;ultCharge=0;attackCounters={};ps=playerStats();persist();
+  currentCharacter=c;save.selectedCharacter=id;attackType=c.attack;ultCharge=0;attackCounters={};gunnerMomentum=0;gunnerMomentumIdle=0;ps=playerStats();persist();
   buildCharacterList();setAttack(attackType);updateHud();
 }
 
