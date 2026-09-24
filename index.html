@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 7.0</title>
+<title>BREAK SURVIVORS - Stage 7.1</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 7.0 — Character Growth / Ability Road / Ultimate */
+  /* Stage 7.1 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 7.0</h1>
+    <h1>BREAK SURVIVORS — Stage 7.1</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -934,20 +934,20 @@ ensureCharacterSave();
 let currentCharacter = characterDefs.find(c=>c.id===save.selectedCharacter && save.characters[c.id]?.owned) || characterDefs[0];
 save.selectedCharacter=currentCharacter.id;
 let attackType=currentCharacter.attack, god=false, dmgMul=1, spawnMul=1;
-let enemies=[], bullets=[], enemyBullets=[], particles=[], beams=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
+let enemies=[], bullets=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
 let keys = {};
 let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
 let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 7.0 — BREAK RUSH
+// Stage 7.1 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 7.0 — CHAOS HUNT
+// Stage 7.1 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1208,7 +1208,7 @@ function resetRun(){
   setAttack(attackType);
   ps=playerStats();
   player.x=W/2;player.y=H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
-  enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
+  enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
   activeEvent=null;eventTime=0;eventPulse=0;nextEventAt=rnd(38,48);
@@ -2169,7 +2169,7 @@ function chainLightning(dmg,count=5,opts={}){
 function doSlash(dmg,opts={}){
   const r=96*ps.area*(opts.radiusMul||1);
   const color=opts.color||'#d8f2ff';
-  rings.push({x:player.x,y:player.y,r:r*.70,max:r,life:opts.life||.18,total:opts.life||.18,color,slash:true});
+  rings.push({x:player.x,y:player.y,r:r*.70,max:r,life:opts.life||.18,total:opts.life||.18,color,slash:true,phase:rnd(0,Math.PI*2)});
   for(const e of enemies) if(!e.dead && dist(player,e)<=r+e.r) damageEnemy(e,dmg);
   for(let i=0;i<(opts.quiet?5:9);i++){
     const a=Math.random()*Math.PI*2,rr=r*rnd(.45,1);
@@ -2186,7 +2186,14 @@ function doSlashLine(dmg,angle,len,width,color='#eaf8ff',opts={}){
   const x2=centered?player.x+dx*half:player.x+dx*len;
   const y2=centered?player.y+dy*half:player.y+dy*len;
 
-  beams.push({x1,y1,x2,y2,width,life:opts.life||.16,total:opts.life||.16,color});
+  slashFx.push({
+    type:opts.crescent?'crescent':'cut',
+    x1,y1,x2,y2,width,
+    angle:Math.atan2(y2-y1,x2-x1),
+    life:opts.life||.16,total:opts.life||.16,color,
+    heavy:!!opts.heavy,
+    bend:opts.bend??rnd(-1,1)
+  });
 
   const vx=x2-x1,vy=y2-y1,l2=vx*vx+vy*vy||1;
   for(const e of enemies){
@@ -2214,7 +2221,7 @@ function doBladeWave(dmg,opts={}){
   const angle=Math.atan2(v.y,v.x)+(opts.angleOffset||0);
   const len=(opts.len||300)*ps.area;
   const width=(opts.width||34)*ps.area;
-  doSlashLine(dmg,angle,len,width,opts.color||'#bfefff',{quiet:opts.quiet,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.18});
+  doSlashLine(dmg,angle,len,width,opts.color||'#bfefff',{quiet:opts.quiet,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.18,crescent:true,bend:opts.angleOffset>=0?1:-1});
 }
 
 function doCrossSlash(dmg,opts={}){
@@ -2222,8 +2229,8 @@ function doCrossSlash(dmg,opts={}){
   const len=(opts.len||390)*ps.area;
   const width=(opts.width||24)*ps.area;
   const color=opts.color||'#f5fbff';
-  doSlashLine(dmg,baseAngle+Math.PI/4,len,width,color,{centered:true,quiet:opts.quiet,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.17});
-  doSlashLine(dmg,baseAngle-Math.PI/4,len,width,color,{centered:true,quiet:true,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.17});
+  doSlashLine(dmg,baseAngle+Math.PI/4,len,width,color,{centered:true,quiet:opts.quiet,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.17,bend:1});
+  doSlashLine(dmg,baseAngle-Math.PI/4,len,width,color,{centered:true,quiet:true,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.17,bend:-1});
 }
 
 function doLaser(dmg,angleOffset=0,widthMul=1,color='#65f7ff',quiet=false){
@@ -2475,6 +2482,7 @@ function update(dt){
 
   for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.life-=dt}
   for(const x of beams)x.life-=dt;
+  for(const x of slashFx)x.life-=dt;
   for(const x of rings)x.life-=dt;
   for(const x of lightnings)x.life-=dt;
   updatePickups(dt);
@@ -2483,7 +2491,7 @@ function update(dt){
   missiles=missiles.filter(x=>x.life>0);
   enemyBullets=enemyBullets.filter(x=>x.life>0);
   particles=particles.filter(x=>x.life>0);
-  beams=beams.filter(x=>x.life>0); rings=rings.filter(x=>x.life>0); lightnings=lightnings.filter(x=>x.life>0);
+  beams=beams.filter(x=>x.life>0); slashFx=slashFx.filter(x=>x.life>0); rings=rings.filter(x=>x.life>0); lightnings=lightnings.filter(x=>x.life>0);
   enemies=enemies.filter(e=>!e.dead);
 
   if(player.hp<=0) endRun();
@@ -2516,10 +2524,86 @@ function draw(){
 
   for(const r of rings){
     const a=clamp(r.life/r.total,0,1), rr=r.max*(1-a*.25);
-    ctx.globalAlpha=a;ctx.strokeStyle=r.color;ctx.lineWidth=r.slash?7:5;
-    ctx.beginPath();ctx.arc(r.x,r.y,rr,0,Math.PI*2);ctx.stroke();
+    ctx.globalAlpha=a;
+    if(r.slash){
+      // 円月斬り: a few fast blade arcs with visible gaps, never a laser-like full circle.
+      const phase=r.phase||0;
+      ctx.shadowBlur=16;ctx.shadowColor=r.color;
+      for(let i=0;i<3;i++){
+        const start=phase+i*Math.PI*2/3+a*.45;
+        const span=1.15+i*.08;
+        ctx.strokeStyle=r.color;ctx.lineWidth=8-i*1.5;ctx.lineCap='round';
+        ctx.beginPath();ctx.arc(r.x,r.y,rr+i*3,start,start+span);ctx.stroke();
+        ctx.globalAlpha=a*.70;
+        ctx.strokeStyle='#ffffff';ctx.lineWidth=2.2;
+        ctx.beginPath();ctx.arc(r.x,r.y,rr+i*3,start+.06,start+span-.08);ctx.stroke();
+        ctx.globalAlpha=a;
+      }
+      ctx.lineCap='butt';ctx.shadowBlur=0;
+    }else{
+      ctx.strokeStyle=r.color;ctx.lineWidth=5;
+      ctx.beginPath();ctx.arc(r.x,r.y,rr,0,Math.PI*2);ctx.stroke();
+    }
   }
   ctx.globalAlpha=1;
+
+  // Blade Master slash visuals are intentionally separate from lasers.
+  for(const sfx of slashFx){
+    const a=clamp(sfx.life/sfx.total,0,1);
+    const dx=sfx.x2-sfx.x1,dy=sfx.y2-sfx.y1;
+    const len=Math.hypot(dx,dy)||1;
+    const progress=1-a;
+    ctx.save();
+    ctx.globalAlpha=Math.min(1,a*1.35);
+    ctx.translate(sfx.x1,sfx.y1);
+    ctx.rotate(sfx.angle);
+    ctx.shadowBlur=sfx.heavy?24:15;ctx.shadowColor=sfx.color;
+
+    if(sfx.type==='crescent'){
+      // 月牙斬り: a tapered, curved crescent sweeping forward.
+      const w=sfx.width*(sfx.heavy?1.12:1);
+      const bend=(sfx.bend||1);
+      const sweep=0.92+progress*.08;
+      ctx.scale(sweep,1);
+
+      ctx.fillStyle=sfx.color;
+      ctx.beginPath();
+      ctx.moveTo(len*.05,w*.10*bend);
+      ctx.quadraticCurveTo(len*.50,-w*1.65*bend,len,0);
+      ctx.quadraticCurveTo(len*.54,-w*.54*bend,len*.10,w*.42*bend);
+      ctx.quadraticCurveTo(len*.34,-w*.34*bend,len*.05,w*.10*bend);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.globalAlpha*=.82;
+      ctx.strokeStyle='#ffffff';ctx.lineWidth=Math.max(2,w*.09);ctx.lineCap='round';
+      ctx.beginPath();
+      ctx.moveTo(len*.10,w*.12*bend);
+      ctx.quadraticCurveTo(len*.50,-w*1.27*bend,len*.93,-w*.03*bend);
+      ctx.stroke();
+    }else{
+      // 十字斬り: thin curved blade trails with pointed ends, not thick beam bars.
+      const w=sfx.width*(sfx.heavy?1.18:1);
+      const bend=(sfx.bend||1)*w*.72;
+      ctx.fillStyle=sfx.color;
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.quadraticCurveTo(len*.48,-bend,len,0);
+      ctx.quadraticCurveTo(len*.49,-bend*.34,0,w*.22*bend/Math.max(1,Math.abs(bend)));
+      ctx.quadraticCurveTo(len*.38,-bend*.25,0,0);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.globalAlpha*=.78;
+      ctx.strokeStyle='#ffffff';ctx.lineWidth=Math.max(1.8,w*.075);ctx.lineCap='round';
+      ctx.beginPath();
+      ctx.moveTo(len*.04,0);
+      ctx.quadraticCurveTo(len*.48,-bend*.82,len*.96,0);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+  ctx.shadowBlur=0;ctx.globalAlpha=1;
 
   for(const b of beams){
     ctx.globalAlpha=clamp(b.life/b.total,0,1);
