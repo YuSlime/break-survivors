@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 6.2</title>
+<title>BREAK SURVIVORS - Stage 6.3</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 6.2 — Character Growth / Ability Road / Ultimate */
+  /* Stage 6.3 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 6.2</h1>
+    <h1>BREAK SURVIVORS — Stage 6.3</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 6.2 — BREAK RUSH
+// Stage 6.3 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 6.2 — CHAOS HUNT
+// Stage 6.3 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1434,7 +1434,7 @@ function damageEnemy(e,dmg,impact=true){
 
   if(impact){
     const weapon=activeWeaponKey();
-    const impactChance={pierce:.09,explosion:.008,lightning:.035,slash:.065,laser:.025,missile:.008}[weapon]??.05;
+    const impactChance={pierce:.09,explosion:.008,lightning:0,slash:.065,laser:.025,missile:.008}[weapon]??.05;
     if(Math.random()<impactChance)playWeaponImpactSfx(weapon,crit||actualDmg>ps.damage*1.2);
   }
   e.flash=crit?.12:.08;
@@ -1674,8 +1674,8 @@ const attackSfxFiles = {
     hit:['assets/sfx/v3/explosion_hit.mp3']
   },
   lightning:{
-    fire:['assets/sfx/v3/lightning_fire.mp3'],
-    hit:['assets/sfx/v3/lightning_hit.mp3']
+    fire:['assets/sfx/v4/lightning_fire.mp3'],
+    hit:['assets/sfx/v4/lightning_hit.mp3']
   },
   slash:{
     fire:['assets/sfx/v3/slash_fire.mp3'],
@@ -1828,7 +1828,7 @@ function playWeaponFireSfx(kind,special=false){
   if(!characterSfxAllowed('fire_'+kind,gap)) return;
 
   // V3: identity first — blaster, launcher, arc, blade, beam, rocket.
-  const vols={pierce:.60,explosion:.57,lightning:.52,slash:.64,laser:.58,missile:.60};
+  const vols={pierce:.60,explosion:.57,lightning:.58,slash:.64,laser:.58,missile:.60};
   const base=vols[kind]||.52;
   playAttackSample(pickWeaponSfx(kind,'fire'),base*(special?1.03:1),1);
 }
@@ -1836,11 +1836,11 @@ function playWeaponFireSfx(kind,special=false){
 function playWeaponImpactSfx(kind,strong=false){
   if(!soundEnabled) return;
 
-  const gap=({pierce:125,explosion:185,lightning:150,slash:155,laser:165,missile:195}[kind]||155);
+  const gap=({pierce:125,explosion:185,lightning:175,slash:155,laser:165,missile:195}[kind]||155);
   const gate='hit_'+kind+(strong?'_strong':'');
   if(!characterSfxAllowed(gate,gap)) return;
 
-  const vols={pierce:.20,explosion:.62,lightning:.20,slash:.30,laser:.19,missile:.64};
+  const vols={pierce:.20,explosion:.62,lightning:.46,slash:.30,laser:.19,missile:.64};
   const base=vols[kind]||.22;
   playAttackSample(pickWeaponSfx(kind,'hit'),base*(strong?1.03:1),1);
 }
@@ -2025,6 +2025,7 @@ function chainLightning(dmg,count=5,opts={}){
       },90);
     }
   }
+  if(hit.length) playWeaponImpactSfx('lightning', false);
   shake=Math.min(9,shake+2);
   return hit;
 }
