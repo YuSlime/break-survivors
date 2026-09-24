@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 4.1</title>
+<title>BREAK SURVIVORS - Stage 4.2</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -403,7 +403,7 @@
   }
 
 
-  /* Stage 4.1 — Character Growth / Ability Road / Ultimate */
+  /* Stage 4.2 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -593,7 +593,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 4.1</h1>
+    <h1>BREAK SURVIVORS — Stage 4.2</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -879,7 +879,7 @@ ensureCharacterSave();
 let currentCharacter = characterDefs.find(c=>c.id===save.selectedCharacter && save.characters[c.id]?.owned) || characterDefs[0];
 save.selectedCharacter=currentCharacter.id;
 let attackType=currentCharacter.attack, god=false, dmgMul=1, spawnMul=1;
-let enemies=[], bullets=[], enemyBullets=[], particles=[], beams=[], rings=[], missiles=[], lightnings=[];
+let enemies=[], bullets=[], enemyBullets=[], particles=[], beams=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
 let keys = {};
 let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
 let ultCharge=0;
@@ -979,7 +979,7 @@ function resetRun(){
   setAttack(attackType);
   ps=playerStats();
   player.x=W/2;player.y=H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
-  enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];rings=[];missiles=[];lightnings=[];
+  enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
   document.getElementById('death').style.display='none';
 }
@@ -1010,6 +1010,166 @@ function nearestEnemy(x=player.x,y=player.y,exclude=new Set()){
   return best;
 }
 
+
+const MAX_PICKUPS=180;
+let persistSoonTimer=null;
+
+function persistSoon(){
+  if(persistSoonTimer)return;
+  persistSoonTimer=setTimeout(()=>{persistSoonTimer=null;persist()},300);
+}
+
+function splitReward(total,count){
+  total=Math.max(1,Math.floor(total));
+  count=Math.max(1,Math.min(count,total));
+  const base=Math.floor(total/count),extra=total%count,out=[];
+  for(let i=0;i<count;i++)out.push(base+(i<extra?1:0));
+  return out;
+}
+
+function spawnPickup(type,x,y,value=1,opts={}){
+  // Keep the battlefield light: if too many drops exist, fold value into a nearby same-type drop.
+  if(pickups.length>=MAX_PICKUPS){
+    let nearest=null,bd=90;
+    for(const p of pickups){
+      if(p.dead||p.type!==type)continue;
+      const d=Math.hypot(p.x-x,p.y-y);
+      if(d<bd){bd=d;nearest=p}
+    }
+    if(nearest){nearest.value+=value;nearest.scale=Math.min(1.55,(nearest.scale||1)+.08);return}
+    const fallback=pickups.find(p=>!p.dead&&p.type===type);
+    if(fallback){fallback.value+=value;return}
+  }
+
+  const a=Math.random()*Math.PI*2;
+  const speed=opts.speed||rnd(85,205);
+  pickups.push({
+    type,x,y,value,
+    vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,
+    age:0,life:20,dead:false,
+    delay:rnd(.16,.34),
+    scale:opts.scale||1,
+    phase:Math.random()*Math.PI*2
+  });
+}
+
+function spawnEnemyDrops(e,coinGain){
+  const counts={normal:1,runner:1,tank:2,shooter:2,elite:4,boss:8};
+  const coinCount=counts[e.type]||1;
+  for(const value of splitReward(coinGain,coinCount)){
+    spawnPickup('coin',e.x,e.y,value,{speed:e.type==='boss'?rnd(150,270):rnd(90,210),scale:e.type==='boss'?1.15:1});
+  }
+
+  // Regular enemies can surprise-drop a gem. Elite/Boss preserve their premium reward,
+  // but now it physically drops into the arena instead of instantly appearing in the HUD.
+  const gemChance={normal:.005,runner:.007,tank:.015,shooter:.010}[e.type]||0;
+  if(e.type==='elite'){
+    spawnPickup('gem',e.x,e.y,2,{speed:230,scale:1.12});
+  }else if(e.type==='boss'){
+    spawnPickup('gem',e.x,e.y,20,{speed:285,scale:1.42});
+  }else if(Math.random()<gemChance){
+    spawnPickup('gem',e.x,e.y,1,{speed:225,scale:1.08});
+  }
+}
+
+function collectPickup(p){
+  if(p.dead)return;
+  p.dead=true;
+  if(p.type==='coin'){
+    save.coins+=p.value;
+    runCoins+=p.value;
+    if(floatingTexts.length<18) floatingTexts.push({
+      x:p.x,y:p.y-5,text:'+'+p.value,color:'#ffd761',life:.60,total:.60,vy:-42
+    });
+    for(let i=0;i<3;i++)particles.push({x:p.x,y:p.y,vx:rnd(-55,55),vy:rnd(-70,20),life:.23,size:rnd(1.5,3.5),color:'#ffd761'});
+  }else{
+    save.gems+=p.value;
+    floatingTexts.push({
+      x:p.x,y:p.y-8,text:'+'+p.value+' GEM',color:'#8ff7ff',life:.90,total:.90,vy:-48
+    });
+    rings.push({x:p.x,y:p.y,r:4,max:28,life:.30,total:.30,color:'#79f3ff'});
+    for(let i=0;i<8;i++)particles.push({x:p.x,y:p.y,vx:rnd(-95,95),vy:rnd(-105,45),life:.38,size:rnd(2,4.5),color:i%2?'#7ff6ff':'#c489ff'});
+  }
+  persistSoon();
+}
+
+function updatePickups(dt){
+  for(const p of pickups){
+    if(p.dead)continue;
+    p.age+=dt;p.life-=dt;
+
+    // Initial burst / little skid on the floor.
+    if(p.age<p.delay){
+      p.x+=p.vx*dt;p.y+=p.vy*dt;
+      p.vx*=Math.pow(.045,dt);p.vy*=Math.pow(.045,dt);
+    }else{
+      p.vx*=Math.pow(.010,dt);p.vy*=Math.pow(.010,dt);
+      p.x+=p.vx*dt;p.y+=p.vy*dt;
+
+      const dx=player.x-p.x,dy=player.y-p.y,d=Math.hypot(dx,dy)||1;
+      // Gems are slightly easier to notice/collect. Old drops auto-vacuum so rewards are never lost.
+      let magnet=p.type==='gem'?245:195;
+      if(p.age>7)magnet=99999;
+      if(d<magnet){
+        const pull=p.type==='gem'?760:650;
+        const boost=clamp(1+(magnet===99999?1.2:0)+(1-d/Math.max(1,magnet))*.8,1,2.8);
+        p.x+=dx/d*pull*boost*dt;
+        p.y+=dy/d*pull*boost*dt;
+      }
+      if(d<player.r+12*(p.scale||1)) collectPickup(p);
+    }
+
+    p.x=clamp(p.x,8,W-8);p.y=clamp(p.y,8,H-8);
+    if(p.life<=0)collectPickup(p);
+  }
+
+  for(const t of floatingTexts){
+    t.y+=t.vy*dt;t.vy*=.95;t.life-=dt;
+  }
+  pickups=pickups.filter(p=>!p.dead);
+  floatingTexts=floatingTexts.filter(t=>t.life>0);
+}
+
+function drawPickups(){
+  for(const p of pickups){
+    const pulse=1+Math.sin(p.age*7+p.phase)*.06;
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.scale((p.scale||1)*pulse,(p.scale||1)*pulse);
+
+    if(p.type==='coin'){
+      const squash=.58+.42*Math.abs(Math.cos(p.age*8+p.phase));
+      ctx.scale(squash,1);
+      ctx.shadowBlur=12;ctx.shadowColor='#ffbd36';
+      ctx.fillStyle='#f8bf35';
+      ctx.beginPath();ctx.arc(0,0,7,0,Math.PI*2);ctx.fill();
+      ctx.lineWidth=2;ctx.strokeStyle='#ffe990';ctx.stroke();
+      ctx.fillStyle='#fff2a8';
+      ctx.fillRect(-1.2,-4.1,2.4,8.2);
+    }else{
+      ctx.rotate(Math.PI/4 + p.age*.8);
+      ctx.shadowBlur=22;ctx.shadowColor='#6feeff';
+      ctx.fillStyle='#7cefff';
+      ctx.fillRect(-7,-7,14,14);
+      ctx.strokeStyle='#e4ffff';ctx.lineWidth=2;ctx.strokeRect(-7,-7,14,14);
+      ctx.fillStyle='#d49cff';ctx.globalAlpha=.72;
+      ctx.fillRect(-3.5,-3.5,7,7);
+    }
+    ctx.restore();
+  }
+
+  ctx.shadowBlur=0;ctx.globalAlpha=1;
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='800 12px system-ui';
+  for(const t of floatingTexts){
+    const a=clamp(t.life/t.total,0,1);
+    ctx.globalAlpha=Math.min(1,a*1.7);
+    ctx.fillStyle=t.color;
+    ctx.shadowBlur=8;ctx.shadowColor=t.color;
+    ctx.fillText(t.text,t.x,t.y);
+  }
+  ctx.shadowBlur=0;ctx.globalAlpha=1;ctx.textAlign='start';ctx.textBaseline='alphabetic';
+}
+
 function damageEnemy(e,dmg,impact=true){
   if(!e || e.dead) return false;
   e.hp-=dmg;
@@ -1023,17 +1183,28 @@ function damageEnemy(e,dmg,impact=true){
 function killEnemy(e){
   if(e.dead) return;
   e.dead=true;
-  const gain=Math.max(1,Math.floor(e.reward*ps.coinMul));
-  save.coins+=gain; runCoins+=gain; runKills++; save.totalKills++;
-  if(e.type==='elite') save.gems+=2;
-  if(e.type==='boss') save.gems+=20;
+
+  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul));
+  runKills++;
+  save.totalKills++;
+
+  spawnEnemyDrops(e,coinGain);
+
   if(charLevel(currentCharacter.id)>=30){
     const ultGain={normal:2,runner:3,tank:5,shooter:4,elite:12,boss:35}[e.type]||2;
     ultCharge=clamp(ultCharge+ultGain,0,100);
   }
-  shake=Math.min(10,shake+1.8);
-  for(let i=0;i<12;i++) particles.push({x:e.x,y:e.y,vx:rnd(-150,150),vy:rnd(-150,150),life:rnd(.25,.55),size:rnd(2,6),color:e.color});
-  persist();
+
+  const deathShake={normal:1.1,runner:1.2,tank:2.0,shooter:1.5,elite:3.8,boss:7.5}[e.type]||1.4;
+  shake=Math.min(14,shake+deathShake);
+  rings.push({x:e.x,y:e.y,r:Math.max(3,e.r*.25),max:e.r*(e.type==='boss'?2.6:1.75),life:e.type==='boss'?.34:.18,total:e.type==='boss'?.34:.18,color:e.type==='boss'?'#ffd86f':e.color});
+  const burst=e.type==='boss'?30:e.type==='elite'?20:12;
+  for(let i=0;i<burst;i++) particles.push({
+    x:e.x,y:e.y,vx:rnd(-170,170)*(e.type==='boss'?1.35:1),vy:rnd(-170,170)*(e.type==='boss'?1.35:1),
+    life:rnd(.25,e.type==='boss'?.72:.55),size:rnd(2,e.type==='boss'?8:6),color:e.color
+  });
+
+  persistSoon();
 }
 
 function aimVector(){
@@ -1607,6 +1778,8 @@ function update(dt){
 
   firePrimary();
 
+  drawPickups();
+
   for(const b of bullets){
     b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
     for(const e of enemies){
@@ -1690,6 +1863,7 @@ function update(dt){
   for(const x of beams)x.life-=dt;
   for(const x of rings)x.life-=dt;
   for(const x of lightnings)x.life-=dt;
+  updatePickups(dt);
 
   bullets=bullets.filter(x=>x.life>0 && x.x>-100&&x.x<W+100&&x.y>-100&&x.y<H+100);
   missiles=missiles.filter(x=>x.life>0);
