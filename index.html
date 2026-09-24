@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 5.0</title>
+<title>BREAK SURVIVORS - Stage 6.0</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -30,6 +30,20 @@
   @keyframes feverBar{from{filter:brightness(1)}to{filter:brightness(1.55)}}
   #feverOverlay{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;box-shadow:inset 0 0 0 3px #ffd85c,inset 0 0 80px #ff9e2033;background:radial-gradient(circle at 50% 50%,transparent 50%,#ffae1610 100%);transition:opacity .2s}
   #feverOverlay.show{opacity:1;animation:feverPulse .62s ease-in-out infinite alternate}
+  #eventHud{position:absolute;left:50%;top:118px;transform:translateX(-50%);z-index:5;display:none;align-items:center;gap:10px;padding:7px 13px;border-radius:999px;background:#0c1220e8;border:1px solid var(--eventColor,#6ee7ff);box-shadow:0 0 22px color-mix(in srgb,var(--eventColor,#6ee7ff) 28%,transparent);pointer-events:none;font-size:11px;font-weight:900;letter-spacing:.08em;white-space:nowrap}
+  #eventHud.show{display:flex}
+  #eventHud b{color:var(--eventColor,#fff);font-size:12px}
+  #eventTimer{color:#fff}
+  #bossHud{position:absolute;left:50%;top:151px;transform:translateX(-50%);z-index:5;width:min(460px,66vw);display:none;pointer-events:none}
+  #bossHud.show{display:block}
+  #bossTop{display:flex;justify-content:space-between;align-items:end;font-size:11px;font-weight:1000;letter-spacing:.09em;text-shadow:0 2px 8px #000;margin-bottom:4px}
+  #bossName{color:#ff87ff}
+  #bossPhase{color:#ffc4ff}
+  #bossBar{height:10px;border:1px solid #693d75;background:#100c18dd;border-radius:999px;overflow:hidden;box-shadow:0 0 18px #cf4cff44}
+  #bossFill{height:100%;width:100%;background:linear-gradient(90deg,#9f3bff,#f85bd4,#ff9a67);box-shadow:0 0 20px #e359ff;transition:width .08s linear}
+  #bossHud.phase2 #bossFill{background:linear-gradient(90deg,#ff3f94,#ff774f,#ffe06b)}
+  #bossHud.warning #bossName{color:#ff6e78}
+
   @keyframes feverPulse{from{filter:brightness(.9)}to{filter:brightness(1.35)}}
   #breakCallout{position:absolute;left:50%;top:31%;transform:translate(-50%,-50%) scale(.84);z-index:7;pointer-events:none;text-align:center;opacity:0;font-weight:1000;letter-spacing:.06em;text-shadow:0 5px 28px #000,0 0 30px currentColor}
   #breakCallout b{display:block;font-size:clamp(34px,7vw,78px);line-height:.9}
@@ -422,7 +436,7 @@
   }
 
 
-  /* Stage 5.0 — Character Growth / Ability Road / Ultimate */
+  /* Stage 6.0 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -477,6 +491,8 @@
   .milestoneText{font-size:10px;color:#91a1bb;margin-top:5px;line-height:1.35}
   @media(max-width:900px){
     #breakHud{top:172px;width:min(330px,78vw)}
+    #eventHud{top:232px;max-width:84vw}
+    #bossHud{top:270px;width:min(390px,82vw)}
     #breakHud .breakTop{margin-bottom:3px}
     #comboText{font-size:18px}
     #ultButton{width:94px;height:94px;right:16px;bottom:88px;font-size:11px}
@@ -507,6 +523,11 @@
       <div id="breakSub">NEXT ×1.2</div>
     </div>
     <div id="breakCallout"><b id="breakCalloutMain">BREAK!</b><span id="breakCalloutSub"></span></div>
+    <div id="eventHud"><b id="eventName">EVENT</b><span id="eventTimer">0.0s</span></div>
+    <div id="bossHud">
+      <div id="bossTop"><span id="bossName">VOID TYRANT</span><span id="bossPhase">PHASE 1</span></div>
+      <div id="bossBar"><div id="bossFill"></div></div>
+    </div>
     <button id="openSidebar">ADMIN</button>
     <button id="ultButton" class="locked">ULT<span id="ultButtonText">Lv30</span></button>
     <div id="growthToast"><b id="growthToastTitle"></b><div class="small" id="growthToastText"></div></div>
@@ -623,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 5.0</h1>
+    <h1>BREAK SURVIVORS — Stage 6.0</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -668,6 +689,8 @@
       <button data-spawn="shooter" data-count="5">Shooter ×5</button>
       <button data-spawn="elite" data-count="3">Elite ×3</button>
       <button data-spawn="boss" data-count="1">Boss ×1</button>
+      <button data-spawn="treasure" data-count="1">Treasure ×1</button>
+      <button id="adminEvent" class="gold">Random Event</button>
     </div>
 
     <h2>ATTACK TEST</h2>
@@ -684,6 +707,7 @@
       <span class="dot" style="background:#50a7ff"></span><span>Shooter</span>
       <span class="dot" style="background:#ffbf4c"></span><span>Elite</span>
       <span class="dot" style="background:#d23aff"></span><span>Boss</span>
+      <span class="dot" style="background:#ffd748"></span><span>Treasure</span>
     </div>
 
     <div class="section">
@@ -756,6 +780,7 @@ const enemyDefs = {
   tank:{hp:85,speed:32,reward:10,touch:14,r:18,color:'#9c6bff'},
   shooter:{hp:28,speed:42,reward:7,touch:6,r:13,color:'#50a7ff',range:230,shotRate:1.5},
   elite:{hp:180,speed:58,reward:25,touch:18,r:23,color:'#ffbf4c'},
+  treasure:{hp:72,speed:118,reward:95,touch:0,r:17,color:'#ffd748'},
   boss:{hp:900,speed:36,reward:150,touch:28,r:38,color:'#d23aff',range:280,shotRate:1.8}
 };
 
@@ -916,11 +941,22 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 5.0 — BREAK RUSH
+// Stage 6.0 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
+
+// Stage 6.0 — CHAOS HUNT
+let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
+let treasureTimer=28,bossPending=false,bossWarningTime=0;
+let lootStreak=0,lootStreakTimer=0;
+const chaosEvents={
+  gold:{name:'GOLD RUSH',duration:12,color:'#ffd65c',desc:'COINS ×2'},
+  swarm:{name:'SWARM',duration:12,color:'#ff8c62',desc:'ENEMY FLOOD'},
+  elite:{name:'ELITE INVASION',duration:13,color:'#ffb14a',desc:'ELITE HUNT'},
+  gem:{name:'GEM STORM',duration:11,color:'#78f4ff',desc:'GEM DROP UP'}
+};
 
 function starRank(id){
   const d=save.characters[id]?.dupes||0;
@@ -1026,6 +1062,101 @@ function updateBreakRush(dt){
   return true;
 }
 
+
+function eventActive(id){return !!activeEvent&&activeEvent.id===id&&eventTime>0}
+function eventCoinMultiplier(){return eventActive('gold')?2:1}
+function eventSpawnMultiplier(){return eventActive('swarm')?2.15:1}
+
+function startChaosEvent(id=null){
+  if(activeEvent)return;
+  const keys=Object.keys(chaosEvents);
+  id=id||keys[Math.floor(Math.random()*keys.length)];
+  const def=chaosEvents[id]; if(!def)return;
+  activeEvent={id,...def};eventTime=def.duration;eventPulse=.15;
+  showBreakCallout(def.name,def.desc,def.color);
+  playEventSfx('event_warning',.58);
+  nextEventAt=gameTime+rnd(48,62);
+  if(id==='gold'){
+    for(const e of enemies)if(!e.dead&&e.type!=='boss'&&e.type!=='treasure')e.gold=true;
+  }
+}
+
+function endChaosEvent(){
+  if(!activeEvent)return;
+  const old=activeEvent;
+  activeEvent=null;eventTime=0;eventPulse=0;
+  showBreakCallout(old.name+' END','NEXT CHAOS INCOMING','#dfe9ff');
+}
+
+function spawnTreasureEnemy(){
+  if(enemies.some(e=>!e.dead&&e.type==='treasure'))return;
+  const e=spawnEnemy('treasure');
+  if(!e)return;
+  e.escape=13.5;e.sparkCd=.05;e.gold=true;
+  showBreakCallout('TREASURE HUNT!','CATCH IT BEFORE IT ESCAPES','#ffe66e');
+  playEventSfx('treasure_spawn',.68);
+  treasureTimer=rnd(36,52);
+}
+
+function beginBossWarning(){
+  if(bossPending||enemies.some(e=>!e.dead&&e.type==='boss'))return;
+  bossPending=true;bossWarningTime=3.0;
+  showBreakCallout('BOSS WARNING','VOID TYRANT INCOMING','#ff6878');
+  playEventSfx('boss_warning',.68);
+}
+
+function spawnBossEncounter(){
+  const b=spawnEnemy('boss');
+  if(!b)return;
+  b.phase=1;b.phaseTriggered=false;b.specialCd=3.4;b.telegraph=0;b.novaReady=false;
+  bossPending=false;bossWarningTime=0;
+  showBreakCallout('VOID TYRANT','BOSS BATTLE','#ff73dc');
+}
+
+function fireBossNova(e){
+  const count=e.phase===2?18:12;
+  const speed=e.phase===2?205:170;
+  for(let i=0;i<count;i++){
+    const a=i*Math.PI*2/count+(e.phase===2?.13:0);
+    enemyBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:e.phase===2?6:5,life:4.4,dmg:e.phase===2?13:10});
+  }
+  rings.push({x:e.x,y:e.y,r:12,max:e.phase===2?150:115,life:.38,total:.38,color:e.phase===2?'#ff5e9d':'#dc79ff'});
+  shake=Math.min(16,shake+(e.phase===2?7:5));
+}
+
+function updateChaosDirector(dt){
+  if(activeEvent){
+    eventTime-=dt;eventPulse-=dt;
+    if(eventPulse<=0){
+      if(eventActive('elite')){
+        const e=spawnEnemy('elite');if(e){e.gold=Math.random()<.32}
+        eventPulse=rnd(1.7,2.25);
+      }else if(eventActive('gem')){
+        const a=Math.random()*Math.PI*2,r=rnd(100,250);
+        spawnPickup('gem',clamp(player.x+Math.cos(a)*r,20,W-20),clamp(player.y+Math.sin(a)*r,20,H-20),1,{speed:75,scale:1.04});
+        eventPulse=rnd(1.15,1.55);
+      }else{
+        eventPulse=.5;
+      }
+    }
+    if(eventTime<=0)endChaosEvent();
+  }else if(gameTime>=nextEventAt&&!bossPending&&!enemies.some(e=>!e.dead&&e.type==='boss')){
+    startChaosEvent();
+  }
+
+  if(!bossPending&&!enemies.some(e=>!e.dead&&e.type==='boss')){
+    treasureTimer-=dt;
+    if(treasureTimer<=0)spawnTreasureEnemy();
+    bossTimer+=dt;
+    if(bossTimer>=87)beginBossWarning();
+  }
+
+  if(bossPending){
+    bossWarningTime-=dt;
+    if(bossWarningTime<=0)spawnBossEncounter();
+  }
+}
+
 function playerStats(){
   const u=save.upgrades, star=starRank(currentCharacter.id), lv=charLevel(currentCharacter.id), br=charData(currentCharacter.id).branch;
   let damage=14*Math.pow(1.24,u.damage)*dmgMul*(1+(star-1)*.08);
@@ -1080,23 +1211,31 @@ function resetRun(){
   enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
+  activeEvent=null;eventTime=0;eventPulse=0;nextEventAt=rnd(38,48);
+  treasureTimer=rnd(24,34);bossPending=false;bossWarningTime=0;lootStreak=0;lootStreakTimer=0;
   document.getElementById('death').style.display='none';
 }
 
 function spawnEnemy(type='normal'){
-  const d=enemyDefs[type];
+  const d=enemyDefs[type]; if(!d)return null;
   let side=Math.floor(Math.random()*4), x,y,m=50;
   if(side===0){x=rnd(-m,W+m);y=-m}
   else if(side===1){x=W+m;y=rnd(-m,H+m)}
   else if(side===2){x=rnd(-m,W+m);y=H+m}
   else{x=-m;y=rnd(-m,H+m)}
+
   const hpScale=1+gameTime/70;
   const speedScale=1+Math.min(gameTime/600,.45);
-  enemies.push({
+  const e={
     type,x,y,r:d.r,hp:d.hp*hpScale,maxHp:d.hp*hpScale,
     speed:d.speed*speedScale,reward:d.reward,touch:d.touch,
-    color:d.color,shootCd:rnd(.4,1.5),flash:0,dead:false
-  });
+    color:d.color,shootCd:rnd(.4,1.5),flash:0,dead:false,
+    gold:eventActive('gold')&&type!=='boss',
+    gemCharged:eventActive('gem')&&type!=='boss',
+    escape:type==='treasure'?13.5:null,sparkCd:type==='treasure'?.05:null,
+    phase:type==='boss'?1:null,phaseTriggered:false,specialCd:type==='boss'?3.4:null,telegraph:0,novaReady:false
+  };
+  enemies.push(e);return e;
 }
 
 function nearestEnemy(x=player.x,y=player.y,exclude=new Set()){
@@ -1153,19 +1292,26 @@ function spawnPickup(type,x,y,value=1,opts={}){
 }
 
 function spawnEnemyDrops(e,coinGain){
+  if(e.type==='treasure'){
+    for(const value of splitReward(coinGain,24))spawnPickup('coin',e.x,e.y,value,{speed:rnd(150,320),scale:1.10});
+    for(const value of splitReward(4,4))spawnPickup('gem',e.x,e.y,value,{speed:rnd(190,320),scale:1.22});
+    return;
+  }
+
   const counts={normal:1,runner:1,tank:2,shooter:2,elite:8,boss:18};
   const coinCount=counts[e.type]||1;
   for(const value of splitReward(coinGain,coinCount)){
-    spawnPickup('coin',e.x,e.y,value,{speed:e.type==='boss'?rnd(150,270):rnd(90,210),scale:e.type==='boss'?1.15:1});
+    spawnPickup('coin',e.x,e.y,value,{speed:e.type==='boss'?rnd(150,285):rnd(90,215),scale:e.type==='boss'?1.15:1});
   }
 
-  // Regular enemies can surprise-drop a gem. Elite/Boss preserve their premium reward,
-  // but now it physically drops into the arena instead of instantly appearing in the HUD.
-  const gemChance={normal:.005,runner:.007,tank:.015,shooter:.010}[e.type]||0;
+  let gemChance={normal:.005,runner:.007,tank:.015,shooter:.010}[e.type]||0;
+  if(eventActive('gem'))gemChance+=.09;
+  if(e.gemCharged)gemChance+=.025;
+
   if(e.type==='elite'){
-    for(const value of splitReward(2,2))spawnPickup('gem',e.x,e.y,value,{speed:rnd(190,270),scale:1.12});
+    for(const value of splitReward(eventActive('gem')?3:2,eventActive('gem')?3:2))spawnPickup('gem',e.x,e.y,value,{speed:rnd(190,280),scale:1.12});
   }else if(e.type==='boss'){
-    for(const value of splitReward(20,6))spawnPickup('gem',e.x,e.y,value,{speed:rnd(220,330),scale:1.28});
+    for(const value of splitReward(20,6))spawnPickup('gem',e.x,e.y,value,{speed:rnd(220,340),scale:1.28});
   }else if(Math.random()<gemChance){
     spawnPickup('gem',e.x,e.y,1,{speed:225,scale:1.08});
   }
@@ -1174,6 +1320,11 @@ function spawnEnemyDrops(e,coinGain){
 function collectPickup(p){
   if(p.dead)return;
   p.dead=true;
+  lootStreak++;lootStreakTimer=.34;
+  if(lootStreak===8)playEventSfx('loot_vacuum',.42,1.0);
+  if(lootStreak>=12&&lootStreak%8===0&&floatingTexts.length<36){
+    floatingTexts.push({x:player.x,y:player.y-32,text:'LOOT ×'+lootStreak,color:'#fff09a',life:.58,total:.58,vy:-50,size:16,weight:1000});
+  }
   if(p.type==='coin'){
     save.coins+=p.value;
     runCoins+=p.value;
@@ -1193,6 +1344,7 @@ function collectPickup(p){
 }
 
 function updatePickups(dt){
+  if(lootStreakTimer>0){lootStreakTimer-=dt;if(lootStreakTimer<=0)lootStreak=0}
   for(const p of pickups){
     if(p.dead)continue;
     p.age+=dt;p.life-=dt;
@@ -1209,6 +1361,7 @@ function updatePickups(dt){
       // Gems are slightly easier to notice/collect. Old drops auto-vacuum so rewards are never lost.
       let magnet=p.type==='gem'?235:150;
       if(feverActive())magnet+=110;
+      magnet+=Math.min(80,lootStreak*3);
       if(p.age>7)magnet=99999;
       if(d<magnet){
         const pull=p.type==='gem'?760:650;
@@ -1321,30 +1474,39 @@ function killEnemy(e,meta={}){
 
   registerBreakKill(e,meta);
 
-  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()));
+  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()*eventCoinMultiplier()));
   runKills++;
   save.totalKills++;
 
   spawnEnemyDrops(e,coinGain);
+
+  if(e.type==='treasure'){
+    breakCombo+=4;maxBreakCombo=Math.max(maxBreakCombo,breakCombo);breakTimer=Math.max(breakTimer,3);
+    hitStop=Math.max(hitStop,.055);playEventSfx('treasure_kill',.72);
+    showBreakCallout('JACKPOT!','TREASURE LOOT BURST','#ffe56b');
+  }
+  if(e.type==='boss'){
+    bossTimer=0;bossPending=false;playEventSfx('treasure_kill',.56,.88);
+  }
 
   if(charLevel(currentCharacter.id)>=30){
     const ultGain={normal:2,runner:3,tank:5,shooter:4,elite:12,boss:35}[e.type]||2;
     ultCharge=clamp(ultCharge+ultGain,0,100);
   }
 
-  let deathShake={normal:1.4,runner:1.5,tank:2.5,shooter:1.9,elite:4.8,boss:9}[e.type]||1.8;
+  let deathShake={normal:1.4,runner:1.5,tank:2.5,shooter:1.9,elite:4.8,treasure:6.2,boss:9}[e.type]||1.8;
   if(meta.overkill)deathShake*=1.35;
   shake=Math.min(16,shake+deathShake);
 
   rings.push({
     x:e.x,y:e.y,r:Math.max(3,e.r*.25),
-    max:e.r*(e.type==='boss'?3.1:e.type==='elite'?2.2:meta.overkill?2.15:1.75),
+    max:e.r*(e.type==='boss'?3.1:e.type==='treasure'?2.8:e.type==='elite'?2.2:meta.overkill?2.15:1.75),
     life:e.type==='boss'?.42:e.type==='elite'?.28:.18,
     total:e.type==='boss'?.42:e.type==='elite'?.28:.18,
     color:meta.overkill?'#ffd95e':e.type==='boss'?'#ffd86f':e.color
   });
 
-  const burst=e.type==='boss'?42:e.type==='elite'?26:meta.overkill?20:12;
+  const burst=e.type==='boss'?42:e.type==='treasure'?34:e.type==='elite'?26:meta.overkill?20:12;
   for(let i=0;i<burst;i++) particles.push({
     x:e.x,y:e.y,
     vx:rnd(-190,190)*(e.type==='boss'?1.5:e.type==='elite'?1.2:meta.overkill?1.15:1),
@@ -1378,7 +1540,9 @@ let lastSfxAt = {};
 let attackBuffers = {};
 let attackLoadPromise = null;
 let activeAttackVoices = 0;
+let activeEventVoices = 0;
 const MAX_ATTACK_VOICES = 5;
+const MAX_EVENT_VOICES = 3;
 let attackSfxVolume = clamp(Number(localStorage.getItem('break_survivors_attack_sfx_volume') ?? 48) / 100, 0, 1);
 
 function getAudio(){
@@ -1486,6 +1650,15 @@ function characterSfxAllowed(id,gap){
   lastSfxAt[id]=now;return true;
 }
 
+const eventSfxFiles={
+  event_warning:'assets/sfx/event_warning.mp3',
+  treasure_spawn:'assets/sfx/treasure_spawn.mp3',
+  treasure_kill:'assets/sfx/treasure_kill.mp3',
+  boss_warning:'assets/sfx/boss_warning.mp3',
+  boss_phase:'assets/sfx/boss_phase.mp3',
+  loot_vacuum:'assets/sfx/loot_vacuum.mp3'
+};
+
 const attackSfxFiles = {
   pierce:   {fire:'assets/sfx/gun_fire.mp3',       hit:'assets/sfx/gun_hit.mp3'},
   explosion:{fire:'assets/sfx/bomb_launch.mp3',    hit:'assets/sfx/bomb_hit.mp3'},
@@ -1521,6 +1694,15 @@ function loadAttackSfx(){
       );
     }
   }
+  for(const [key,url] of Object.entries(eventSfxFiles)){
+    jobs.push(
+      fetch(url,{cache:'force-cache'})
+        .then(r=>{if(!r.ok)throw new Error('SFX '+r.status);return r.arrayBuffer()})
+        .then(buf=>decodeAudio(ac,buf))
+        .then(decoded=>{attackBuffers[key]=decoded})
+        .catch(()=>{})
+    );
+  }
   attackLoadPromise=Promise.all(jobs).then(()=>true);
   return attackLoadPromise;
 }
@@ -1555,6 +1737,22 @@ function playAttackSample(key,volume=1,rate=1){
 
   activeAttackVoices++;
   src.onended=()=>{activeAttackVoices=Math.max(0,activeAttackVoices-1)};
+  src.start();
+}
+
+
+function playEventSfx(key,volume=.6,rate=1){
+  if(!soundEnabled)return;
+  const ac=getAudio();if(!ac||!attackFilter)return;
+  const buffer=attackBuffers[key];
+  if(!buffer){loadAttackSfx().catch(()=>{});return}
+  if(activeEventVoices>=MAX_EVENT_VOICES)return;
+  const src=ac.createBufferSource(),gain=ac.createGain();
+  src.buffer=buffer;src.playbackRate.value=rate;
+  gain.gain.value=clamp(volume,0,.82);
+  src.connect(gain).connect(attackFilter);
+  activeEventVoices++;
+  src.onended=()=>{activeEventVoices=Math.max(0,activeEventVoices-1)};
   src.start();
 }
 
@@ -1906,6 +2104,7 @@ function update(dt){
   if(!running) return;
   if(!updateBreakRush(dt)){updateHud();return}
   gameTime+=dt; player.attackCd-=dt; player.hitCd-=dt;
+  updateChaosDirector(dt);
 
   let mx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);
   let my=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
@@ -1917,16 +2116,18 @@ function update(dt){
   spawnTimer-=dt;
   if(spawnTimer<=0){
     const base=Math.max(.07,.42-gameTime*.0014);
-    spawnTimer=base/(spawnMul*(feverActive()?1.45:1));
+    spawnTimer=base/(spawnMul*(feverActive()?1.45:1)*eventSpawnMultiplier());
     let r=Math.random(), type='normal';
-    if(gameTime>120 && r<.035) type='elite';
-    else if(gameTime>70 && r<.15) type='shooter';
-    else if(gameTime>40 && r<.30) type='tank';
-    else if(gameTime>15 && r<.48) type='runner';
+    if(eventActive('swarm')){
+      type=r<.58?'runner':'normal';
+    }else{
+      if(gameTime>120 && r<.035) type='elite';
+      else if(gameTime>70 && r<.15) type='shooter';
+      else if(gameTime>40 && r<.30) type='tank';
+      else if(gameTime>15 && r<.48) type='runner';
+    }
     spawnEnemy(type);
   }
-  bossTimer+=dt;
-  if(bossTimer>=90){bossTimer=0;spawnEnemy('boss')}
 
   firePrimary();
 
@@ -1985,10 +2186,11 @@ function update(dt){
     if(e.type==='shooter'||e.type==='boss'){
       const range=d.range;
       let dir= l>range?1 : l<range*.68?-1:0;
-      e.x+=dx/l*e.speed*dir*dt;e.y+=dy/l*e.speed*dir*dt;
+      const bossSpeed=e.type==='boss'&&e.phase===2?e.speed*1.22:e.speed;
+      e.x+=dx/l*bossSpeed*dir*dt;e.y+=dy/l*bossSpeed*dir*dt;
       e.shootCd-=dt;
       if(e.shootCd<=0){
-        e.shootCd=d.shotRate;
+        e.shootCd=d.shotRate*(e.type==='boss'&&e.phase===2?.62:1);
         if(e.type==='boss'){
           for(let i=-2;i<=2;i++){
             const a=Math.atan2(dy,dx)+i*.16;
@@ -2041,6 +2243,9 @@ function draw(){
 
   ctx.clearRect(-20,-20,W+40,H+40);
   ctx.fillStyle='#090c15';ctx.fillRect(-20,-20,W+40,H+40);
+  if(activeEvent){
+    ctx.save();ctx.globalAlpha=.055;ctx.fillStyle=activeEvent.color;ctx.fillRect(-20,-20,W+40,H+40);ctx.restore();
+  }
 
   ctx.strokeStyle='#141b2b';ctx.lineWidth=1;
   const grid=48;
@@ -2077,8 +2282,20 @@ function draw(){
 
   for(const e of enemies){
     ctx.save();ctx.translate(e.x,e.y);
-    ctx.fillStyle=e.flash?'#fff':e.color;ctx.shadowBlur=e.type==='boss'?18:0;ctx.shadowColor=e.color;
-    if(e.type==='runner'){
+    const bodyColor=e.flash?'#fff':e.gold?'#ffd75b':e.type==='boss'&&e.phase===2?'#ff4f93':e.color;
+    ctx.fillStyle=bodyColor;ctx.shadowBlur=e.type==='treasure'?28:e.type==='boss'?22:e.gold?13:0;ctx.shadowColor=bodyColor;
+    if(e.type==='treasure'){
+      ctx.rotate(gameTime*1.8);
+      ctx.beginPath();
+      for(let i=0;i<8;i++){
+        const a=i*Math.PI/4,r=i%2===0?e.r:e.r*.55;
+        const px=Math.cos(a)*r,py=Math.sin(a)*r;
+        if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+      }
+      ctx.closePath();ctx.fill();
+      ctx.lineWidth=2;ctx.strokeStyle='#fff6b2';ctx.stroke();
+      ctx.beginPath();ctx.arc(0,0,e.r*.38,0,Math.PI*2);ctx.fillStyle='#fff1a0';ctx.fill();
+    } else if(e.type==='runner'){
       ctx.beginPath();ctx.moveTo(e.r,0);ctx.lineTo(-e.r*.8,-e.r*.75);ctx.lineTo(-e.r*.8,e.r*.75);ctx.closePath();ctx.fill();
     } else if(e.type==='tank'){
       ctx.fillRect(-e.r,-e.r,e.r*2,e.r*2);
@@ -2088,6 +2305,17 @@ function draw(){
       ctx.beginPath();ctx.arc(0,0,e.r,0,Math.PI*2);ctx.fill();
     }
     ctx.restore();ctx.shadowBlur=0;
+    if(e.type==='treasure'){
+      const pct=clamp(e.escape/13.5,0,1),w=e.r*2.6;
+      ctx.fillStyle='#251f11';ctx.fillRect(e.x-w/2,e.y-e.r-12,w,5);
+      ctx.fillStyle='#ffe05c';ctx.fillRect(e.x-w/2,e.y-e.r-12,w*pct,5);
+      ctx.fillStyle='#fff2a0';ctx.font='900 9px system-ui';ctx.textAlign='center';ctx.fillText('TREASURE',e.x,e.y+e.r+15);ctx.textAlign='start';
+    }
+    if(e.type==='boss'&&e.telegraph>0){
+      const pct=1-clamp(e.telegraph/.78,0,1);
+      ctx.strokeStyle=e.phase===2?'#ff5b83':'#e583ff';ctx.lineWidth=3;ctx.globalAlpha=.35+.55*pct;
+      ctx.beginPath();ctx.arc(e.x,e.y,e.r+20+pct*52,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
+    }
     if(e.type==='elite'||e.type==='boss'){
       const w=e.r*2.2;ctx.fillStyle='#1b2130';ctx.fillRect(e.x-w/2,e.y-e.r-10,w,5);
       ctx.fillStyle=e.color;ctx.fillRect(e.x-w/2,e.y-e.r-10,w*clamp(e.hp/e.maxHp,0,1),5);
@@ -2148,6 +2376,31 @@ function updateHud(){
     else if(tier.next)bs.textContent='NEXT '+tier.next+' K.O.  •  COINS ×'+tier.coin.toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
     else bs.textContent='KEEP BREAKING';
   }
+
+  const eh=document.getElementById('eventHud'),en=document.getElementById('eventName'),et=document.getElementById('eventTimer');
+  if(eh&&en&&et){
+    if(activeEvent){
+      eh.classList.add('show');eh.style.setProperty('--eventColor',activeEvent.color);
+      en.textContent=activeEvent.name;et.textContent=Math.max(0,eventTime).toFixed(1)+'s';
+    }else{eh.classList.remove('show')}
+  }
+
+  const boss=enemies.find(e=>!e.dead&&e.type==='boss');
+  const bHud=document.getElementById('bossHud'),bFill=document.getElementById('bossFill'),bName=document.getElementById('bossName'),bPhase=document.getElementById('bossPhase');
+  if(bHud&&bFill&&bName&&bPhase){
+    if(boss){
+      bHud.classList.add('show');bHud.classList.remove('warning');bHud.classList.toggle('phase2',boss.phase===2);
+      bName.textContent='VOID TYRANT';bPhase.textContent='PHASE '+(boss.phase||1);
+      bFill.style.width=(clamp(boss.hp/boss.maxHp,0,1)*100)+'%';
+    }else if(bossPending){
+      bHud.classList.add('show','warning');bHud.classList.remove('phase2');
+      bName.textContent='BOSS IN '+Math.max(0,bossWarningTime).toFixed(1)+'s';bPhase.textContent='WARNING';
+      bFill.style.width=(clamp(bossWarningTime/3,0,1)*100)+'%';
+    }else{
+      bHud.classList.remove('show','warning','phase2');
+    }
+  }
+
   document.getElementById('charText').textContent=currentCharacter.name;
   document.getElementById('equippedName').textContent=currentCharacter.name;
   document.getElementById('equippedInfo').textContent=currentCharacter.rarity+' / '+attacks.find(a=>a.id===currentCharacter.attack).name.replace(/^\d+\.\s*/,'');
@@ -2501,6 +2754,7 @@ document.getElementById('killAll').onclick=()=>{[...enemies].forEach(killEnemy)}
 document.getElementById('toggleGod').onclick=e=>{god=!god;e.target.textContent='Invincible: '+(god?'ON':'OFF');e.target.classList.toggle('active',god)};
 document.getElementById('forceDeath').onclick=()=>{player.hp=0};
 document.getElementById('burstTest').onclick=specialAttack;
+document.getElementById('adminEvent').onclick=()=>{if(activeEvent)endChaosEvent();startChaosEvent()};
 document.getElementById('ultButton').onclick=useUltimate;
 document.getElementById('adminLv50').onclick=()=>{
   const d=charData(currentCharacter.id);d.level=50;if(!d.branch)d.branch=Object.keys(growthDefs[currentCharacter.id].branches)[0];
