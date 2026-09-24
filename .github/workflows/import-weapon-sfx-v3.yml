@@ -1,0 +1,71 @@
+name: Import Weapon SFX V3
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-weapon-sfx-v3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-sfx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install audio tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Import literal weapon SFX
+        run: |
+          set -e
+          mkdir -p tmp assets/sfx/v3
+          URL_PIERCE_FIRE="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC9hMWNlM2M2My0zZDU2LTRhNjQtYTlhMC02ZmMyMmFlZGE5MWQvYnJlYWtfc3Vydml2b3JzX3YzX3BpZXJjZV9maXJlLm1wMz9fand0PWV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpyWlhsSVlYTm9Jam9pWWpFd1lUUXpaamMyT1dFNVpUSXpaQ0lzSW1KMVkydGxkQ0k2SW5KMWJuZGhlUzEwWVhOckxXRnlkR2xtWVdOMGN5SXNJbk4wWVdkbElqb2ljSEp2WkNJc0ltVjRjQ0k2TVRjNU1ETTJNVFU1TVgwLjVLVzhEemdMOHUzYkM5RWpyLWYwREFIMV9ZMVMtLVFGRWRRVGN1ekU5TUE=' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_PIERCE_FIRE" -o "tmp/pierce_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/pierce_fire.mp3" -af "atrim=duration=0.4,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.34:d=0.06,loudnorm=I=-27:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/pierce_fire.mp3"
+          URL_PIERCE_HIT="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC8xYTkxYjg3Zi01NDdjLTQ3MjItYTFlYy0wMGEyYjU2OWQ1ZjUvYnJlYWtfc3Vydml2b3JzX3YzX3BpZXJjZV9oaXQubXAzP19qd3Q9ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnJaWGxJWVhOb0lqb2lZalJsWWpObE5HRmtOMk0yTUdWbE1TSXNJbUoxWTJ0bGRDSTZJbkoxYm5kaGVTMTBZWE5yTFdGeWRHbG1ZV04wY3lJc0luTjBZV2RsSWpvaWNISnZaQ0lzSW1WNGNDSTZNVGM1TURNM09ERTRObjAuZjFpbXpZMmFvY202aEQ1eEZqeHdqOW84bmVVdUxWaWJDd25NdDV3RVdrOA==' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_PIERCE_HIT" -o "tmp/pierce_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/pierce_hit.mp3" -af "atrim=duration=0.3,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.26:d=0.04,loudnorm=I=-29:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/pierce_hit.mp3"
+          URL_EXPLOSION_FIRE="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC84YjY2MjZjMi0zNjQ3LTQyNDQtYjUwYy01ODkwODEwMTcyNTUvYnJlYWtfc3Vydml2b3JzX3YzX2V4cGxvc2lvbl9maXJlLm1wMz9fand0PWV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpyWlhsSVlYTm9Jam9pTUdSbFpXVTRZamhoWXpWbVlUbGlaaUlzSW1KMVkydGxkQ0k2SW5KMWJuZGhlUzEwWVhOckxXRnlkR2xtWVdOMGN5SXNJbk4wWVdkbElqb2ljSEp2WkNJc0ltVjRjQ0k2TVRjNU1ETTBNek0xTW4wLjVHMFc0VHdGcjN2cFdVeVpTWGdNWGVteUJCejRwSHV0ajA4RDJTaGJWY1E=' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_EXPLOSION_FIRE" -o "tmp/explosion_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/explosion_fire.mp3" -af "atrim=duration=0.42,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.36:d=0.06,loudnorm=I=-27:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/explosion_fire.mp3"
+          URL_EXPLOSION_HIT="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC80Y2IxMjU5Zi0xYjhlLTQ2MDItOGI3NS00YjU2ZDNmOTE0YWEvYnJlYWtfc3Vydml2b3JzX3YzX2V4cGxvc2lvbl9oaXQubXAzP19qd3Q9ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnJaWGxJWVhOb0lqb2lOek5qTVRNek56aGlOVFV3TW1VM1pDSXNJbUoxWTJ0bGRDSTZJbkoxYm5kaGVTMTBZWE5yTFdGeWRHbG1ZV04wY3lJc0luTjBZV2RsSWpvaWNISnZaQ0lzSW1WNGNDSTZNVGM1TURRd09UUTJOSDAuRG01NGJ4N0Y0OV9PV01rY3JxaHAwWGVnUzdsZHExbVl3LVhJTUpoNVVjMA==' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_EXPLOSION_HIT" -o "tmp/explosion_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/explosion_hit.mp3" -af "atrim=duration=0.68,highpass=f=28,lowpass=f=12000,afade=t=out:st=0.58:d=0.10,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/explosion_hit.mp3"
+          URL_LIGHTNING_FIRE="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC82NDU1MDZmMy02YjZhLTQ1ZjAtODFjYS03YzBhODA2MmI0ZTgvYnJlYWtfc3Vydml2b3JzX3YzX2xpZ2h0bmluZ19maXJlLm1wMz9fand0PWV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpyWlhsSVlYTm9Jam9pWldJNE1ERTJaVFl6TURKaE1qRmhOeUlzSW1KMVkydGxkQ0k2SW5KMWJuZGhlUzEwWVhOckxXRnlkR2xtWVdOMGN5SXNJbk4wWVdkbElqb2ljSEp2WkNJc0ltVjRjQ0k2TVRjNU1ETTBPVEF6TUgwLjhYRUwwLVFreEJueFNYTWVJMGJfZjJlZzF1WmxZNFJVYTNCZFVqZHI0ZWs=' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_LIGHTNING_FIRE" -o "tmp/lightning_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/lightning_fire.mp3" -af "atrim=duration=0.36,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.31:d=0.05,loudnorm=I=-27:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/lightning_fire.mp3"
+          URL_LIGHTNING_HIT="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC9jYzgyODA4Yy0zNzNkLTRjZTQtYTMzOS0wNzU1MGU5MzdkNjYvYnJlYWtfc3Vydml2b3JzX3YzX2xpZ2h0bmluZ19oaXQubXAzP19qd3Q9ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnJaWGxJWVhOb0lqb2laRGMzWkRWbVkyTTJZV1JqWldVNE15SXNJbUoxWTJ0bGRDSTZJbkoxYm5kaGVTMTBZWE5yTFdGeWRHbG1ZV04wY3lJc0luTjBZV2RsSWpvaWNISnZaQ0lzSW1WNGNDSTZNVGM1TURNM056RTJOSDAuNG1kbU5GcXEwRkxrU3FNZV9pNXRPOUFrajBmWkRsNjNEc0FSS2xzUGZnSQ==' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_LIGHTNING_HIT" -o "tmp/lightning_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/lightning_hit.mp3" -af "atrim=duration=0.3,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.26:d=0.04,loudnorm=I=-29:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/lightning_hit.mp3"
+          URL_SLASH_FIRE="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC85NGJjMTIwZC00OGRiLTQ1ODQtOTE1Ny1lYjY3ODU5MGY0ZjYvYnJlYWtfc3Vydml2b3JzX3YzX3NsYXNoX2ZpcmUubXAzP19qd3Q9ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnJaWGxJWVhOb0lqb2lPR1ZsTXpWaU5ERTROakkyT0RnMU1DSXNJbUoxWTJ0bGRDSTZJbkoxYm5kaGVTMTBZWE5yTFdGeWRHbG1ZV04wY3lJc0luTjBZV2RsSWpvaWNISnZaQ0lzSW1WNGNDSTZNVGM1TURNNU1URXdOWDAuVEllVm0yOXFtV3FibjBJYnEyXzNTai1qX3lIbzVUZm5LdTNEZnVqVm1BYw==' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_SLASH_FIRE" -o "tmp/slash_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/slash_fire.mp3" -af "atrim=duration=0.46,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.39:d=0.07,loudnorm=I=-27:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/slash_fire.mp3"
+          URL_SLASH_HIT="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC8xMDIxMzU5Yy1lYzUwLTRmNzItODA3My1mODBhZjQ4YjMyMjMvYnJlYWtfc3Vydml2b3JzX3YzX3NsYXNoX2hpdC5tcDM/X2p3dD1leUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKclpYbElZWE5vSWpvaU56ZGhaVFZpWXpBMk5EVTJZV0poWkNJc0ltSjFZMnRsZENJNkluSjFibmRoZVMxMFlYTnJMV0Z5ZEdsbVlXTjBjeUlzSW5OMFlXZGxJam9pY0hKdlpDSXNJbVY0Y0NJNk1UYzVNRE0yTURJMU5uMC50RF9zbWtJakxGWFdWbjd5MXNteW1PN2FwRnV3cThZWGphVUtDemY1SGtR' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_SLASH_HIT" -o "tmp/slash_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/slash_hit.mp3" -af "atrim=duration=0.3,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.26:d=0.04,loudnorm=I=-29:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/slash_hit.mp3"
+          URL_LASER_FIRE="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC9kYTY2ZTBhOC05M2I1LTQxZWQtOTk4Mi0yZWJkNTMxYTRmNDkvYnJlYWtfc3Vydml2b3JzX3YzX2xhc2VyX2ZpcmUubXAzP19qd3Q9ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnJaWGxJWVhOb0lqb2lORFkxTmpKalpHVXpZV0ZqTnpSaU9DSXNJbUoxWTJ0bGRDSTZJbkoxYm5kaGVTMTBZWE5yTFdGeWRHbG1ZV04wY3lJc0luTjBZV2RsSWpvaWNISnZaQ0lzSW1WNGNDSTZNVGM1TURNNE1qTXdNbjAuVzFTLTBqV3hpcTlUZUlUcFotTEZtQ3g3Q1BNdFB3Vkh4Rno4WS1fRGpWbw==' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_LASER_FIRE" -o "tmp/laser_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/laser_fire.mp3" -af "atrim=duration=0.5,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.42:d=0.07,loudnorm=I=-27:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/laser_fire.mp3"
+          URL_LASER_HIT="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC8wZmY2NDFiZi01MmFkLTQzMWQtOGViNC04ZDU3M2M1NzZlOWQvYnJlYWtfc3Vydml2b3JzX3YzX2xhc2VyX2hpdC5tcDM/X2p3dD1leUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKclpYbElZWE5vSWpvaU9XSXhNV1JtWm1JMllXTmpNRGt3WmlJc0ltSjFZMnRsZENJNkluSjFibmRoZVMxMFlYTnJMV0Z5ZEdsbVlXTjBjeUlzSW5OMFlXZGxJam9pY0hKdlpDSXNJbVY0Y0NJNk1UYzVNRE0wTXprek1YMC5yQUNPcXJwbUxkQlctZllFSjdSMnpTSjB2ZnhwZUNuVUI0NjJwYVNiOHpJ' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_LASER_HIT" -o "tmp/laser_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/laser_hit.mp3" -af "atrim=duration=0.3,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.26:d=0.04,loudnorm=I=-29:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/laser_hit.mp3"
+          URL_MISSILE_FIRE="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC84NDgzODEzZC0wNDBjLTRmZTItODk1ZS1kYmEyMjY5Y2IwNTMvYnJlYWtfc3Vydml2b3JzX3YzX21pc3NpbGVfZmlyZS5tcDM/X2p3dD1leUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKclpYbElZWE5vSWpvaVpqUTRaRGMxTVRrd01EQmhObUZoWlNJc0ltSjFZMnRsZENJNkluSjFibmRoZVMxMFlYTnJMV0Z5ZEdsbVlXTjBjeUlzSW5OMFlXZGxJam9pY0hKdlpDSXNJbVY0Y0NJNk1UYzVNRFF4TlRJMU4zMC4xZWxEM1hIQ0NqbkRPTXozY1A3VGpsVWNJNmtCY0hkRzlWQnBFS2ZuWEFn' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_MISSILE_FIRE" -o "tmp/missile_fire.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/missile_fire.mp3" -af "atrim=duration=0.56,highpass=f=50,lowpass=f=12000,afade=t=out:st=0.48:d=0.08,loudnorm=I=-27:TP=-8:LRA=6" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/missile_fire.mp3"
+          URL_MISSILE_HIT="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC8yZDkzMjRlOS0xNTM4LTRkYzYtOTY1My1lMTNjNTM0NjQ0NjYvYnJlYWtfc3Vydml2b3JzX3YzX21pc3NpbGVfaGl0Lm1wMz9fand0PWV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpyWlhsSVlYTm9Jam9pTmpjeVlUTTFaRFJpT0RsaE1UVmxNeUlzSW1KMVkydGxkQ0k2SW5KMWJuZGhlUzEwWVhOckxXRnlkR2xtWVdOMGN5SXNJbk4wWVdkbElqb2ljSEp2WkNJc0ltVjRjQ0k2TVRjNU1ETTBPVEUwTUgwLllLVG80aHpCYWJleUNjQUVkTUdneEc3emRCMnVKUjhzWTdKYzRIdm9DWXc=' | base64 -d)"
+          curl -L --fail --retry 3 "$URL_MISSILE_HIT" -o "tmp/missile_hit.mp3"
+          ffmpeg -hide_banner -loglevel error -y -i "tmp/missile_hit.mp3" -af "atrim=duration=0.68,highpass=f=28,lowpass=f=12000,afade=t=out:st=0.58:d=0.10,loudnorm=I=-24:TP=-6:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k "assets/sfx/v3/missile_hit.mp3"
+      - name: Verify
+        run: |
+          set -e
+          test "$(find assets/sfx/v3 -name '*.mp3' | wc -l)" -ge 12
+      - name: Commit
+        run: |
+          git config user.name "BREAK SURVIVORS Bot"
+          git config user.email "actions@github.com"
+          git add assets/sfx/v3
+          git commit -m "Add literal weapon-matched Runway SFX V3" || exit 0
+          git push
