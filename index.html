@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.0</title>
+<title>BREAK SURVIVORS - Stage 10.1</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.0</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.1</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1612,6 +1612,24 @@ function getBombCatCombatProfile(lv,branch,count){
     bombScale:payload?1.40:1,
     projectileSpeed:payload?350:400
   };
+}
+function getBombCatShakeProfile(kind='normal'){
+  const profiles={
+    normal:{add:.95,cap:4.2},
+    secondary:{add:.22,cap:2.2},
+    chain:{add:.38,cap:2.8},
+    aftershock:{add:.55,cap:3.3},
+    cataclysm:{add:.42,cap:3.0},
+    royal:{add:.55,cap:6.0,floor:5.0}
+  };
+  return profiles[kind]||profiles.normal;
+}
+function applyBombCatShake(kind='normal'){
+  const p=getBombCatShakeProfile(kind);
+  let next=shake;
+  if(p.floor!=null)next=Math.max(next,p.floor);
+  next+=p.add;
+  shake=Math.min(p.cap,next);
 }
 function buildCataclysmPlan(){
   const plan=[];
@@ -3406,7 +3424,7 @@ function triggerBombCatChainReaction(x,y,r,dmg){
   setTimeout(()=>{
     if(!running)return;
     rings.push({x:tx,y:ty,r:2,max:r*.72,life:.18,total:.18,color:'#ffcf69'});
-    explode(tx,ty,r*.58,dmg*.48,'#ffbd57',{secondary:true,bombcat:true,silent:true});
+    explode(tx,ty,r*.58,dmg*.48,'#ffbd57',{secondary:true,bombcat:true,chainReaction:true,silent:true});
   },55);
 }
 function bombCatAftershock(x,y,r,dmg){
@@ -3418,7 +3436,7 @@ function bombCatAftershock(x,y,r,dmg){
     for(const e of enemies){
       if(!e.dead&&Math.hypot(e.x-x,e.y-y)<=rr+e.r)if(damageEnemy(e,dmg*.42))kills++;
     }
-    shake=Math.min(15,shake+2.6);
+    applyBombCatShake('aftershock');
     for(let i=0;i<14;i++){
       const a=i*Math.PI*2/14,spd=rnd(120,260);
       particles.push({x,y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:rnd(.18,.35),size:rnd(1.5,4.5),color:'#ffe0a0'});
@@ -3427,9 +3445,12 @@ function bombCatAftershock(x,y,r,dmg){
   },130);
 }
 function triggerBombCatRoyalNuke(x,y,r,dmg,clusterCount,chainChance,aftershock=true){
-  bombCatFlash=Math.max(bombCatFlash,1);
-  hitStop=Math.max(hitStop,.055);
-  shake=Math.max(shake,17);
+  bombCatFlash=Math.max(bombCatFlash,.72);
+  hitStop=Math.max(hitStop,.048);
+  // Stage 10.1: keep the nuke readable. Weight comes from layered pressure rings,
+  // flash, hit-stop and low-end audio instead of extreme camera displacement.
+  rings.push({x,y,r:4,max:r*.68,life:.22,total:.22,color:'#ffffff'});
+  rings.push({x,y,r:6,max:r*1.16,life:.48,total:.48,color:'#ffe27c'});
   const kills=explode(x,y,r,dmg,'#fff0a0',{aftershock,bombcat:true,royal:true});
   spawnBombCatCluster(x,y,r,dmg,clusterCount,chainChance,true);
   if(chainChance&&kills>0&&Math.random()<chainChance)triggerBombCatChainReaction(x,y,r,dmg);
@@ -3456,7 +3477,7 @@ function startBombCatCataclysm(){
         triggerBombCatRoyalNuke(x,y,112*ps.area*strike.radiusMul,ps.damage*strike.damageMul,profile.royalClusterCount||9,profile.chainChance,true);
       }else{
         const kills=explode(x,y,92*ps.area*strike.radiusMul,ps.damage*strike.damageMul,'#ffad52',{
-          bombcat:true,silent:i%4!==0
+          bombcat:true,cataclysm:true,silent:i%4!==0
         });
         if(profile.chainChance&&kills>0&&Math.random()<profile.chainChance*.55)triggerBombCatChainReaction(x,y,92*ps.area,ps.damage*strike.damageMul);
       }
@@ -3470,7 +3491,15 @@ function explode(x,y,r,dmg,color='#ff9f43',opts={}){
     if(opts.bombcat)playSubBody('explosion',!!opts.royal);
   }
   rings.push({x,y,r:2,max:r,life:opts.royal?.38:.28,total:opts.royal?.38:.28,color});
-  shake=Math.min(opts.royal?18:14,shake+(opts.royal?7:opts.secondary?2:4));
+  if(opts.bombcat){
+    const shakeKind=opts.royal?'royal':opts.cataclysm?'cataclysm':opts.chainReaction?'chain':opts.secondary?'secondary':'normal';
+    applyBombCatShake(shakeKind);
+    if(!opts.secondary&&!opts.royal){
+      rings.push({x,y,r:3,max:r*.74,life:.18,total:.18,color:'#fff1bd'});
+    }
+  }else{
+    shake=Math.min(opts.royal?18:14,shake+(opts.royal?7:opts.secondary?2:4));
+  }
   let kills=0;
   for(const e of enemies) if(!e.dead && Math.hypot(e.x-x,e.y-y)<=r+e.r) if(damageEnemy(e,dmg))kills++;
   const pieces=opts.royal?38:opts.secondary?10:opts.bombcat?24:18;
@@ -3741,7 +3770,7 @@ function update(dt){
   for(const k of ['boots','drink','sword'])if(itemBuffs[k]>0)itemBuffs[k]=Math.max(0,itemBuffs[k]-dt);
 
   gunnerRecoil=Math.max(0,gunnerRecoil-dt*8.5);
-  bombCatFlash=Math.max(0,bombCatFlash-dt*3.8);
+  bombCatFlash=Math.max(0,bombCatFlash-dt*5.2);
   if(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive()){
     gunnerMomentumIdle=Math.max(0,gunnerMomentumIdle-dt);
     if(gunnerMomentumIdle<=0)gunnerMomentum=Math.max(0,gunnerMomentum-dt*38);
@@ -4206,7 +4235,7 @@ function draw(){
 
   if(bombCatFlash>0){
     ctx.save();
-    ctx.globalAlpha=Math.min(.72,bombCatFlash*.72);
+    ctx.globalAlpha=Math.min(.46,bombCatFlash*.62);
     ctx.fillStyle='#fff8d8';
     ctx.fillRect(0,0,W,H);
     ctx.restore();
