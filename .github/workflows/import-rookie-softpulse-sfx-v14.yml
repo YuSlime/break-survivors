@@ -1,0 +1,56 @@
+name: Import Rookie Soft Pulse SFX v14
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-rookie-softpulse-sfx-v14.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Download soft-pulse SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rookie-v14 assets/sfx/v14
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/f2329137-ef9a-4afe-844f-467a365311fa/rookie_softpulse_primary_a.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNWM2ZDZlZDk1ODdhMTZiMyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQzNTY3M30.TU7CW5OQHgePGlzXk4ADqA03PKrHVolkAyDLb1jxiqs' -o /tmp/rookie-v14/a.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/5b0a8669-110e-45d6-a02b-71708869d4d7/rookie_softpulse_primary_b.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMTA2MjdjZjU4MDBlOGQ1MSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQzMjM3M30.wcmGmQYY4LDOX8GzU48P3OBZ0iPacvXzLXXH2Kf9EQo' -o /tmp/rookie-v14/b.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/afb7dc00-b640-4922-9a42-1bb8690764bf/rookie_softpulse_hot.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiN2Y3OWFmZjA4ZDllYzdlNyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQwMjkyOH0.sdo-MFnscQm7IHvx6_tlnKKlRZBZujx5psfiizfrAi8' -o /tmp/rookie-v14/hot.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/c7a4f398-8c07-43c9-ac8e-9d7b16cbc0bc/rookie_softpulse_triple.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjcwNTQwOGY2Mjg3Zjk4NiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM4MzYzMX0.YpfBsT20mWLTxB7WVYrx_SPTwH5cWTkRW-tpmz9ZuVo' -o /tmp/rookie-v14/triple.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/28693b65-3847-4ca7-acfd-88104f45634b/rookie_softpulse_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2QzMDY5NTdmYWNiZDRjZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQ0NTI3MX0.bPiaTzUGHZ15BuQQXQ0aXF0KJJj2a_xhaHdzM9fdyiw' -o /tmp/rookie-v14/hit.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/a043af5f-d2f2-433c-8ec2-30602bebccdf/rookie_softpulse_rail_fire.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2VhMDEzZmMxODVjYTFmOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQzNTA2OH0.4Wl8IeciQKySEHjsn5c4wBBVNs-u6k78WhJx2d2wYRM' -o /tmp/rookie-v14/rail_fire.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/0600213f-15d0-42d0-bbc1-379f71f5e324/rookie_softpulse_rail_hit.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZGMxNGRlOTQxN2FjMWQxMiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQzMjAyMH0.KzIhiHU0iGvY1SmFnIcE-EwJREOVtFgiQG3o-KlW224' -o /tmp/rookie-v14/rail_hit.mp3
+
+      - name: Master for soft long-session play
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffmpeg -y -i /tmp/rookie-v14/a.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.24,highpass=f=58,lowpass=f=5100,equalizer=f=210:t=q:w=0.85:g=1.4,equalizer=f=2850:t=q:w=0.9:g=-2.8,afade=t=out:st=0.195:d=0.045,loudnorm=I=-26:TP=-8:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v14/gunner_soft_a.mp3
+          ffmpeg -y -i /tmp/rookie-v14/b.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.24,highpass=f=58,lowpass=f=5000,equalizer=f=220:t=q:w=0.85:g=1.3,equalizer=f=2800:t=q:w=0.9:g=-2.9,afade=t=out:st=0.195:d=0.045,loudnorm=I=-26:TP=-8:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v14/gunner_soft_b.mp3
+          ffmpeg -y -i /tmp/rookie-v14/hot.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.25,highpass=f=52,lowpass=f=5400,equalizer=f=190:t=q:w=0.85:g=1.8,equalizer=f=2900:t=q:w=0.9:g=-2.5,afade=t=out:st=0.202:d=0.048,loudnorm=I=-25:TP=-8:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v14/gunner_soft_hot.mp3
+          ffmpeg -y -i /tmp/rookie-v14/triple.mp3 -af "highpass=f=58,lowpass=f=5100,equalizer=f=215:t=q:w=0.85:g=1.3,equalizer=f=2850:t=q:w=0.9:g=-2.8,atrim=duration=0.48,afade=t=out:st=0.42:d=0.06,loudnorm=I=-25.5:TP=-8:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v14/gunner_soft_triple.mp3
+          ffmpeg -y -i /tmp/rookie-v14/hit.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.18,highpass=f=62,lowpass=f=3800,equalizer=f=200:t=q:w=0.9:g=1.0,equalizer=f=2500:t=q:w=0.9:g=-3.5,afade=t=out:st=0.135:d=0.045,loudnorm=I=-31:TP=-10:LRA=5" -ar 44100 -ac 2 -b:a 128k assets/sfx/v14/gunner_soft_hit.mp3
+          ffmpeg -y -i /tmp/rookie-v14/rail_fire.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.50,highpass=f=40,lowpass=f=5200,equalizer=f=165:t=q:w=0.8:g=2.2,equalizer=f=2750:t=q:w=0.9:g=-2.6,afade=t=out:st=0.43:d=0.07,loudnorm=I=-23.5:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 160k assets/sfx/v14/gunner_soft_rail_fire.mp3
+          ffmpeg -y -i /tmp/rookie-v14/rail_hit.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.34,highpass=f=45,lowpass=f=4300,equalizer=f=175:t=q:w=0.85:g=1.8,equalizer=f=2600:t=q:w=0.9:g=-3.2,afade=t=out:st=0.285:d=0.055,loudnorm=I=-27:TP=-9:LRA=6" -ar 44100 -ac 2 -b:a 160k assets/sfx/v14/gunner_soft_rail_hit.mp3
+
+      - name: Commit SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v14/*.mp3
+          git commit -m "Import Rookie Gunner soft-pulse SFX v14"
+          git push
