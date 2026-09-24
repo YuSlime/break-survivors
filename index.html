@@ -942,6 +942,27 @@
     #ultButton span{font-size:11px}
   }
 
+
+  /* Stage 8.2 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  body.adminOpen #hud,
+  body.adminOpen #attackBanner,
+  body.adminOpen #breakHud,
+  body.adminOpen #eventHud,
+  body.adminOpen #bossHud,
+  body.adminOpen #breakCallout,
+  body.adminOpen #growthToast,
+  body.adminOpen #ultButton,
+  body.adminOpen #mobilePad,
+  body.adminOpen #hudMenuBtn,
+  body.adminOpen #quickActions{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  #hud,#attackBanner,#breakHud,#eventHud,#bossHud,#ultButton,#mobilePad,#hudMenuBtn,#quickActions{
+    transition:opacity .14s ease,visibility .14s ease;
+  }
+
 </style>
 </head>
 <body>
@@ -1188,6 +1209,9 @@
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+
+// Stage 8.2 camera: zoom the battlefield out without shrinking the DOM HUD.
+const CAMERA_ZOOM = 0.75;
 
 let W = 1280, H = 720, DPR = 1;
 
@@ -3133,7 +3157,9 @@ function update(dt){
 }
 
 function endRun(){
-  running=false;save.bestKills=Math.max(save.bestKills,runKills);persist();
+  running=false;
+  setSidebarVisible(false);
+  save.bestKills=Math.max(save.bestKills,runKills);persist();
   document.getElementById('deathKills').textContent=runKills;
   document.getElementById('deathCoins').textContent=runCoins;
   document.getElementById('deathCombo').textContent=maxBreakCombo;
@@ -3151,10 +3177,18 @@ function draw(){
     ctx.save();ctx.globalAlpha=.055;ctx.fillStyle=activeEvent.color;ctx.fillRect(-20,-20,W+40,H+40);ctx.restore();
   }
 
-  ctx.strokeStyle='#141b2b';ctx.lineWidth=1;
+  // Visual camera only: keep player/gameplay coordinates unchanged while showing
+  // substantially more battlefield around the player.
+  ctx.translate(player.x,player.y);
+  ctx.scale(CAMERA_ZOOM,CAMERA_ZOOM);
+  ctx.translate(-player.x,-player.y);
+
+  ctx.strokeStyle='#141b2b';ctx.lineWidth=1/CAMERA_ZOOM;
   const grid=48;
-  for(let x=0;x<W;x+=grid){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
-  for(let y=0;y<H;y+=grid){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+  const viewPadX=W*(1/CAMERA_ZOOM-1)+96;
+  const viewPadY=H*(1/CAMERA_ZOOM-1)+96;
+  for(let x=-viewPadX;x<W+viewPadX;x+=grid){ctx.beginPath();ctx.moveTo(x,-viewPadY);ctx.lineTo(x,H+viewPadY);ctx.stroke()}
+  for(let y=-viewPadY;y<H+viewPadY;y+=grid){ctx.beginPath();ctx.moveTo(-viewPadX,y);ctx.lineTo(W+viewPadX,y);ctx.stroke()}
 
   for(const r of rings){
     const a=clamp(r.life/r.total,0,1), rr=r.max*(1-a*.25);
@@ -3699,7 +3733,7 @@ function buildShop(){
 }
 
 document.getElementById('restart').onclick=resetRun;
-document.getElementById('openShop').onclick=()=>{buildShop();document.getElementById('shop').style.display='flex'};
+document.getElementById('openShop').onclick=()=>{setSidebarVisible(false);buildShop();document.getElementById('shop').style.display='flex'};
 document.getElementById('closeShop').onclick=()=>document.getElementById('shop').style.display='none';
 document.getElementById('addCoins').onclick=()=>{save.coins+=100000;persist();updateHud()};
 document.getElementById('toggleSound').onclick=e=>{
@@ -3722,6 +3756,7 @@ sfxVolumeEl.oninput=()=>{
 };
 document.getElementById('addGems').onclick=()=>{save.gems+=10000;persist();updateHud()};
 document.getElementById('openGacha').onclick=()=>{
+  setSidebarVisible(false);
   document.getElementById('gacha').style.display='block';
   document.getElementById('gachaResults').innerHTML='';
   closeSummonOverlays();
@@ -3746,7 +3781,7 @@ document.getElementById('finishSummon').onclick=()=>{
 };
 document.getElementById('pull1').onclick=()=>doGacha(1);
 document.getElementById('pull10').onclick=()=>doGacha(10);
-document.getElementById('openCharacters').onclick=()=>{buildCharacterList();document.getElementById('characters').style.display='flex'};
+document.getElementById('openCharacters').onclick=()=>{setSidebarVisible(false);buildCharacterList();document.getElementById('characters').style.display='flex'};
 document.getElementById('closeCharacters').onclick=()=>document.getElementById('characters').style.display='none';
 document.getElementById('killAll').onclick=()=>{[...enemies].forEach(killEnemy)};
 document.getElementById('toggleGod').onclick=e=>{god=!god;e.target.textContent='Invincible: '+(god?'ON':'OFF');e.target.classList.toggle('active',god)};
@@ -3795,6 +3830,7 @@ function setSidebarVisible(visible){
   sidebar.style.display = visible ? 'block' : 'none';
   openSidebarBtn.style.display = visible ? 'none' : 'inline-flex';
   document.body.classList.toggle('adminOpen',visible);
+  if(visible)quickActions?.classList.remove('show');
   const app = document.getElementById('app');
   app.style.gridTemplateColumns = '1fr';
   resize();
