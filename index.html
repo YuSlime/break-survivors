@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 7.1</title>
+<title>BREAK SURVIVORS - Stage 7.2</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 7.1 — Character Growth / Ability Road / Ultimate */
+  /* Stage 7.2 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 7.1</h1>
+    <h1>BREAK SURVIVORS — Stage 7.2</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -873,7 +873,7 @@ const growthDefs = {
   blademaster:{
     nodes:[
       [1,'Main','BLADE DANCE — 円月斬り → 月牙斬り → 十字斬り'],
-      [5,'Long Edge','円月斬り範囲 +18% / 月牙斬り射程 +15%'],
+      [5,'Long Edge','円月斬り範囲 +18% / 月牙斬り射程 +15% / 索敵距離UP'],
       [10,'Cross Slash','十字斬りが回転追撃でもう一度発生'],
       [20,'Branch','EDGE MASTERY / CYCLONE'],
       [30,'ULT','BLADE TEMPEST'],
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 7.1 — BREAK RUSH
+// Stage 7.2 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 7.1 — CHAOS HUNT
+// Stage 7.2 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1246,6 +1246,16 @@ function nearestEnemy(x=player.x,y=player.y,exclude=new Set()){
     if(d<bd){bd=d;best=e}
   }
   return best;
+}
+
+function nearestEnemyInfo(x=player.x,y=player.y){
+  let best=null,dist=Infinity;
+  for(const e of enemies){
+    if(e.dead)continue;
+    const d=Math.hypot(e.x-x,e.y-y);
+    if(d<dist){dist=d;best=e}
+  }
+  return {enemy:best,dist};
 }
 
 
@@ -1970,6 +1980,16 @@ function addBullet(v,dmg,pierce=6,opts={}){
 }
 function firePrimary(force=false){
   if(!running || (!force && player.attackCd>0)) return;
+
+  // Blade Master is a close/mid-range fighter: don't swing at enemies across the map.
+  // Forced/admin attacks intentionally bypass this gate.
+  if(!force && attackType==='slash' && currentCharacter.id==='blademaster' && ownGrowthActive()){
+    const lvNow=charLevel('blademaster');
+    const engageRange=lvNow>=50?410:lvNow>=5?385:350;
+    const info=nearestEnemyInfo();
+    if(!info.enemy || info.dist>engageRange+info.enemy.r) return;
+  }
+
   const rate=ps.attackRate*(feverActive()?1.35:1);
   player.attackCd=1/rate;
   const v=aimVector(); player.angle=Math.atan2(v.y,v.x);
