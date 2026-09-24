@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 8.5</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<title>BREAK SURVIVORS - Stage 8.6</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 8.5 — Character Growth / Ability Road / Ultimate */
+  /* Stage 8.6 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 8.5 — Combat HUD / compact UI overhaul
+  /* Stage 8.6 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 8.5 — one-line top HUD + high-visibility touch controls */
+  /* Stage 8.6 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 8.5 — iPhone / mobile bottom clipping fix */
+  /* Stage 8.6 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 8.5 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 8.6 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -964,7 +964,7 @@
   }
 
 
-  /* Stage 8.5 — ADMIN bottom drawer, clearly separated from top HUD */
+  /* Stage 8.6 — ADMIN bottom drawer, clearly separated from top HUD */
   #sidebar{
     left:50%!important;
     right:auto!important;
@@ -1001,7 +1001,7 @@
   }
 
 
-  /* Stage 8.5 — standalone ADMIN launcher, away from top HUD/popovers */
+  /* Stage 8.6 — standalone ADMIN launcher, away from top HUD/popovers */
   #openSidebar.adminLauncher{
     display:inline-flex;
     position:absolute!important;
@@ -1039,6 +1039,30 @@
       height:66px!important;
       font-size:7px!important;
     }
+  }
+
+
+  /* Stage 8.6 — app-like touch behavior: no double-tap zoom / no text selection */
+  html,body,#app,#gameWrap,canvas{
+    touch-action:none!important;
+    -ms-touch-action:none!important;
+    user-select:none!important;
+    -webkit-user-select:none!important;
+    -webkit-touch-callout:none!important;
+    -webkit-tap-highlight-color:transparent!important;
+  }
+  *{
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  button,a,[role="button"],#mobilePad,#ultButton,#hudMenuBtn,#openSidebar{
+    touch-action:manipulation!important;
+  }
+  #sidebar,#gacha .gachaScreen,#characters .modal,#shop .modal{
+    touch-action:pan-y!important;
+    overscroll-behavior:contain;
   }
 
 </style>
@@ -1205,7 +1229,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 8.5</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 8.6</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1288,11 +1312,11 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 8.5 camera: player-centered ~3x far view without shrinking the DOM HUD.
-const CAMERA_ZOOM = 1/3;
+// Stage 8.6 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
+const CAMERA_ZOOM = 0.40;
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
-// Stage 8.5 finite battlefield.
+// Stage 8.6 finite battlefield.
 const WORLD_W = 5200;
 const WORLD_H = 3400;
 const WORLD_EDGE_PAD = 18;
@@ -1319,6 +1343,17 @@ window.visualViewport?.addEventListener('resize',resize);
 window.visualViewport?.addEventListener('scroll',syncVisibleViewport);
 syncVisibleViewport();
 resize();
+
+// iOS Safari/WebView gesture guard for a game-style fixed viewport.
+document.addEventListener('gesturestart',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gesturechange',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gestureend',e=>e.preventDefault(),{passive:false});
+let lastTouchEnd=0;
+document.addEventListener('touchend',e=>{
+  const now=Date.now();
+  if(now-lastTouchEnd<300 && !e.target.closest('input,select,textarea')) e.preventDefault();
+  lastTouchEnd=now;
+},{passive:false});
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -1523,13 +1558,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 8.5 — BREAK RUSH
+// Stage 8.6 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 8.5 — CHAOS HUNT
+// Stage 8.6 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -2591,7 +2626,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 8.5: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 8.6: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
