@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 8.2</title>
+<title>BREAK SURVIVORS - Stage 8.3</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 8.2 — Character Growth / Ability Road / Ultimate */
+  /* Stage 8.3 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 8.2 — Combat HUD / compact UI overhaul
+  /* Stage 8.3 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 8.2 — one-line top HUD + high-visibility touch controls */
+  /* Stage 8.3 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 8.2 — iPhone / mobile bottom clipping fix */
+  /* Stage 8.3 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 8.2 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 8.3 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -961,6 +961,20 @@
   }
   #hud,#attackBanner,#breakHud,#eventHud,#bossHud,#ultButton,#mobilePad,#hudMenuBtn,#quickActions{
     transition:opacity .14s ease,visibility .14s ease;
+  }
+
+
+  /* Stage 8.3 — move ADMIN away from the right-side HUD */
+  #sidebar{
+    left:12px!important;
+    right:auto!important;
+    transform-origin:left center;
+  }
+  @media(max-width:900px){
+    #sidebar{
+      left:8px!important;
+      right:auto!important;
+    }
   }
 
 </style>
@@ -1127,7 +1141,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 8.2</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 8.3</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1210,8 +1224,9 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 8.2 camera: zoom the battlefield out without shrinking the DOM HUD.
-const CAMERA_ZOOM = 0.75;
+// Stage 8.3 camera: zoom the battlefield out without shrinking the DOM HUD.
+const CAMERA_ZOOM = 0.20;
+const FAR_CAMERA_SPEED_SCALE = 2.6;
 
 let W = 1280, H = 720, DPR = 1;
 
@@ -1438,13 +1453,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 8.2 — BREAK RUSH
+// Stage 8.3 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 8.2 — CHAOS HUNT
+// Stage 8.3 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1630,7 +1645,7 @@ function updateChaosDirector(dt){
         eventPulse=rnd(1.7,2.25);
       }else if(eventActive('gem')){
         const a=Math.random()*Math.PI*2,r=rnd(100,250);
-        spawnPickup('gem',clamp(player.x+Math.cos(a)*r,20,W-20),clamp(player.y+Math.sin(a)*r,20,H-20),1,{speed:75,scale:1.04});
+        spawnPickup('gem',player.x+Math.cos(a)*r,player.y+Math.sin(a)*r,1,{speed:75,scale:1.04});
         eventPulse=rnd(1.15,1.55);
       }else{
         eventPulse=.5;
@@ -1715,14 +1730,19 @@ function resetRun(){
 
 function spawnEnemy(type='normal'){
   const d=enemyDefs[type]; if(!d)return null;
-  let side=Math.floor(Math.random()*4), x,y,m=50;
-  if(side===0){x=rnd(-m,W+m);y=-m}
-  else if(side===1){x=W+m;y=rnd(-m,H+m)}
-  else if(side===2){x=rnd(-m,W+m);y=H+m}
-  else{x=-m;y=rnd(-m,H+m)}
+
+  // Spawn in a ring around the player. The far camera can see the approach,
+  // while enemies still reach combat in a reasonable amount of time.
+  const a=Math.random()*Math.PI*2;
+  const baseView=Math.min(W,H);
+  const minDist=baseView*(type==='boss'?1.05:type==='treasure'?.72:.80);
+  const maxDist=baseView*(type==='boss'?1.42:type==='treasure'?1.05:1.28);
+  const spawnDist=rnd(minDist,maxDist);
+  const x=player.x+Math.cos(a)*spawnDist;
+  const y=player.y+Math.sin(a)*spawnDist;
 
   const hpScale=1+gameTime/70;
-  const speedScale=1+Math.min(gameTime/600,.45);
+  const speedScale=(1+Math.min(gameTime/600,.45))*FAR_CAMERA_SPEED_SCALE;
   const e={
     type,x,y,r:d.r,hp:d.hp*hpScale,maxHp:d.hp*hpScale,
     speed:d.speed*speedScale,reward:d.reward,touch:d.touch,
@@ -1879,7 +1899,6 @@ function updatePickups(dt){
       if(d<player.r+12*(p.scale||1)) collectPickup(p);
     }
 
-    p.x=clamp(p.x,8,W-8);p.y=clamp(p.y,8,H-8);
     if(p.life<=0)collectPickup(p);
   }
 
@@ -2479,7 +2498,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 8.2: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 8.3: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -3036,9 +3055,9 @@ function update(dt){
   let mx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);
   let my=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
   if(mx||my){const l=Math.hypot(mx,my);mx/=l;my/=l}
-  const rushMove=ps.move*(feverActive()?1.20:1);
-  player.x=clamp(player.x+mx*rushMove*dt,player.r,W-player.r);
-  player.y=clamp(player.y+my*rushMove*dt,player.r,H-player.r);
+  const rushMove=ps.move*FAR_CAMERA_SPEED_SCALE*(feverActive()?1.20:1);
+  player.x+=mx*rushMove*dt;
+  player.y+=my*rushMove*dt;
 
   spawnTimer-=dt;
   if(spawnTimer<=0){
@@ -3145,7 +3164,8 @@ function update(dt){
   for(const x of lightnings)x.life-=dt;
   updatePickups(dt);
 
-  bullets=bullets.filter(x=>x.life>0 && x.x>-100&&x.x<W+100&&x.y>-100&&x.y<H+100);
+  const projectileCull=Math.max(W,H)/CAMERA_ZOOM*1.25;
+  bullets=bullets.filter(x=>x.life>0 && Math.hypot(x.x-player.x,x.y-player.y)<projectileCull);
   missiles=missiles.filter(x=>x.life>0);
   enemyBullets=enemyBullets.filter(x=>x.life>0);
   particles=particles.filter(x=>x.life>0);
@@ -3177,18 +3197,21 @@ function draw(){
     ctx.save();ctx.globalAlpha=.055;ctx.fillStyle=activeEvent.color;ctx.fillRect(-20,-20,W+40,H+40);ctx.restore();
   }
 
-  // Visual camera only: keep player/gameplay coordinates unchanged while showing
-  // substantially more battlefield around the player.
-  ctx.translate(player.x,player.y);
+  // True far camera: keep the player centered and follow world movement.
+  ctx.translate(W/2,H/2);
   ctx.scale(CAMERA_ZOOM,CAMERA_ZOOM);
   ctx.translate(-player.x,-player.y);
 
   ctx.strokeStyle='#141b2b';ctx.lineWidth=1/CAMERA_ZOOM;
   const grid=48;
-  const viewPadX=W*(1/CAMERA_ZOOM-1)+96;
-  const viewPadY=H*(1/CAMERA_ZOOM-1)+96;
-  for(let x=-viewPadX;x<W+viewPadX;x+=grid){ctx.beginPath();ctx.moveTo(x,-viewPadY);ctx.lineTo(x,H+viewPadY);ctx.stroke()}
-  for(let y=-viewPadY;y<H+viewPadY;y+=grid){ctx.beginPath();ctx.moveTo(-viewPadX,y);ctx.lineTo(W+viewPadX,y);ctx.stroke()}
+  const halfViewW=W/(2*CAMERA_ZOOM)+grid*2;
+  const halfViewH=H/(2*CAMERA_ZOOM)+grid*2;
+  const gridStartX=Math.floor((player.x-halfViewW)/grid)*grid;
+  const gridEndX=Math.ceil((player.x+halfViewW)/grid)*grid;
+  const gridStartY=Math.floor((player.y-halfViewH)/grid)*grid;
+  const gridEndY=Math.ceil((player.y+halfViewH)/grid)*grid;
+  for(let x=gridStartX;x<=gridEndX;x+=grid){ctx.beginPath();ctx.moveTo(x,gridStartY);ctx.lineTo(x,gridEndY);ctx.stroke()}
+  for(let y=gridStartY;y<=gridEndY;y+=grid){ctx.beginPath();ctx.moveTo(gridStartX,y);ctx.lineTo(gridEndX,y);ctx.stroke()}
 
   for(const r of rings){
     const a=clamp(r.life/r.total,0,1), rr=r.max*(1-a*.25);
