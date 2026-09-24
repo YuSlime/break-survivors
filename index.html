@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 9.7</title>
+<title>BREAK SURVIVORS - Stage 10.0</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 9.7</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.0</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1443,7 +1443,7 @@ const characterDefs = [
   },
   {
     id:'bombcat', name:'Bomb Cat', rarity:'Rare', attack:'explosion', icon:'💣', color:'#ffb24a',
-    passive:'Big Boom — Explosion Area +25%',
+    passive:'Big Boom — Explosion Area +25% / chain blasts escalate into ROYAL NUKE',
     abilities:['Main','Lv5','Lv10','Lv20','Lv30','Lv40','Lv50']
   },
   {
@@ -1490,19 +1490,19 @@ const growthDefs = {
   },
   bombcat:{
     nodes:[
-      [1,'Main','Bomb Shot'],
-      [5,'Blast Padding','爆発範囲 +18%'],
-      [10,'Cluster Pop','爆発後に小爆発×3'],
-      [20,'Branch','巨大弾頭 / 連鎖爆破'],
+      [1,'Main','BOMB SHOT'],
+      [5,'BIGGER BOOM','爆発範囲 +18% / 爆発演出強化'],
+      [10,'CLUSTER BOMB','親爆発から小型爆弾×3を散布'],
+      [20,'Branch','MEGA PAYLOAD / CHAIN REACTION'],
       [30,'ULT','CATACLYSM'],
-      [40,'Aftershock','爆発後に追撃衝撃波'],
+      [40,'AFTERSHOCK','爆発後に巨大衝撃波'],
       [50,'AWAKEN','ROYAL NUKE']
     ],
     branches:{
-      payload:{name:'MEGA PAYLOAD',desc:'Damage +20% / 爆発範囲 +35%。'},
-      chain:{name:'CHAIN REACTION',desc:'Attack Speed +15% / Clusterが5個に増加。'}
+      payload:{name:'MEGA PAYLOAD',desc:'Damage +30% / 爆発範囲 +35%。巨大で重い爆弾へ。'},
+      chain:{name:'CHAIN REACTION',desc:'Attack Speed +15% / Cluster 5個 / 撃破時に追加誘爆。'}
     },
-    ultimate:'CATACLYSM — 周囲に巨大爆発を連続発生させる。'
+    ultimate:'CATACLYSM — 広範囲へ連続爆撃し、最後にROYAL NUKEを落とす。'
   },
   thunderfox:{
     nodes:[
@@ -1584,7 +1584,7 @@ ensureCharacterSave();
 let currentCharacter = characterDefs.find(c=>c.id===save.selectedCharacter && save.characters[c.id]?.owned) || characterDefs[0];
 save.selectedCharacter=currentCharacter.id;
 let attackType=currentCharacter.attack, god=false, dmgMul=1, spawnMul=1;
-let enemies=[], bullets=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
+let enemies=[], bullets=[], bombFragments=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
 let keys = {};
 let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
 let ultCharge=0;
@@ -1597,6 +1597,33 @@ let gunnerMomentumIdle=0;
 let gunnerRecoil=0;
 const GUNNER_MOMENTUM_MAX_BONUS=.22;
 const gunnerMomentumMul=()=>1+GUNNER_MOMENTUM_MAX_BONUS*clamp(gunnerMomentum/100,0,1);
+
+// Stage 10.0 — Bomb Cat chain-destruction identity.
+let bombCatFlash=0;
+function getBombCatCombatProfile(lv,branch,count){
+  const chain=lv>=20&&branch==='chain';
+  const payload=lv>=20&&branch==='payload';
+  return {
+    clusterCount:lv>=10?(chain?5:3):0,
+    chainChance:chain?.34:0,
+    aftershock:lv>=40,
+    royal:lv>=50&&count>0&&count%4===0,
+    royalClusterCount:lv>=50?(chain?12:9):0,
+    bombScale:payload?1.40:1,
+    projectileSpeed:payload?350:400
+  };
+}
+function buildCataclysmPlan(){
+  const plan=[];
+  for(let i=0;i<16;i++)plan.push({
+    delay:260+i*82,
+    radiusMul:.92+(i%4)*.08,
+    damageMul:1.30+(i%3)*.10,
+    final:false
+  });
+  plan.push({delay:1690,radiusMul:2.75,damageMul:4.4,final:true});
+  return plan;
+}
 
 // Stage 9.7 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
@@ -1835,7 +1862,7 @@ function playerStats(){
   }
   if(currentCharacter.id==='bombcat'){
     area*=1.25;
-    if(lv>=20&&br==='payload'){damage*=1.20;area*=1.35}
+    if(lv>=20&&br==='payload'){damage*=1.30;area*=1.35}
     if(lv>=20&&br==='chain')attackRate*=1.15;
   }
   if(currentCharacter.id==='thunderfox'){
@@ -1868,7 +1895,7 @@ function resetRun(){
   setAttack(attackType);
   ps=playerStats();
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
-  enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
+  enemies=[];bullets=[];bombFragments=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
   gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
@@ -3083,7 +3110,9 @@ function addBullet(v,dmg,pierce=6,opts={}){
     x:player.x,y:player.y,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed,
     r:opts.r||5,life:opts.life||1.7,dmg,pierce,kind:opts.kind||'pierce',
     color:opts.color||null,radius:opts.radius||0,clusterCount:opts.clusterCount||0,
-    aftershock:!!opts.aftershock,nuke:!!opts.nuke,
+    royalClusterCount:opts.royalClusterCount||0,chainChance:opts.chainChance||0,
+    aftershock:!!opts.aftershock,nuke:!!opts.nuke,royal:!!opts.royal,
+    bombcat:!!opts.bombcat,bombVisual:!!opts.bombVisual,bombAngle:opts.bombAngle||0,bombSpin:opts.bombSpin||0,
     gunner:!!opts.gunner,ult:!!opts.ult,trail:opts.trail??!!opts.gunner
   });
 }
@@ -3143,7 +3172,8 @@ function firePrimary(force=false){
   const own=ownGrowthActive(), lv=growthLv(), br=growthBranch();
   const bladeOwn=attackType==='slash'&&own&&currentCharacter.id==='blademaster';
   const gunnerOwn=attackType==='pierce'&&own&&currentCharacter.id==='gunner';
-  if(!bladeOwn&&!gunnerOwn)playWeaponFireSfx(activeWeaponKey(), false);
+  const bombcatOwn=attackType==='explosion'&&own&&currentCharacter.id==='bombcat';
+  if(!bladeOwn&&!gunnerOwn&&!bombcatOwn)playWeaponFireSfx(activeWeaponKey(), false);
 
   if(attackType==='pierce'){
     const isGunner=own&&currentCharacter.id==='gunner';
@@ -3199,17 +3229,29 @@ function firePrimary(force=false){
     }
   }
   else if(attackType==='explosion'){
-    const count=own&&currentCharacter.id==='bombcat'?nextAttackCount('bombcat'):0;
+    const isBombCat=own&&currentCharacter.id==='bombcat';
+    const count=isBombCat?nextAttackCount('bombcat'):0;
+    const profile=isBombCat?getBombCatCombatProfile(lv,br,count):{
+      clusterCount:0,chainChance:0,aftershock:false,royal:false,royalClusterCount:0,bombScale:1,projectileSpeed:400
+    };
     let radius=70*ps.area;
-    if(own&&currentCharacter.id==='bombcat'&&lv>=5)radius*=1.18;
-    const clusterCount=own&&currentCharacter.id==='bombcat'&&lv>=10?(br==='chain'&&lv>=20?5:3):0;
-    const nuke=own&&currentCharacter.id==='bombcat'&&lv>=50&&count%4===0;
+    if(isBombCat&&lv>=5)radius*=1.18;
+    if(isBombCat)playWeaponFireSfx('explosion',profile.royal);
     addBullet(v,base*.7,0,{
-      speed:nuke?315:400,r:nuke?11:7,life:1.8,kind:'explosion',
-      radius:nuke?radius*1.8:radius,clusterCount,aftershock:own&&currentCharacter.id==='bombcat'&&lv>=40,
-      nuke,color:nuke?'#fff0a0':'#ffb24a'
+      speed:profile.royal?285:profile.projectileSpeed,
+      r:profile.royal?16:7*profile.bombScale,
+      life:2.0,kind:'explosion',
+      radius:profile.royal?radius*2.15:radius,
+      clusterCount:profile.clusterCount,
+      royalClusterCount:profile.royal?profile.royalClusterCount:0,
+      chainChance:profile.chainChance,
+      aftershock:profile.aftershock,
+      royal:profile.royal,
+      bombcat:isBombCat,bombVisual:isBombCat,bombSpin:profile.royal?3.2:5.4,
+      color:profile.royal?'#fff0a0':'#ffb24a'
     });
-    muzzle(nuke?'#fff0a0':'#ffb24a');
+    if(isBombCat)bombCatMuzzle(v,profile.royal);
+    else muzzle('#ffb24a');
   }
   else if(attackType==='lightning'){
     const count=own&&currentCharacter.id==='thunderfox'?nextAttackCount('thunderfox'):0;
@@ -3336,16 +3378,108 @@ function muzzle(color){
   for(let i=0;i<5;i++) particles.push({x:player.x,y:player.y,vx:rnd(-70,70),vy:rnd(-70,70),life:.18,size:rnd(2,4),color});
 }
 
-function explode(x,y,r,dmg,color='#ff9f43',opts={}){
-  if(!opts.silent)playWeaponImpactSfx(activeWeaponKey(),true);
-  rings.push({x,y,r:2,max:r,life:.28,total:.28,color});
-  shake=Math.min(14,shake+(opts.secondary?2:4));
-  for(const e of enemies) if(!e.dead && Math.hypot(e.x-x,e.y-y)<=r+e.r) damageEnemy(e,dmg);
-  const pieces=opts.secondary?10:18;
-  for(let i=0;i<pieces;i++) particles.push({x,y,vx:rnd(-220,220),vy:rnd(-220,220),life:rnd(.25,.55),size:rnd(2,7),color});
-  if(opts.aftershock&&!opts.secondary){
-    setTimeout(()=>{if(running)explode(x,y,r*.78,dmg*.45,'#ffd784',{secondary:true,silent:true})},130);
+function bombCatMuzzle(v,royal=false){
+  const ang=Math.atan2(v.y,v.x),ox=player.x+Math.cos(ang)*(player.r+10),oy=player.y+Math.sin(ang)*(player.r+10);
+  rings.push({x:ox,y:oy,r:2,max:royal?34:18,life:royal?.18:.11,total:royal?.18:.11,color:royal?'#fff4a6':'#ffb24a'});
+  for(let i=0;i<(royal?13:7);i++){
+    const a=ang+rnd(-.42,.42),spd=rnd(80,royal?300:190);
+    particles.push({x:ox,y:oy,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:rnd(.10,.25),size:rnd(1.8,royal?5.5:3.8),color:royal?'#fff1a0':'#ffb24a'});
   }
+}
+function spawnBombCatCluster(x,y,parentRadius,dmg,count,chainChance=0,royal=false){
+  for(let i=0;i<count;i++){
+    const a=i*Math.PI*2/count+rnd(-.26,.26),spd=rnd(royal?185:135,royal?330:245);
+    bombFragments.push({
+      x,y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,
+      life:rnd(.18,.28)+i*.018,
+      radius:parentRadius*(royal?.46:.36),
+      dmg:dmg*(royal?.56:.42),
+      chainChance,
+      royal,
+      angle:rnd(0,Math.PI*2),spin:rnd(-8,8),
+      quiet:i%3!==0
+    });
+  }
+}
+function triggerBombCatChainReaction(x,y,r,dmg){
+  const a=rnd(0,Math.PI*2),dist=rnd(r*.22,r*.56),tx=x+Math.cos(a)*dist,ty=y+Math.sin(a)*dist;
+  setTimeout(()=>{
+    if(!running)return;
+    rings.push({x:tx,y:ty,r:2,max:r*.72,life:.18,total:.18,color:'#ffcf69'});
+    explode(tx,ty,r*.58,dmg*.48,'#ffbd57',{secondary:true,bombcat:true,silent:true});
+  },55);
+}
+function bombCatAftershock(x,y,r,dmg){
+  setTimeout(()=>{
+    if(!running)return;
+    const rr=r*.92;
+    rings.push({x,y,r:3,max:rr,life:.34,total:.34,color:'#ffe2a3'});
+    let kills=0;
+    for(const e of enemies){
+      if(!e.dead&&Math.hypot(e.x-x,e.y-y)<=rr+e.r)if(damageEnemy(e,dmg*.42))kills++;
+    }
+    shake=Math.min(15,shake+2.6);
+    for(let i=0;i<14;i++){
+      const a=i*Math.PI*2/14,spd=rnd(120,260);
+      particles.push({x,y,vx:Math.cos(a)*spd,vy:Math.sin(a)*spd,life:rnd(.18,.35),size:rnd(1.5,4.5),color:'#ffe0a0'});
+    }
+    return kills;
+  },130);
+}
+function triggerBombCatRoyalNuke(x,y,r,dmg,clusterCount,chainChance,aftershock=true){
+  bombCatFlash=Math.max(bombCatFlash,1);
+  hitStop=Math.max(hitStop,.055);
+  shake=Math.max(shake,17);
+  const kills=explode(x,y,r,dmg,'#fff0a0',{aftershock,bombcat:true,royal:true});
+  spawnBombCatCluster(x,y,r,dmg,clusterCount,chainChance,true);
+  if(chainChance&&kills>0&&Math.random()<chainChance)triggerBombCatChainReaction(x,y,r,dmg);
+}
+function startBombCatCataclysm(){
+  const lv=charLevel('bombcat'),br=growthBranch();
+  const profile=getBombCatCombatProfile(lv,br,4);
+  const originX=player.x,originY=player.y;
+  const plan=buildCataclysmPlan();
+  playWeaponFireSfx('explosion',true);
+  plan.forEach((strike,i)=>{
+    const final=strike.final;
+    const ang=i*2.3999632297+rnd(-.22,.22);
+    const dist=final?0:rnd(170,760)*Math.min(1.25,ps.area);
+    const x=clamp(originX+Math.cos(ang)*dist,55,WORLD_W-55);
+    const y=clamp(originY+Math.sin(ang)*dist,55,WORLD_H-55);
+    setTimeout(()=>{
+      if(!running)return;
+      rings.push({x,y,r:3,max:final?72:42,life:.20,total:.20,color:final?'#fff3a2':'#ff895f'});
+    },Math.max(0,strike.delay-175));
+    setTimeout(()=>{
+      if(!running)return;
+      if(final){
+        triggerBombCatRoyalNuke(x,y,112*ps.area*strike.radiusMul,ps.damage*strike.damageMul,profile.royalClusterCount||9,profile.chainChance,true);
+      }else{
+        const kills=explode(x,y,92*ps.area*strike.radiusMul,ps.damage*strike.damageMul,'#ffad52',{
+          bombcat:true,silent:i%4!==0
+        });
+        if(profile.chainChance&&kills>0&&Math.random()<profile.chainChance*.55)triggerBombCatChainReaction(x,y,92*ps.area,ps.damage*strike.damageMul);
+      }
+    },strike.delay);
+  });
+}
+
+function explode(x,y,r,dmg,color='#ff9f43',opts={}){
+  if(!opts.silent){
+    playWeaponImpactSfx(opts.bombcat?'explosion':activeWeaponKey(),true);
+    if(opts.bombcat)playSubBody('explosion',!!opts.royal);
+  }
+  rings.push({x,y,r:2,max:r,life:opts.royal?.38:.28,total:opts.royal?.38:.28,color});
+  shake=Math.min(opts.royal?18:14,shake+(opts.royal?7:opts.secondary?2:4));
+  let kills=0;
+  for(const e of enemies) if(!e.dead && Math.hypot(e.x-x,e.y-y)<=r+e.r) if(damageEnemy(e,dmg))kills++;
+  const pieces=opts.royal?38:opts.secondary?10:opts.bombcat?24:18;
+  for(let i=0;i<pieces;i++) particles.push({
+    x,y,vx:rnd(opts.royal?-360:-220,opts.royal?360:220),vy:rnd(opts.royal?-360:-220,opts.royal?360:220),
+    life:rnd(.25,opts.royal?.72:.55),size:rnd(2,opts.royal?10:7),color
+  });
+  if(opts.aftershock&&!opts.secondary)bombCatAftershock(x,y,r,dmg);
+  return kills;
 }
 
 function chainLightning(dmg,count=5,opts={}){
@@ -3566,10 +3700,7 @@ function useUltimate(){
       shake=Math.min(18,shake+(w===4?4.6:2.2));
     },110+w*95);
   }else if(id==='bombcat'){
-    for(let i=0;i<14;i++)setTimeout(()=>{
-      if(!running)return;const ang=i*Math.PI*2/14,rad=55+(i%4)*55;
-      explode(player.x+Math.cos(ang)*rad,player.y+Math.sin(ang)*rad,105*ps.area,ps.damage*1.65,'#ffd25f',{silent:i>0});
-    },i*55);
+    startBombCatCataclysm();
   }else if(id==='thunderfox'){
     playLightningUltimateSurge();
     for(let w=0;w<4;w++)setTimeout(()=>{if(running)chainLightning(ps.damage*1.35,18,{range:280*ps.area,decay:.94,width:6,color:'#e4ffff',echo:true,silentSfx:true})},w*130);
@@ -3610,6 +3741,7 @@ function update(dt){
   for(const k of ['boots','drink','sword'])if(itemBuffs[k]>0)itemBuffs[k]=Math.max(0,itemBuffs[k]-dt);
 
   gunnerRecoil=Math.max(0,gunnerRecoil-dt*8.5);
+  bombCatFlash=Math.max(0,bombCatFlash-dt*3.8);
   if(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive()){
     gunnerMomentumIdle=Math.max(0,gunnerMomentumIdle-dt);
     if(gunnerMomentumIdle<=0)gunnerMomentum=Math.max(0,gunnerMomentum-dt*38);
@@ -3646,6 +3778,7 @@ function update(dt){
 
   for(const b of bullets){
     b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
+    if(b.bombVisual)b.bombAngle=(b.bombAngle||0)+(b.bombSpin||0)*dt;
     for(const e of enemies){
       if(e.dead||b.hit?.has(e)) continue;
       if(Math.hypot(e.x-b.x,e.y-b.y)<=e.r+b.r){
@@ -3653,19 +3786,45 @@ function update(dt){
         damageEnemy(e,b.dmg);
         if(b.gunner)gunnerImpactFx(b,e);
         if(b.kind==='explosion'){
-          const boomDmg=b.dmg*1.5*(b.nuke?2.3:1);
-          explode(b.x,b.y,b.radius,boomDmg,b.nuke?'#fff1a0':'#ffb24a',{aftershock:b.aftershock});
-          if(b.clusterCount){
-            for(let ci=0;ci<b.clusterCount;ci++){
-              const a=ci*Math.PI*2/b.clusterCount+rnd(-.22,.22), rr=b.radius*.34;
-              setTimeout(()=>{if(running)explode(b.x+Math.cos(a)*rr,b.y+Math.sin(a)*rr,b.radius*.38,boomDmg*.42,'#ffc867',{secondary:true,silent:true})},55+ci*22);
+          const royal=!!(b.royal||b.nuke);
+          const boomDmg=b.dmg*1.5*(royal?3.0:1);
+          if(b.bombcat&&royal){
+            triggerBombCatRoyalNuke(
+              b.x,b.y,b.radius,boomDmg,
+              b.royalClusterCount||Math.max(8,b.clusterCount||0),
+              b.chainChance,b.aftershock
+            );
+          }else{
+            const kills=explode(b.x,b.y,b.radius,boomDmg,royal?'#fff1a0':'#ffb24a',{
+              aftershock:b.aftershock,bombcat:b.bombcat,royal
+            });
+            if(b.bombcat&&b.clusterCount)spawnBombCatCluster(b.x,b.y,b.radius,boomDmg,b.clusterCount,b.chainChance,false);
+            else if(b.clusterCount){
+              for(let ci=0;ci<b.clusterCount;ci++){
+                const a=ci*Math.PI*2/b.clusterCount+rnd(-.22,.22),rr=b.radius*.34;
+                setTimeout(()=>{if(running)explode(b.x+Math.cos(a)*rr,b.y+Math.sin(a)*rr,b.radius*.38,boomDmg*.42,'#ffc867',{secondary:true,silent:true})},55+ci*22);
+              }
             }
+            if(b.bombcat&&b.chainChance&&kills>0&&Math.random()<b.chainChance)triggerBombCatChainReaction(b.x,b.y,b.radius,boomDmg);
           }
           b.life=0;break
         }
         b.pierce--;
         if(b.pierce<0){b.life=0;break}
       }
+    }
+  }
+
+  for(const c of bombFragments){
+    c.x+=c.vx*dt;c.y+=c.vy*dt;
+    c.vx*=Math.pow(.09,dt);c.vy*=Math.pow(.09,dt);
+    c.angle+=c.spin*dt;c.life-=dt;
+    if(c.life<=0&&!c.done){
+      c.done=true;
+      const kills=explode(c.x,c.y,c.radius,c.dmg,c.royal?'#ffe98a':'#ffc867',{
+        secondary:true,bombcat:true,silent:c.quiet
+      });
+      if(c.chainChance&&kills>0&&Math.random()<c.chainChance)triggerBombCatChainReaction(c.x,c.y,c.radius,c.dmg);
     }
   }
 
@@ -3739,6 +3898,7 @@ function update(dt){
 
   const projectileCull=Math.max(W,H)/CAMERA_ZOOM*1.25;
   bullets=bullets.filter(x=>x.life>0 && x.x>-120&&x.x<WORLD_W+120&&x.y>-120&&x.y<WORLD_H+120 && Math.hypot(x.x-player.x,x.y-player.y)<projectileCull);
+  bombFragments=bombFragments.filter(x=>!x.done&&x.life>0&&x.x>-160&&x.x<WORLD_W+160&&x.y>-160&&x.y<WORLD_H+160);
   missiles=missiles.filter(x=>x.life>0 && x.x>-160&&x.x<WORLD_W+160&&x.y>-160&&x.y<WORLD_H+160);
   enemyBullets=enemyBullets.filter(x=>x.life>0 && x.x>-80&&x.x<WORLD_W+80&&x.y>-80&&x.y<WORLD_H+80);
   particles=particles.filter(x=>x.life>0);
@@ -3956,6 +4116,23 @@ function draw(){
 
   for(const b of bullets){
     const bulletColor=b.color||(b.kind==='explosion'?'#ffb84f':b.kind==='rail'?'#e9ffff':'#7de7ff');
+    if(b.bombVisual){
+      const bob=Math.sin(gameTime*9+(b.bombAngle||0))*2.2;
+      ctx.save();ctx.translate(b.x,b.y+bob);ctx.rotate(b.bombAngle||0);
+      ctx.globalAlpha=.30;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(2,9,b.r*1.05,b.r*.38,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+      ctx.shadowBlur=b.royal?28:16;ctx.shadowColor=b.royal?'#ffe784':'#ff9d43';
+      ctx.fillStyle=b.royal?'#5b4518':'#28231f';ctx.strokeStyle=b.royal?'#fff1a0':'#ffb24a';ctx.lineWidth=b.royal?4:2.5;
+      ctx.beginPath();ctx.arc(0,0,b.r,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.strokeStyle=b.royal?'#fff0a0':'#ffcc73';ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(b.r*.22,-b.r*.82);ctx.quadraticCurveTo(b.r*.55,-b.r*1.35,b.r*.80,-b.r*1.48);ctx.stroke();
+      ctx.fillStyle='#fff6b0';ctx.shadowBlur=22;ctx.beginPath();ctx.arc(b.r*.82,-b.r*1.5,b.royal?3.8:2.7,0,Math.PI*2);ctx.fill();
+      if(b.royal){
+        ctx.fillStyle='#ffe56f';ctx.shadowBlur=16;
+        ctx.beginPath();ctx.moveTo(-b.r*.65,-b.r*.65);ctx.lineTo(-b.r*.25,-b.r*1.12);ctx.lineTo(0,-b.r*.70);ctx.lineTo(b.r*.28,-b.r*1.12);ctx.lineTo(b.r*.68,-b.r*.65);ctx.closePath();ctx.fill();
+      }
+      ctx.restore();ctx.shadowBlur=0;
+      continue;
+    }
     if(b.trail){
       const speed=Math.hypot(b.vx,b.vy)||1;
       const nx=b.vx/speed,ny=b.vy/speed;
@@ -3977,6 +4154,15 @@ function draw(){
     ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();
   }
   ctx.shadowBlur=0;
+
+  for(const c of bombFragments){
+    ctx.save();ctx.translate(c.x,c.y);ctx.rotate(c.angle);
+    ctx.shadowBlur=c.royal?18:10;ctx.shadowColor=c.royal?'#ffe98a':'#ffb24a';
+    ctx.fillStyle=c.royal?'#69531e':'#332a22';ctx.strokeStyle=c.royal?'#fff0a0':'#ffc867';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(0,0,c.royal?5.5:4.2,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#fff1a0';ctx.beginPath();ctx.arc(4,-5,1.7,0,Math.PI*2);ctx.fill();
+    ctx.restore();ctx.shadowBlur=0;
+  }
 
   for(const m of missiles){
     ctx.save();ctx.translate(m.x,m.y);ctx.rotate(Math.atan2(m.vy,m.vx));
@@ -4017,6 +4203,14 @@ function draw(){
   ctx.restore();ctx.shadowBlur=0;
 
   ctx.restore();
+
+  if(bombCatFlash>0){
+    ctx.save();
+    ctx.globalAlpha=Math.min(.72,bombCatFlash*.72);
+    ctx.fillStyle='#fff8d8';
+    ctx.fillRect(0,0,W,H);
+    ctx.restore();
+  }
 }
 
 function compactHudNumber(v){
