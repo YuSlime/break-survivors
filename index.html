@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 8.7</title>
+<title>BREAK SURVIVORS - Stage 8.8</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 8.7 — Character Growth / Ability Road / Ultimate */
+  /* Stage 8.8 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 8.7 — Combat HUD / compact UI overhaul
+  /* Stage 8.8 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 8.7 — one-line top HUD + high-visibility touch controls */
+  /* Stage 8.8 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 8.7 — iPhone / mobile bottom clipping fix */
+  /* Stage 8.8 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 8.7 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 8.8 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -964,7 +964,7 @@
   }
 
 
-  /* Stage 8.7 — ADMIN bottom drawer, clearly separated from top HUD */
+  /* Stage 8.8 — ADMIN bottom drawer, clearly separated from top HUD */
   #sidebar{
     left:50%!important;
     right:auto!important;
@@ -1001,7 +1001,7 @@
   }
 
 
-  /* Stage 8.7 — standalone ADMIN launcher, away from top HUD/popovers */
+  /* Stage 8.8 — standalone ADMIN launcher, away from top HUD/popovers */
   #openSidebar.adminLauncher{
     display:inline-flex;
     position:absolute!important;
@@ -1042,7 +1042,7 @@
   }
 
 
-  /* Stage 8.7 — app-like touch behavior: no double-tap zoom / no text selection */
+  /* Stage 8.8 — app-like touch behavior: no double-tap zoom / no text selection */
   html,body,#app,#gameWrap,canvas{
     touch-action:none!important;
     -ms-touch-action:none!important;
@@ -1066,7 +1066,7 @@
   }
 
 
-  /* Stage 8.7 — temporary drop buffs */
+  /* Stage 8.8 — temporary drop buffs */
   #itemBuffHud{
     position:absolute;left:10px;top:66px;z-index:7;
     display:flex;gap:5px;flex-wrap:wrap;max-width:42vw;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 8.7</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 8.8</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1337,11 +1337,11 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 8.7 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
+// Stage 8.8 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
 const CAMERA_ZOOM = 0.40;
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
-// Stage 8.7 finite battlefield.
+// Stage 8.8 finite battlefield.
 const WORLD_W = 5200;
 const WORLD_H = 3400;
 const WORLD_EDGE_PAD = 18;
@@ -1582,18 +1582,18 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 8.7 — BREAK RUSH
+// Stage 8.8 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 8.7 — CHAOS HUNT
+// Stage 8.8 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
 
-// Stage 8.7 temporary item buffs.
+// Stage 8.8 temporary item buffs.
 let itemBuffs={boots:0,drink:0,sword:0};
 const chaosEvents={
   gold:{name:'GOLD RUSH',duration:12,color:'#ffd65c',desc:'COINS ×2'},
@@ -2059,10 +2059,24 @@ function collectPickup(p){
   if(!def)return;
 
   if(p.type==='magnet'){
-    showGrowthToast('🧲 MAGNET','ワールドのドロップを全回収');
-    rings.push({x:player.x,y:player.y,r:20,max:260,life:.42,total:.42,color:def.color});
-    const worldDrops=pickups.filter(q=>!q.dead);
-    for(const q of worldDrops)collectPickup(q);
+    showGrowthToast('🧲 MAGNET','ワールド中のドロップを吸引中');
+    rings.push({x:player.x,y:player.y,r:20,max:420,life:.62,total:.62,color:def.color});
+
+    // Do not instantly collect. Every existing world drop now visibly flies to the player.
+    for(const q of pickups){
+      if(q.dead)continue;
+      q.superMagnet=true;
+      q.delay=0;
+      q.life=Math.max(q.life,8);
+      q.vx*=.15;
+      q.vy*=.15;
+    }
+
+    for(let i=0;i<26;i++)particles.push({
+      x:player.x,y:player.y,
+      vx:rnd(-260,260),vy:rnd(-260,260),
+      life:rnd(.35,.75),size:rnd(2,5),color:i%2?'#82e9ff':'#dffcff'
+    });
   }else if(p.type==='heart'){
     const heal=Math.max(1,Math.ceil(ps.maxHp*.25));
     const before=player.hp;
@@ -2103,17 +2117,36 @@ function updatePickups(dt){
 
       const dx=player.x-p.x,dy=player.y-p.y,d=Math.hypot(dx,dy)||1;
       const powerup=isPowerupType(p.type);
-      let magnet=powerup?115:(p.type==='gem'?235:150);
-      if(feverActive()&&!powerup)magnet+=110;
-      if(!powerup)magnet+=Math.min(80,lootStreak*3);
-      if(!powerup&&p.age>7)magnet=99999;
 
-      if(d<magnet){
-        const pull=powerup?520:(p.type==='gem'?760:650);
-        const boost=clamp(1+(magnet===99999?1.2:0)+(1-d/Math.max(1,magnet))*.8,1,2.8);
-        p.x+=dx/d*pull*boost*dt;
-        p.y+=dy/d*pull*boost*dt;
+      if(p.superMagnet){
+        // Global magnet vacuum: accelerate from anywhere in the world.
+        // Distance scaling keeps far-away drops dramatic but still fast enough to arrive.
+        const pull=clamp(1050+d*.72,1050,3600);
+        p.vx+=(dx/d*pull-p.vx)*Math.min(1,dt*8.5);
+        p.vy+=(dy/d*pull-p.vy)*Math.min(1,dt*8.5);
+        p.x+=p.vx*dt;
+        p.y+=p.vy*dt;
+
+        if(Math.random()<Math.min(1,dt*9)){
+          particles.push({
+            x:p.x,y:p.y,vx:-p.vx*.035+rnd(-16,16),vy:-p.vy*.035+rnd(-16,16),
+            life:.18,size:rnd(1.5,3.5),color:p.type==='coin'?'#ffd761':p.type==='gem'?'#8ff7ff':'#dffcff'
+          });
+        }
+      }else{
+        let magnet=powerup?115:(p.type==='gem'?235:150);
+        if(feverActive()&&!powerup)magnet+=110;
+        if(!powerup)magnet+=Math.min(80,lootStreak*3);
+        if(!powerup&&p.age>7)magnet=99999;
+
+        if(d<magnet){
+          const pull=powerup?520:(p.type==='gem'?760:650);
+          const boost=clamp(1+(magnet===99999?1.2:0)+(1-d/Math.max(1,magnet))*.8,1,2.8);
+          p.x+=dx/d*pull*boost*dt;
+          p.y+=dy/d*pull*boost*dt;
+        }
       }
+
       if(d<player.r+(powerup?24:12)*(p.scale||1)) collectPickup(p);
     }
 
@@ -2121,8 +2154,13 @@ function updatePickups(dt){
     p.y=clamp(p.y,6,WORLD_H-6);
     // Power-ups expire instead of being auto-consumed. Currency keeps the old guaranteed collection behavior.
     if(p.life<=0){
-      if(isPowerupType(p.type))p.dead=true;
-      else collectPickup(p);
+      if(p.superMagnet){
+        p.life=2;
+      }else if(isPowerupType(p.type)){
+        p.dead=true;
+      }else{
+        collectPickup(p);
+      }
     }
   }
 
@@ -2138,7 +2176,10 @@ function drawPickups(){
     const pulse=1+Math.sin(p.age*7+p.phase)*.06;
     ctx.save();
     ctx.translate(p.x,p.y);
-    ctx.scale((p.scale||1)*pulse,(p.scale||1)*pulse);
+    ctx.scale((p.scale||1)*pulse*(p.superMagnet?1.10:1),(p.scale||1)*pulse*(p.superMagnet?1.10:1));
+    if(p.superMagnet){
+      ctx.globalAlpha=.35+.65*Math.abs(Math.sin(p.age*12+p.phase));
+    }
 
     if(p.type==='coin'){
       const squash=.58+.42*Math.abs(Math.cos(p.age*8+p.phase));
@@ -2741,7 +2782,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 8.7: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 8.8: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
