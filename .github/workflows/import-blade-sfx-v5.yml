@@ -1,0 +1,47 @@
+name: Import Blade Master SFX v5
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-blade-sfx-v5.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download generated sword SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/blade assets/sfx/v5
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/92015c22-7427-4c00-a5a0-eb310d2c0ffd/blade_swift_v1.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzk2NjFiYjNkMzJkY2EwYSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM1OTQ3NX0.X4ftx5G9xUwGb0O4Yap9uADPLGjK8phpXPVEShm9e_E' -o /tmp/blade/swift.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/98fa1a4e-9851-4656-b22e-2ff20de595ac/blade_crescent_v1.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNDJlMDcxODRhZTFhYTEwOSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5NTc4MH0.6uoci92QW5gASSVUQXwCgiyGDWVGfcH8m6_GR9azK18' -o /tmp/blade/crescent.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/20ca604f-17db-493c-acef-20f7905c2206/blade_cross_v1.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiYTI4ZTI5MDJmYWNlNTYzYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5MDQwMn0.h1o915Fi89OQT5ryrMan-oiEBLc8C7YXMhxaNQB78Bc' -o /tmp/blade/cross.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/8d1aab47-e399-4dbd-8daa-1041b65232f4/blade_hit_v1.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZmQ0NTE1ZjZlM2Y1ZGI2YiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5MjA1NH0.z6mSC0tQlTeOs6Rr8FCX2IZkNfnXF8jHNwrRNz5Fiek' -o /tmp/blade/hit.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/40c9777d-42d5-4ea1-a2a1-5dc6bccb549d/blade_finisher_v1.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZGNhMWUwNmFkOWVkNDQzOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQyODI2Nn0.Q-auAV3Yp1IrjA8wik1nkPA5C1z-9tKhkiWlRIvVW8o' -o /tmp/blade/finisher.mp3
+
+      - name: Master for fast action gameplay
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffmpeg -y -i /tmp/blade/swift.mp3     -af "silenceremove=start_periods=1:start_duration=0.005:start_threshold=-50dB,atrim=duration=0.56,afade=t=out:st=0.50:d=0.06,loudnorm=I=-25:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 128k assets/sfx/v5/blade_swift.mp3
+          ffmpeg -y -i /tmp/blade/crescent.mp3  -af "silenceremove=start_periods=1:start_duration=0.005:start_threshold=-50dB,atrim=duration=0.66,afade=t=out:st=0.59:d=0.07,loudnorm=I=-25:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 128k assets/sfx/v5/blade_crescent.mp3
+          ffmpeg -y -i /tmp/blade/cross.mp3     -af "silenceremove=start_periods=1:start_duration=0.005:start_threshold=-50dB,atrim=duration=0.66,afade=t=out:st=0.59:d=0.07,loudnorm=I=-25:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 128k assets/sfx/v5/blade_cross.mp3
+          ffmpeg -y -i /tmp/blade/hit.mp3       -af "silenceremove=start_periods=1:start_duration=0.005:start_threshold=-50dB,atrim=duration=0.56,afade=t=out:st=0.49:d=0.07,loudnorm=I=-26:TP=-8:LRA=6" -ar 44100 -ac 2 -b:a 128k assets/sfx/v5/blade_hit.mp3
+          ffmpeg -y -i /tmp/blade/finisher.mp3  -af "silenceremove=start_periods=1:start_duration=0.005:start_threshold=-50dB,atrim=duration=0.76,afade=t=out:st=0.68:d=0.08,loudnorm=I=-24:TP=-7:LRA=7" -ar 44100 -ac 2 -b:a 128k assets/sfx/v5/blade_finisher.mp3
+
+      - name: Commit SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v5/*.mp3
+          git commit -m "Import Blade Master sword SFX v5"
+          git push
