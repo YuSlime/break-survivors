@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 4.2</title>
+<title>BREAK SURVIVORS - Stage 4.2.1</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -403,7 +403,7 @@
   }
 
 
-  /* Stage 4.2 — Character Growth / Ability Road / Ultimate */
+  /* Stage 4.2.1 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -593,7 +593,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 4.2</h1>
+    <h1>BREAK SURVIVORS — Stage 4.2.1</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1047,7 +1047,7 @@ function spawnPickup(type,x,y,value=1,opts={}){
     type,x,y,value,
     vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,
     age:0,life:20,dead:false,
-    delay:rnd(.16,.34),
+    delay:rnd(.38,.62),
     scale:opts.scale||1,
     phase:Math.random()*Math.PI*2
   });
@@ -1108,7 +1108,7 @@ function updatePickups(dt){
 
       const dx=player.x-p.x,dy=player.y-p.y,d=Math.hypot(dx,dy)||1;
       // Gems are slightly easier to notice/collect. Old drops auto-vacuum so rewards are never lost.
-      let magnet=p.type==='gem'?245:195;
+      let magnet=p.type==='gem'?235:150;
       if(p.age>7)magnet=99999;
       if(d<magnet){
         const pull=p.type==='gem'?760:650;
@@ -1778,8 +1778,6 @@ function update(dt){
 
   firePrimary();
 
-  drawPickups();
-
   for(const b of bullets){
     b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
     for(const e of enemies){
@@ -1942,6 +1940,8 @@ function draw(){
       ctx.fillStyle=e.color;ctx.fillRect(e.x-w/2,e.y-e.r-10,w*clamp(e.hp/e.maxHp,0,1),5);
     }
   }
+
+  drawPickups();
 
   for(const b of bullets){
     ctx.fillStyle=b.color||(b.kind==='explosion'?'#ffb84f':b.kind==='rail'?'#e9ffff':'#7de7ff');ctx.shadowBlur=b.kind==='rail'?22:12;ctx.shadowColor=ctx.fillStyle;
