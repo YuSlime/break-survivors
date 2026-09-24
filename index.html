@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 9.0</title>
+<title>BREAK SURVIVORS - Stage 9.1</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 9.0 — Character Growth / Ability Road / Ultimate */
+  /* Stage 9.1 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 9.0 — Combat HUD / compact UI overhaul
+  /* Stage 9.1 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 9.0 — one-line top HUD + high-visibility touch controls */
+  /* Stage 9.1 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 9.0 — iPhone / mobile bottom clipping fix */
+  /* Stage 9.1 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 9.0 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 9.1 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -964,7 +964,7 @@
   }
 
 
-  /* Stage 9.0 — ADMIN bottom drawer, clearly separated from top HUD */
+  /* Stage 9.1 — ADMIN bottom drawer, clearly separated from top HUD */
   #sidebar{
     left:50%!important;
     right:auto!important;
@@ -1001,7 +1001,7 @@
   }
 
 
-  /* Stage 9.0 — standalone ADMIN launcher, away from top HUD/popovers */
+  /* Stage 9.1 — standalone ADMIN launcher, away from top HUD/popovers */
   #openSidebar.adminLauncher{
     display:inline-flex;
     position:absolute!important;
@@ -1042,7 +1042,7 @@
   }
 
 
-  /* Stage 9.0 — app-like touch behavior: no double-tap zoom / no text selection */
+  /* Stage 9.1 — app-like touch behavior: no double-tap zoom / no text selection */
   html,body,#app,#gameWrap,canvas{
     touch-action:none!important;
     -ms-touch-action:none!important;
@@ -1066,7 +1066,7 @@
   }
 
 
-  /* Stage 9.0 — temporary drop buffs */
+  /* Stage 9.1 — temporary drop buffs */
   #itemBuffHud{
     position:absolute;left:10px;top:66px;z-index:7;
     display:flex;gap:5px;flex-wrap:wrap;max-width:42vw;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 9.0</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 9.1</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1337,11 +1337,11 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 9.0 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
+// Stage 9.1 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
 const CAMERA_ZOOM = 0.40;
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
-// Stage 9.0 finite battlefield.
+// Stage 9.1 finite battlefield.
 const WORLD_W = 5200;
 const WORLD_H = 3400;
 const WORLD_EDGE_PAD = 18;
@@ -1582,24 +1582,25 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 9.0 — Rookie Gunner sustained-fire identity.
+// Stage 9.1 — Rookie Gunner sustained-fire identity.
 let gunnerMomentum=0;
 let gunnerMomentumIdle=0;
+let gunnerRecoil=0;
 const GUNNER_MOMENTUM_MAX_BONUS=.22;
 const gunnerMomentumMul=()=>1+GUNNER_MOMENTUM_MAX_BONUS*clamp(gunnerMomentum/100,0,1);
 
-// Stage 9.0 — BREAK RUSH
+// Stage 9.1 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 9.0 — CHAOS HUNT
+// Stage 9.1 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
 
-// Stage 9.0 temporary item buffs.
+// Stage 9.1 temporary item buffs.
 let itemBuffs={boots:0,drink:0,sword:0};
 const chaosEvents={
   gold:{name:'GOLD RUSH',duration:12,color:'#ffd65c',desc:'COINS ×2'},
@@ -1860,7 +1861,7 @@ function resetRun(){
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
   enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
-  gunnerMomentum=0;gunnerMomentumIdle=0;
+  gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
   activeEvent=null;eventTime=0;eventPulse=0;nextEventAt=rnd(38,48);
   treasureTimer=rnd(24,34);bossPending=false;bossWarningTime=0;lootStreak=0;lootStreakTimer=0;
@@ -2362,9 +2363,11 @@ let lastSfxVariant = {};
 let attackBuffers = {};
 let attackLoadPromise = null;
 let activeAttackVoices = 0;
+let activeGunnerVoices = 0;
 let activeLightningVoices = 0;
 let activeEventVoices = 0;
 const MAX_ATTACK_VOICES = 5;
+const MAX_GUNNER_VOICES = 8;
 const MAX_LIGHTNING_VOICES = 8;
 const MAX_EVENT_VOICES = 3;
 let attackSfxVolume = clamp(Number(localStorage.getItem('break_survivors_attack_sfx_volume') ?? 44) / 100, 0, 1);
@@ -2487,7 +2490,13 @@ const BLADE_REFERENCE_SFX='data:audio/mpeg;base64,SUQzBAAAAAAAIlRTU0UAAAAOAAADTG
 const attackSfxFiles = {
   pierce:{
     fire:['assets/sfx/v3/pierce_fire.mp3'],
-    hit:['assets/sfx/v3/pierce_hit.mp3']
+    hit:['assets/sfx/v3/pierce_hit.mp3'],
+    gunner_fire:['assets/sfx/v11/gunner_fire_a.mp3','assets/sfx/v11/gunner_fire_b.mp3'],
+    gunner_hot:['assets/sfx/v11/gunner_fire_hot.mp3'],
+    gunner_triple:['assets/sfx/v11/gunner_triple.mp3'],
+    gunner_hit:['assets/sfx/v11/gunner_hit.mp3'],
+    gunner_rail_fire:['assets/sfx/v11/gunner_rail_fire.mp3'],
+    gunner_rail_hit:['assets/sfx/v11/gunner_rail_hit.mp3']
   },
   explosion:{
     fire:['assets/sfx/v3/explosion_fire.mp3'],
@@ -2789,7 +2798,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 9.0: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 9.1: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -2830,6 +2839,108 @@ function playBladeHitSfx(){
 }
 
 
+function playGunnerSample(phase,volume=.5,rate=1,opts={}){
+  if(!soundEnabled)return;
+  const ac=getAudio();if(!ac||!attackFilter)return;
+  const key=pickWeaponSfx('pierce',phase);
+  const buffer=attackBuffers[key];
+  if(!buffer){loadAttackSfx().catch(()=>{});return}
+  if(activeGunnerVoices>=MAX_GUNNER_VOICES)return;
+
+  const actualRate=(typeof ps!=='undefined'&&ps&&ps.attackRate)
+    ? ps.attackRate*gunnerMomentumMul()*(feverActive()?1.35:1)*(itemBuffs.drink>0?2:1)
+    : 2.7;
+  const rapidDuck=clamp(1/Math.sqrt(Math.max(1,actualRate/3.0)),opts.minDuck??.56,1);
+  const overlapDuck=activeGunnerVoices>=6?.58:activeGunnerVoices>=4?.70:activeGunnerVoices>=2?.84:1;
+
+  const src=ac.createBufferSource();
+  const lowpass=ac.createBiquadFilter();
+  const body=ac.createBiquadFilter();
+  const harshCut=ac.createBiquadFilter();
+  const gain=ac.createGain();
+
+  src.buffer=buffer;
+  src.playbackRate.value=rate;
+
+  lowpass.type='lowpass';
+  lowpass.frequency.value=opts.lowpass||7200;
+  lowpass.Q.value=.45;
+
+  body.type='peaking';
+  body.frequency.value=opts.bodyFreq||230;
+  body.Q.value=.72;
+  body.gain.value=opts.bodyGain??.8;
+
+  harshCut.type='peaking';
+  harshCut.frequency.value=opts.harshFreq||3350;
+  harshCut.Q.value=.82;
+  harshCut.gain.value=opts.harshGain??-1.4;
+
+  gain.gain.value=clamp(volume*rapidDuck*overlapDuck,0,.86);
+
+  src.connect(lowpass).connect(body).connect(harshCut).connect(gain).connect(attackFilter);
+  activeGunnerVoices++;
+  src.onended=()=>{activeGunnerVoices=Math.max(0,activeGunnerVoices-1)};
+
+  if(opts.duration!=null)src.start(0,0,Math.min(opts.duration,buffer.duration));
+  else src.start();
+}
+
+function playGunnerPrimarySfx(triple=false){
+  if(!soundEnabled)return;
+  if(triple){
+    if(!characterSfxAllowed('gunner_triple',92))return;
+    playGunnerSample('gunner_triple',.62,1,{
+      lowpass:7000,bodyFreq:225,bodyGain:1.0,harshGain:-1.8,minDuck:.62
+    });
+    return;
+  }
+
+  if(!characterSfxAllowed('gunner_fire',46))return;
+  const hot=gunnerMomentum>=80;
+  playGunnerSample(hot?'gunner_hot':'gunner_fire',hot?.57:.53,hot?1.01:1,{
+    lowpass:hot?7200:6900,
+    bodyFreq:hot?210:235,
+    bodyGain:hot?1.15:.82,
+    harshGain:hot?-1.5:-1.8,
+    minDuck:.58
+  });
+}
+
+function playGunnerRailFireSfx(ult=false){
+  if(!soundEnabled)return;
+  if(!characterSfxAllowed(ult?'gunner_rail_ult':'gunner_rail_fire',ult?135:190))return;
+  playGunnerSample('gunner_rail_fire',ult?.46:.80,ult?.99:.94,{
+    lowpass:6500,bodyFreq:175,bodyGain:2.4,harshFreq:3200,harshGain:-2.2,minDuck:ult?.66:.76
+  });
+}
+
+function playGunnerHitSfx(rail=false,ult=false){
+  if(!soundEnabled)return;
+  if(ult){
+    if(!characterSfxAllowed('gunner_ult_hit',210))return;
+    playGunnerSample('gunner_hit',.09,1,{lowpass:5000,bodyGain:.45,harshGain:-3.0,minDuck:.70});
+    return;
+  }
+  if(rail){
+    if(!characterSfxAllowed('gunner_rail_hit',175))return;
+    playGunnerSample('gunner_rail_hit',.43,.96,{lowpass:5600,bodyFreq:185,bodyGain:1.8,harshGain:-2.7,minDuck:.76});
+    return;
+  }
+  if(!characterSfxAllowed('gunner_hit',118))return;
+  playGunnerSample('gunner_hit',.12,1,{lowpass:5000,bodyGain:.55,harshGain:-3.2,minDuck:.68});
+}
+
+function playGunnerUltimateWave(wave=0){
+  if(!soundEnabled)return;
+  if(wave===0)playGunnerRailFireSfx(true);
+  else if(characterSfxAllowed('gunner_ult_wave',72)){
+    playGunnerSample(wave===4?'gunner_hot':'gunner_triple',wave===4?.44:.34,wave===4?.98:1.03,{
+      lowpass:6900,bodyFreq:215,bodyGain:wave===4?1.2:.65,harshGain:-2.1,minDuck:.72
+    });
+  }
+}
+
 function playWeaponFireSfx(kind,special=false){
   if(!soundEnabled) return;
 
@@ -2841,6 +2952,10 @@ function playWeaponFireSfx(kind,special=false){
   const base=vols[kind]||.52;
   if(kind==='lightning'){playLightningFire(special);return}
   if(kind==='slash'){playBladeSwingSfx(special?3:1,special);return}
+  if(kind==='pierce'&&currentCharacter.id==='gunner'){
+    if(special)playGunnerRailFireSfx(true);else playGunnerPrimarySfx(false);
+    return;
+  }
   playAttackSample(pickWeaponSfx(kind,'fire'),base*(special?1.03:1),1);
 }
 
@@ -2943,6 +3058,7 @@ function gunnerImpactFx(b,e){
     });
   }
   if(rail&&!b.ult)shake=Math.min(12,shake+1.7);
+  playGunnerHitSfx(rail,!!b.ult);
 }
 function firePrimary(force=false){
   if(!running || (!force && player.attackCd>0)) return;
@@ -2963,7 +3079,8 @@ function firePrimary(force=false){
   const base=ps.damage;
   const own=ownGrowthActive(), lv=growthLv(), br=growthBranch();
   const bladeOwn=attackType==='slash'&&own&&currentCharacter.id==='blademaster';
-  if(!bladeOwn)playWeaponFireSfx(activeWeaponKey(), false);
+  const gunnerOwn=attackType==='pierce'&&own&&currentCharacter.id==='gunner';
+  if(!bladeOwn&&!gunnerOwn)playWeaponFireSfx(activeWeaponKey(), false);
 
   if(attackType==='pierce'){
     const isGunner=own&&currentCharacter.id==='gunner';
@@ -2980,6 +3097,9 @@ function firePrimary(force=false){
       const gain=br==='barrage'?10:8;
       gunnerMomentum=clamp(gunnerMomentum+gain,0,100);
       gunnerMomentumIdle=.62;
+      playGunnerPrimarySfx(triple);
+      gunnerRecoil=triple?1.15:gunnerMomentum>=80?.86:.68;
+      shake=Math.min(12,shake+(triple?.62:gunnerMomentum>=80?.38:.24));
     }
 
     if(triple){
@@ -2988,11 +3108,11 @@ function firePrimary(force=false){
       setTimeout(()=>{if(running&&currentCharacter.id==='gunner'){
         addBullet(v,base,pierce,{speed,angle:-.115,r:awakened?6:5,color:'#8feeff',gunner:true});
         gunnerMuzzle({x:Math.cos(player.angle-.115),y:Math.sin(player.angle-.115)},false);
-      }},28);
+      }},44);
       setTimeout(()=>{if(running&&currentCharacter.id==='gunner'){
         addBullet(v,base,pierce,{speed,angle:.115,r:awakened?6:5,color:'#b8f7ff',gunner:true});
         gunnerMuzzle({x:Math.cos(player.angle+.115),y:Math.sin(player.angle+.115)},false);
-      }},56);
+      }},88);
     }else{
       const offsets=awakened?[-.045,.045]:[0];
       for(const angle of offsets)addBullet(v,base,pierce,{
@@ -3008,9 +3128,11 @@ function firePrimary(force=false){
         speed:790,r:12,life:1.55,kind:'rail',color:'#f2ffff',
         gunner:true,trail:true
       });
+      playGunnerRailFireSfx(false);
+      gunnerRecoil=1.8;
       gunnerMuzzle(v,true);
       rings.push({x:player.x,y:player.y,r:6,max:46,life:.18,total:.18,color:'#dfffff'});
-      shake=Math.min(13,shake+4.2);
+      shake=Math.min(13,shake+4.8);
     }
   }
   else if(attackType==='explosion'){
@@ -3360,6 +3482,7 @@ function useUltimate(){
   ultCharge=0;shake=16;
   const id=currentCharacter.id;
   if(id==='blademaster')playBladeTechniqueSfx('ult',{gate:'blade_ult',gap:700,volume:.66,rate:1});
+  else if(id==='gunner')playGunnerRailFireSfx(true);
   else playWeaponFireSfx(currentCharacter.attack,true);
   showGrowthToast(growthDefs[id].nodes.find(n=>n[0]===30)[2],growthDefs[id].ultimate);
 
@@ -3367,6 +3490,8 @@ function useUltimate(){
     gunnerMomentum=100;gunnerMomentumIdle=1.15;
     for(let w=0;w<5;w++)setTimeout(()=>{
       if(!running)return;
+      playGunnerUltimateWave(w);
+      gunnerRecoil=w===4?1.45:.9;
       rings.push({x:player.x,y:player.y,r:12,max:90+w*9,life:.22,total:.22,color:w===4?'#ffffff':'#9ef5ff'});
       for(let i=0;i<20;i++){
         const ang=i*Math.PI*2/20+w*.07;
@@ -3421,6 +3546,7 @@ function update(dt){
   gameTime+=dt; player.attackCd-=dt; player.hitCd-=dt;
   for(const k of ['boots','drink','sword'])if(itemBuffs[k]>0)itemBuffs[k]=Math.max(0,itemBuffs[k]-dt);
 
+  gunnerRecoil=Math.max(0,gunnerRecoil-dt*8.5);
   if(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive()){
     gunnerMomentumIdle=Math.max(0,gunnerMomentumIdle-dt);
     if(gunnerMomentumIdle<=0)gunnerMomentum=Math.max(0,gunnerMomentum-dt*38);
@@ -3809,7 +3935,9 @@ function draw(){
   ctx.shadowColor=feverActive()?'#ffd85c':gunnerHot?'#c9ffff':currentCharacter.color;
   ctx.fillStyle=feverActive()?'#fff0a0':gunnerHot?'#eaffff':currentCharacter.color;
   ctx.beginPath();ctx.arc(0,0,player.r,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=gunnerHot?'#ffffff':'#6ce5ff';ctx.fillRect(6,-4,15,8);
+  ctx.fillStyle=gunnerHot?'#ffffff':'#6ce5ff';
+  const recoilPx=currentCharacter.id==='gunner'?gunnerRecoil*5:0;
+  ctx.fillRect(6-recoilPx,-4,15+gunnerRecoil*2,8);
 
   if(currentCharacter.id==='gunner'&&attackType==='pierce'){
     const pct=clamp(gunnerMomentum/100,0,1);
@@ -3936,7 +4064,7 @@ function updateHud(){
 function equipCharacter(id){
   const c=characterDefs.find(x=>x.id===id);
   if(!c || !save.characters[id]?.owned) return;
-  currentCharacter=c;save.selectedCharacter=id;attackType=c.attack;ultCharge=0;attackCounters={};gunnerMomentum=0;gunnerMomentumIdle=0;ps=playerStats();persist();
+  currentCharacter=c;save.selectedCharacter=id;attackType=c.attack;ultCharge=0;attackCounters={};gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;ps=playerStats();persist();
   buildCharacterList();setAttack(attackType);updateHud();
 }
 
