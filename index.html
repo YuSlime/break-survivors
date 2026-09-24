@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 7.9</title>
+<title>BREAK SURVIVORS - Stage 8.0</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 7.9 — Character Growth / Ability Road / Ultimate */
+  /* Stage 8.0 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -499,6 +499,203 @@
     #ultButton span{font-size:18px}
   }
 
+
+  /* Stage 8.0 — Combat HUD / compact UI overhaul
+     Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
+  .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+  #app{grid-template-columns:1fr!important}
+  #gameWrap{isolation:isolate}
+  #hud{position:absolute;inset:0;display:block;z-index:4;pointer-events:none}
+  #hud *{box-sizing:border-box}
+
+  #playerHudCard{
+    position:absolute;left:14px;top:14px;width:238px;height:68px;
+    display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:center;
+    padding:9px 12px 9px 9px;border:1px solid #56698b88;border-radius:17px;
+    background:linear-gradient(135deg,#111a2be8,#0b101bdd);
+    box-shadow:0 12px 34px #0008,inset 0 1px 0 #ffffff12;
+    backdrop-filter:blur(12px);
+  }
+  #hudCharIcon{
+    --charColor:#6ee7ff;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;
+    font-size:25px;background:linear-gradient(145deg,color-mix(in srgb,var(--charColor) 30%,#111827),#0c1320);
+    border:1px solid color-mix(in srgb,var(--charColor) 58%,#ffffff22);
+    box-shadow:0 0 18px color-mix(in srgb,var(--charColor) 22%,transparent),inset 0 1px 0 #ffffff18;
+  }
+  .playerHudBody{min-width:0}
+  .playerHudTop{display:flex;align-items:center;gap:7px;justify-content:space-between;min-width:0}
+  .playerHudTop b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #hudLevel{font-size:9px;font-weight:1000;color:#8feaff;border:1px solid #4b7d9388;background:#112733;padding:2px 5px;border-radius:999px;white-space:nowrap}
+  .hpTrack{height:8px;margin-top:6px;border-radius:999px;overflow:hidden;background:#070b12;border:1px solid #28354c;box-shadow:inset 0 1px 4px #000c}
+  #hpFill{display:block;height:100%;width:100%;border-radius:inherit;background:linear-gradient(90deg,#4cf07f,#9af174);box-shadow:0 0 12px #63ef8f88;transition:width .12s linear}
+  .hpMeta{display:flex;justify-content:space-between;align-items:center;margin-top:3px;color:#8190aa;font-size:8px;font-weight:900;letter-spacing:.08em}
+  .hpMeta b{color:#dfffea;font-size:9px;letter-spacing:0}
+
+  #runHud{
+    position:absolute;left:50%;top:14px;transform:translateX(-50%);
+    min-width:190px;height:48px;display:flex;align-items:center;justify-content:center;gap:15px;
+    padding:6px 15px;border-radius:16px;border:1px solid #53648477;
+    background:linear-gradient(180deg,#10182ae6,#0a101bdd);box-shadow:0 12px 34px #0007;
+    backdrop-filter:blur(12px);
+  }
+  .runStat{text-align:center;min-width:58px;line-height:1}
+  .runStat span{display:block;color:#8290aa;font-size:8px;font-weight:1000;letter-spacing:.14em}
+  .runStat b{display:block;margin-top:4px;font-size:15px;color:#fff;font-variant-numeric:tabular-nums}
+  .runDivider{width:1px;height:25px;background:linear-gradient(transparent,#536484,transparent)}
+
+  #currencyHud{
+    position:absolute;right:14px;top:14px;display:flex;gap:7px;align-items:center;justify-content:flex-end;
+  }
+  .currencyChip{
+    height:34px;min-width:82px;display:flex;align-items:center;gap:7px;justify-content:center;
+    padding:0 10px;border-radius:999px;background:#0b1220e8;border:1px solid #43516f;
+    box-shadow:0 8px 25px #0007,inset 0 1px 0 #ffffff12;backdrop-filter:blur(10px);
+    font-size:11px;font-variant-numeric:tabular-nums;
+  }
+  .currencyChip span{font-size:12px}
+  .coinChip{border-color:#75633188}.coinChip span{color:#ffd45f;text-shadow:0 0 10px #ffd45f}
+  .gemChip{border-color:#3f789288}.gemChip span{color:#72eaff;text-shadow:0 0 10px #72eaff}
+
+  #attackBanner{
+    top:68px;z-index:5;height:26px;display:flex;align-items:center;
+    font-size:10px;font-weight:1000;letter-spacing:.12em;padding:0 11px;
+    border-radius:999px;background:#0a1220d9;border:1px solid #40577c88;color:#eaf6ff;
+    box-shadow:0 7px 20px #0007;backdrop-filter:blur(10px);
+  }
+  #attackBanner::before{content:"ATTACK";font-size:7px;color:#72dfff;margin-right:7px;letter-spacing:.15em}
+
+  #breakHud{top:102px;width:min(300px,46vw);opacity:.96}
+  #breakHud .breakTop{margin-bottom:3px;align-items:center}
+  #breakLabel{font-size:8px}
+  #comboText{font-size:15px}
+  #breakBar{height:5px}
+  #breakSub{font-size:7px;margin-top:3px}
+  #eventHud{top:142px;padding:5px 10px;font-size:8px}
+  #eventHud b{font-size:9px}
+  #bossHud{top:174px;width:min(380px,56vw)}
+  #bossTop{font-size:8px;margin-bottom:3px}
+  #bossBar{height:7px}
+
+  #quickActions{
+    position:absolute;right:14px;top:58px;z-index:8;display:flex;gap:5px;pointer-events:auto;
+  }
+  #quickActions .quickAction{
+    display:inline-flex!important;align-items:center;justify-content:center;height:29px;min-width:45px;
+    padding:0 8px;border-radius:9px;border:1px solid #435471;background:#101a2bdc;
+    color:#b9c8df;font-size:8px;font-weight:1000;letter-spacing:.05em;box-shadow:0 7px 20px #0006;
+    backdrop-filter:blur(9px);
+  }
+  #quickActions .quickAction:hover{background:#192943;color:#fff}
+  #quickGacha{border-color:#745c2e!important;color:#ffd86b!important}
+  #quickCharacters{border-color:#346b54!important;color:#88f2b2!important}
+
+  #ultButton{
+    right:20px;bottom:20px;width:94px;height:94px;z-index:8;
+    border:1px solid #5f7192;font-size:10px;box-shadow:0 10px 34px #000b,inset 0 0 20px #ffffff08;
+  }
+  #ultButton span{font-size:17px;margin-top:2px}
+
+  #mobilePad{
+    left:18px;bottom:18px;width:124px;height:124px;border-radius:50%;
+    background:radial-gradient(circle,#1a284565 0 38%,#0c1427a8 39% 66%,#26375866 67% 69%,transparent 70%);
+    border:1px solid #5a729244;box-shadow:0 10px 35px #0006;backdrop-filter:blur(5px);
+  }
+  #mobilePad button{
+    width:40px;height:40px;padding:0;border-radius:50%;border:1px solid #60799a66;
+    background:#14213acc;color:#d8e8ff;font-size:12px;box-shadow:inset 0 1px 0 #ffffff14;
+  }
+  #up{left:42px;top:2px}#down{left:42px;bottom:2px}#left{left:2px;top:42px}#right{right:2px;top:42px}
+
+  #growthToast{top:214px;min-width:min(380px,74vw);padding:10px 14px;border-radius:12px}
+  #growthToast b{font-size:13px}
+  #growthToast .small{font-size:9px}
+
+  #sidebar{
+    position:absolute!important;right:12px!important;top:12px!important;bottom:12px!important;
+    width:min(338px,calc(100vw - 24px))!important;height:auto!important;max-height:none!important;z-index:30!important;
+    padding:12px!important;border:1px solid #455774!important;border-radius:18px!important;
+    background:linear-gradient(180deg,#0e1625f5,#090e18f2)!important;
+    box-shadow:0 24px 80px #000c!important;backdrop-filter:blur(16px)!important;overflow:auto!important;
+  }
+  #sidebar h1{font-size:15px;margin:2px 36px 10px 0;letter-spacing:.02em}
+  #sidebar h1 span{display:block;color:#6f829e;font-size:9px;font-weight:800;margin-top:2px}
+  .adminEyebrow{font-size:8px;font-weight:1000;letter-spacing:.18em;color:#6ee7ff;margin-bottom:3px}
+  #sidebar h2{font-size:9px;letter-spacing:.13em;color:#7e90ab;margin:13px 2px 6px}
+  #sidebar .section{padding:9px;border-radius:12px;margin-bottom:7px;background:#101827c9;border-color:#2b3953}
+  #sidebar button{padding:7px 8px;border-radius:8px;font-size:10px}
+  #sidebar .small{font-size:9px}
+  #sidebar .stat{font-size:10px;margin:3px 0}
+  #sidebar .grid{gap:5px}
+  #sidebar input[type=range]{height:18px}
+  #closeSidebar{
+    position:sticky;top:0;float:right;width:29px;height:29px;font-size:14px;padding:0;
+    background:#28171f;border-color:#713542;box-shadow:0 5px 15px #0008;
+  }
+  body.adminOpen #quickCharacters,body.adminOpen #quickGacha{opacity:.25;pointer-events:none}
+
+  @media(max-width:900px){
+    #app{grid-template-columns:1fr!important}
+    #sidebar{right:8px!important;top:8px!important;bottom:8px!important;width:min(330px,calc(100vw - 16px))!important}
+    #mobilePad{display:block}
+    #breakHud{top:102px;width:min(300px,56vw)}
+    #eventHud{top:142px;max-width:72vw}
+    #bossHud{top:174px;width:min(360px,68vw)}
+    #comboText{font-size:15px}
+    #ultButton{width:88px;height:88px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));font-size:9px}
+    #ultButton span{font-size:16px}
+  }
+
+  @media(max-width:520px){
+    #playerHudCard{left:8px;top:8px;width:150px;height:58px;grid-template-columns:39px 1fr;gap:7px;padding:7px 8px;border-radius:14px}
+    #hudCharIcon{width:39px;height:39px;border-radius:11px;font-size:21px}
+    .playerHudTop b{font-size:9px;max-width:70px}
+    #hudLevel{font-size:7px;padding:2px 4px}
+    .hpTrack{height:6px;margin-top:5px}.hpMeta{font-size:6px}.hpMeta b{font-size:7px}
+
+    #currencyHud{right:8px;top:8px;display:grid;gap:4px}
+    .currencyChip{height:25px;min-width:92px;padding:0 8px;font-size:9px;justify-content:flex-start}
+    .currencyChip span{width:12px;text-align:center;font-size:9px}
+
+    #runHud{top:74px;min-width:120px;height:36px;padding:4px 9px;gap:7px;border-radius:12px}
+    .runStat{min-width:42px}.runStat span{font-size:6px}.runStat b{font-size:11px;margin-top:3px}.runDivider{height:19px}
+
+    #attackBanner{top:116px;height:22px;font-size:8px;padding:0 8px}
+    #attackBanner::before{font-size:6px;margin-right:5px}
+
+    #breakHud{top:146px;width:208px}
+    #comboText{font-size:13px}
+    #breakLabel{font-size:7px}
+    #breakSub{font-size:6px}
+    #eventHud{top:184px;max-width:210px}
+    #bossHud{top:215px;width:230px}
+    #bossTop{font-size:7px}
+
+    #quickActions{right:8px;top:69px;display:grid;gap:4px}
+    #quickActions .quickAction{height:25px;min-width:62px;padding:0 6px;font-size:7px;border-radius:8px}
+
+    #mobilePad{left:12px;bottom:calc(13px + env(safe-area-inset-bottom));width:112px;height:112px}
+    #mobilePad button{width:36px;height:36px;font-size:10px}
+    #up{left:38px;top:1px}#down{left:38px;bottom:1px}#left{left:1px;top:38px}#right{right:1px;top:38px}
+
+    #ultButton{width:78px;height:78px;right:13px;bottom:calc(14px + env(safe-area-inset-bottom));font-size:8px}
+    #ultButton span{font-size:14px}
+    #growthToast{top:250px;min-width:230px;max-width:72vw;padding:8px 10px}
+  }
+
+  @media(max-height:600px) and (orientation:landscape){
+    #playerHudCard{transform:scale(.86);transform-origin:top left}
+    #currencyHud{transform:scale(.86);transform-origin:top right}
+    #runHud{transform:translateX(-50%) scale(.86);transform-origin:top center}
+    #attackBanner{top:56px}
+    #breakHud{top:86px}
+    #eventHud{top:122px}
+    #bossHud{top:150px}
+    #mobilePad{width:102px;height:102px}
+    #mobilePad button{width:34px;height:34px}
+    #up{left:34px}#down{left:34px}#left{top:34px}#right{top:34px}
+    #ultButton{width:76px;height:76px}
+  }
+
 </style>
 </head>
 <body>
@@ -506,13 +703,29 @@
   <div id="gameWrap">
     <canvas id="game"></canvas>
     <div id="hud">
-      <div class="chip">HP <span id="hpText">100/100</span></div>
-      <div class="chip">Coins <span id="coinText">0</span></div>
-      <div class="chip">Kills <span id="killText">0</span></div>
-      <div class="chip">Time <span id="timeText">0:00</span></div>
-      <div class="chip">Character <span id="charText">Rookie Gunner</span></div>
-      <div class="chip">Gems <span id="gemText">0</span></div>
-      <div class="chip">ULT <span id="ultText">LOCKED</span></div>
+      <div id="playerHudCard">
+        <div id="hudCharIcon">🔫</div>
+        <div class="playerHudBody">
+          <div class="playerHudTop">
+            <b id="charText">Rookie Gunner</b>
+            <span id="hudLevel">LV.1</span>
+          </div>
+          <div class="hpTrack"><i id="hpFill"></i></div>
+          <div class="hpMeta"><span>HP</span><b id="hpText">100/100</b></div>
+        </div>
+      </div>
+
+      <div id="runHud">
+        <div class="runStat"><span>KILLS</span><b id="killText">0</b></div>
+        <div class="runDivider"></div>
+        <div class="runStat"><span>TIME</span><b id="timeText">0:00</b></div>
+      </div>
+
+      <div id="currencyHud">
+        <div class="currencyChip coinChip"><span>●</span><b id="coinText">0</b></div>
+        <div class="currencyChip gemChip"><span>◆</span><b id="gemText">0</b></div>
+      </div>
+      <span id="ultText" class="srOnly">LOCKED</span>
     </div>
     <div id="gachaFlash"></div>
     <div id="feverOverlay"></div>
@@ -528,7 +741,11 @@
       <div id="bossTop"><span id="bossName">VOID TYRANT</span><span id="bossPhase">PHASE 1</span></div>
       <div id="bossBar"><div id="bossFill"></div></div>
     </div>
-    <button id="openSidebar">ADMIN</button>
+    <div id="quickActions">
+      <button id="quickCharacters" class="quickAction" title="Character">CHAR</button>
+      <button id="quickGacha" class="quickAction" title="Gacha">GACHA</button>
+      <button id="openSidebar" class="quickAction" title="Admin">ADMIN</button>
+    </div>
     <button id="ultButton" class="locked">ULT<span id="ultButtonText">Lv30</span></button>
     <div id="growthToast"><b id="growthToastTitle"></b><div class="small" id="growthToastText"></div></div>
 
@@ -644,7 +861,8 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 7.9</h1>
+    <div class="adminEyebrow">CONTROL PANEL</div>
+    <h1>BREAK SURVIVORS <span>Stage 8.0</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -941,13 +1159,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 7.9 — BREAK RUSH
+// Stage 8.0 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 7.9 — CHAOS HUNT
+// Stage 8.0 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1982,7 +2200,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 7.9: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 8.0: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -2862,6 +3080,8 @@ function draw(){
 
 function updateHud(){
   document.getElementById('hpText').textContent=Math.max(0,Math.ceil(player.hp))+'/'+Math.ceil(ps.maxHp);
+  const hpFill=document.getElementById('hpFill');
+  if(hpFill)hpFill.style.width=(clamp(player.hp/ps.maxHp,0,1)*100)+'%';
   document.getElementById('coinText').textContent=save.coins.toLocaleString();
   document.getElementById('killText').textContent=runKills;
   const m=Math.floor(gameTime/60),s=Math.floor(gameTime%60).toString().padStart(2,'0');
@@ -2909,6 +3129,10 @@ function updateHud(){
   }
 
   document.getElementById('charText').textContent=currentCharacter.name;
+  const hudLevel=document.getElementById('hudLevel');
+  if(hudLevel)hudLevel.textContent='LV.'+charLevel(currentCharacter.id);
+  const hudCharIcon=document.getElementById('hudCharIcon');
+  if(hudCharIcon){hudCharIcon.textContent=currentCharacter.icon;hudCharIcon.style.setProperty('--charColor',currentCharacter.color)}
   document.getElementById('equippedName').textContent=currentCharacter.name;
   document.getElementById('equippedInfo').textContent=currentCharacter.rarity+' / '+attacks.find(a=>a.id===currentCharacter.attack).name.replace(/^\d+\.\s*/,'');
   document.getElementById('equippedStars').textContent='★'.repeat(starRank(currentCharacter.id))+'☆'.repeat(5-starRank(currentCharacter.id));
@@ -3301,22 +3525,24 @@ const openSidebarBtn = document.getElementById('openSidebar');
 const closeSidebarBtn = document.getElementById('closeSidebar');
 
 function setSidebarVisible(visible){
-  sidebar.style.display = visible ? '' : 'none';
-  openSidebarBtn.style.display = visible ? 'none' : 'block';
-  // On desktop, let the game area expand when the panel is hidden.
+  sidebar.style.display = visible ? 'block' : 'none';
+  openSidebarBtn.style.display = visible ? 'none' : 'inline-flex';
+  document.body.classList.toggle('adminOpen',visible);
   const app = document.getElementById('app');
-  app.style.gridTemplateColumns = visible ? '1fr 340px' : '1fr';
+  app.style.gridTemplateColumns = '1fr';
   resize();
 }
 closeSidebarBtn.onclick = ()=>setSidebarVisible(false);
 openSidebarBtn.onclick = ()=>setSidebarVisible(true);
+document.getElementById('quickCharacters').onclick=()=>document.getElementById('openCharacters').click();
+document.getElementById('quickGacha').onclick=()=>document.getElementById('openGacha').click();
 
 let last=performance.now();
 function loop(now){
   const dt=Math.min(.033,(now-last)/1000);last=now;
   update(dt);draw();requestAnimationFrame(loop);
 }
-buildAttackButtons();buildCharacterList();updateHud();persist();requestAnimationFrame(loop);
+buildAttackButtons();buildCharacterList();updateHud();persist();setSidebarVisible(false);requestAnimationFrame(loop);
 })();
 </script>
 </body>
