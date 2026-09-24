@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 6.7</title>
+<title>BREAK SURVIVORS - Stage 7.0</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 6.7 — Character Growth / Ability Road / Ultimate */
+  /* Stage 7.0 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 6.7</h1>
+    <h1>BREAK SURVIVORS — Stage 7.0</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -872,19 +872,19 @@ const growthDefs = {
   },
   blademaster:{
     nodes:[
-      [1,'Main','Area Slash'],
-      [5,'Long Edge','斬撃範囲 +18%'],
-      [10,'Cross Slash','少し遅れて追撃斬り'],
-      [20,'Branch','剣豪 / 旋風'],
+      [1,'Main','BLADE DANCE — 円月斬り → 月牙斬り → 十字斬り'],
+      [5,'Long Edge','円月斬り範囲 +18% / 月牙斬り射程 +15%'],
+      [10,'Cross Slash','十字斬りが回転追撃でもう一度発生'],
+      [20,'Branch','EDGE MASTERY / CYCLONE'],
       [30,'ULT','BLADE TEMPEST'],
-      [40,'Crescent','前方へ斬撃波'],
-      [50,'AWAKEN','INFINITE DANCE']
+      [40,'Crescent','3コンボごとに巨大な遠距離斬撃波'],
+      [50,'AWAKEN','INFINITE DANCE — 5段剣舞へ進化']
     ],
     branches:{
-      edge:{name:'EDGE MASTERY',desc:'Damage +28% / 範囲 +15%。'},
-      cyclone:{name:'CYCLONE',desc:'Attack Speed +25% / 追撃斬りが強化。'}
+      edge:{name:'EDGE MASTERY',desc:'Damage +28% / 範囲 +15%。十字斬りがElite・Bossへ最大HP追加ダメージ。'},
+      cyclone:{name:'CYCLONE',desc:'Attack Speed +25%。円月斬りの直後に追撃旋風斬り。'}
     },
-    ultimate:'BLADE TEMPEST — 高速連続斬撃で周囲を切り刻む。'
+    ultimate:'BLADE TEMPEST — 高速10連斬りの後、巨大な十字斬りでフィニッシュ。'
   },
   nova:{
     nodes:[
@@ -925,7 +925,7 @@ const attacks = [
   {id:'pierce',name:'1. Pierce',desc:'敵を一直線に貫通'},
   {id:'explosion',name:'2. Explosion',desc:'着弾時に範囲爆発'},
   {id:'lightning',name:'3. Chain Lightning',desc:'近い敵へ雷が連鎖'},
-  {id:'slash',name:'4. Area Slash',desc:'周囲を円形に斬る'},
+  {id:'slash',name:'4. Blade Dance',desc:'円月・月牙・十字の剣舞コンボ'},
   {id:'laser',name:'5. Laser',desc:'一直線上をまとめて焼く'},
   {id:'missile',name:'6. Homing Missile',desc:'追尾して範囲爆発'}
 ];
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 6.7 — BREAK RUSH
+// Stage 7.0 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 6.7 — CHAOS HUNT
+// Stage 7.0 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -2020,18 +2020,81 @@ function firePrimary(force=false){
     player.attackCd=0.48/Math.max(1,rate/2.7);
   }
   else if(attackType==='slash'){
-    const count=own&&currentCharacter.id==='blademaster'?nextAttackCount('blademaster'):0;
-    let radiusMul=1;
-    if(own&&currentCharacter.id==='blademaster'&&lv>=5)radiusMul*=1.18;
-    if(own&&currentCharacter.id==='blademaster'&&lv>=50)radiusMul*=1.20;
-    doSlash(base*1.15,{radiusMul,color:lv>=50&&own?'#fff0b0':'#d8f2ff'});
-    if(own&&currentCharacter.id==='blademaster'&&lv>=10){
-      const follow=lv>=50?1.0:(br==='cyclone'&&lv>=20?.80:.55);
-      setTimeout(()=>{if(running)doSlash(base*1.15*follow,{radiusMul:radiusMul*.92,color:'#b8e9ff',quiet:true})},90);
-      if(lv>=50)setTimeout(()=>{if(running)doSlash(base*.82,{radiusMul:radiusMul*1.07,color:'#ffe79b',quiet:true})},175);
+    // Admin attack override on another character keeps the simple legacy radial slash.
+    if(!(own&&currentCharacter.id==='blademaster')){
+      doSlash(base*1.15,{color:'#d8f2ff'});
+      player.attackCd=0.60/Math.max(1,rate/2.7);
+    }else{
+      const count=nextAttackCount('blademaster');
+      const comboLen=lv>=50?5:3;
+      const stage=((count-1)%comboLen)+1;
+      const edge=lv>=20&&br==='edge';
+      const cyclone=lv>=20&&br==='cyclone';
+      const radiusMul=(lv>=5?1.18:1)*(lv>=50?1.16:1);
+      const waveRange=(lv>=5?1.15:1);
+      const awakened=lv>=50;
+
+      // 1: 円月斬り — 360° close-range control.
+      if(stage===1){
+        doSlash(base*(awakened?1.34:1.22),{radiusMul,color:awakened?'#fff0ad':'#d8f2ff'});
+        if(cyclone){
+          setTimeout(()=>{if(running)doSlash(base*.62,{radiusMul:radiusMul*.86,color:'#aeeaff',quiet:true,life:.15})},82);
+        }
+      }
+
+      // 2: 月牙斬り — medium range crescent pressure.
+      else if(stage===2){
+        doBladeWave(base*(awakened?1.34:1.24),{
+          len:290*waveRange,width:38,color:awakened?'#fff1a8':'#aeeaff',heavy:awakened
+        });
+      }
+
+      // 3: 十字斬り — combo finisher. Lv10 adds a rotated second cross.
+      else if(stage===3){
+        doCrossSlash(base*(awakened?1.48:1.34),{
+          len:420,width:28,color:awakened?'#fff0a8':'#f2f8ff',heavy:true,edgeBossBonus:edge
+        });
+        if(lv>=10){
+          setTimeout(()=>{if(running)doCrossSlash(base*(awakened?.92:.74),{
+            len:390,width:23,rotation:Math.PI/8,color:'#9fe9ff',quiet:true,edgeBossBonus:edge
+          })},78);
+        }
+      }
+
+      // Lv50 stage 4: 月牙二連 — two crossing mid-range waves.
+      else if(stage===4){
+        doBladeWave(base*1.18,{len:340*waveRange,width:36,angleOffset:-.12,color:'#fff1a8'});
+        setTimeout(()=>{if(running)doBladeWave(base*1.18,{len:340*waveRange,width:36,angleOffset:.12,color:'#aeeaff',quiet:true})},58);
+      }
+
+      // Lv50 stage 5: 巨大円月斬り — awakened close/mid-range screen clearer.
+      else if(stage===5){
+        doSlash(base*1.58,{radiusMul:radiusMul*1.42,color:'#fff0a8',life:.23});
+        setTimeout(()=>{if(running)doSlash(base*.62,{radiusMul:radiusMul*1.58,color:'#aeeaff',quiet:true,life:.18})},92);
+      }
+
+      // Lv40 Crescent: every three full combos, fire a giant long-range blade wave.
+      const fullCycles=Math.floor(count/comboLen);
+      if(lv>=40 && count%comboLen===0 && fullCycles%3===0){
+        setTimeout(()=>{if(running)doBladeWave(base*(awakened?1.40:1.18),{
+          len:700,width:58,color:awakened?'#fff4b8':'#dff9ff',heavy:true,edgeBossBonus:edge,life:.22
+        })},105);
+      }
+
+      // Lv50 afterimage: repeat a faint version of each sword motion without extra SFX.
+      if(awakened){
+        setTimeout(()=>{
+          if(!running)return;
+          if(stage===1)doSlash(base*.36,{radiusMul:radiusMul*.96,color:'#9fe9ff',quiet:true,life:.13});
+          else if(stage===2)doBladeWave(base*.34,{len:300*waveRange,width:30,color:'#9fe9ff',quiet:true,life:.13});
+          else if(stage===3)doCrossSlash(base*.34,{len:360,width:20,rotation:.10,color:'#9fe9ff',quiet:true,edgeBossBonus:edge,life:.13});
+          else if(stage===4)doBladeWave(base*.32,{len:320*waveRange,width:28,angleOffset:0,color:'#9fe9ff',quiet:true,life:.13});
+          else if(stage===5)doSlash(base*.34,{radiusMul:radiusMul*1.34,color:'#9fe9ff',quiet:true,life:.13});
+        },105);
+      }
+
+      player.attackCd=0.56/Math.max(1,rate/2.7);
     }
-    if(own&&currentCharacter.id==='blademaster'&&lv>=40&&(lv>=50||count%3===0)) doBladeWave(base*(lv>=50?1.25:.85));
-    player.attackCd=0.62/Math.max(1,rate/2.7);
   }
   else if(attackType==='laser'){
     const count=own&&currentCharacter.id==='nova'?nextAttackCount('nova'):0;
@@ -2105,19 +2168,62 @@ function chainLightning(dmg,count=5,opts={}){
 
 function doSlash(dmg,opts={}){
   const r=96*ps.area*(opts.radiusMul||1);
-  rings.push({x:player.x,y:player.y,r:r*.75,max:r,life:.18,total:.18,color:opts.color||'#d8f2ff',slash:true});
+  const color=opts.color||'#d8f2ff';
+  rings.push({x:player.x,y:player.y,r:r*.70,max:r,life:opts.life||.18,total:opts.life||.18,color,slash:true});
   for(const e of enemies) if(!e.dead && dist(player,e)<=r+e.r) damageEnemy(e,dmg);
-  shake=Math.min(8,shake+(opts.quiet?1:2));
+  for(let i=0;i<(opts.quiet?5:9);i++){
+    const a=Math.random()*Math.PI*2,rr=r*rnd(.45,1);
+    particles.push({x:player.x+Math.cos(a)*rr,y:player.y+Math.sin(a)*rr,vx:Math.cos(a)*rnd(30,100),vy:Math.sin(a)*rnd(30,100),life:rnd(.12,.25),size:rnd(1.5,4),color});
+  }
+  shake=Math.min(10,shake+(opts.quiet?1:2.4));
 }
-function doBladeWave(dmg){
-  const v=aimVector(),len=520,width=26*ps.area,x2=player.x+v.x*len,y2=player.y+v.y*len;
-  beams.push({x1:player.x,y1:player.y,x2,y2,width,life:.17,total:.17,color:'#f4f6ff'});
+
+function doSlashLine(dmg,angle,len,width,color='#eaf8ff',opts={}){
+  const centered=!!opts.centered;
+  const half=centered?len*.5:0;
+  const dx=Math.cos(angle),dy=Math.sin(angle);
+  const x1=player.x-dx*half,y1=player.y-dy*half;
+  const x2=centered?player.x+dx*half:player.x+dx*len;
+  const y2=centered?player.y+dy*half:player.y+dy*len;
+
+  beams.push({x1,y1,x2,y2,width,life:opts.life||.16,total:opts.life||.16,color});
+
+  const vx=x2-x1,vy=y2-y1,l2=vx*vx+vy*vy||1;
   for(const e of enemies){
     if(e.dead)continue;
-    const px=e.x-player.x,py=e.y-player.y,t=clamp(px*v.x+py*v.y,0,len);
-    const cx=player.x+v.x*t,cy=player.y+v.y*t;
-    if(Math.hypot(e.x-cx,e.y-cy)<=width+e.r)damageEnemy(e,dmg);
+    const t=clamp(((e.x-x1)*vx+(e.y-y1)*vy)/l2,0,1);
+    const cx=x1+vx*t,cy=y1+vy*t;
+    if(Math.hypot(e.x-cx,e.y-cy)<=width+e.r){
+      let dealt=dmg;
+      if(opts.edgeBossBonus&&(e.type==='boss'||e.type==='elite')){
+        dealt+=Math.min(dmg*.55,e.maxHp*.012);
+      }
+      damageEnemy(e,dealt);
+    }
   }
+
+  for(let i=0;i<(opts.quiet?4:8);i++){
+    const t=Math.random(),px=x1+vx*t,py=y1+vy*t;
+    particles.push({x:px,y:py,vx:rnd(-55,55),vy:rnd(-55,55),life:rnd(.10,.22),size:rnd(1.5,4),color});
+  }
+  if(!opts.quiet)shake=Math.min(11,shake+(opts.heavy?3.6:2.1));
+}
+
+function doBladeWave(dmg,opts={}){
+  const v=aimVector();
+  const angle=Math.atan2(v.y,v.x)+(opts.angleOffset||0);
+  const len=(opts.len||300)*ps.area;
+  const width=(opts.width||34)*ps.area;
+  doSlashLine(dmg,angle,len,width,opts.color||'#bfefff',{quiet:opts.quiet,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.18});
+}
+
+function doCrossSlash(dmg,opts={}){
+  const baseAngle=(opts.angle??player.angle)+(opts.rotation||0);
+  const len=(opts.len||390)*ps.area;
+  const width=(opts.width||24)*ps.area;
+  const color=opts.color||'#f5fbff';
+  doSlashLine(dmg,baseAngle+Math.PI/4,len,width,color,{centered:true,quiet:opts.quiet,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.17});
+  doSlashLine(dmg,baseAngle-Math.PI/4,len,width,color,{centered:true,quiet:true,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.17});
 }
 
 function doLaser(dmg,angleOffset=0,widthMul=1,color='#65f7ff',quiet=false){
@@ -2174,7 +2280,9 @@ function specialAttack(){
   } else if(attackType==='lightning'){
     chainLightning(ps.damage*1.7,12,{range:240*ps.area,decay:.90,width:5});
   } else if(attackType==='slash'){
-    for(let i=0;i<3;i++) setTimeout(()=>{if(running)doSlash(ps.damage*1.35,{radiusMul:1+i*.08})},i*90);
+    doSlash(ps.damage*1.30,{radiusMul:1.22,color:'#fff0ad'});
+    setTimeout(()=>{if(running)doBladeWave(ps.damage*1.28,{len:420,width:46,color:'#aeeaff',heavy:true})},70);
+    setTimeout(()=>{if(running)doCrossSlash(ps.damage*1.42,{len:480,width:30,color:'#fff6ce',heavy:true})},145);
   } else if(attackType==='laser'){
     for(let i=0;i<8;i++){
       const ang=i*Math.PI*2/8, len=900,width=24*ps.area;
@@ -2227,7 +2335,21 @@ function useUltimate(){
     playLightningUltimateSurge();
     for(let w=0;w<4;w++)setTimeout(()=>{if(running)chainLightning(ps.damage*1.35,18,{range:280*ps.area,decay:.94,width:6,color:'#e4ffff',echo:true,silentSfx:true})},w*130);
   }else if(id==='blademaster'){
-    for(let i=0;i<8;i++)setTimeout(()=>{if(running){doSlash(ps.damage*1.45,{radiusMul:1.15+i*.035,color:i%2?'#9fe9ff':'#fff0ad'});if(i%2===0)doBladeWave(ps.damage*1.1)}},i*80);
+    for(let i=0;i<10;i++)setTimeout(()=>{
+      if(!running)return;
+      doSlash(ps.damage*(1.05+i*.035),{
+        radiusMul:1.12+(i%4)*.08,
+        color:i%2?'#9fe9ff':'#fff0ad',
+        quiet:i<8,
+        life:.14
+      });
+    },i*62);
+    setTimeout(()=>{
+      if(!running)return;
+      doCrossSlash(ps.damage*2.05,{len:680,width:42,color:'#fff7d6',heavy:true,edgeBossBonus:growthBranch()==='edge',life:.26});
+      doCrossSlash(ps.damage*.95,{len:620,width:30,rotation:Math.PI/8,color:'#9fe9ff',quiet:true,edgeBossBonus:growthBranch()==='edge',life:.20});
+      shake=18;
+    },670);
   }else if(id==='nova'){
     for(let w=0;w<3;w++)setTimeout(()=>{if(running)radialLaserWave(12,ps.damage*1.15,26*ps.area,w===2?'#fff1a8':'#9affff')},w*150);
   }else if(id==='missilequeen'){
