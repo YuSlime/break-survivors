@@ -1,0 +1,41 @@
+name: Import Lightning SFX V4
+
+on:
+  push:
+    paths:
+      - '.github/workflows/import-lightning-sfx-v4.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-sfx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install audio tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+      - name: Import lightning V4
+        run: |
+          set -e
+          mkdir -p tmp assets/sfx/v4
+          FIRE_URL="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC81MDQxM2VkMi01Yjg2LTRhZDMtOGU0Yi00NWUzNmZiMWFlZjIvbGlnaHRuaW5nX2ZpcmVfdjQubXAzP19qd3Q9ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnJaWGxJWVhOb0lqb2lZV1l6TkRRMVpEQXlOekU1T0RVMVl5SXNJbUoxWTJ0bGRDSTZJbkoxYm5kaGVTMTBZWE5yTFdGeWRHbG1ZV04wY3lJc0luTjBZV2RsSWpvaWNISnZaQ0lzSW1WNGNDSTZNVGM1TURRd05EazBOSDAueGZXVnFBRW5CTUpvN2x4MjYxUER1TlRjMkJIenVvd2RJOVJLanpQLU9Maw==' | base64 -d)"
+          HIT_URL="$(printf '%s' 'aHR0cHM6Ly9kbnpucnZzMDVwbXphLmNsb3VkZnJvbnQubmV0L2F1ZGlvX3NmeC9lYjc3YzI4OS04MDBiLTQ3MWItYTY0Yi01NTQxZDg2ZDVkYjUvbGlnaHRuaW5nX2hpdF92NC5tcDM/X2p3dD1leUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k2SWtwWFZDSjkuZXlKclpYbElZWE5vSWpvaU1UazRZamszT0RNMVptWTRPREkyTXlJc0ltSjFZMnRsZENJNkluSjFibmRoZVMxMFlYTnJMV0Z5ZEdsbVlXTjBjeUlzSW5OMFlXZGxJam9pY0hKdlpDSXNJbVY0Y0NJNk1UYzVNRFF4TlRRNU1YMC53ek9KMjFMbDdaY2FoWjg3YlI1Z3B5Wi16N2l5NjEwaVBxd0Y4TEZtd1M0' | base64 -d)"
+          curl -L --fail --retry 3 "$FIRE_URL" -o tmp/lightning_fire.mp3
+          curl -L --fail --retry 3 "$HIT_URL" -o tmp/lightning_hit.mp3
+          ffmpeg -hide_banner -loglevel error -y -i tmp/lightning_fire.mp3 -af "atrim=duration=0.52,highpass=f=45,lowpass=f=13500,afade=t=out:st=0.45:d=0.07,loudnorm=I=-27:TP=-7:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k assets/sfx/v4/lightning_fire.mp3
+          ffmpeg -hide_banner -loglevel error -y -i tmp/lightning_hit.mp3 -af "atrim=duration=0.62,highpass=f=45,lowpass=f=13500,afade=t=out:st=0.54:d=0.08,loudnorm=I=-28:TP=-8:LRA=7" -ar 44100 -ac 2 -codec:a libmp3lame -b:a 128k assets/sfx/v4/lightning_hit.mp3
+      - name: Verify
+        run: |
+          test -s assets/sfx/v4/lightning_fire.mp3
+          test -s assets/sfx/v4/lightning_hit.mp3
+      - name: Commit
+        run: |
+          git config user.name "BREAK SURVIVORS Bot"
+          git config user.email "actions@github.com"
+          git add assets/sfx/v4
+          git commit -m "Add buzzing electrocution lightning SFX V4" || exit 0
+          git push
