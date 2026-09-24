@@ -1,0 +1,47 @@
+name: Import Rookie Primary Reference SFX v13
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-rookie-primary-reference-sfx-v13.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Download reference-inspired shots
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rookie-v13 assets/sfx/v13
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/f269049c-7968-4d99-a243-fba9564419d9/rookie_primary_v13_a.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZmE5YjQ0ZDkwNDE3NjIzNyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM3NzMwNX0.usx96DYjPW0CpdfOsc93XN0gkiIGhj_VrpS3RNkSv8E' -o /tmp/rookie-v13/a.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/bd030991-5086-4ad5-836b-6d99ff5a4428/rookie_primary_v13_b.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiY2MwYzdlYWRmMTIwZjhiYyIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQxMDkyNX0.tmKDlu9fELYvtAspK-ScdTtbX6KCc0z4xPNxTHtfYIY' -o /tmp/rookie-v13/b.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/a316706a-7bd6-4b31-abfb-15e71a247185/rookie_primary_v13_hot.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMzEyNTNmMzE5YmQ5NzYzYSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5MDE5M30.-fMhcaOi-dTZ5jZqERac-CyjMmN24NJVXV3qkUE2bmk' -o /tmp/rookie-v13/hot.mp3
+
+      - name: Master for fast satisfying rapid fire
+        shell: bash
+        run: |
+          set -euo pipefail
+          ffmpeg -y -i /tmp/rookie-v13/a.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.30,highpass=f=55,lowpass=f=7600,equalizer=f=210:t=q:w=0.8:g=1.4,equalizer=f=3500:t=q:w=0.9:g=-2.0,acompressor=threshold=-21dB:ratio=2.0:attack=1.5:release=34,afade=t=out:st=0.255:d=0.045,loudnorm=I=-24:TP=-7:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v13/gunner_primary_ref_a.mp3
+          ffmpeg -y -i /tmp/rookie-v13/b.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.30,highpass=f=55,lowpass=f=7500,equalizer=f=220:t=q:w=0.8:g=1.3,equalizer=f=3450:t=q:w=0.9:g=-2.1,acompressor=threshold=-21dB:ratio=2.0:attack=1.5:release=34,afade=t=out:st=0.255:d=0.045,loudnorm=I=-24:TP=-7:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v13/gunner_primary_ref_b.mp3
+          ffmpeg -y -i /tmp/rookie-v13/hot.mp3 -af "silenceremove=start_periods=1:start_duration=0.003:start_threshold=-50dB,atrim=duration=0.31,highpass=f=52,lowpass=f=7900,equalizer=f=190:t=q:w=0.8:g=1.8,equalizer=f=3600:t=q:w=0.9:g=-1.8,acompressor=threshold=-20dB:ratio=2.1:attack=1.5:release=36,afade=t=out:st=0.262:d=0.048,loudnorm=I=-23.5:TP=-7:LRA=5" -ar 44100 -ac 2 -b:a 160k assets/sfx/v13/gunner_primary_ref_hot.mp3
+
+      - name: Commit SFX
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v13/*.mp3
+          git commit -m "Import Rookie Gunner reference-inspired primary SFX v13"
+          git push
