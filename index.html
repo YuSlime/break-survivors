@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 8.0</title>
+<title>BREAK SURVIVORS - Stage 8.1</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 8.0 — Character Growth / Ability Road / Ultimate */
+  /* Stage 8.1 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -500,7 +500,7 @@
   }
 
 
-  /* Stage 8.0 — Combat HUD / compact UI overhaul
+  /* Stage 8.1 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -696,6 +696,190 @@
     #ultButton{width:76px;height:76px}
   }
 
+
+  /* Stage 8.1 — one-line top HUD + high-visibility touch controls */
+  #topHudBar{
+    position:absolute;left:10px;right:10px;top:10px;height:54px;
+    display:grid;
+    grid-template-columns:minmax(150px,1.5fr) 58px 58px 64px minmax(74px,.8fr) 74px 74px 34px;
+    align-items:stretch;gap:4px;padding:4px;
+    border:1px solid #5267858c;border-radius:16px;
+    background:linear-gradient(180deg,#0e1728f2,#09111dec);
+    box-shadow:0 12px 34px #0009,inset 0 1px 0 #ffffff12;
+    backdrop-filter:blur(13px);pointer-events:auto;
+  }
+  #playerHudCard{
+    position:static;width:auto;height:44px;min-width:0;
+    grid-template-columns:34px minmax(0,1fr);gap:7px;align-items:center;
+    padding:4px 7px 4px 4px;border:0;border-radius:11px;
+    background:#111c30b5;box-shadow:inset 0 1px 0 #ffffff0c;backdrop-filter:none;
+  }
+  #hudCharIcon{width:34px;height:34px;border-radius:10px;font-size:18px}
+  .playerHudTop{gap:4px}
+  .playerHudTop b{font-size:9px}
+  #hudLevel{font-size:6px;padding:1px 3px}
+  .hpTrack{height:5px;margin-top:4px;border-width:0}
+  .hpMeta{margin-top:2px;font-size:5px}
+  .hpMeta b{font-size:6px}
+
+  .topMetric,.topCurrency,#attackBanner,#hudMenuBtn{
+    min-width:0;height:44px;border-radius:11px;border:1px solid #3546618c;
+    background:#111b2bb8;box-shadow:inset 0 1px 0 #ffffff0b;
+  }
+  .topMetric{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;
+  }
+  .topMetric span{font-size:6px;font-weight:1000;letter-spacing:.12em;color:#7f91ac}
+  .topMetric b{font-size:11px;margin-top:4px;color:#fff;font-variant-numeric:tabular-nums}
+  .comboMetric b{color:#8feaff;text-shadow:0 0 9px #54dbff66}
+
+  #attackBanner{
+    position:static!important;transform:none!important;display:flex;align-items:center;justify-content:center;
+    padding:0 6px;font-size:8px!important;font-weight:1000;letter-spacing:.04em;white-space:nowrap;
+    overflow:hidden;text-overflow:ellipsis;color:#dff8ff;border-color:#3e6c8588;
+    box-shadow:inset 0 1px 0 #ffffff0b!important;backdrop-filter:none!important;
+  }
+  #attackBanner::before{content:"ATK";font-size:5px;margin-right:4px;color:#61dfff;letter-spacing:.08em}
+
+  .topCurrency{
+    display:flex;align-items:center;justify-content:center;gap:5px;padding:0 5px;
+    font-size:9px;font-variant-numeric:tabular-nums;overflow:hidden;
+  }
+  .topCurrency span{font-size:9px;flex:0 0 auto}
+  .topCurrency b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #hudMenuBtn{
+    display:grid;place-items:center;padding:0;color:#d9e6fa;font-size:15px;font-weight:900;cursor:pointer;
+    border-color:#4e6385;background:#152139;
+  }
+
+  /* BREAK becomes a single thin progress line directly under the top row. */
+  #breakHud{
+    left:12px;right:12px;top:67px;transform:none;width:auto;height:4px;
+    opacity:.95;z-index:5;
+  }
+  #breakHud .breakTop,#breakSub{display:none!important}
+  #breakBar{height:3px;border:0;background:#101725cc;box-shadow:none}
+  #breakFill{box-shadow:0 0 9px #7ceaffaa}
+
+  #eventHud{top:78px;padding:4px 9px;font-size:7px}
+  #eventHud b{font-size:8px}
+  #bossHud{top:104px;width:min(360px,74vw)}
+  #bossTop{font-size:7px;margin-bottom:2px}
+  #bossBar{height:6px}
+  #growthToast{top:132px}
+
+  /* Top menu opens as a small popover instead of permanent buttons. */
+  #quickActions{
+    right:10px;top:68px;z-index:35;display:none;grid-template-columns:1fr;
+    gap:5px;width:96px;padding:6px;border:1px solid #4a5f7d;border-radius:12px;
+    background:#0b1423f4;box-shadow:0 14px 38px #000b;backdrop-filter:blur(12px);
+  }
+  #quickActions.show{display:grid}
+  #quickActions .quickAction{
+    display:flex!important;width:100%;height:30px;justify-content:flex-start;
+    min-width:0;padding:0 8px;font-size:8px;border-radius:8px;
+  }
+
+  /* Controls are intentionally high contrast and above every normal HUD layer. */
+  #mobilePad{
+    z-index:40!important;opacity:1!important;visibility:visible!important;
+    width:138px;height:138px;left:16px;bottom:calc(18px + env(safe-area-inset-bottom));
+    border:2px solid #7fa9e0a8;
+    background:
+      radial-gradient(circle at 50% 50%,#263d65f0 0 20%,#152a4be8 21% 48%,#0d1830ef 49% 100%);
+    box-shadow:0 0 0 5px #0b1223a8,0 12px 38px #000c,0 0 28px #5d9dff35,inset 0 1px 0 #ffffff20;
+    touch-action:none;
+  }
+  #mobilePad::after{
+    content:"";position:absolute;left:50%;top:50%;width:28px;height:28px;transform:translate(-50%,-50%);
+    border-radius:50%;background:#20375e;border:1px solid #88b8f0aa;box-shadow:inset 0 1px 0 #ffffff18;
+    pointer-events:none;
+  }
+  #mobilePad button{
+    z-index:2;width:44px;height:44px;border:2px solid #8ebcf3cc!important;
+    background:linear-gradient(180deg,#284a78,#192f52)!important;
+    color:#fff!important;font-size:15px!important;font-weight:1000;
+    text-shadow:0 1px 5px #000,0 0 8px #8fc4ff;
+    box-shadow:0 5px 14px #0008,inset 0 1px 0 #ffffff28!important;
+    touch-action:none;
+  }
+  #up{left:45px;top:2px}#down{left:45px;bottom:2px}#left{left:2px;top:45px}#right{right:2px;top:45px}
+
+  #ultButton{
+    z-index:40!important;opacity:1!important;filter:none!important;
+    width:104px;height:104px;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));
+    border:2px solid #8ca3c9!important;
+    background:radial-gradient(circle at 50% 35%,#32486c,#17243b 58%,#0b111e)!important;
+    color:#fff!important;font-size:11px!important;
+    box-shadow:0 0 0 5px #0b1223a8,0 12px 38px #000c,0 0 28px #72aaff30,inset 0 1px 0 #ffffff20!important;
+  }
+  #ultButton::before{content:"✦";display:block;font-size:24px;line-height:.9;color:#b9d7ff;text-shadow:0 0 12px #78b3ff}
+  #ultButton span{font-size:14px!important;color:#dbe7ff!important}
+  #ultButton.locked{opacity:.90!important;filter:none!important}
+  #ultButton.ready{
+    border-color:#ffe36f!important;
+    background:radial-gradient(circle at 50% 35%,#9d7824,#3c2d11 60%,#171006)!important;
+    box-shadow:0 0 0 5px #2d2008aa,0 0 30px #ffd85caa,0 0 70px #ffae3c55,0 12px 38px #000c!important;
+  }
+  #ultButton.ready::before{color:#fff1a6;text-shadow:0 0 15px #ffd85c}
+
+  @media(max-width:900px){
+    #mobilePad{display:block!important}
+    #ultButton{display:block!important}
+  }
+
+  @media(max-width:520px){
+    #topHudBar{
+      left:5px;right:5px;top:5px;height:48px;padding:3px;gap:2px;border-radius:12px;
+      grid-template-columns:minmax(92px,1.35fr) 34px 38px 38px minmax(48px,.75fr) 43px 43px 27px;
+    }
+    #playerHudCard{height:40px;grid-template-columns:29px minmax(0,1fr);gap:4px;padding:3px 4px 3px 3px;border-radius:9px}
+    #hudCharIcon{width:29px;height:29px;border-radius:8px;font-size:16px}
+    .playerHudTop b{font-size:7px;max-width:48px}
+    #hudLevel{font-size:5px;padding:1px 2px}
+    .hpTrack{height:4px;margin-top:3px}
+    .hpMeta{font-size:4px}.hpMeta b{font-size:5px}
+
+    .topMetric,.topCurrency,#attackBanner,#hudMenuBtn{height:40px;border-radius:8px}
+    .topMetric span{font-size:5px;letter-spacing:.05em}
+    .topMetric b{font-size:9px;margin-top:3px}
+    #attackBanner{font-size:6px!important;padding:0 3px}
+    #attackBanner::before{display:none}
+    .topCurrency{gap:2px;padding:0 2px;font-size:7px}
+    .topCurrency span{font-size:7px}
+    #hudMenuBtn{font-size:12px}
+
+    #breakHud{left:7px;right:7px;top:56px}
+    #eventHud{top:64px}
+    #bossHud{top:89px;width:250px}
+    #growthToast{top:118px}
+
+    #quickActions{right:6px;top:57px;width:88px}
+
+    #mobilePad{
+      width:132px;height:132px;left:14px;bottom:calc(18px + env(safe-area-inset-bottom));
+    }
+    #mobilePad button{width:42px;height:42px;font-size:14px!important}
+    #up{left:43px;top:2px}#down{left:43px;bottom:2px}#left{left:2px;top:43px}#right{right:2px;top:43px}
+    #ultButton{
+      width:96px;height:96px;right:15px;bottom:calc(20px + env(safe-area-inset-bottom));font-size:10px!important;
+    }
+    #ultButton::before{font-size:22px}
+    #ultButton span{font-size:13px!important}
+  }
+
+  @media(max-height:600px) and (orientation:landscape){
+    #topHudBar{height:46px;top:5px}
+    #playerHudCard,.topMetric,.topCurrency,#attackBanner,#hudMenuBtn{height:38px}
+    #breakHud{top:54px}
+    #eventHud{top:62px}
+    #bossHud{top:86px}
+    #mobilePad{width:112px;height:112px}
+    #mobilePad button{width:36px;height:36px}
+    #up{left:37px}#down{left:37px}#left{top:37px}#right{top:37px}
+    #ultButton{width:82px;height:82px}
+  }
+
 </style>
 </head>
 <body>
@@ -703,33 +887,31 @@
   <div id="gameWrap">
     <canvas id="game"></canvas>
     <div id="hud">
-      <div id="playerHudCard">
-        <div id="hudCharIcon">🔫</div>
-        <div class="playerHudBody">
-          <div class="playerHudTop">
-            <b id="charText">Rookie Gunner</b>
-            <span id="hudLevel">LV.1</span>
+      <div id="topHudBar">
+        <div id="playerHudCard">
+          <div id="hudCharIcon">🔫</div>
+          <div class="playerHudBody">
+            <div class="playerHudTop">
+              <b id="charText">Rookie Gunner</b>
+              <span id="hudLevel">LV.1</span>
+            </div>
+            <div class="hpTrack"><i id="hpFill"></i></div>
+            <div class="hpMeta"><span>HP</span><b id="hpText">100/100</b></div>
           </div>
-          <div class="hpTrack"><i id="hpFill"></i></div>
-          <div class="hpMeta"><span>HP</span><b id="hpText">100/100</b></div>
         </div>
-      </div>
 
-      <div id="runHud">
-        <div class="runStat"><span>KILLS</span><b id="killText">0</b></div>
-        <div class="runDivider"></div>
-        <div class="runStat"><span>TIME</span><b id="timeText">0:00</b></div>
-      </div>
-
-      <div id="currencyHud">
-        <div class="currencyChip coinChip"><span>●</span><b id="coinText">0</b></div>
-        <div class="currencyChip gemChip"><span>◆</span><b id="gemText">0</b></div>
+        <div class="topMetric"><span>KILLS</span><b id="killText">0</b></div>
+        <div class="topMetric"><span>TIME</span><b id="timeText">0:00</b></div>
+        <div class="topMetric comboMetric"><span>COMBO</span><b id="comboTopText">0</b></div>
+        <div id="attackBanner">Pierce</div>
+        <div class="topCurrency coinChip"><span>●</span><b id="coinText">0</b></div>
+        <div class="topCurrency gemChip"><span>◆</span><b id="gemText">0</b></div>
+        <button id="hudMenuBtn" title="Menu" aria-label="Menu">☰</button>
       </div>
       <span id="ultText" class="srOnly">LOCKED</span>
     </div>
     <div id="gachaFlash"></div>
     <div id="feverOverlay"></div>
-    <div id="attackBanner">Pierce</div>
     <div id="breakHud">
       <div class="breakTop"><span id="breakLabel">BREAK CHAIN</span><span id="comboText">0 K.O.</span></div>
       <div id="breakBar"><div id="breakFill"></div></div>
@@ -862,7 +1044,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 8.0</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 8.1</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1159,13 +1341,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 8.0 — BREAK RUSH
+// Stage 8.1 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 8.0 — CHAOS HUNT
+// Stage 8.1 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -2200,7 +2382,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 8.0: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 8.1: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -3078,15 +3260,23 @@ function draw(){
   ctx.restore();
 }
 
+function compactHudNumber(v){
+  const n=Math.max(0,Number(v)||0);
+  if(n>=1e9)return (n/1e9).toFixed(n>=1e10?0:1).replace(/\.0$/,'')+'B';
+  if(n>=1e6)return (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,'')+'M';
+  if(n>=1e3)return (n/1e3).toFixed(n>=1e4?0:1).replace(/\.0$/,'')+'K';
+  return Math.floor(n).toString();
+}
+
 function updateHud(){
   document.getElementById('hpText').textContent=Math.max(0,Math.ceil(player.hp))+'/'+Math.ceil(ps.maxHp);
   const hpFill=document.getElementById('hpFill');
   if(hpFill)hpFill.style.width=(clamp(player.hp/ps.maxHp,0,1)*100)+'%';
-  document.getElementById('coinText').textContent=save.coins.toLocaleString();
+  document.getElementById('coinText').textContent=compactHudNumber(save.coins);
   document.getElementById('killText').textContent=runKills;
   const m=Math.floor(gameTime/60),s=Math.floor(gameTime%60).toString().padStart(2,'0');
   document.getElementById('timeText').textContent=m+':'+s;
-  document.getElementById('gemText').textContent=save.gems.toLocaleString();
+  document.getElementById('gemText').textContent=compactHudNumber(save.gems);
   const gg=document.getElementById('gachaGemText'); if(gg) gg.textContent=save.gems.toLocaleString();
   const tier=breakTier();
   const bh=document.getElementById('breakHud'),bf=document.getElementById('breakFill');
@@ -3096,6 +3286,8 @@ function updateHud(){
     document.getElementById('feverOverlay')?.classList.toggle('show',feverActive());
     bl.textContent=feverActive()?'BREAK FEVER':tier.name;
     ct.textContent=breakCombo+' K.O.';
+    const comboTop=document.getElementById('comboTopText');
+    if(comboTop)comboTop.textContent=breakCombo;
     const next=tier.next||75;
     let pct=feverActive()?Math.max(0,feverTime/FEVER_DURATION*100):next?clamp(breakCombo/next*100,0,100):100;
     bf.style.width=pct+'%';
@@ -3413,7 +3605,9 @@ function buildAttackButtons(){
 function setAttack(id){
   attackType=id;
   document.querySelectorAll('[data-attack]').forEach(b=>b.classList.toggle('active',b.dataset.attack===id));
-  const a=attacks.find(x=>x.id===id);document.getElementById('attackBanner').textContent=a.name.replace(/^\d+\.\s*/,'')+' — '+a.desc;
+  const a=attacks.find(x=>x.id===id),banner=document.getElementById('attackBanner');
+  banner.textContent=a.name.replace(/^\d+\.\s*/,'');
+  banner.title=a.desc;
 }
 
 function buildShop(){
@@ -3532,10 +3726,17 @@ function setSidebarVisible(visible){
   app.style.gridTemplateColumns = '1fr';
   resize();
 }
+const quickActions=document.getElementById('quickActions');
+const hudMenuBtn=document.getElementById('hudMenuBtn');
+function closeQuickMenu(){quickActions.classList.remove('show')}
 closeSidebarBtn.onclick = ()=>setSidebarVisible(false);
-openSidebarBtn.onclick = ()=>setSidebarVisible(true);
-document.getElementById('quickCharacters').onclick=()=>document.getElementById('openCharacters').click();
-document.getElementById('quickGacha').onclick=()=>document.getElementById('openGacha').click();
+openSidebarBtn.onclick = ()=>{closeQuickMenu();setSidebarVisible(true)};
+hudMenuBtn.onclick = e=>{e.stopPropagation();quickActions.classList.toggle('show')};
+document.getElementById('quickCharacters').onclick=()=>{closeQuickMenu();document.getElementById('openCharacters').click()};
+document.getElementById('quickGacha').onclick=()=>{closeQuickMenu();document.getElementById('openGacha').click()};
+document.addEventListener('pointerdown',e=>{
+  if(!quickActions.contains(e.target)&&e.target!==hudMenuBtn)closeQuickMenu();
+});
 
 let last=performance.now();
 function loop(now){
