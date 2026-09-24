@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 6.1</title>
+<title>BREAK SURVIVORS - Stage 6.2</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 6.1 — Character Growth / Ability Road / Ultimate */
+  /* Stage 6.2 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 6.1</h1>
+    <h1>BREAK SURVIVORS — Stage 6.2</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 6.1 — BREAK RUSH
+// Stage 6.2 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 6.1 — CHAOS HUNT
+// Stage 6.2 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1434,7 +1434,7 @@ function damageEnemy(e,dmg,impact=true){
 
   if(impact){
     const weapon=activeWeaponKey();
-    const impactChance={pierce:.13,explosion:.015,lightning:.07,slash:.10,laser:.06,missile:.015}[weapon]??.08;
+    const impactChance={pierce:.09,explosion:.008,lightning:.035,slash:.065,laser:.025,missile:.008}[weapon]??.05;
     if(Math.random()<impactChance)playWeaponImpactSfx(weapon,crit||actualDmg>ps.damage*1.2);
   }
   e.flash=crit?.12:.08;
@@ -1666,28 +1666,28 @@ const eventSfxFiles={
 
 const attackSfxFiles = {
   pierce:{
-    fire:['assets/sfx/v2/pierce_fire_a.mp3','assets/sfx/v2/pierce_fire_b.mp3'],
-    hit:['assets/sfx/v2/pierce_hit_a.mp3','assets/sfx/v2/pierce_hit_b.mp3']
+    fire:['assets/sfx/v3/pierce_fire.mp3'],
+    hit:['assets/sfx/v3/pierce_hit.mp3']
   },
   explosion:{
-    fire:['assets/sfx/v2/explosion_fire_a.mp3','assets/sfx/v2/explosion_fire_b.mp3'],
-    hit:['assets/sfx/v2/explosion_hit_a.mp3','assets/sfx/v2/explosion_hit_b.mp3']
+    fire:['assets/sfx/v3/explosion_fire.mp3'],
+    hit:['assets/sfx/v3/explosion_hit.mp3']
   },
   lightning:{
-    fire:['assets/sfx/v2/lightning_fire_a.mp3','assets/sfx/v2/lightning_fire_b.mp3'],
-    hit:['assets/sfx/v2/lightning_hit_a.mp3','assets/sfx/v2/lightning_hit_b.mp3']
+    fire:['assets/sfx/v3/lightning_fire.mp3'],
+    hit:['assets/sfx/v3/lightning_hit.mp3']
   },
   slash:{
-    fire:['assets/sfx/v2/slash_fire_a.mp3','assets/sfx/v2/slash_fire_b.mp3'],
-    hit:['assets/sfx/v2/slash_hit_a.mp3','assets/sfx/v2/slash_hit_b.mp3']
+    fire:['assets/sfx/v3/slash_fire.mp3'],
+    hit:['assets/sfx/v3/slash_hit.mp3']
   },
   laser:{
-    fire:['assets/sfx/v2/laser_fire_a.mp3','assets/sfx/v2/laser_fire_b.mp3'],
-    hit:['assets/sfx/v2/laser_hit_a.mp3','assets/sfx/v2/laser_hit_b.mp3']
+    fire:['assets/sfx/v3/laser_fire.mp3'],
+    hit:['assets/sfx/v3/laser_hit.mp3']
   },
   missile:{
-    fire:['assets/sfx/v2/missile_fire_a.mp3','assets/sfx/v2/missile_fire_b.mp3'],
-    hit:['assets/sfx/v2/missile_hit_a.mp3','assets/sfx/v2/missile_hit_b.mp3']
+    fire:['assets/sfx/v3/missile_fire.mp3'],
+    hit:['assets/sfx/v3/missile_hit.mp3']
   }
 };
 
@@ -1757,7 +1757,7 @@ function playAttackSample(key,volume=1,rate=1){
   const src=ac.createBufferSource();
   const gain=ac.createGain();
   src.buffer=buffer;
-  src.playbackRate.value=rate*(.985+Math.random()*.03);
+  src.playbackRate.value=rate;
   gain.gain.value=clamp(volume*rapidDuck*overlapDuck,0,.9);
   src.connect(gain).connect(attackFilter);
 
@@ -1824,28 +1824,25 @@ function activeWeaponKey(){
 function playWeaponFireSfx(kind,special=false){
   if(!soundEnabled) return;
 
-  // Match sound density to the visual cadence of each weapon.
-  const gap=special?85:({pierce:78,explosion:185,lightning:122,slash:142,laser:148,missile:185}[kind]||125);
+  const gap=special?85:({pierce:82,explosion:185,lightning:125,slash:150,laser:150,missile:185}[kind]||125);
   if(!characterSfxAllowed('fire_'+kind,gap)) return;
 
-  const vols={pierce:.50,explosion:.60,lightning:.43,slash:.55,laser:.50,missile:.57};
-  const base=vols[kind]||.48;
-  playAttackSample(pickWeaponSfx(kind,'fire'),base*(special?1.04:1),special?1.01:1);
+  // V3: identity first — blaster, launcher, arc, blade, beam, rocket.
+  const vols={pierce:.60,explosion:.57,lightning:.52,slash:.64,laser:.58,missile:.60};
+  const base=vols[kind]||.52;
+  playAttackSample(pickWeaponSfx(kind,'fire'),base*(special?1.03:1),1);
 }
 
 function playWeaponImpactSfx(kind,strong=false){
   if(!soundEnabled) return;
 
-  const gap=({pierce:118,explosion:185,lightning:132,slash:148,laser:152,missile:195}[kind]||150);
+  const gap=({pierce:125,explosion:185,lightning:150,slash:155,laser:165,missile:195}[kind]||155);
   const gate='hit_'+kind+(strong?'_strong':'');
   if(!characterSfxAllowed(gate,gap)) return;
 
-  const vols={pierce:.18,explosion:.64,lightning:.22,slash:.27,laser:.22,missile:.66};
-  const base=vols[kind]||.24;
-  playAttackSample(pickWeaponSfx(kind,'hit'),base*(strong?1.04:1),strong?.99:1);
-
-  // Heavy attacks get a restrained sub layer rather than simply making the sample louder.
-  if(kind==='explosion'||kind==='missile')playSubBody(kind,strong);
+  const vols={pierce:.20,explosion:.62,lightning:.20,slash:.30,laser:.19,missile:.64};
+  const base=vols[kind]||.22;
+  playAttackSample(pickWeaponSfx(kind,'hit'),base*(strong?1.03:1),1);
 }
 
 function playGachaSfx(kind){
