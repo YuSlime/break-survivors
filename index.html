@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 8.6</title>
+<title>BREAK SURVIVORS - Stage 8.7</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -449,7 +449,7 @@
   }
 
 
-  /* Stage 8.6 — Character Growth / Ability Road / Ultimate */
+  /* Stage 8.7 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -513,7 +513,7 @@
   }
 
 
-  /* Stage 8.6 — Combat HUD / compact UI overhaul
+  /* Stage 8.7 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -710,7 +710,7 @@
   }
 
 
-  /* Stage 8.6 — one-line top HUD + high-visibility touch controls */
+  /* Stage 8.7 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -894,7 +894,7 @@
   }
 
 
-  /* Stage 8.6 — iPhone / mobile bottom clipping fix */
+  /* Stage 8.7 — iPhone / mobile bottom clipping fix */
   :root{
     --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
   }
@@ -943,7 +943,7 @@
   }
 
 
-  /* Stage 8.6 — ADMIN is an exclusive panel, never stacked over gameplay panels */
+  /* Stage 8.7 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
@@ -964,7 +964,7 @@
   }
 
 
-  /* Stage 8.6 — ADMIN bottom drawer, clearly separated from top HUD */
+  /* Stage 8.7 — ADMIN bottom drawer, clearly separated from top HUD */
   #sidebar{
     left:50%!important;
     right:auto!important;
@@ -1001,7 +1001,7 @@
   }
 
 
-  /* Stage 8.6 — standalone ADMIN launcher, away from top HUD/popovers */
+  /* Stage 8.7 — standalone ADMIN launcher, away from top HUD/popovers */
   #openSidebar.adminLauncher{
     display:inline-flex;
     position:absolute!important;
@@ -1042,7 +1042,7 @@
   }
 
 
-  /* Stage 8.6 — app-like touch behavior: no double-tap zoom / no text selection */
+  /* Stage 8.7 — app-like touch behavior: no double-tap zoom / no text selection */
   html,body,#app,#gameWrap,canvas{
     touch-action:none!important;
     -ms-touch-action:none!important;
@@ -1063,6 +1063,30 @@
   #sidebar,#gacha .gachaScreen,#characters .modal,#shop .modal{
     touch-action:pan-y!important;
     overscroll-behavior:contain;
+  }
+
+
+  /* Stage 8.7 — temporary drop buffs */
+  #itemBuffHud{
+    position:absolute;left:10px;top:66px;z-index:7;
+    display:flex;gap:5px;flex-wrap:wrap;max-width:42vw;
+    pointer-events:none;
+  }
+  .itemBuffChip{
+    display:flex;align-items:center;gap:5px;height:25px;padding:0 8px;
+    border-radius:999px;border:1px solid #4d627f;
+    background:#0c1423e8;box-shadow:0 6px 18px #0007,inset 0 1px 0 #ffffff12;
+    font-size:8px;font-weight:1000;letter-spacing:.03em;
+    backdrop-filter:blur(8px);
+  }
+  .itemBuffChip b{font-size:9px;color:#fff;font-variant-numeric:tabular-nums}
+  .itemBuffChip.boots{border-color:#73d7ff88;color:#9de5ff}
+  .itemBuffChip.drink{border-color:#b47cff88;color:#d3a7ff}
+  .itemBuffChip.sword{border-color:#ff7d7d88;color:#ffaaaa}
+  @media(max-width:520px){
+    #itemBuffHud{left:7px;top:58px;max-width:55vw;gap:3px}
+    .itemBuffChip{height:21px;padding:0 6px;font-size:6px}
+    .itemBuffChip b{font-size:7px}
   }
 
 </style>
@@ -1108,6 +1132,7 @@
       <div id="bossTop"><span id="bossName">VOID TYRANT</span><span id="bossPhase">PHASE 1</span></div>
       <div id="bossBar"><div id="bossFill"></div></div>
     </div>
+    <div id="itemBuffHud"></div>
     <div id="quickActions">
       <button id="quickCharacters" class="quickAction" title="Character">CHAR</button>
       <button id="quickGacha" class="quickAction" title="Gacha">GACHA</button>
@@ -1229,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 8.6</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 8.7</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1312,15 +1337,14 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-// Stage 8.6 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
+// Stage 8.7 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
 const CAMERA_ZOOM = 0.40;
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
-// Stage 8.6 finite battlefield.
+// Stage 8.7 finite battlefield.
 const WORLD_W = 5200;
 const WORLD_H = 3400;
 const WORLD_EDGE_PAD = 18;
-const MAX_ACTIVE_ENEMIES = 200;
 
 let W = 1280, H = 720, DPR = 1;
 
@@ -1558,16 +1582,19 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 8.6 — BREAK RUSH
+// Stage 8.7 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 8.6 — CHAOS HUNT
+// Stage 8.7 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
+
+// Stage 8.7 temporary item buffs.
+let itemBuffs={boots:0,drink:0,sword:0};
 const chaosEvents={
   gold:{name:'GOLD RUSH',duration:12,color:'#ffd65c',desc:'COINS ×2'},
   swarm:{name:'SWARM',duration:12,color:'#ff8c62',desc:'ENEMY FLOOD'},
@@ -1830,6 +1857,7 @@ function resetRun(){
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
   activeEvent=null;eventTime=0;eventPulse=0;nextEventAt=rnd(38,48);
   treasureTimer=rnd(24,34);bossPending=false;bossWarningTime=0;lootStreak=0;lootStreakTimer=0;
+  itemBuffs={boots:0,drink:0,sword:0};
   document.getElementById('death').style.display='none';
 }
 
@@ -1902,6 +1930,32 @@ function nearestEnemyInfo(x=player.x,y=player.y){
 }
 
 
+const powerupDefs={
+  magnet:{name:'MAGNET',icon:'🧲',color:'#82e9ff'},
+  heart:{name:'HEART',icon:'❤',color:'#ff6c7a'},
+  boots:{name:'BOOTS',icon:'👢',color:'#72d7ff'},
+  drink:{name:'DRINK',icon:'🥤',color:'#b780ff'},
+  sword:{name:'SWORD',icon:'⚔',color:'#ff8a78'}
+};
+const isPowerupType=type=>!!powerupDefs[type];
+
+function powerupDropType(){
+  const r=Math.random();
+  if(r<.14)return 'magnet';
+  if(r<.42)return 'heart';
+  if(r<.61)return 'boots';
+  if(r<.80)return 'drink';
+  return 'sword';
+}
+
+function maybeSpawnPowerup(e){
+  const chances={normal:.014,runner:.016,tank:.025,shooter:.020,elite:.20,treasure:.35,boss:1};
+  const chance=chances[e.type]??.014;
+  if(Math.random()>=chance)return;
+  const type=powerupDropType();
+  spawnPickup(type,e.x,e.y,1,{speed:rnd(95,180),scale:1.18,life:40,delay:.42});
+}
+
 const MAX_PICKUPS=180;
 let persistSoonTimer=null;
 
@@ -1919,8 +1973,8 @@ function splitReward(total,count){
 }
 
 function spawnPickup(type,x,y,value=1,opts={}){
-  // Keep the battlefield light: if too many drops exist, fold value into a nearby same-type drop.
-  if(pickups.length>=MAX_PICKUPS){
+  // Only coin/gem clutter is folded; rare power-ups always get their own world drop.
+  if(!isPowerupType(type) && pickups.length>=MAX_PICKUPS){
     let nearest=null,bd=90;
     for(const p of pickups){
       if(p.dead||p.type!==type)continue;
@@ -1937,8 +1991,8 @@ function spawnPickup(type,x,y,value=1,opts={}){
   pickups.push({
     type,x,y,value,
     vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,
-    age:0,life:20,dead:false,
-    delay:rnd(.38,.62),
+    age:0,life:opts.life||20,dead:false,
+    delay:opts.delay??rnd(.38,.62),
     scale:opts.scale||1,
     phase:Math.random()*Math.PI*2
   });
@@ -1978,6 +2032,7 @@ function collectPickup(p){
   if(lootStreak>=12&&lootStreak%8===0&&floatingTexts.length<36){
     floatingTexts.push({x:player.x,y:player.y-32,text:'LOOT ×'+lootStreak,color:'#fff09a',life:.58,total:.58,vy:-50,size:16,weight:1000});
   }
+
   if(p.type==='coin'){
     save.coins+=p.value;
     runCoins+=p.value;
@@ -1985,15 +2040,52 @@ function collectPickup(p){
       x:p.x,y:p.y-5,text:'+'+p.value,color:'#ffd761',life:.60,total:.60,vy:-42
     });
     for(let i=0;i<3;i++)particles.push({x:p.x,y:p.y,vx:rnd(-55,55),vy:rnd(-70,20),life:.23,size:rnd(1.5,3.5),color:'#ffd761'});
-  }else{
+    persistSoon();
+    return;
+  }
+
+  if(p.type==='gem'){
     save.gems+=p.value;
-    floatingTexts.push({
+    if(floatingTexts.length<36)floatingTexts.push({
       x:p.x,y:p.y-8,text:'+'+p.value+' GEM',color:'#8ff7ff',life:.90,total:.90,vy:-48
     });
     rings.push({x:p.x,y:p.y,r:4,max:28,life:.30,total:.30,color:'#79f3ff'});
     for(let i=0;i<8;i++)particles.push({x:p.x,y:p.y,vx:rnd(-95,95),vy:rnd(-105,45),life:.38,size:rnd(2,4.5),color:i%2?'#7ff6ff':'#c489ff'});
+    persistSoon();
+    return;
   }
-  persistSoon();
+
+  const def=powerupDefs[p.type];
+  if(!def)return;
+
+  if(p.type==='magnet'){
+    showGrowthToast('🧲 MAGNET','ワールドのドロップを全回収');
+    rings.push({x:player.x,y:player.y,r:20,max:260,life:.42,total:.42,color:def.color});
+    const worldDrops=pickups.filter(q=>!q.dead);
+    for(const q of worldDrops)collectPickup(q);
+  }else if(p.type==='heart'){
+    const heal=Math.max(1,Math.ceil(ps.maxHp*.25));
+    const before=player.hp;
+    player.hp=Math.min(ps.maxHp,player.hp+heal);
+    const healed=Math.ceil(player.hp-before);
+    showGrowthToast('❤ HEART','HP +'+healed+' / 最大HPの25%');
+    floatingTexts.push({x:player.x,y:player.y-28,text:'+'+healed+' HP',color:'#ff8290',life:.85,total:.85,vy:-45,size:15,weight:1000});
+  }else if(p.type==='boots'){
+    itemBuffs.boots=Math.max(itemBuffs.boots,12);
+    showGrowthToast('👢 BOOTS','12秒間 移動速度 ×1.6');
+  }else if(p.type==='drink'){
+    itemBuffs.drink=Math.max(itemBuffs.drink,10);
+    showGrowthToast('🥤 DRINK','10秒間 攻撃速度 ×2');
+  }else if(p.type==='sword'){
+    itemBuffs.sword=Math.max(itemBuffs.sword,10);
+    showGrowthToast('⚔ SWORD','10秒間 攻撃力 ×2');
+  }
+
+  for(let i=0;i<12;i++)particles.push({
+    x:player.x,y:player.y,vx:rnd(-120,120),vy:rnd(-120,120),
+    life:rnd(.28,.55),size:rnd(2.5,6),color:def.color
+  });
+  rings.push({x:player.x,y:player.y,r:5,max:42,life:.30,total:.30,color:def.color});
 }
 
 function updatePickups(dt){
@@ -2002,7 +2094,6 @@ function updatePickups(dt){
     if(p.dead)continue;
     p.age+=dt;p.life-=dt;
 
-    // Initial burst / little skid on the floor.
     if(p.age<p.delay){
       p.x+=p.vx*dt;p.y+=p.vy*dt;
       p.vx*=Math.pow(.045,dt);p.vy*=Math.pow(.045,dt);
@@ -2011,23 +2102,28 @@ function updatePickups(dt){
       p.x+=p.vx*dt;p.y+=p.vy*dt;
 
       const dx=player.x-p.x,dy=player.y-p.y,d=Math.hypot(dx,dy)||1;
-      // Gems are slightly easier to notice/collect. Old drops auto-vacuum so rewards are never lost.
-      let magnet=p.type==='gem'?235:150;
-      if(feverActive())magnet+=110;
-      magnet+=Math.min(80,lootStreak*3);
-      if(p.age>7)magnet=99999;
+      const powerup=isPowerupType(p.type);
+      let magnet=powerup?115:(p.type==='gem'?235:150);
+      if(feverActive()&&!powerup)magnet+=110;
+      if(!powerup)magnet+=Math.min(80,lootStreak*3);
+      if(!powerup&&p.age>7)magnet=99999;
+
       if(d<magnet){
-        const pull=p.type==='gem'?760:650;
+        const pull=powerup?520:(p.type==='gem'?760:650);
         const boost=clamp(1+(magnet===99999?1.2:0)+(1-d/Math.max(1,magnet))*.8,1,2.8);
         p.x+=dx/d*pull*boost*dt;
         p.y+=dy/d*pull*boost*dt;
       }
-      if(d<player.r+12*(p.scale||1)) collectPickup(p);
+      if(d<player.r+(powerup?24:12)*(p.scale||1)) collectPickup(p);
     }
 
     p.x=clamp(p.x,6,WORLD_W-6);
     p.y=clamp(p.y,6,WORLD_H-6);
-    if(p.life<=0)collectPickup(p);
+    // Power-ups expire instead of being auto-consumed. Currency keeps the old guaranteed collection behavior.
+    if(p.life<=0){
+      if(isPowerupType(p.type))p.dead=true;
+      else collectPickup(p);
+    }
   }
 
   for(const t of floatingTexts){
@@ -2053,7 +2149,7 @@ function drawPickups(){
       ctx.lineWidth=2;ctx.strokeStyle='#ffe990';ctx.stroke();
       ctx.fillStyle='#fff2a8';
       ctx.fillRect(-1.2,-4.1,2.4,8.2);
-    }else{
+    }else if(p.type==='gem'){
       ctx.rotate(Math.PI/4 + p.age*.8);
       ctx.shadowBlur=22;ctx.shadowColor='#6feeff';
       ctx.fillStyle='#7cefff';
@@ -2061,6 +2157,24 @@ function drawPickups(){
       ctx.strokeStyle='#e4ffff';ctx.lineWidth=2;ctx.strokeRect(-7,-7,14,14);
       ctx.fillStyle='#d49cff';ctx.globalAlpha=.72;
       ctx.fillRect(-3.5,-3.5,7,7);
+    }else if(isPowerupType(p.type)){
+      const def=powerupDefs[p.type];
+      ctx.shadowBlur=28;ctx.shadowColor=def.color;
+      ctx.fillStyle='#0c1424';
+      ctx.beginPath();ctx.arc(0,0,25,0,Math.PI*2);ctx.fill();
+      ctx.lineWidth=4;ctx.strokeStyle=def.color;ctx.stroke();
+      ctx.globalAlpha=.28;
+      ctx.beginPath();ctx.arc(0,0,18+Math.sin(p.age*8)*2,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=1;
+      ctx.shadowBlur=10;
+      ctx.font='900 28px system-ui';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle='#fff';
+      ctx.fillText(def.icon,0,1);
+      ctx.font='900 8px system-ui';
+      ctx.fillStyle=def.color;
+      ctx.fillText(def.name,0,36);
+      ctx.textAlign='start';ctx.textBaseline='alphabetic';
     }
     ctx.restore();
   }
@@ -2083,7 +2197,7 @@ function damageEnemy(e,dmg,impact=true){
 
   const hpBefore=e.hp;
   const crit=impact && Math.random() < (feverActive()?.16:.11);
-  const actualDmg=dmg*(crit?1.85:1);
+  const actualDmg=dmg*(itemBuffs.sword>0?2:1)*(crit?1.85:1);
   e.hp-=actualDmg;
 
   if(impact){
@@ -2137,6 +2251,7 @@ function killEnemy(e,meta={}){
   save.totalKills++;
 
   spawnEnemyDrops(e,coinGain);
+  maybeSpawnPowerup(e);
 
   if(e.type==='treasure'){
     breakCombo+=4;maxBreakCombo=Math.max(maxBreakCombo,breakCombo);breakTimer=Math.max(breakTimer,3);
@@ -2626,7 +2741,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 8.6: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 8.7: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
@@ -2757,7 +2872,7 @@ function firePrimary(force=false){
     if(!info.enemy || info.dist>engageRange+info.enemy.r) return;
   }
 
-  const rate=ps.attackRate*(feverActive()?1.35:1);
+  const rate=ps.attackRate*(feverActive()?1.35:1)*(itemBuffs.drink>0?2:1);
   player.attackCd=1/rate;
   const v=aimVector(); player.angle=Math.atan2(v.y,v.x);
   const base=ps.damage;
@@ -3178,18 +3293,19 @@ function update(dt){
   if(!running) return;
   if(!updateBreakRush(dt)){updateHud();return}
   gameTime+=dt; player.attackCd-=dt; player.hitCd-=dt;
+  for(const k of ['boots','drink','sword'])if(itemBuffs[k]>0)itemBuffs[k]=Math.max(0,itemBuffs[k]-dt);
   updateChaosDirector(dt);
 
   let mx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);
   let my=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
   if(mx||my){const l=Math.hypot(mx,my);mx/=l;my/=l}
-  const rushMove=ps.move*FAR_CAMERA_SPEED_SCALE*(feverActive()?1.20:1);
+  const rushMove=ps.move*FAR_CAMERA_SPEED_SCALE*(feverActive()?1.20:1)*(itemBuffs.boots>0?1.6:1);
   player.x=clamp(player.x+mx*rushMove*dt,player.r+WORLD_EDGE_PAD,WORLD_W-player.r-WORLD_EDGE_PAD);
   player.y=clamp(player.y+my*rushMove*dt,player.r+WORLD_EDGE_PAD,WORLD_H-player.r-WORLD_EDGE_PAD);
 
   spawnTimer-=dt;
   if(spawnTimer<=0){
-    const base=Math.max(.07,.42-gameTime*.0014);
+    const base=Math.max(.055,.30-gameTime*.0010);
     spawnTimer=base/(spawnMul*(feverActive()?1.45:1)*eventSpawnMultiplier());
     let r=Math.random(), type='normal';
     if(eventActive('swarm')){
@@ -3200,7 +3316,7 @@ function update(dt){
       else if(gameTime>40 && r<.30) type='tank';
       else if(gameTime>15 && r<.48) type='runner';
     }
-    if(enemies.length<MAX_ACTIVE_ENEMIES)spawnEnemy(type);
+    spawnEnemy(type);
   }
 
   firePrimary();
@@ -3257,10 +3373,13 @@ function update(dt){
     e.flash=Math.max(0,e.flash-dt);
     const d=enemyDefs[e.type];
     const dx=player.x-e.x,dy=player.y-e.y,l=Math.hypot(dx,dy)||1;
+    // Global aggro: every enemy always knows the player's current position.
+    // Very distant enemies get catch-up speed only until they reach the active battle.
+    const pursuitBoost=l>2200?2.55:l>1500?2.10:l>900?1.55:1;
     if(e.type==='shooter'||e.type==='boss'){
       const range=d.range;
       let dir= l>range?1 : l<range*.68?-1:0;
-      const bossSpeed=e.type==='boss'&&e.phase===2?e.speed*1.22:e.speed;
+      const bossSpeed=(e.type==='boss'&&e.phase===2?e.speed*1.22:e.speed)*pursuitBoost;
       e.x+=dx/l*bossSpeed*dir*dt;e.y+=dy/l*bossSpeed*dir*dt;
       e.shootCd-=dt;
       if(e.shootCd<=0){
@@ -3272,7 +3391,7 @@ function update(dt){
           }
         }else enemyBullets.push({x:e.x,y:e.y,vx:dx/l*210,vy:dy/l*210,r:5,life:4,dmg:8});
       }
-    } else {e.x+=dx/l*e.speed*dt;e.y+=dy/l*e.speed*dt}
+    } else {e.x+=dx/l*e.speed*pursuitBoost*dt;e.y+=dy/l*e.speed*pursuitBoost*dt}
     e.x=clamp(e.x,e.r+WORLD_EDGE_PAD,WORLD_W-e.r-WORLD_EDGE_PAD);
     e.y=clamp(e.y,e.r+WORLD_EDGE_PAD,WORLD_H-e.r-WORLD_EDGE_PAD);
     if(Math.hypot(player.x-e.x,player.y-e.y)<player.r+e.r && player.hitCd<=0 && !god){
@@ -3598,6 +3717,15 @@ function updateHud(){
     }else{
       bHud.classList.remove('show','warning','phase2');
     }
+  }
+
+  const itemHud=document.getElementById('itemBuffHud');
+  if(itemHud){
+    const chips=[];
+    if(itemBuffs.boots>0)chips.push('<div class="itemBuffChip boots">👢 SPEED <b>'+itemBuffs.boots.toFixed(1)+'s</b></div>');
+    if(itemBuffs.drink>0)chips.push('<div class="itemBuffChip drink">🥤 ATK SPD ×2 <b>'+itemBuffs.drink.toFixed(1)+'s</b></div>');
+    if(itemBuffs.sword>0)chips.push('<div class="itemBuffChip sword">⚔ DMG ×2 <b>'+itemBuffs.sword.toFixed(1)+'s</b></div>');
+    itemHud.innerHTML=chips.join('');
   }
 
   document.getElementById('charText').textContent=currentCharacter.name;
