@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 8.1</title>
+<title>BREAK SURVIVORS - Stage 8.2</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -11,9 +11,22 @@
     --good:#77f2a1; --gold:#ffd56a;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
-  #app{display:grid;grid-template-columns:1fr 340px;height:100vh}
-  #gameWrap{position:relative;min-width:0;background:radial-gradient(circle at 50% 40%,#161d30,#090b12 65%)}
+  html,body{
+    margin:0;width:100%;height:100%;min-height:0;
+    background:var(--bg);color:var(--text);
+    font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+    overflow:hidden;overscroll-behavior:none;
+  }
+  body{position:fixed;inset:0}
+  #app{
+    display:grid;grid-template-columns:1fr 340px;
+    width:100%;height:var(--app-h,100dvh);max-height:var(--app-h,100dvh);
+    min-height:0;overflow:hidden;
+  }
+  #gameWrap{
+    position:relative;min-width:0;min-height:0;height:100%;overflow:hidden;
+    background:radial-gradient(circle at 50% 40%,#161d30,#090b12 65%);
+  }
   canvas{width:100%;height:100%;display:block}
   #hud{position:absolute;left:14px;top:12px;display:flex;gap:10px;flex-wrap:wrap;pointer-events:none}
   .chip{background:#0c1220cc;border:1px solid var(--line);border-radius:11px;padding:8px 11px;font-size:13px;backdrop-filter:blur(8px)}
@@ -436,7 +449,7 @@
   }
 
 
-  /* Stage 8.1 — Character Growth / Ability Road / Ultimate */
+  /* Stage 8.2 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -500,7 +513,7 @@
   }
 
 
-  /* Stage 8.1 — Combat HUD / compact UI overhaul
+  /* Stage 8.2 — Combat HUD / compact UI overhaul
      Reference: clear corner anchoring, strong hierarchy, minimal center obstruction. */
   .srOnly{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   #app{grid-template-columns:1fr!important}
@@ -697,7 +710,7 @@
   }
 
 
-  /* Stage 8.1 — one-line top HUD + high-visibility touch controls */
+  /* Stage 8.2 — one-line top HUD + high-visibility touch controls */
   #topHudBar{
     position:absolute;left:10px;right:10px;top:10px;height:54px;
     display:grid;
@@ -880,6 +893,55 @@
     #ultButton{width:82px;height:82px}
   }
 
+
+  /* Stage 8.2 — iPhone / mobile bottom clipping fix */
+  :root{
+    --safe-bottom:max(14px, env(safe-area-inset-bottom, 0px));
+  }
+  #game{position:absolute;inset:0;width:100%;height:100%}
+  #mobilePad{
+    bottom:calc(var(--safe-bottom) + 12px)!important;
+  }
+  #ultButton{
+    bottom:calc(var(--safe-bottom) + 12px)!important;
+  }
+
+  @media(max-width:520px){
+    #mobilePad{
+      width:102px;height:102px;left:10px;
+      bottom:calc(var(--safe-bottom) + 14px)!important;
+    }
+    #mobilePad button{width:33px;height:33px}
+    #up{left:34px;top:1px}
+    #down{left:34px;bottom:1px}
+    #left{left:1px;top:34px}
+    #right{right:1px;top:34px}
+
+    #ultButton{
+      width:70px;height:70px;right:11px;
+      bottom:calc(var(--safe-bottom) + 15px)!important;
+    }
+    #ultButton span{font-size:12px}
+  }
+
+  @media(max-height:720px){
+    #mobilePad{
+      width:96px;height:96px;
+      bottom:calc(var(--safe-bottom) + 10px)!important;
+    }
+    #mobilePad button{width:31px;height:31px;font-size:9px}
+    #up{left:32px;top:1px}
+    #down{left:32px;bottom:1px}
+    #left{left:1px;top:32px}
+    #right{right:1px;top:32px}
+
+    #ultButton{
+      width:66px;height:66px;
+      bottom:calc(var(--safe-bottom) + 11px)!important;
+    }
+    #ultButton span{font-size:11px}
+  }
+
 </style>
 </head>
 <body>
@@ -1044,7 +1106,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 8.1</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 8.2</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1128,15 +1190,26 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
 let W = 1280, H = 720, DPR = 1;
+
+function syncVisibleViewport(){
+  const vh = window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight;
+  document.documentElement.style.setProperty('--app-h', Math.max(320,Math.floor(vh))+'px');
+}
+
 function resize(){
+  syncVisibleViewport();
   const r = canvas.getBoundingClientRect();
   DPR = Math.min(devicePixelRatio || 1, 2);
-  W = Math.max(640, r.width);
-  H = Math.max(420, r.height);
+  W = Math.max(320, r.width);
+  H = Math.max(320, r.height);
   canvas.width = Math.floor(W*DPR); canvas.height = Math.floor(H*DPR);
   ctx.setTransform(DPR,0,0,DPR,0,0);
 }
-addEventListener('resize', resize); resize();
+addEventListener('resize', resize);
+window.visualViewport?.addEventListener('resize',resize);
+window.visualViewport?.addEventListener('scroll',syncVisibleViewport);
+syncVisibleViewport();
+resize();
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -1341,13 +1414,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 8.1 — BREAK RUSH
+// Stage 8.2 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 8.1 — CHAOS HUNT
+// Stage 8.2 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -2382,7 +2455,7 @@ function playBladeTechniqueSfx(phase='fire',opts={}){
     },delay);
   };
 
-  // Stage 8.1: every Blade Master sound is derived from the user's reference practice swing.
+  // Stage 8.2: every Blade Master sound is derived from the user's reference practice swing.
   if(phase==='fire'){
     play(opts.volume??.68,opts.rate??1.05,0,{duration:.24,bodyGain:.45});
   }else if(phase==='crescent'){
