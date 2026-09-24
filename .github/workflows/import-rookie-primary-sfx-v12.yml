@@ -1,0 +1,52 @@
+name: Import Rookie Primary SFX v12
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/import-rookie-primary-sfx-v12.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Download refined primary-shot layers
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rookie-v12 assets/sfx/v12
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/0804ed4b-a298-41f0-a9a3-c40ab09fac86/rookie_primary_v12_a.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZWIyM2U1YWQ4YjAwNWI2NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQ0MTUxN30.9aXXYHP4CQ9YVu1eclXZ8uQu9YN3NEiPwRcGmGcqXNU' -o /tmp/rookie-v12/a.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/7bfa0509-5fbc-476c-b556-3cf93eaf0f26/rookie_primary_v12_b.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNmYwMzI1MjAxYzZmODM0NSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQxOTQ4OH0.QryCtMEzCGnD7kkR5LQEGTHZovqGfqnMmY6bEGOppuI' -o /tmp/rookie-v12/b.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/7f65f822-d7b6-4052-a2ad-c87cb9ac54d8/rookie_primary_v12_hot.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMjVlOGU1YTU2NTg5ZGJhOCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDQxMDUzM30.Oat6-WPsGqYre7gnv2UCNSXYrsPI7-WUnjZLPsRvRMY' -o /tmp/rookie-v12/hot.mp3
+          curl -L --fail --retry 3 'https://dnznrvs05pmza.cloudfront.net/audio_sfx/211776a3-785e-4bd4-b2cb-f13f51259e6d/rookie_primary_v12_body.mp3?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2QxZmRjODJhYzFmNjM4OCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDM5NzQ0Mn0.s6XgIHui--ZhLYeRWZ1NYwrVAxybKmecyLbeyWCaReo' -o /tmp/rookie-v12/body.mp3
+
+      - name: Build tactile primary-shot masters
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ffmpeg -y -i /tmp/rookie-v12/a.mp3 -i /tmp/rookie-v12/body.mp3 -filter_complex             "[0:a]silenceremove=start_periods=1:start_duration=0.004:start_threshold=-48dB,atrim=duration=0.31,highpass=f=62,lowpass=f=6200,equalizer=f=215:t=q:w=0.8:g=1.6,equalizer=f=3250:t=q:w=0.9:g=-2.5,afade=t=out:st=0.265:d=0.045[core];              [1:a]silenceremove=start_periods=1:start_duration=0.004:start_threshold=-48dB,atrim=duration=0.20,highpass=f=110,lowpass=f=720,equalizer=f=205:t=q:w=0.9:g=1.5,volume=0.22,afade=t=out:st=0.15:d=0.05[body];              [core][body]amix=inputs=2:normalize=0,acompressor=threshold=-20dB:ratio=2.1:attack=2:release=40,loudnorm=I=-25:TP=-7:LRA=5[out]"             -map "[out]" -ar 44100 -ac 2 -b:a 160k assets/sfx/v12/gunner_primary_a.mp3
+
+          ffmpeg -y -i /tmp/rookie-v12/b.mp3 -i /tmp/rookie-v12/body.mp3 -filter_complex             "[0:a]silenceremove=start_periods=1:start_duration=0.004:start_threshold=-48dB,atrim=duration=0.31,highpass=f=62,lowpass=f=6100,equalizer=f=225:t=q:w=0.8:g=1.5,equalizer=f=3200:t=q:w=0.9:g=-2.6,afade=t=out:st=0.265:d=0.045[core];              [1:a]silenceremove=start_periods=1:start_duration=0.004:start_threshold=-48dB,atrim=duration=0.20,highpass=f=110,lowpass=f=720,equalizer=f=205:t=q:w=0.9:g=1.5,volume=0.20,afade=t=out:st=0.15:d=0.05[body];              [core][body]amix=inputs=2:normalize=0,acompressor=threshold=-20dB:ratio=2.1:attack=2:release=40,loudnorm=I=-25:TP=-7:LRA=5[out]"             -map "[out]" -ar 44100 -ac 2 -b:a 160k assets/sfx/v12/gunner_primary_b.mp3
+
+          ffmpeg -y -i /tmp/rookie-v12/hot.mp3 -i /tmp/rookie-v12/body.mp3 -filter_complex             "[0:a]silenceremove=start_periods=1:start_duration=0.004:start_threshold=-48dB,atrim=duration=0.32,highpass=f=58,lowpass=f=6500,equalizer=f=195:t=q:w=0.8:g=2.0,equalizer=f=3350:t=q:w=0.9:g=-2.2,afade=t=out:st=0.27:d=0.05[core];              [1:a]silenceremove=start_periods=1:start_duration=0.004:start_threshold=-48dB,atrim=duration=0.21,highpass=f=105,lowpass=f=760,equalizer=f=190:t=q:w=0.9:g=1.8,volume=0.27,afade=t=out:st=0.16:d=0.05[body];              [core][body]amix=inputs=2:normalize=0,acompressor=threshold=-19dB:ratio=2.2:attack=2:release=42,loudnorm=I=-24:TP=-7:LRA=5[out]"             -map "[out]" -ar 44100 -ac 2 -b:a 160k assets/sfx/v12/gunner_primary_hot.mp3
+
+      - name: Commit mastered primary-shot SFX
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/sfx/v12/*.mp3
+          git commit -m "Import Rookie Gunner primary SFX v12"
+          git push
