@@ -1734,9 +1734,9 @@ function spawnEnemy(type='normal'){
   // Spawn in a ring around the player. The far camera can see the approach,
   // while enemies still reach combat in a reasonable amount of time.
   const a=Math.random()*Math.PI*2;
-  const baseView=Math.min(W,H);
-  const minDist=baseView*(type==='boss'?1.05:type==='treasure'?.72:.80);
-  const maxDist=baseView*(type==='boss'?1.42:type==='treasure'?1.05:1.28);
+  const baseView=Math.min(W,H)/CAMERA_ZOOM;
+  const minDist=baseView*(type==='boss'?.36:type==='treasure'?.20:.26);
+  const maxDist=baseView*(type==='boss'?.48:type==='treasure'?.32:.42);
   const spawnDist=rnd(minDist,maxDist);
   const x=player.x+Math.cos(a)*spawnDist;
   const y=player.y+Math.sin(a)*spawnDist;
