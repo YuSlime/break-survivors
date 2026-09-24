@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 6.4</title>
+<title>BREAK SURVIVORS - Stage 6.5</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -436,7 +436,7 @@
   }
 
 
-  /* Stage 6.4 — Character Growth / Ability Road / Ultimate */
+  /* Stage 6.5 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -644,7 +644,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 6.4</h1>
+    <h1>BREAK SURVIVORS — Stage 6.5</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -941,13 +941,13 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
-// Stage 6.4 — BREAK RUSH
+// Stage 6.5 — BREAK RUSH
 let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
 let breakCalloutTimer=null;
 const BREAK_TIMEOUT=2.45;
 const FEVER_DURATION=8.0;
 
-// Stage 6.4 — CHAOS HUNT
+// Stage 6.5 — CHAOS HUNT
 let activeEvent=null,eventTime=0,eventPulse=0,nextEventAt=42;
 let treasureTimer=28,bossPending=false,bossWarningTime=0;
 let lootStreak=0,lootStreakTimer=0;
@@ -1545,8 +1545,10 @@ let lastSfxVariant = {};
 let attackBuffers = {};
 let attackLoadPromise = null;
 let activeAttackVoices = 0;
+let activeLightningVoices = 0;
 let activeEventVoices = 0;
 const MAX_ATTACK_VOICES = 5;
+const MAX_LIGHTNING_VOICES = 8;
 const MAX_EVENT_VOICES = 3;
 let attackSfxVolume = clamp(Number(localStorage.getItem('break_survivors_attack_sfx_volume') ?? 44) / 100, 0, 1);
 
@@ -1767,6 +1769,64 @@ function playAttackSample(key,volume=1,rate=1){
 }
 
 
+function playLightningSample(phase,volume=.5,rate=1,delayMs=0,offset=0,duration=null){
+  const run=()=>{
+    if(!soundEnabled)return;
+    const ac=getAudio(); if(!ac||!attackFilter)return;
+    const key=pickWeaponSfx('lightning',phase);
+    const buffer=attackBuffers[key];
+    if(!buffer){loadAttackSfx().catch(()=>{});return}
+    if(activeLightningVoices>=MAX_LIGHTNING_VOICES)return;
+
+    const atk=(typeof ps!=='undefined'&&ps&&ps.attackRate)?ps.attackRate:2.7;
+    const rapidDuck=clamp(1/Math.sqrt(Math.max(1,atk/2.7)),.68,1);
+    const overlapDuck=activeLightningVoices>=6?.60:activeLightningVoices>=4?.72:activeLightningVoices>=2?.86:1;
+
+    const src=ac.createBufferSource(),gain=ac.createGain();
+    src.buffer=buffer;src.playbackRate.value=rate;
+    gain.gain.value=clamp(volume*rapidDuck*overlapDuck,0,.9);
+    src.connect(gain).connect(attackFilter);
+
+    activeLightningVoices++;
+    src.onended=()=>{activeLightningVoices=Math.max(0,activeLightningVoices-1)};
+
+    const safeOffset=clamp(offset,0,Math.max(0,buffer.duration-.02));
+    const remain=Math.max(.02,buffer.duration-safeOffset);
+    if(duration!=null)src.start(0,safeOffset,Math.min(duration,remain));
+    else src.start(0,safeOffset);
+  };
+  if(delayMs>0)setTimeout(()=>{if(running)run()},delayMs);else run();
+}
+
+function playLightningFire(strong=false){
+  // Reference Timbre1 Short: remove its leading silence and bring the electrical buzz slightly forward.
+  playLightningSample('fire',strong?.72:.68,strong?.97:1,0,.095,1.03);
+}
+
+function playLightningElectrocution(hitCount=1){
+  if(!characterSfxAllowed('lightning_electrocution',420))return;
+
+  // Timbre1 Long remains the main sound: immediate "bzzzt -> bachi-bachi" electrocution.
+  playLightningSample('hit',.53,1,55,.085,1.96);
+
+  // Large chains get extra copies of the SAME timbre, not a different sound,
+  // so it feels like electricity spreading across many enemies instead of changing weapon identity.
+  if(hitCount>=6){
+    playLightningSample('hit',.19,.94,92,.085,2.02);
+  }
+  if(hitCount>=11){
+    playLightningSample('hit',.11,1.07,145,.085,1.68);
+  }
+}
+
+function playLightningUltimateSurge(){
+  // Same reference sound, layered lower/slower for a higher-voltage ULT rather than a new SFX.
+  playLightningSample('fire',.46,.88,18,.095,1.08);
+  playLightningSample('hit',.58,.88,72,.085,2.08);
+  playLightningSample('hit',.25,1.04,138,.085,1.82);
+}
+
+
 function playEventSfx(key,volume=.6,rate=1){
   if(!soundEnabled)return;
   const ac=getAudio();if(!ac||!attackFilter)return;
@@ -1830,6 +1890,7 @@ function playWeaponFireSfx(kind,special=false){
   // V3: identity first — blaster, launcher, arc, blade, beam, rocket.
   const vols={pierce:.60,explosion:.57,lightning:.64,slash:.64,laser:.58,missile:.60};
   const base=vols[kind]||.52;
+  if(kind==='lightning'){playLightningFire(special);return}
   playAttackSample(pickWeaponSfx(kind,'fire'),base*(special?1.03:1),1);
 }
 
@@ -1842,6 +1903,7 @@ function playWeaponImpactSfx(kind,strong=false){
 
   const vols={pierce:.20,explosion:.62,lightning:.50,slash:.30,laser:.19,missile:.64};
   const base=vols[kind]||.22;
+  if(kind==='lightning'){playLightningElectrocution(strong?8:1);return}
   playAttackSample(pickWeaponSfx(kind,'hit'),base*(strong?1.03:1),1);
 }
 
@@ -2025,7 +2087,7 @@ function chainLightning(dmg,count=5,opts={}){
       },90);
     }
   }
-  if(hit.length) setTimeout(()=>{if(running)playWeaponImpactSfx('lightning', false)},55);
+  if(hit.length&&!opts.silentSfx)playLightningElectrocution(hit.length);
   shake=Math.min(9,shake+2);
   return hit;
 }
@@ -2151,7 +2213,8 @@ function useUltimate(){
       explode(player.x+Math.cos(ang)*rad,player.y+Math.sin(ang)*rad,105*ps.area,ps.damage*1.65,'#ffd25f',{silent:i>0});
     },i*55);
   }else if(id==='thunderfox'){
-    for(let w=0;w<4;w++)setTimeout(()=>{if(running)chainLightning(ps.damage*1.35,18,{range:280*ps.area,decay:.94,width:6,color:'#e4ffff',echo:true})},w*130);
+    playLightningUltimateSurge();
+    for(let w=0;w<4;w++)setTimeout(()=>{if(running)chainLightning(ps.damage*1.35,18,{range:280*ps.area,decay:.94,width:6,color:'#e4ffff',echo:true,silentSfx:true})},w*130);
   }else if(id==='blademaster'){
     for(let i=0;i<8;i++)setTimeout(()=>{if(running){doSlash(ps.damage*1.45,{radiusMul:1.15+i*.035,color:i%2?'#9fe9ff':'#fff0ad'});if(i%2===0)doBladeWave(ps.damage*1.1)}},i*80);
   }else if(id==='nova'){
