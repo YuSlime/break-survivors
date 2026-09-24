@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-<title>BREAK SURVIVORS - Stage 4.2.1</title>
+<title>BREAK SURVIVORS - Stage 5.0</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -18,6 +18,25 @@
   #hud{position:absolute;left:14px;top:12px;display:flex;gap:10px;flex-wrap:wrap;pointer-events:none}
   .chip{background:#0c1220cc;border:1px solid var(--line);border-radius:11px;padding:8px 11px;font-size:13px;backdrop-filter:blur(8px)}
   #attackBanner{position:absolute;left:50%;top:16px;transform:translateX(-50%);font-weight:800;font-size:18px;background:#0d1424dd;border:1px solid #3d4f79;border-radius:999px;padding:8px 16px;pointer-events:none}
+  #breakHud{position:absolute;left:50%;top:68px;transform:translateX(-50%);width:min(360px,62vw);z-index:4;pointer-events:none;opacity:.92;transition:.18s}
+  #breakHud .breakTop{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:5px;text-shadow:0 2px 8px #000}
+  #breakLabel{font-weight:1000;font-size:12px;letter-spacing:.16em;color:#9eacc5}
+  #comboText{font-weight:1000;font-size:22px;color:#fff}
+  #breakBar{height:8px;border-radius:999px;background:#0a0f19dd;border:1px solid #31405d;overflow:hidden;box-shadow:0 4px 18px #0008}
+  #breakFill{height:100%;width:0%;background:linear-gradient(90deg,#70e6ff,#9d7cff,#ffd45d);box-shadow:0 0 16px #7ceaff;transition:width .10s linear}
+  #breakSub{font-size:10px;font-weight:900;letter-spacing:.08em;color:#c8d4e9;margin-top:4px;text-align:right}
+  #breakHud.fever #breakLabel,#breakHud.fever #comboText,#breakHud.fever #breakSub{color:#ffe981;text-shadow:0 0 15px #ffb938}
+  #breakHud.fever #breakFill{background:linear-gradient(90deg,#fff394,#ffb02e,#ff65a8,#9b7cff);animation:feverBar .45s linear infinite alternate}
+  @keyframes feverBar{from{filter:brightness(1)}to{filter:brightness(1.55)}}
+  #feverOverlay{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;box-shadow:inset 0 0 0 3px #ffd85c,inset 0 0 80px #ff9e2033;background:radial-gradient(circle at 50% 50%,transparent 50%,#ffae1610 100%);transition:opacity .2s}
+  #feverOverlay.show{opacity:1;animation:feverPulse .62s ease-in-out infinite alternate}
+  @keyframes feverPulse{from{filter:brightness(.9)}to{filter:brightness(1.35)}}
+  #breakCallout{position:absolute;left:50%;top:31%;transform:translate(-50%,-50%) scale(.84);z-index:7;pointer-events:none;text-align:center;opacity:0;font-weight:1000;letter-spacing:.06em;text-shadow:0 5px 28px #000,0 0 30px currentColor}
+  #breakCallout b{display:block;font-size:clamp(34px,7vw,78px);line-height:.9}
+  #breakCallout span{display:block;font-size:clamp(12px,2vw,20px);margin-top:8px}
+  #breakCallout.show{animation:breakCall .82s cubic-bezier(.18,.8,.2,1)}
+  @keyframes breakCall{0%{opacity:0;transform:translate(-50%,-50%) scale(.55)}22%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}70%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-56%) scale(.96)}}
+
   #sidebar{background:linear-gradient(180deg,#101522,#0b0f18);border-left:1px solid var(--line);overflow:auto;padding:14px}
   h1{font-size:18px;margin:2px 0 12px}
   h2{font-size:14px;margin:18px 0 9px;color:#dfe7fa}
@@ -403,7 +422,7 @@
   }
 
 
-  /* Stage 4.2.1 — Character Growth / Ability Road / Ultimate */
+  /* Stage 5.0 — Character Growth / Ability Road / Ultimate */
   #ultButton{
     position:absolute;right:22px;bottom:26px;z-index:4;width:118px;height:118px;border-radius:50%;
     border:2px solid #43516f;background:
@@ -457,6 +476,9 @@
   .trainBtn{background:linear-gradient(135deg,#17364a,#243b70);border-color:#4b8cb9}
   .milestoneText{font-size:10px;color:#91a1bb;margin-top:5px;line-height:1.35}
   @media(max-width:900px){
+    #breakHud{top:172px;width:min(330px,78vw)}
+    #breakHud .breakTop{margin-bottom:3px}
+    #comboText{font-size:18px}
     #ultButton{width:94px;height:94px;right:16px;bottom:88px;font-size:11px}
     #ultButton span{font-size:18px}
   }
@@ -477,7 +499,14 @@
       <div class="chip">ULT <span id="ultText">LOCKED</span></div>
     </div>
     <div id="gachaFlash"></div>
+    <div id="feverOverlay"></div>
     <div id="attackBanner">Pierce</div>
+    <div id="breakHud">
+      <div class="breakTop"><span id="breakLabel">BREAK CHAIN</span><span id="comboText">0 K.O.</span></div>
+      <div id="breakBar"><div id="breakFill"></div></div>
+      <div id="breakSub">NEXT ×1.2</div>
+    </div>
+    <div id="breakCallout"><b id="breakCalloutMain">BREAK!</b><span id="breakCalloutSub"></span></div>
     <button id="openSidebar">ADMIN</button>
     <button id="ultButton" class="locked">ULT<span id="ultButtonText">Lv30</span></button>
     <div id="growthToast"><b id="growthToastTitle"></b><div class="small" id="growthToastText"></div></div>
@@ -490,6 +519,7 @@
       <div class="modal">
         <h3>RUN OVER</h3>
         <p>今回のキル: <b id="deathKills">0</b>　獲得コイン: <b id="deathCoins">0</b></p>
+        <p>MAX BREAK: <b id="deathCombo">0</b> K.O.</p>
         <button id="openShop" class="gold full">永久アップグレード</button>
         <button id="restart" class="good full" style="margin-top:8px">もう一度出撃</button>
       </div>
@@ -593,7 +623,7 @@
 
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
-    <h1>BREAK SURVIVORS — Stage 4.2.1</h1>
+    <h1>BREAK SURVIVORS — Stage 5.0</h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -886,6 +916,12 @@ let ultCharge=0;
 let attackCounters={};
 let toastTimer=null;
 
+// Stage 5.0 — BREAK RUSH
+let breakCombo=0, breakTimer=0, maxBreakCombo=0, feverTime=0, hitStop=0;
+let breakCalloutTimer=null;
+const BREAK_TIMEOUT=2.45;
+const FEVER_DURATION=8.0;
+
 function starRank(id){
   const d=save.characters[id]?.dupes||0;
   if(d>=10)return 5;if(d>=6)return 4;if(d>=3)return 3;if(d>=1)return 2;return 1;
@@ -926,6 +962,68 @@ function resetBranch(id){
   const d=charData(id); if(!d.branch)return;
   const cost=2500;if(save.coins<cost){showGrowthToast('COINS不足','Branch Reset は 2,500 Coins');return}
   save.coins-=cost;d.branch=null;persist();ps=playerStats();buildCharacterList();updateHud();
+}
+
+
+function breakTier(){
+  if(feverTime>0)return {name:'FEVER',coin:2.20,color:'#ffe36d',next:0};
+  if(breakCombo>=50)return {name:'BREAK ×3',coin:1.75,color:'#ff8bdc',next:75};
+  if(breakCombo>=25)return {name:'BREAK ×2',coin:1.40,color:'#a58cff',next:50};
+  if(breakCombo>=10)return {name:'BREAK ×1.2',coin:1.20,color:'#73e8ff',next:25};
+  return {name:'CHAIN',coin:1.00,color:'#dfe8ff',next:10};
+}
+function breakCoinMultiplier(){return breakTier().coin}
+function feverActive(){return feverTime>0}
+function showBreakCallout(main,sub='',color='#fff'){
+  const box=document.getElementById('breakCallout');
+  const a=document.getElementById('breakCalloutMain');
+  const b=document.getElementById('breakCalloutSub');
+  if(!box||!a||!b)return;
+  a.textContent=main;b.textContent=sub;box.style.color=color;
+  box.classList.remove('show'); void box.offsetWidth; box.classList.add('show');
+  clearTimeout(breakCalloutTimer);
+  breakCalloutTimer=setTimeout(()=>box.classList.remove('show'),850);
+}
+function startFever(){
+  feverTime=FEVER_DURATION;
+  breakTimer=Math.max(breakTimer,3.2);
+  showBreakCallout('BREAK FEVER!','ATTACK SPEED +35% / MOVE +20% / COINS ×2.2','#ffe15b');
+  shake=Math.max(shake,10);
+  rings.push({x:player.x,y:player.y,r:12,max:190,life:.55,total:.55,color:'#ffd85c'});
+  for(let i=0;i<34;i++)particles.push({x:player.x,y:player.y,vx:rnd(-260,260),vy:rnd(-260,260),life:rnd(.35,.8),size:rnd(2,7),color:i%3===0?'#ff86cb':i%2?'#ffe260':'#8cf3ff'});
+}
+function registerBreakKill(e,meta={}){
+  breakCombo++;
+  maxBreakCombo=Math.max(maxBreakCombo,breakCombo);
+  breakTimer=feverActive()?3.1:BREAK_TIMEOUT;
+
+  if(breakCombo===10)showBreakCallout('BREAK ×1.2','KEEP KILLING','#73e8ff');
+  else if(breakCombo===25)showBreakCallout('BREAK ×2','COIN DROP ×1.4','#a58cff');
+  else if(breakCombo===50)showBreakCallout('BREAK ×3','COIN DROP ×1.75','#ff8bdc');
+  else if(breakCombo===75 || (breakCombo>75 && breakCombo%75===0))startFever();
+
+  // Elite / Boss kills should feel like jackpots.
+  if(e.type==='elite')showBreakCallout('ELITE BREAK!','LOOT BURST','#ffb75f');
+  if(e.type==='boss')showBreakCallout('BOSS BREAK!','MASSIVE LOOT BURST','#ffe36d');
+
+  if(meta.overkill && floatingTexts.length<42){
+    floatingTexts.push({x:e.x,y:e.y-18,text:'OVERKILL',color:'#ffcf5e',life:.72,total:.72,vy:-54,size:18,weight:1000});
+  }
+}
+function updateBreakRush(dt){
+  if(hitStop>0){hitStop=Math.max(0,hitStop-dt);return false}
+
+  if(feverTime>0){
+    feverTime=Math.max(0,feverTime-dt);
+    breakTimer=Math.max(breakTimer,1.0);
+    if(feverTime===0)showBreakCallout('FEVER END','KEEP THE CHAIN','#d8e5ff');
+  }else if(breakCombo>0){
+    breakTimer-=dt;
+    if(breakTimer<=0){
+      breakCombo=0;breakTimer=0;
+    }
+  }
+  return true;
 }
 
 function playerStats(){
@@ -981,6 +1079,7 @@ function resetRun(){
   player.x=W/2;player.y=H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
   enemies=[];bullets=[];enemyBullets=[];particles=[];beams=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
+  breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
   document.getElementById('death').style.display='none';
 }
 
@@ -1054,7 +1153,7 @@ function spawnPickup(type,x,y,value=1,opts={}){
 }
 
 function spawnEnemyDrops(e,coinGain){
-  const counts={normal:1,runner:1,tank:2,shooter:2,elite:4,boss:8};
+  const counts={normal:1,runner:1,tank:2,shooter:2,elite:8,boss:18};
   const coinCount=counts[e.type]||1;
   for(const value of splitReward(coinGain,coinCount)){
     spawnPickup('coin',e.x,e.y,value,{speed:e.type==='boss'?rnd(150,270):rnd(90,210),scale:e.type==='boss'?1.15:1});
@@ -1064,9 +1163,9 @@ function spawnEnemyDrops(e,coinGain){
   // but now it physically drops into the arena instead of instantly appearing in the HUD.
   const gemChance={normal:.005,runner:.007,tank:.015,shooter:.010}[e.type]||0;
   if(e.type==='elite'){
-    spawnPickup('gem',e.x,e.y,2,{speed:230,scale:1.12});
+    for(const value of splitReward(2,2))spawnPickup('gem',e.x,e.y,value,{speed:rnd(190,270),scale:1.12});
   }else if(e.type==='boss'){
-    spawnPickup('gem',e.x,e.y,20,{speed:285,scale:1.42});
+    for(const value of splitReward(20,6))spawnPickup('gem',e.x,e.y,value,{speed:rnd(220,330),scale:1.28});
   }else if(Math.random()<gemChance){
     spawnPickup('gem',e.x,e.y,1,{speed:225,scale:1.08});
   }
@@ -1109,6 +1208,7 @@ function updatePickups(dt){
       const dx=player.x-p.x,dy=player.y-p.y,d=Math.hypot(dx,dy)||1;
       // Gems are slightly easier to notice/collect. Old drops auto-vacuum so rewards are never lost.
       let magnet=p.type==='gem'?235:150;
+      if(feverActive())magnet+=110;
       if(p.age>7)magnet=99999;
       if(d<magnet){
         const pull=p.type==='gem'?760:650;
@@ -1159,12 +1259,13 @@ function drawPickups(){
   }
 
   ctx.shadowBlur=0;ctx.globalAlpha=1;
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='800 12px system-ui';
+  ctx.textAlign='center';ctx.textBaseline='middle';
   for(const t of floatingTexts){
     const a=clamp(t.life/t.total,0,1);
     ctx.globalAlpha=Math.min(1,a*1.7);
     ctx.fillStyle=t.color;
-    ctx.shadowBlur=8;ctx.shadowColor=t.color;
+    ctx.shadowBlur=t.size&&t.size>=18?14:8;ctx.shadowColor=t.color;
+    ctx.font=(t.weight||800)+' '+(t.size||12)+'px system-ui';
     ctx.fillText(t.text,t.x,t.y);
   }
   ctx.shadowBlur=0;ctx.globalAlpha=1;ctx.textAlign='start';ctx.textBaseline='alphabetic';
@@ -1172,19 +1273,55 @@ function drawPickups(){
 
 function damageEnemy(e,dmg,impact=true){
   if(!e || e.dead) return false;
-  e.hp-=dmg;
-  if(impact && Math.random()<0.18) playWeaponImpactSfx(activeWeaponKey(), dmg>ps.damage*1.2);
-  e.flash=.08;
-  if(impact) for(let i=0;i<4;i++) particles.push({x:e.x,y:e.y,vx:rnd(-80,80),vy:rnd(-80,80),life:.28,size:rnd(2,5),color:e.color});
-  if(e.hp<=0){ killEnemy(e); return true; }
+
+  const hpBefore=e.hp;
+  const crit=impact && Math.random() < (feverActive()?.16:.11);
+  const actualDmg=dmg*(crit?1.85:1);
+  e.hp-=actualDmg;
+
+  if(impact && Math.random()<0.18) playWeaponImpactSfx(activeWeaponKey(), crit||actualDmg>ps.damage*1.2);
+  e.flash=crit?.12:.08;
+
+  if(impact){
+    const pieces=crit?7:4;
+    for(let i=0;i<pieces;i++) particles.push({
+      x:e.x,y:e.y,vx:rnd(-95,95)*(crit?1.35:1),vy:rnd(-95,95)*(crit?1.35:1),
+      life:crit?.34:.28,size:rnd(2,crit?6:5),color:crit?'#fff08b':e.color
+    });
+
+    // Small physical knockback makes every hit read more clearly.
+    if(e.type!=='boss'){
+      const dx=e.x-player.x,dy=e.y-player.y,l=Math.hypot(dx,dy)||1;
+      const kb=clamp(actualDmg/Math.max(1,e.maxHp)*26,1.5,crit?18:10);
+      e.x+=dx/l*kb;e.y+=dy/l*kb;
+    }
+
+    if(crit && floatingTexts.length<42){
+      floatingTexts.push({
+        x:e.x,y:e.y-12,text:'CRIT '+Math.ceil(actualDmg),
+        color:'#fff06c',life:.48,total:.48,vy:-62,size:crit?17:13,weight:1000
+      });
+      shake=Math.min(14,shake+1.5);
+    }
+  }
+
+  if(e.hp<=0){
+    const overkill=actualDmg>=Math.max(1,hpBefore)*1.45;
+    if(overkill)hitStop=Math.max(hitStop,.032);
+    else if(crit)hitStop=Math.max(hitStop,.018);
+    killEnemy(e,{crit,overkill,damage:actualDmg});
+    return true;
+  }
   return false;
 }
 
-function killEnemy(e){
+function killEnemy(e,meta={}){
   if(e.dead) return;
   e.dead=true;
 
-  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul));
+  registerBreakKill(e,meta);
+
+  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()));
   runKills++;
   save.totalKills++;
 
@@ -1195,13 +1332,26 @@ function killEnemy(e){
     ultCharge=clamp(ultCharge+ultGain,0,100);
   }
 
-  const deathShake={normal:1.1,runner:1.2,tank:2.0,shooter:1.5,elite:3.8,boss:7.5}[e.type]||1.4;
-  shake=Math.min(14,shake+deathShake);
-  rings.push({x:e.x,y:e.y,r:Math.max(3,e.r*.25),max:e.r*(e.type==='boss'?2.6:1.75),life:e.type==='boss'?.34:.18,total:e.type==='boss'?.34:.18,color:e.type==='boss'?'#ffd86f':e.color});
-  const burst=e.type==='boss'?30:e.type==='elite'?20:12;
+  let deathShake={normal:1.4,runner:1.5,tank:2.5,shooter:1.9,elite:4.8,boss:9}[e.type]||1.8;
+  if(meta.overkill)deathShake*=1.35;
+  shake=Math.min(16,shake+deathShake);
+
+  rings.push({
+    x:e.x,y:e.y,r:Math.max(3,e.r*.25),
+    max:e.r*(e.type==='boss'?3.1:e.type==='elite'?2.2:meta.overkill?2.15:1.75),
+    life:e.type==='boss'?.42:e.type==='elite'?.28:.18,
+    total:e.type==='boss'?.42:e.type==='elite'?.28:.18,
+    color:meta.overkill?'#ffd95e':e.type==='boss'?'#ffd86f':e.color
+  });
+
+  const burst=e.type==='boss'?42:e.type==='elite'?26:meta.overkill?20:12;
   for(let i=0;i<burst;i++) particles.push({
-    x:e.x,y:e.y,vx:rnd(-170,170)*(e.type==='boss'?1.35:1),vy:rnd(-170,170)*(e.type==='boss'?1.35:1),
-    life:rnd(.25,e.type==='boss'?.72:.55),size:rnd(2,e.type==='boss'?8:6),color:e.color
+    x:e.x,y:e.y,
+    vx:rnd(-190,190)*(e.type==='boss'?1.5:e.type==='elite'?1.2:meta.overkill?1.15:1),
+    vy:rnd(-190,190)*(e.type==='boss'?1.5:e.type==='elite'?1.2:meta.overkill?1.15:1),
+    life:rnd(.25,e.type==='boss'?.85:e.type==='elite'?.65:.55),
+    size:rnd(2,e.type==='boss'?9:e.type==='elite'?7:meta.overkill?7:6),
+    color:meta.overkill?(i%2?'#ffd35c':e.color):e.color
   });
 
   persistSoon();
@@ -1484,7 +1634,7 @@ function addBullet(v,dmg,pierce=6,opts={}){
 }
 function firePrimary(force=false){
   if(!running || (!force && player.attackCd>0)) return;
-  const rate=ps.attackRate;
+  const rate=ps.attackRate*(feverActive()?1.35:1);
   player.attackCd=1/rate;
   const v=aimVector(); player.angle=Math.atan2(v.y,v.x);
   const base=ps.damage;
@@ -1754,18 +1904,20 @@ function useUltimate(){
 
 function update(dt){
   if(!running) return;
+  if(!updateBreakRush(dt)){updateHud();return}
   gameTime+=dt; player.attackCd-=dt; player.hitCd-=dt;
 
   let mx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);
   let my=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
   if(mx||my){const l=Math.hypot(mx,my);mx/=l;my/=l}
-  player.x=clamp(player.x+mx*ps.move*dt,player.r,W-player.r);
-  player.y=clamp(player.y+my*ps.move*dt,player.r,H-player.r);
+  const rushMove=ps.move*(feverActive()?1.20:1);
+  player.x=clamp(player.x+mx*rushMove*dt,player.r,W-player.r);
+  player.y=clamp(player.y+my*rushMove*dt,player.r,H-player.r);
 
   spawnTimer-=dt;
   if(spawnTimer<=0){
     const base=Math.max(.07,.42-gameTime*.0014);
-    spawnTimer=base/spawnMul;
+    spawnTimer=base/(spawnMul*(feverActive()?1.45:1));
     let r=Math.random(), type='normal';
     if(gameTime>120 && r<.035) type='elite';
     else if(gameTime>70 && r<.15) type='shooter';
@@ -1878,6 +2030,7 @@ function endRun(){
   running=false;save.bestKills=Math.max(save.bestKills,runKills);persist();
   document.getElementById('deathKills').textContent=runKills;
   document.getElementById('deathCoins').textContent=runCoins;
+  document.getElementById('deathCombo').textContent=maxBreakCombo;
   document.getElementById('death').style.display='flex';
 }
 
@@ -1964,7 +2117,7 @@ function draw(){
   ctx.globalAlpha=1;
 
   ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.angle);
-  ctx.shadowBlur=18;ctx.shadowColor=currentCharacter.color;ctx.fillStyle=currentCharacter.color;
+  ctx.shadowBlur=feverActive()?32:18;ctx.shadowColor=feverActive()?'#ffd85c':currentCharacter.color;ctx.fillStyle=feverActive()?'#fff0a0':currentCharacter.color;
   ctx.beginPath();ctx.arc(0,0,player.r,0,Math.PI*2);ctx.fill();
   ctx.fillStyle='#6ce5ff';ctx.fillRect(6,-4,15,8);
   ctx.restore();ctx.shadowBlur=0;
@@ -1980,6 +2133,21 @@ function updateHud(){
   document.getElementById('timeText').textContent=m+':'+s;
   document.getElementById('gemText').textContent=save.gems.toLocaleString();
   const gg=document.getElementById('gachaGemText'); if(gg) gg.textContent=save.gems.toLocaleString();
+  const tier=breakTier();
+  const bh=document.getElementById('breakHud'),bf=document.getElementById('breakFill');
+  const bl=document.getElementById('breakLabel'),ct=document.getElementById('comboText'),bs=document.getElementById('breakSub');
+  if(bh&&bf&&bl&&ct&&bs){
+    bh.classList.toggle('fever',feverActive());
+    document.getElementById('feverOverlay')?.classList.toggle('show',feverActive());
+    bl.textContent=feverActive()?'BREAK FEVER':tier.name;
+    ct.textContent=breakCombo+' K.O.';
+    const next=tier.next||75;
+    let pct=feverActive()?Math.max(0,feverTime/FEVER_DURATION*100):next?clamp(breakCombo/next*100,0,100):100;
+    bf.style.width=pct+'%';
+    if(feverActive())bs.textContent=feverTime.toFixed(1)+'s  •  COINS ×2.2';
+    else if(tier.next)bs.textContent='NEXT '+tier.next+' K.O.  •  COINS ×'+tier.coin.toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+    else bs.textContent='KEEP BREAKING';
+  }
   document.getElementById('charText').textContent=currentCharacter.name;
   document.getElementById('equippedName').textContent=currentCharacter.name;
   document.getElementById('equippedInfo').textContent=currentCharacter.rarity+' / '+attacks.find(a=>a.id===currentCharacter.attack).name.replace(/^\d+\.\s*/,'');
