@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.10</title>
+<title>BREAK SURVIVORS - Stage 10.11</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.10</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.11</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -2775,7 +2775,8 @@ const attackSfxFiles = {
     queen_skyfall_launch:['assets/sfx/missilequeen/queen_skyfall_launch.mp3'],
     queen_skyfall_dive:['assets/sfx/missilequeen/queen_skyfall_dive.mp3'],
     queen_decree_drop:['assets/sfx/missilequeen/queen_decree_drop.mp3'],
-    queen_crown_burst:['assets/sfx/missilequeen/queen_crown_burst.mp3']
+    queen_crown_burst:['assets/sfx/missilequeen/queen_crown_burst.mp3'],
+    queen_direct_sprite:['assets/sfx/missilequeen/queen_direct_sprite.mp3']
   }
 };
 
@@ -2898,6 +2899,52 @@ function playNovaUltimateFinal(){
   playNovaSample('nova_ult_final',.78,.97,{gap:480,priority:true,lowpass:6100,bodyFreq:118,bodyGain:2.75,harshFreq:3150,harshGain:-3.7});
 }
 
+const MISSILE_QUEEN_DIRECT_CLIPS={
+  launch_a:{offset:0.000000,duration:1.050000},
+  launch_b:{offset:1.170000,duration:1.120000},
+  swarm:{offset:2.410000,duration:.497333},
+  second:{offset:3.027333,duration:1.250000},
+  skyfall_launch:{offset:4.397333,duration:1.445437},
+  skyfall_dive:{offset:5.962770,duration:.950000},
+  decree:{offset:7.032770,duration:3.091396},
+  crown:{offset:10.244166,duration:.631125}
+};
+function getMissileQueenDirectClip(name){
+  return MISSILE_QUEEN_DIRECT_CLIPS[name]||null;
+}
+function playMissileQueenDirect(name,volume=.5,rate=1,opts={}){
+  if(!soundEnabled)return;
+  const clip=getMissileQueenDirectClip(name);
+  if(!clip)return;
+  const gap=opts.gap??70;
+  if(gap>0&&!characterSfxAllowed('missilequeen_direct_'+name,gap))return;
+  const ac=getAudio();if(!ac||!attackFilter)return;
+  const key=pickWeaponSfx('missile','queen_direct_sprite');
+  const buffer=attackBuffers[key];
+  if(!buffer){loadAttackSfx().catch(()=>{});return}
+  if(activeMissileQueenVoices>=MAX_MISSILE_QUEEN_VOICES&&!opts.priority)return;
+
+  const source=ac.createBufferSource();
+  const lowpass=ac.createBiquadFilter();
+  const harshCut=ac.createBiquadFilter();
+  const body=ac.createBiquadFilter();
+  const gain=ac.createGain();
+
+  source.buffer=buffer;
+  source.playbackRate.value=rate;
+  lowpass.type='lowpass';lowpass.frequency.value=opts.lowpass||6200;lowpass.Q.value=.38;
+  harshCut.type='peaking';harshCut.frequency.value=opts.harshFreq||3500;harshCut.Q.value=.9;harshCut.gain.value=opts.harshGain??-2.0;
+  body.type='peaking';body.frequency.value=opts.bodyFreq||175;body.Q.value=.72;body.gain.value=opts.bodyGain??0;
+
+  const overlapDuck=opts.priority?1:activeMissileQueenVoices>=6?.52:activeMissileQueenVoices>=4?.68:activeMissileQueenVoices>=2?.84:1;
+  gain.gain.value=clamp(volume*overlapDuck,0,.88);
+
+  source.connect(lowpass).connect(harshCut).connect(body).connect(gain).connect(attackFilter);
+  activeMissileQueenVoices++;
+  source.onended=()=>{activeMissileQueenVoices=Math.max(0,activeMissileQueenVoices-1)};
+  source.start(0,clip.offset,clip.duration);
+}
+
 function playMissileQueenSample(phase,volume=.5,rate=1,opts={}){
   if(!soundEnabled)return;
   const gap=opts.gap??70;
@@ -2932,17 +2979,17 @@ function playMissileQueenSample(phase,volume=.5,rate=1,opts={}){
 function playMissileQueenVolley(volley=0,command=false){
   if(command){
     playMissileQueenSample('queen_command',.19,.99,{gap:145,lowpass:5200,bodyFreq:145,bodyGain:.75,harshGain:-4.0});
-    setTimeout(()=>{if(running)playMissileQueenSample('queen_ref_launch_b',.39,.95,{gap:0,lowpass:5600,bodyFreq:180,bodyGain:.72,harshFreq:3500,harshGain:-4.2})},26);
+    setTimeout(()=>{if(running)playMissileQueenDirect('launch_b',.40,.95,{gap:0,lowpass:6200,bodyFreq:180,bodyGain:.25,harshFreq:3500,harshGain:-2.4})},26);
     return;
   }
-  const phase=volley%2===0?'queen_ref_launch_a':'queen_ref_launch_b';
-  playMissileQueenSample(phase,.40,volley%2===0?1:.98,{gap:82,lowpass:5700,bodyFreq:190,bodyGain:.52,harshFreq:3500,harshGain:-4.15});
+  const clip=volley%2===0?'launch_a':'launch_b';
+  playMissileQueenDirect(clip,.42,volley%2===0?1:.98,{gap:82,lowpass:6400,bodyFreq:190,bodyGain:.18,harshFreq:3500,harshGain:-2.2});
 }
 function playMissileQueenSwarmSplit(royal=false){
-  playMissileQueenSample('queen_ref_swarm',royal?.34:.24,royal?.97:1.02,{gap:78,lowpass:5750,bodyFreq:215,bodyGain:.34,harshFreq:3550,harshGain:-4.3});
+  playMissileQueenDirect('swarm',royal?.35:.25,royal?.97:1.02,{gap:78,lowpass:6500,bodyFreq:215,bodyGain:0,harshFreq:3550,harshGain:-2.5});
 }
 function playMissileQueenSecondStage(royal=false){
-  playMissileQueenSample('queen_ref_second',royal?.43:.34,royal?.96:.99,{gap:100,lowpass:5350,bodyFreq:150,bodyGain:1.05,harshFreq:3400,harshGain:-4.0});
+  playMissileQueenDirect('second',royal?.44:.35,royal?.96:.99,{gap:100,lowpass:6100,bodyFreq:145,bodyGain:.70,harshFreq:3400,harshGain:-2.6});
 }
 function playMissileQueenUltStart(){
   playMissileQueenSample('queen_ult_lock',.34,1,{gap:520,priority:true,lowpass:5000,bodyFreq:175,bodyGain:.52,harshGain:-4.1});
@@ -2955,21 +3002,21 @@ function playMissileQueenUltFinal(){
   playMissileQueenDecreeImpact();
 }
 function playMissileQueenSkyfallLaunch(){
-  playMissileQueenSample('queen_skyfall_launch',.61,1.17,{gap:700,priority:true,lowpass:5850,bodyFreq:150,bodyGain:1.05,harshFreq:3550,harshGain:-4.0});
+  playMissileQueenDirect('skyfall_launch',.64,1,{gap:700,priority:true,lowpass:6400,bodyFreq:150,bodyGain:.55,harshFreq:3550,harshGain:-2.5});
 }
 function playMissileQueenSkyfallDive(wave=0){
   const rates=[1.05,.98,.92];
   const vols=[.26,.29,.34];
-  playMissileQueenSample('queen_skyfall_dive',vols[wave]||.28,rates[wave]||1,{gap:130,lowpass:5900,bodyFreq:185,bodyGain:.42,harshFreq:3600,harshGain:-4.25});
+  playMissileQueenDirect('skyfall_dive',vols[wave]||.28,rates[wave]||1,{gap:130,lowpass:6500,bodyFreq:185,bodyGain:.12,harshFreq:3600,harshGain:-2.7});
 }
 function playMissileQueenDecreeDrop(){
-  playMissileQueenSample('queen_decree_drop',.68,.94,{gap:650,priority:true,lowpass:5550,bodyFreq:108,bodyGain:2.15,harshFreq:3300,harshGain:-4.15});
+  playMissileQueenDirect('decree',.72,1,{gap:650,priority:true,lowpass:6000,bodyFreq:105,bodyGain:1.8,harshFreq:3300,harshGain:-2.8});
 }
 function playMissileQueenDecreeImpact(){
   playMissileQueenSample('queen_ult_final',.54,.90,{gap:520,priority:true,lowpass:4550,bodyFreq:92,bodyGain:2.55,harshFreq:2850,harshGain:-4.4});
 }
 function playMissileQueenCrownBurst(){
-  playMissileQueenSample('queen_crown_burst',.48,1,{gap:340,priority:true,lowpass:5750,bodyFreq:180,bodyGain:.62,harshFreq:3550,harshGain:-4.2});
+  playMissileQueenDirect('crown',.50,1,{gap:340,priority:true,lowpass:6500,bodyFreq:180,bodyGain:.12,harshFreq:3550,harshGain:-2.5});
 }
 
 function playLightningSample(phase,volume=.5,rate=1,delayMs=0,offset=0,duration=null,bassBoost=1){
