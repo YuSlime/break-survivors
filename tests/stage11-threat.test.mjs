@@ -64,3 +64,33 @@ test('spawn shape changes both interval and batch while preserving expected dens
   const expectedBatch=d/lo.intervalMul;
   assert.ok(expectedBatch>1);
 });
+
+
+test('elite pressure and surge plans match Stage 11 values',()=>{
+  const {getThreatState,getThreatEliteChance,buildThreatSurgePlan}=threatContext();
+  const expectedElite=[.035,.04,.06,.11,.17,.24];
+  for(let threat=0;threat<=5;threat++){
+    const kills=[0,150,450,900,1600,2600][threat];
+    const state=getThreatState(kills);
+    assert.equal(getThreatEliteChance(state,121),expectedElite[threat]);
+    assert.equal(getThreatEliteChance(state,119),0);
+  }
+  const counts=[10,14,20,28,38];
+  const elites=[0,1,3,6,10];
+  for(let level=1;level<=5;level++){
+    const p=buildThreatSurgePlan(level);
+    assert.equal(p.count,counts[level-1]);
+    assert.equal(p.eliteCount,elites[level-1]);
+  }
+});
+
+test('runtime integrates threat into spawn interval, batches, hp and rewards',()=>{
+  assert.match(source,/getThreatSpawnShape\(threatState\.densityMul,Math\.random\(\)\)/);
+  assert.match(source,/spawnTimer=base\/\(spawnMul\*\(feverActive\(\)\?1\.45:1\)\*eventSpawnMultiplier\(\)\*spawnShape\.intervalMul\)/);
+  assert.match(source,/for\(let spawnIndex=0;spawnIndex<spawnShape\.batchSize;spawnIndex\+\+\)/);
+  assert.match(source,/const threatState=getThreatState\(runKills\);[\s\S]{0,240}hpScale=\(1\+gameTime\/70\)\*threatState\.hpMul/);
+  assert.match(source,/reward:d\.reward\*threatState\.rewardMul/);
+  assert.match(source,/function spawnThreatSurge\(level\)/);
+  assert.match(source,/spawnEnemy\(type,\{position:/);
+  assert.doesNotMatch(source,/MAX_ENEMIES|enemyCap|enemies\.length\s*[>=]+\s*\d+/);
+});
