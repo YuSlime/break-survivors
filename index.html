@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.18</title>
+<title>BREAK SURVIVORS - Stage 10.19</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.18</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.19</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -2763,7 +2763,6 @@ const attackSfxFiles = {
     queen_launch_b:['assets/sfx/missilequeen/queen_launch_b.mp3'],
     queen_swarm_split:['assets/sfx/missilequeen/queen_swarm_split.mp3'],
     queen_second_stage:['assets/sfx/missilequeen/queen_second_stage.mp3'],
-    queen_command:['assets/sfx/missilequeen/queen_command.mp3'],
     queen_ult_lock:['assets/sfx/missilequeen/queen_ult_lock.mp3'],
     queen_ult_rack:['assets/sfx/missilequeen/queen_ult_rack.mp3'],
     queen_ult_salvo:['assets/sfx/missilequeen/queen_ult_salvo.mp3'],
@@ -2778,7 +2777,6 @@ const attackSfxFiles = {
     queen_crown_burst:['assets/sfx/missilequeen/queen_crown_burst.mp3'],
     queen_direct_sprite:['assets/sfx/missilequeen/queen_direct_sprite.mp3'],
     queen_primary_a:['assets/sfx/missilequeen/queen_primary_a.mp3'],
-    queen_primary_command:['assets/sfx/missilequeen/queen_primary_command.mp3']
   }
 };
 
@@ -2992,10 +2990,9 @@ function playMissileQueenSample(phase,volume=.5,rate=1,opts={}){
 }
 function playMissileQueenVolley(volley=0,command=false){
   if(command){
-    playMissileQueenSample('queen_command',.13,.99,{gap:145,lowpass:5000,bodyFreq:145,bodyGain:.45,harshGain:-4.2});
-    setTimeout(()=>{if(running)playMissileQueenSample('queen_primary_command',.42,.98,{
-      gap:0,lowpass:5200,bodyFreq:135,bodyGain:1.18,harshFreq:3150,harshGain:-3.7
-    })},24);
+    playMissileQueenSample('queen_primary_a',.40,.90,{
+      gap:110,lowpass:5000,bodyFreq:135,bodyGain:1.15,harshFreq:3150,harshGain:-3.8
+    });
     return;
   }
   const alt=volley%2===0;
