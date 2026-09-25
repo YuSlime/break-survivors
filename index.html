@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.15</title>
+<title>BREAK SURVIVORS - Stage 10.16</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.15</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.16</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1605,7 +1605,7 @@ const growthDefs = {
       arsenal:{name:'ARSENAL',desc:'ミサイル +2 / 飛翔速度 +15% / 旋回性能UP。物量制圧型。'},
       warhead:{name:'WARHEAD',desc:'Damage +30% / 弾頭サイズ・爆発範囲UP。重量誘導弾型。'}
     },
-    ultimate:"ROYAL SKYFALL — SOVEREIGN ANNIHILATION。8→12→16発のMISSILE RAIN → QUEEN'S DECREE → SECOND SHOCKWAVE → CROWN BURST×16。"
+    ultimate:"ROYAL SKYFALL — SOVEREIGN ANNIHILATION。8→12→16発のMISSILE RAIN → QUEEN'S DECREE → SECOND SHOCKWAVE → CROWN ARMADA → CROWN DIVE → CROSS FIRE → KING MISSILE。"
   }
 };
 
@@ -4419,13 +4419,81 @@ function triggerQueensDecreeShockwave(x,y){
   missileQueenFlash=Math.max(missileQueenFlash,.48);
   hitStop=Math.max(hitStop,.030);
 }
-function triggerCrownBurst(x,y,dmg,radius,count=16){
-  playMissileQueenCrownBurst();
-  rings.push({x,y,r:8,max:radius*1.85,life:.46,total:.46,color:'#fff0a0'});
-  launchQueenChildren(x,y,count,dmg,radius,{
-    speed:485,turnRate:9.2,life:2.25,mini:true,royal:true,preferStrong:true,
-    missileScale:.72,color:'#fff6b4'
+function makeArmadaTarget(x,y,r=12){
+  return {x,y,r,dead:false,armadaStatic:true};
+}
+function launchFixedArmadaMissile(opts={}){
+  const target=makeArmadaTarget(opts.targetX,opts.targetY,opts.targetR||12);
+  const angle=Math.atan2(target.y-opts.y,target.x-opts.x);
+  const speed=opts.speed||520;
+  const m={
+    x:opts.x,y:opts.y,
+    vx:Math.cos(angle)*(opts.initialSpeed||speed*.72),
+    vy:Math.sin(angle)*(opts.initialSpeed||speed*.72),
+    target,
+    speed,turnRate:opts.turnRate||10.5,life:opts.life||2.4,
+    dmg:opts.dmg??ps.damage,radius:opts.radius??100*ps.area,
+    microChildren:0,secondStageChildren:0,
+    royal:true,command:true,queenFinal:false,skyfall:false,decree:false,crownCount:0,
+    mini:false,stage2:false,heavy:true,
+    armadaKind:opts.kind||'dive',kingMissile:opts.kind==='king',
+    missileScale:opts.scale||1.2,
+    color:opts.color||'#fff1a0',
+    trail:[],trailTick:0
+  };
+  missiles.push(m);
+  return m;
+}
+function launchCrownDive(x,y){
+  playMissileQueenSkyfallDive(2);
+  const count=8,arcStart=Math.PI*1.08,arcEnd=Math.PI*1.92;
+  for(let i=0;i<count;i++){
+    const t=i/(count-1),a=arcStart+(arcEnd-arcStart)*t;
+    const r=390+Math.sin(t*Math.PI)*60;
+    launchFixedArmadaMissile({
+      x:x+Math.cos(a)*r,y:y+Math.sin(a)*r,
+      targetX:x,targetY:y,
+      speed:610,turnRate:11.5,life:2.2,
+      dmg:ps.damage*.80,radius:94*ps.area,
+      scale:1.28,color:'#fff2a6',kind:'dive'
+    });
+  }
+}
+function launchCrossFire(x,y){
+  playMissileQueenDirect('skyfall_launch',.36,1.04,{
+    gap:180,clipDuration:.82,priority:true,lowpass:6500,bodyFreq:165,bodyGain:.42,harshGain:-2.7
   });
+  const count=6;
+  for(let i=0;i<count;i++){
+    const a=i*Math.PI*2/count;
+    const r=500;
+    launchFixedArmadaMissile({
+      x:x+Math.cos(a)*r,y:y+Math.sin(a)*r,
+      targetX:x,targetY:y,
+      speed:670,turnRate:12.2,life:2.0,
+      dmg:ps.damage*1.0,radius:112*ps.area,
+      scale:1.42,color:'#fff7bf',kind:'cross'
+    });
+  }
+}
+function launchKingMissile(x,y){
+  playMissileQueenDecreeDrop();
+  missileQueenFx.push({type:'king_target',x,y,life:1.15,total:1.15,radius:320*ps.area});
+  launchFixedArmadaMissile({
+    x:x,y:y-900,targetX:x,targetY:y,
+    speed:455,initialSpeed:285,turnRate:8.8,life:3.3,
+    dmg:ps.damage*7.0,radius:320*ps.area,
+    scale:4.6,color:'#fff9cf',kind:'king'
+  });
+}
+function startCrownArmada(x,y){
+  playMissileQueenCrownBurst();
+  missileQueenFx.push({type:'crown_armada',x,y,life:1.20,total:1.20});
+  missileQueenFx.push({type:'armada_zone',x,y,life:1.65,total:1.65,radius:320*ps.area});
+  missileQueenFlash=Math.max(missileQueenFlash,.46);
+  setTimeout(()=>{if(running)launchCrownDive(x,y)},300);
+  setTimeout(()=>{if(running)launchCrossFire(x,y)},690);
+  setTimeout(()=>{if(running)launchKingMissile(x,y)},1120);
 }
 function launchQueensDecree(){
   const targets=getMissileQueenTargets(1,player.x,player.y,true);
@@ -4739,14 +4807,26 @@ function update(dt,refreshHud=true){
     if(m.target && Math.hypot(m.target.x-m.x,m.target.y-m.y)<m.target.r+8){
       const mx=m.x,my=m.y;
       const decreeHit=!!(m.queenFinal||m.decree);
-      explode(mx,my,m.radius,m.dmg,m.royal||m.queenFinal?'#fff0a0':'#ffd35a',decreeHit?{royal:true,silent:true,noShake:true}:{});
+      const armadaHit=!!m.armadaKind;
+      explode(mx,my,m.radius,m.dmg,m.royal||m.queenFinal?'#fff0a0':'#ffd35a',(decreeHit||armadaHit)?{royal:true,silent:true,noShake:true}:{});
       if(decreeHit){
         playMissileQueenDecreeImpact();
         missileQueenFlash=Math.max(missileQueenFlash,1.0);
         hitStop=Math.max(hitStop,.072);
         shake=Math.min(3.4,shake+1.15);
         setTimeout(()=>{if(running)triggerQueensDecreeShockwave(mx,my)},120);
-        setTimeout(()=>{if(running)triggerCrownBurst(mx,my,ps.damage*1.15,92*ps.area,m.crownCount||16)},230);
+        setTimeout(()=>{if(running)startCrownArmada(mx,my)},260);
+      }else if(m.armadaKind){
+        if(m.kingMissile){
+          playMissileQueenDecreeImpact();
+          missileQueenFlash=Math.max(missileQueenFlash,1.0);
+          hitStop=Math.max(hitStop,.085);
+          shake=Math.min(3.5,shake+1.2);
+          rings.push({x:mx,y:my,r:16,max:m.radius*1.25,life:.62,total:.62,color:'#fff8d0'});
+          rings.push({x:mx,y:my,r:8,max:m.radius*.86,life:.42,total:.42,color:'#ffe37d'});
+        }else{
+          missileQueenFlash=Math.max(missileQueenFlash,.10);
+        }
       }else{
         if((m.microChildren||0)>0&&!m.mini&&!m.stage2){
           setTimeout(()=>{
@@ -5213,6 +5293,46 @@ function draw(){
       for(let k=0;k<4;k++){
         const ang=k*Math.PI/2+p*.9,outer=r+12,tip=r+2;
         ctx.beginPath();ctx.moveTo(Math.cos(ang)*outer,Math.sin(ang)*outer);ctx.lineTo(Math.cos(ang)*tip,Math.sin(ang)*tip);ctx.stroke();
+      }
+      ctx.restore();
+    }else if(fx.type==='crown_armada'){
+      const p=1-a,count=performanceMode?8:14;
+      ctx.save();ctx.translate(fx.x,fx.y);ctx.globalAlpha=.35+.65*a;
+      ctx.strokeStyle='#fff2a0';ctx.fillStyle='#fff7ca';ctx.shadowBlur=fxBlur(performanceMode?0:18);ctx.shadowColor='#ffe88a';
+      ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(-110,18);ctx.lineTo(-82,-30);ctx.lineTo(-42,0);ctx.lineTo(0,-62);ctx.lineTo(42,0);ctx.lineTo(82,-30);ctx.lineTo(110,18);ctx.stroke();
+      for(let i=0;i<count;i++){
+        const t=count===1?.5:i/(count-1);
+        const xx=(t-.5)*220;
+        const yy=18-Math.sin(t*Math.PI)*58+Math.sin(t*Math.PI*5)*18;
+        const ang=Math.atan2(-yy,-xx);
+        ctx.save();ctx.translate(xx,yy);ctx.rotate(ang);
+        ctx.fillRect(-7,-2.5,14,5);
+        ctx.fillStyle='#ff9f55';ctx.fillRect(-11,-1.5,4,3);ctx.fillStyle='#fff7ca';
+        ctx.restore();
+      }
+      ctx.globalAlpha=.30+.35*(1-p);ctx.beginPath();ctx.arc(0,0,66+30*p,0,Math.PI*2);ctx.stroke();
+      ctx.restore();
+    }else if(fx.type==='armada_zone'){
+      const p=1-a,zoneR=Math.min(300,(fx.radius||280)*.72);
+      ctx.save();ctx.translate(fx.x,fx.y);
+      ctx.strokeStyle='#fff2a0';ctx.fillStyle='rgba(255,226,122,'+(performanceMode?.06:.11)+')';
+      ctx.lineWidth=performanceMode?2.5:4;ctx.shadowBlur=fxBlur(performanceMode?0:20);ctx.shadowColor='#ffe68a';
+      ctx.globalAlpha=.42+.42*(.5+.5*Math.sin(p*Math.PI*8));
+      ctx.beginPath();ctx.arc(0,0,zoneR,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.globalAlpha=.48;ctx.beginPath();ctx.arc(0,0,zoneR*.68,0,Math.PI*2);ctx.stroke();
+      ctx.restore();
+    }else if(fx.type==='king_target'){
+      const p=1-a,zoneR=Math.min(330,(fx.radius||320)*.80);
+      ctx.save();ctx.translate(fx.x,fx.y);
+      ctx.strokeStyle='#fffbd8';ctx.fillStyle='rgba(255,247,196,'+(performanceMode?.08:.16)+')';
+      ctx.lineWidth=performanceMode?3:5;ctx.shadowBlur=fxBlur(performanceMode?0:28);ctx.shadowColor='#fff1a0';
+      ctx.globalAlpha=.65+.30*Math.sin(p*Math.PI*10);
+      ctx.beginPath();ctx.arc(0,0,zoneR,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.beginPath();ctx.moveTo(-zoneR*.72,0);ctx.lineTo(zoneR*.72,0);ctx.moveTo(0,-zoneR*.72);ctx.lineTo(0,zoneR*.72);ctx.stroke();
+      if(!performanceMode){
+        ctx.globalAlpha=.18+.16*p;
+        ctx.fillStyle='#fff9da';ctx.fillRect(-8,-zoneR-230,16,230);
       }
       ctx.restore();
     }else if(fx.type==='decree_target'&&fx.target&&!fx.target.dead){
