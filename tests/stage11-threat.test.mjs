@@ -12,7 +12,7 @@ function threatContext(){
   const block=source.slice(start,end);
   const context={Math};
   vm.createContext(context);
-  vm.runInContext(block+'\nthis.THREAT_THRESHOLDS=THREAT_THRESHOLDS;this.THREAT_PROFILES=THREAT_PROFILES;this.getThreatState=getThreatState;this.getThreatSpawnShape=getThreatSpawnShape;',context);
+  vm.runInContext(block+'\nthis.THREAT_THRESHOLDS=THREAT_THRESHOLDS;this.THREAT_PROFILES=THREAT_PROFILES;this.getThreatState=getThreatState;this.getThreatSpawnShape=getThreatSpawnShape;this.getThreatEliteChance=getThreatEliteChance;this.buildThreatSurgePlan=buildThreatSurgePlan;',context);
   return context;
 }
 
