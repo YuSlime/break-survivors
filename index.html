@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.3</title>
+<title>BREAK SURVIVORS - Stage 10.4 EXP</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.3</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.4 EXP</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1584,7 +1584,7 @@ ensureCharacterSave();
 let currentCharacter = characterDefs.find(c=>c.id===save.selectedCharacter && save.characters[c.id]?.owned) || characterDefs[0];
 save.selectedCharacter=currentCharacter.id;
 let attackType=currentCharacter.attack, god=false, dmgMul=1, spawnMul=1;
-let enemies=[], bullets=[], bombFragments=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
+let enemies=[], bullets=[], bombFragments=[], bombExplosionFx=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
 let keys = {};
 let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
 let ultCharge=0;
@@ -1913,7 +1913,7 @@ function resetRun(){
   setAttack(attackType);
   ps=playerStats();
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
-  enemies=[];bullets=[];bombFragments=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
+  enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
   gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
@@ -3587,10 +3587,9 @@ function bombCatAftershock(x,y,r,dmg,quietAudio=false){
 function triggerBombCatRoyalNuke(x,y,r,dmg,clusterCount,chainChance,aftershock=true,opts={}){
   bombCatFlash=Math.max(bombCatFlash,.72);
   hitStop=Math.max(hitStop,opts.cataclysmFinal?.062:.048);
-  // Stage 10.3: CATACLYSM FINAL has its own three-stage Runway sound.
+  // Stage 10.4 EXP: one pressure wave only. Main weight comes from the fireball bloom.
   if(opts.cataclysmFinal)playBombCatCataclysmFinalSfx();
-  rings.push({x,y,r:4,max:r*.68,life:.22,total:.22,color:'#ffffff'});
-  rings.push({x,y,r:6,max:r*1.16,life:.48,total:.48,color:'#ffe27c'});
+  rings.push({x,y,r:5,max:r*1.18,life:.46,total:.46,color:'#ffe27c'});
   const kills=explode(x,y,r,dmg,'#fff0a0',{
     aftershock,bombcat:true,royal:true,
     silent:!!opts.cataclysmFinal,
@@ -3637,6 +3636,23 @@ function startBombCatCataclysm(){
   });
 }
 
+function getBombExplosionFxProfile(opts={}){
+  if(opts.royal)return {lobes:11,shards:18,smoke:9,total:.82,core:.17};
+  if(opts.cataclysm)return {lobes:7,shards:10,smoke:6,total:.58,core:.13};
+  if(opts.chainReaction)return {lobes:6,shards:9,smoke:5,total:.52,core:.12};
+  if(opts.secondary)return {lobes:4,shards:5,smoke:3,total:.38,core:.09};
+  return {lobes:6,shards:8,smoke:5,total:.50,core:.12};
+}
+function spawnBombExplosionFx(x,y,r,color='#ff9f43',opts={}){
+  const p=getBombExplosionFxProfile(opts),lobes=[],shards=[],smoke=[];
+  for(let i=0;i<p.lobes;i++){
+    const a=i*Math.PI*2/p.lobes+rnd(-.42,.42);
+    lobes.push({a,dist:rnd(.08,.38)*r,size:rnd(.26,.48)*r,delay:rnd(0,.09),stretch:rnd(.78,1.24),hot:Math.random()<.34});
+  }
+  for(let i=0;i<p.shards;i++)shards.push({a:rnd(0,Math.PI*2),speed:rnd(.62,1.28)*r,size:rnd(1.8,opts.royal?8:5.5),rot:rnd(0,Math.PI*2),spin:rnd(-8,8)});
+  for(let i=0;i<p.smoke;i++)smoke.push({a:rnd(0,Math.PI*2),dist:rnd(.12,.48)*r,size:rnd(.24,.50)*r,delay:rnd(.10,.24)});
+  bombExplosionFx.push({x,y,r,color,life:p.total,total:p.total,core:p.core,royal:!!opts.royal,lobes,shards,smoke});
+}
 function explode(x,y,r,dmg,color='#ff9f43',opts={}){
   if(!opts.silent){
     if(opts.bombcat){
@@ -3646,14 +3662,12 @@ function explode(x,y,r,dmg,color='#ff9f43',opts={}){
       playWeaponImpactSfx(activeWeaponKey(),true);
     }
   }
-  rings.push({x,y,r:2,max:r,life:opts.royal?.38:.28,total:opts.royal?.38:.28,color});
   if(opts.bombcat){
+    spawnBombExplosionFx(x,y,r,color,opts);
     const shakeKind=opts.royal?'royal':opts.cataclysm?'cataclysm':opts.chainReaction?'chain':opts.secondary?'secondary':'normal';
     applyBombCatShake(shakeKind);
-    if(!opts.secondary&&!opts.royal){
-      rings.push({x,y,r:3,max:r*.74,life:.18,total:.18,color:'#fff1bd'});
-    }
   }else{
+    rings.push({x,y,r:2,max:r,life:opts.royal?.38:.28,total:opts.royal?.38:.28,color});
     shake=Math.min(opts.royal?18:14,shake+(opts.royal?7:opts.secondary?2:4));
   }
   let kills=0;
@@ -4075,6 +4089,7 @@ function update(dt){
   }
 
   for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.life-=dt}
+  for(const fx of bombExplosionFx)fx.life-=dt;
   for(const x of beams)x.life-=dt;
   for(const x of slashFx)x.life-=dt;
   for(const x of rings)x.life-=dt;
@@ -4087,6 +4102,7 @@ function update(dt){
   missiles=missiles.filter(x=>x.life>0 && x.x>-160&&x.x<WORLD_W+160&&x.y>-160&&x.y<WORLD_H+160);
   enemyBullets=enemyBullets.filter(x=>x.life>0 && x.x>-80&&x.x<WORLD_W+80&&x.y>-80&&x.y<WORLD_H+80);
   particles=particles.filter(x=>x.life>0);
+  bombExplosionFx=bombExplosionFx.filter(x=>x.life>0);
   beams=beams.filter(x=>x.life>0); slashFx=slashFx.filter(x=>x.life>0); rings=rings.filter(x=>x.life>0); lightnings=lightnings.filter(x=>x.life>0);
   enemies=enemies.filter(e=>!e.dead);
 
@@ -4150,6 +4166,51 @@ function draw(){
   ctx.lineWidth=2/CAMERA_ZOOM;
   ctx.strokeRect(0,0,WORLD_W,WORLD_H);
   ctx.restore();
+
+  // Stage 10.4 EXP — irregular fireball bloom replaces Bomb Cat ring spam.
+  for(const fx of bombExplosionFx){
+    const t=clamp(1-fx.life/fx.total,0,1);
+    const fade=clamp(fx.life/(fx.total*.56),0,1);
+
+    ctx.save();
+    ctx.globalAlpha=(1-t)*.16*(fx.royal?1.25:1);
+    ctx.fillStyle='#17110d';
+    ctx.translate(fx.x,fx.y);ctx.scale(1.18,.78);
+    ctx.beginPath();ctx.arc(0,0,fx.r*(fx.royal?.54:.38),0,Math.PI*2);ctx.fill();ctx.restore();
+
+    for(const s of fx.smoke){
+      const st=clamp((t-s.delay)/(1-s.delay),0,1);if(st<=0)continue;
+      const dist=s.dist*(.45+st*.90),sx=fx.x+Math.cos(s.a)*dist,sy=fx.y+Math.sin(s.a)*dist,size=s.size*(.38+st*.92);
+      ctx.save();ctx.globalAlpha=(1-st)*.24*(fx.royal?1.2:1);ctx.fillStyle=fx.royal?'#2d261f':'#332923';
+      ctx.shadowBlur=10;ctx.shadowColor='#1a130f';ctx.beginPath();ctx.arc(sx,sy,size,0,Math.PI*2);ctx.fill();ctx.restore();
+    }
+
+    for(const l of fx.lobes){
+      const lt=clamp((t-l.delay)/(1-l.delay),0,1);if(lt<=0||lt>=.78)continue;
+      const burst=Math.sin(Math.min(1,lt/.58)*Math.PI*.78),dist=l.dist*(.35+lt*1.15);
+      const lx=fx.x+Math.cos(l.a)*dist,ly=fx.y+Math.sin(l.a)*dist,size=l.size*(.24+burst*1.02);
+      const grad=ctx.createRadialGradient(lx-size*.18,ly-size*.18,size*.08,lx,ly,size);
+      grad.addColorStop(0,l.hot?'#ffffff':'#fff7bf');grad.addColorStop(.25,fx.royal?'#fff09a':'#ffd25f');
+      grad.addColorStop(.62,fx.royal?'#ff9d32':'#ff8738');grad.addColorStop(1,'rgba(175,55,22,0)');
+      ctx.save();ctx.globalAlpha=clamp((.80-lt)*1.45,0,1)*fade;
+      ctx.translate(lx,ly);ctx.rotate(l.a*.35);ctx.scale(l.stretch,1/l.stretch);
+      ctx.fillStyle=grad;ctx.shadowBlur=fx.royal?24:14;ctx.shadowColor='#ff8a32';
+      ctx.beginPath();ctx.arc(0,0,size,0,Math.PI*2);ctx.fill();ctx.restore();
+    }
+
+    if(t<fx.core){
+      const ct=1-t/fx.core,cr=fx.r*(fx.royal?.42:.25)*(1.15-ct*.35);
+      ctx.save();ctx.globalAlpha=ct*(fx.royal?.92:.72);ctx.fillStyle='#fffdf0';
+      ctx.shadowBlur=fx.royal?34:20;ctx.shadowColor='#fff0a0';ctx.beginPath();ctx.arc(fx.x,fx.y,cr,0,Math.PI*2);ctx.fill();ctx.restore();
+    }
+
+    for(const d of fx.shards){
+      const dist=d.speed*t,dx=fx.x+Math.cos(d.a)*dist,dy=fx.y+Math.sin(d.a)*dist,da=clamp((1-t)*1.4,0,1);
+      ctx.save();ctx.translate(dx,dy);ctx.rotate(d.rot+d.spin*t);ctx.globalAlpha=da*.78;
+      ctx.fillStyle=fx.royal?'#ffd463':'#a94d28';ctx.fillRect(-d.size*.65,-d.size*.22,d.size*1.3,d.size*.44);ctx.restore();
+    }
+  }
+  ctx.globalAlpha=1;ctx.shadowBlur=0;
 
   for(const r of rings){
     const a=clamp(r.life/r.total,0,1), rr=r.max*(1-a*.25);
