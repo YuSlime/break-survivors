@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.6</title>
+<title>BREAK SURVIVORS - Stage 10.7</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.6</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.7</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1463,7 +1463,7 @@ const characterDefs = [
   },
   {
     id:'missilequeen', name:'Missile Queen', rarity:'Epic', attack:'missile', icon:'🚀', color:'#ffd66b',
-    passive:'Dual Lock — Fires 2 missiles',
+    passive:'Royal Targeting — 2体を同時捕捉。ミサイルは外へ展開してから急旋回。',
     abilities:['Main','Lv5','Lv10','Lv20','Lv30','Lv40','Lv50']
   }
 ];
@@ -1554,19 +1554,19 @@ const growthDefs = {
   },
   missilequeen:{
     nodes:[
-      [1,'Main','Homing Missile'],
-      [5,'Triple Lock','ミサイル +1'],
-      [10,'Cluster Head','着弾時に小爆発×3'],
-      [20,'Branch','武装庫 / 弾頭強化'],
+      [1,'Main','DUAL LOCK — 2発が左右へ展開してから追尾'],
+      [5,'TRIPLE LOCK','3体まで分散ロック'],
+      [10,'SWARM SPLIT','命中後に小型再ロック弾×3'],
+      [20,'Branch','ARSENAL / WARHEAD'],
       [30,'ULT','ROYAL SALVO'],
-      [40,'Second Stage','爆発後に追尾弾を再発射'],
-      [50,'AWAKEN',"QUEEN'S DECREE"]
+      [40,'SECOND STAGE','命中後に本格追尾弾×2を再発射'],
+      [50,'AWAKEN',"QUEEN'S DECREE — 3回ごとにCOMMAND SALVO"]
     ],
     branches:{
-      arsenal:{name:'ARSENAL',desc:'ミサイル +2 / 飛翔速度 +15%。'},
-      warhead:{name:'WARHEAD',desc:'Damage +30% / 爆発範囲 +35%。'}
+      arsenal:{name:'ARSENAL',desc:'ミサイル +2 / 飛翔速度 +15% / 旋回性能UP。物量制圧型。'},
+      warhead:{name:'WARHEAD',desc:'Damage +30% / 弾頭サイズ・爆発範囲UP。重量誘導弾型。'}
     },
-    ultimate:'ROYAL SALVO — 大量の追尾ミサイルを一斉発射。'
+    ultimate:'ROYAL SALVO — 全敵をロックし波状発射。最後にQUEEN MISSILE→8発再ロック。'
   }
 };
 
@@ -1584,7 +1584,7 @@ ensureCharacterSave();
 let currentCharacter = characterDefs.find(c=>c.id===save.selectedCharacter && save.characters[c.id]?.owned) || characterDefs[0];
 save.selectedCharacter=currentCharacter.id;
 let attackType=currentCharacter.attack, god=false, dmgMul=1, spawnMul=1;
-let enemies=[], bullets=[], bombFragments=[], bombExplosionFx=[], novaUltCores=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
+let enemies=[], bullets=[], bombFragments=[], bombExplosionFx=[], novaUltCores=[], missileQueenFx=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
 let keys = {};
 let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
 let ultCharge=0;
@@ -1601,6 +1601,84 @@ const gunnerMomentumMul=()=>1+GUNNER_MOMENTUM_MAX_BONUS*clamp(gunnerMomentum/100
 // Stage 10.0 — Bomb Cat chain-destruction identity.
 let bombCatFlash=0;
 let novaFlash=0;
+
+function getMissileQueenProfile(lv,branch,volley){
+  const arsenal=lv>=20&&branch==='arsenal';
+  const warhead=lv>=20&&branch==='warhead';
+  return {
+    count:2+(lv>=5?1:0)+(arsenal?2:0),
+    speed:330*(arsenal?1.15:1),
+    turnRate:arsenal?7.2:5.4,
+    radiusMul:warhead?1.32:1,
+    missileScale:warhead?1.24:1,
+    microChildren:lv>=10?3:0,
+    secondStageChildren:lv>=40?2:0,
+    command:lv>=50&&volley>0&&volley%3===0,
+    commandSpeedMul:1.22,
+    commandTurnMul:1.30,
+    warhead,
+    arsenal
+  };
+}
+function getMissileQueenTargets(count,originX=player.x,originY=player.y,preferStrong=false,exclude=new Set()){
+  const pool=enemies.filter(e=>!e.dead&&!exclude.has(e));
+  pool.sort((a,b)=>preferStrong
+    ? ((b.hp||0)-(a.hp||0)) || (dist({x:originX,y:originY},a)-dist({x:originX,y:originY},b))
+    : dist({x:originX,y:originY},a)-dist({x:originX,y:originY},b)
+  );
+  return pool.slice(0,Math.max(0,count));
+}
+function spawnMissileLockFx(target,royal=false,life=.36){
+  if(!target||target.dead)return;
+  missileQueenFx.push({type:'lock',target,life,total:life,royal});
+}
+function spawnMissileRackFx(){
+  for(let i=0;i<6;i++)missileQueenFx.push({
+    type:'rack',angle:i*Math.PI*2/6,life:1.18,total:1.18,orbit:54
+  });
+}
+function launchQueenMissile(opts={}){
+  const target=opts.target;
+  if(!target||target.dead)return null;
+  const originX=opts.x??player.x,originY=opts.y??player.y;
+  const side=opts.side??0;
+  const baseAng=opts.baseAngle??player.angle;
+  const launchAng=baseAng+side*.62;
+  const initialSpeed=opts.initialSpeed??(opts.queenFinal?145:115);
+  const m={
+    x:originX,y:originY,
+    vx:Math.cos(launchAng)*initialSpeed,vy:Math.sin(launchAng)*initialSpeed,
+    target,
+    speed:opts.speed??330,turnRate:opts.turnRate??5.4,life:opts.life??3.1,
+    dmg:opts.dmg??ps.damage,radius:opts.radius??90*ps.area,
+    microChildren:opts.microChildren||0,secondStageChildren:opts.secondStageChildren||0,
+    royal:!!opts.royal,command:!!opts.command,queenFinal:!!opts.queenFinal,
+    mini:!!opts.mini,stage2:!!opts.stage2,heavy:!!opts.heavy,
+    missileScale:opts.missileScale||1,
+    color:opts.color||(opts.queenFinal?'#fff6b0':opts.command?'#ffe36e':'#ffd66b'),
+    trail:[],trailTick:0
+  };
+  missiles.push(m);
+  spawnMissileLockFx(target,m.royal||m.command||m.queenFinal,opts.lockLife??.32);
+  return m;
+}
+function launchQueenChildren(x,y,count,dmg,radius,opts={}){
+  const targets=getMissileQueenTargets(Math.max(count,1),x,y,!!opts.preferStrong);
+  if(!targets.length)return;
+  for(let i=0;i<count;i++){
+    const target=targets[i%targets.length];
+    const a=i*Math.PI*2/count+rnd(-.24,.24);
+    launchQueenMissile({
+      x,y,target,baseAngle:a,side:0,initialSpeed:rnd(115,180),
+      speed:opts.speed||390,turnRate:opts.turnRate||7.4,life:opts.life||1.75,
+      dmg,radius,microChildren:0,secondStageChildren:0,
+      mini:!!opts.mini,stage2:!!opts.stage2,royal:!!opts.royal,
+      command:!!opts.command,heavy:!!opts.heavy,
+      missileScale:opts.missileScale||.72,
+      color:opts.color||'#fff0a1',lockLife:.22
+    });
+  }
+}
 
 function getNovaCombatProfile(lv,branch,count){
   const focus=lv>=20&&branch==='focus';
@@ -1950,7 +2028,7 @@ function resetRun(){
   setAttack(attackType);
   ps=playerStats();
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
-  enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];novaUltCores=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
+  enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];novaUltCores=[];missileQueenFx=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
   gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
@@ -3603,10 +3681,10 @@ function firePrimary(force=false){
     player.attackCd=0.42/Math.max(1,rate/2.7);
   }
   else if(attackType==='missile'){
-    const count=own&&currentCharacter.id==='missilequeen'?nextAttackCount('missilequeen'):0;
+    const isQueen=own&&currentCharacter.id==='missilequeen';
+    const count=isQueen?nextAttackCount('missilequeen'):0;
     fireMissile(base*1.25,{
-      lv:own&&currentCharacter.id==='missilequeen'?lv:1,branch:br,
-      volley:count,secondStage:own&&currentCharacter.id==='missilequeen'&&lv>=40
+      lv:isQueen?lv:1,branch:br,volley:count,queen:isQueen
     });
     player.attackCd=0.62/Math.max(1,rate/2.7);
   }
@@ -4038,29 +4116,87 @@ function doLaser(dmg,angleOffset=0,widthMul=1,color='#65f7ff',quiet=false){
 
 function launchMiniMissile(x,y,dmg,radius){
   const target=nearestEnemy(x,y);if(!target)return;
-  missiles.push({x,y,vx:rnd(-80,80),vy:rnd(-80,80),target,speed:390,life:2.5,dmg,radius,
-    cluster:false,secondStage:false,royal:false,mini:true,color:'#fff0a1'});
+  missiles.push({x,y,vx:rnd(-80,80),vy:rnd(-80,80),target,speed:390,turnRate:5.4,life:2.5,dmg,radius,
+    microChildren:0,secondStageChildren:0,royal:false,mini:true,color:'#fff0a1',trail:[],trailTick:0,missileScale:.72});
 }
 function fireMissile(dmg,opts={}){
   const t=nearestEnemy(); if(!t) return;
-  const lv=opts.lv||1,br=opts.branch;
-  let count=currentCharacter.id==='missilequeen'?2:1, speed=330, radius=90*ps.area;
-  if(lv>=5)count+=1;
-  if(lv>=20&&br==='arsenal'){count+=2;speed*=1.15}
-  if(lv>=20&&br==='warhead')radius*=1.35;
-  const cluster=lv>=10;
-  const all=enemies.filter(e=>!e.dead).sort((a,b)=>dist(player,a)-dist(player,b));
-  for(let i=0;i<count;i++){
-    const target=all[i%Math.max(1,all.length)]||t;
-    const royal=lv>=50&&opts.volley%3===0&&i===0;
-    missiles.push({
-      x:player.x,y:player.y,vx:rnd(-35,35),vy:rnd(-35,35),target,
-      speed:royal?speed*.88:speed,life:3,dmg:royal?dmg*2.5:dmg,
-      radius:royal?radius*1.8:radius,cluster,secondStage:!!opts.secondStage,
-      royal,color:royal?'#fff4a0':'#ffd66b'
-    });
+  if(opts.queen&&currentCharacter.id==='missilequeen'){
+    const profile=getMissileQueenProfile(opts.lv||1,opts.branch,opts.volley||0);
+    const targets=getMissileQueenTargets(profile.count,player.x,player.y,profile.command);
+    if(!targets.length)return;
+    const radius=90*ps.area*profile.radiusMul;
+    for(let i=0;i<profile.count;i++){
+      const target=targets[i%targets.length];
+      const side=profile.count===1?0:(i-(profile.count-1)/2)/Math.max(1,(profile.count-1)/2);
+      launchQueenMissile({
+        target,side,
+        speed:profile.speed*(profile.command?profile.commandSpeedMul:1),
+        turnRate:profile.turnRate*(profile.command?profile.commandTurnMul:1),
+        life:3.0,
+        dmg,radius,
+        microChildren:profile.microChildren,
+        secondStageChildren:profile.secondStageChildren,
+        royal:profile.command,command:profile.command,heavy:profile.warhead,
+        missileScale:profile.missileScale*(profile.command?1.08:1),
+        color:profile.command?'#ffe875':profile.warhead?'#ffc85a':'#ffd66b'
+      });
+    }
+    if(profile.command){
+      missileQueenFx.push({type:'command',life:.42,total:.42});
+      shake=Math.min(7,shake+1.2);
+    }
+    muzzle(profile.command?'#fff2a0':'#ffd66b');
+    return;
   }
+  missiles.push({x:player.x,y:player.y,vx:rnd(-35,35),vy:rnd(-35,35),target:t,speed:330,turnRate:5.4,life:3,dmg,radius:90*ps.area,
+    microChildren:0,secondStageChildren:0,royal:false,color:'#ffd66b',trail:[],trailTick:0,missileScale:1});
   muzzle('#ffd66b');
+}
+function startRoyalSalvo(){
+  const targets=enemies.filter(e=>!e.dead);
+  if(!targets.length)return false;
+  spawnMissileRackFx();
+  const lockTargets=getMissileQueenTargets(Math.min(12,targets.length),player.x,player.y,true);
+  for(const t of lockTargets)spawnMissileLockFx(t,true,.58);
+
+  for(let w=0;w<5;w++)setTimeout(()=>{
+    if(!running)return;
+    const waveTargets=getMissileQueenTargets(6,player.x,player.y,w>=3);
+    if(!waveTargets.length)return;
+    for(let i=0;i<6;i++){
+      const target=waveTargets[i%waveTargets.length];
+      launchQueenMissile({
+        x:player.x+Math.cos((i-2.5)*.34)*10,
+        y:player.y+Math.sin((i-2.5)*.34)*10,
+        target,
+        side:(i-2.5)/2.5,
+        speed:410+w*9,turnRate:7.2,life:3.2,
+        dmg:ps.damage*.72,radius:72*ps.area,
+        microChildren:w===4?1:0,secondStageChildren:0,
+        royal:w===4,command:true,missileScale:.90,
+        color:w===4?'#fff0a0':'#ffd86a',lockLife:.18
+      });
+    }
+    shake=Math.min(7,shake+.45);
+  },120+w*105);
+
+  setTimeout(()=>{
+    if(!running)return;
+    const finalTargets=getMissileQueenTargets(1,player.x,player.y,true);
+    if(!finalTargets.length)return;
+    const target=finalTargets[0];
+    launchQueenMissile({
+      x:player.x,y:player.y-8,target,side:0,initialSpeed:95,
+      speed:320,turnRate:4.8,life:4.0,
+      dmg:ps.damage*3.0,radius:150*ps.area,
+      microChildren:0,secondStageChildren:0,
+      royal:true,command:true,queenFinal:true,heavy:true,missileScale:2.0,
+      color:'#fff4a0',lockLife:.52
+    });
+    missileQueenFx.push({type:'decree',life:.55,total:.55});
+  },740);
+  return true;
 }
 
 function specialAttack(){
@@ -4163,12 +4299,7 @@ function useUltimate(){
   }else if(id==='nova'){
     startNovaArray();
   }else if(id==='missilequeen'){
-    const targets=enemies.filter(e=>!e.dead);
-    if(!targets.length){ultCharge=100;showGrowthToast('NO TARGET','敵が出てから使用できます');return}
-    for(let i=0;i<24;i++){
-      const t=targets[i%targets.length];
-      missiles.push({x:player.x+rnd(-18,18),y:player.y+rnd(-18,18),vx:rnd(-120,120),vy:rnd(-120,120),target:t,speed:420,life:3.5,dmg:ps.damage*1.6,radius:110*ps.area,cluster:true,secondStage:true,royal:i%8===0,color:i%8===0?'#fff4a0':'#ffd66b'});
-    }
+    if(!startRoyalSalvo()){ultCharge=100;showGrowthToast('NO TARGET','敵が出てから使用できます');return}
   }
 }
 
@@ -4270,23 +4401,42 @@ function update(dt){
 
   for(const m of missiles){
     m.life-=dt;
+    m.trailTick=(m.trailTick||0)-dt;
+    if(m.trailTick<=0){
+      m.trailTick=.035;
+      if(!m.trail)m.trail=[];
+      m.trail.push({x:m.x,y:m.y});
+      if(m.trail.length>7)m.trail.shift();
+    }
     if(!m.target||m.target.dead) m.target=nearestEnemy(m.x,m.y);
     if(m.target){
       const dx=m.target.x-m.x,dy=m.target.y-m.y,l=Math.hypot(dx,dy)||1;
-      m.vx+=(dx/l*m.speed-m.vx)*Math.min(1,dt*5);
-      m.vy+=(dy/l*m.speed-m.vy)*Math.min(1,dt*5);
+      const turn=m.turnRate||5.4;
+      m.vx+=(dx/l*m.speed-m.vx)*Math.min(1,dt*turn);
+      m.vy+=(dy/l*m.speed-m.vy)*Math.min(1,dt*turn);
     }
     m.x+=m.vx*dt;m.y+=m.vy*dt;
     if(m.target && Math.hypot(m.target.x-m.x,m.target.y-m.y)<m.target.r+8){
       const mx=m.x,my=m.y;
-      explode(mx,my,m.radius,m.dmg,m.royal?'#fff0a0':'#ffd35a');
-      if(m.cluster){
-        for(let ci=0;ci<3;ci++){
-          const a=ci*Math.PI*2/3+rnd(-.2,.2);
-          setTimeout(()=>{if(running)explode(mx+Math.cos(a)*m.radius*.38,my+Math.sin(a)*m.radius*.38,m.radius*.34,m.dmg*.38,'#ffe080',{secondary:true,silent:true})},50+ci*28);
+      explode(mx,my,m.radius,m.dmg,m.royal||m.queenFinal?'#fff0a0':'#ffd35a');
+      if(m.queenFinal){
+        setTimeout(()=>{if(running)launchQueenChildren(mx,my,8,m.dmg*.24,m.radius*.34,{
+          speed:430,turnRate:8.2,life:2.0,mini:true,royal:true,preferStrong:true,missileScale:.70,color:'#fff0a8'
+        })},90);
+      }else{
+        if((m.microChildren||0)>0&&!m.mini&&!m.stage2){
+          setTimeout(()=>{if(running)launchQueenChildren(mx,my,m.microChildren,m.dmg*.22,m.radius*.34,{
+            speed:420,turnRate:8.2,life:1.45,mini:true,command:m.command,royal:m.royal,missileScale:.60,
+            color:m.command?'#fff0a0':'#ffe08a'
+          })},58);
+        }
+        if((m.secondStageChildren||0)>0&&!m.mini&&!m.stage2){
+          setTimeout(()=>{if(running)launchQueenChildren(mx,my,m.secondStageChildren,m.dmg*.46,m.radius*.52,{
+            speed:385,turnRate:7.0,life:2.0,stage2:true,command:m.command,royal:m.royal,
+            heavy:m.heavy,missileScale:.82,color:m.command?'#ffe879':'#ffd36a'
+          })},118);
         }
       }
-      if(m.secondStage&&!m.mini)setTimeout(()=>{if(running)launchMiniMissile(mx,my,m.dmg*.55,m.radius*.55)},115);
       m.life=0;
     }
   }
@@ -4331,6 +4481,7 @@ function update(dt){
 
   for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.life-=dt}
   for(const fx of bombExplosionFx)fx.life-=dt;
+  for(const fx of missileQueenFx)fx.life-=dt;
   for(const x of beams){
     if((x.delay||0)>0)x.delay=Math.max(0,x.delay-dt);
     else x.life-=dt;
@@ -4347,6 +4498,7 @@ function update(dt){
   enemyBullets=enemyBullets.filter(x=>x.life>0 && x.x>-80&&x.x<WORLD_W+80&&x.y>-80&&x.y<WORLD_H+80);
   particles=particles.filter(x=>x.life>0);
   bombExplosionFx=bombExplosionFx.filter(x=>x.life>0);
+  missileQueenFx=missileQueenFx.filter(x=>x.life>0&&(!x.target||!x.target.dead));
   novaUltCores=novaUltCores.filter(x=>x.life>0);
   beams=beams.filter(x=>x.life>0||(x.delay||0)>0); slashFx=slashFx.filter(x=>x.life>0); rings=rings.filter(x=>x.life>0); lightnings=lightnings.filter(x=>x.life>0);
   enemies=enemies.filter(e=>!e.dead);
@@ -4682,9 +4834,50 @@ function draw(){
     ctx.restore();ctx.shadowBlur=0;
   }
 
+  for(const fx of missileQueenFx){
+    const a=clamp(fx.life/fx.total,0,1);
+    if(fx.type==='lock'&&fx.target&&!fx.target.dead){
+      const t=fx.target,r=fx.target.r+10+(1-a)*8;
+      ctx.save();ctx.translate(t.x,t.y);ctx.globalAlpha=.25+.75*a;
+      ctx.strokeStyle=fx.royal?'#fff0a0':'#ffd66b';ctx.lineWidth=2;ctx.shadowBlur=10;ctx.shadowColor=ctx.strokeStyle;
+      ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.stroke();
+      for(let k=0;k<4;k++){
+        const ang=k*Math.PI/2,len=8;
+        ctx.beginPath();ctx.moveTo(Math.cos(ang)*(r-2),Math.sin(ang)*(r-2));ctx.lineTo(Math.cos(ang)*(r+len),Math.sin(ang)*(r+len));ctx.stroke();
+      }
+      ctx.restore();
+    }else if(fx.type==='rack'){
+      const ang=fx.angle+(1-a)*.18,x=player.x+Math.cos(ang)*fx.orbit,y=player.y+Math.sin(ang)*fx.orbit;
+      ctx.save();ctx.translate(x,y);ctx.rotate(ang);ctx.globalAlpha=a;
+      ctx.fillStyle='#4a3c2c';ctx.strokeStyle='#ffd66b';ctx.lineWidth=1.5;ctx.fillRect(-9,-5,18,10);ctx.strokeRect(-9,-5,18,10);ctx.restore();
+    }else if(fx.type==='command'||fx.type==='decree'){
+      ctx.save();ctx.globalAlpha=a*(fx.type==='decree'?.28:.18);ctx.strokeStyle='#fff0a0';ctx.lineWidth=4;
+      ctx.beginPath();ctx.arc(player.x,player.y,36+(1-a)*(fx.type==='decree'?70:36),0,Math.PI*2);ctx.stroke();ctx.restore();
+    }
+  }
+  ctx.globalAlpha=1;ctx.shadowBlur=0;
+
   for(const m of missiles){
-    ctx.save();ctx.translate(m.x,m.y);ctx.rotate(Math.atan2(m.vy,m.vx));
-    ctx.fillStyle=m.color||(m.royal?'#fff3a5':'#ffe272');ctx.fillRect(m.royal?-11:-7,m.royal?-5:-3,m.royal?22:14,m.royal?10:6);ctx.fillStyle='#ff7b4f';ctx.fillRect(m.royal?-16:-11,-2,m.royal?7:5,4);ctx.restore();
+    if(m.trail&&m.trail.length>1){
+      ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+      for(let i=1;i<m.trail.length;i++){
+        const p0=m.trail[i-1],p1=m.trail[i],ta=i/m.trail.length;
+        ctx.globalAlpha=.08+.34*ta;
+        ctx.strokeStyle=m.queenFinal?'#fff4b0':m.command?'#ffe27a':'#b9c1c7';
+        ctx.lineWidth=(m.queenFinal?7:3.4)*ta;
+        ctx.beginPath();ctx.moveTo(p0.x,p0.y);ctx.lineTo(p1.x,p1.y);ctx.stroke();
+      }
+      ctx.restore();
+    }
+    const scale=m.missileScale||1;
+    ctx.save();ctx.translate(m.x,m.y);ctx.rotate(Math.atan2(m.vy,m.vx));ctx.scale(scale,scale);
+    const royal=m.royal||m.command||m.queenFinal;
+    ctx.shadowBlur=m.queenFinal?24:royal?15:8;ctx.shadowColor=royal?'#ffe88a':'#ffb35a';
+    ctx.fillStyle=m.color||(royal?'#fff3a5':'#ffe272');
+    ctx.fillRect(royal?-11:-7,royal?-5:-3,royal?22:14,royal?10:6);
+    ctx.fillStyle=m.queenFinal?'#fffbe0':'#ff7b4f';ctx.fillRect(royal?-16:-11,-2,royal?7:5,4);
+    if(m.queenFinal){ctx.strokeStyle='#fff4a0';ctx.lineWidth=2;ctx.strokeRect(-11,-5,22,10)}
+    ctx.restore();
   }
 
   ctx.fillStyle='#ff7380';
