@@ -5,6 +5,21 @@ import vm from 'node:vm';
 
 const source=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 
+function functionSource(name){
+  const start=source.indexOf('function '+name+'(');
+  assert.ok(start>=0,'function '+name+' must exist');
+  const open=source.indexOf('{',start);
+  let depth=0;
+  for(let i=open;i<source.length;i++){
+    if(source[i]==='{')depth++;
+    else if(source[i]==='}'){
+      depth--;
+      if(depth===0)return source.slice(start,i+1);
+    }
+  }
+  throw new Error('unterminated '+name);
+}
+
 function threatContext(){
   const start=source.indexOf('// Stage 11.0 — THREAT BREAKPOINT MODEL');
   const end=source.indexOf('// END THREAT BREAKPOINT MODEL');
@@ -93,4 +108,38 @@ test('runtime integrates threat into spawn interval, batches, hp and rewards',()
   assert.match(source,/function spawnThreatSurge\(level\)/);
   assert.match(source,/spawnEnemy\(type,\{position:/);
   assert.doesNotMatch(source,/MAX_ENEMIES|enemyCap|enemies\.length\s*[>=]+\s*\d+/);
+});
+
+
+test('THREAT transitions, HUD mode, and run reset are wired',()=>{
+  const kill=functionSource('killEnemy');
+  const progression=functionSource('updateThreatProgression');
+  const trigger=functionSource('triggerThreatUp');
+  const reset=functionSource('resetRun');
+  const hud=functionSource('updateHud');
+
+  assert.match(kill,/runKills\+\+;[\s\S]{0,100}updateThreatProgression\(\)/);
+  assert.match(progression,/state\.threat>threatLevel/);
+  assert.match(progression,/state\.limitBreak>limitBreakLevel/);
+  assert.match(trigger,/spawnThreatSurge\(newLevel\)/);
+  assert.match(trigger,/THREAT MAXIMUM/);
+  assert.doesNotMatch(progression,/spawnThreatSurge\([^)]*limitBreak/);
+
+  assert.match(source,/id="threatHud"/);
+  assert.match(source,/id="threatLabel"/);
+  assert.match(source,/id="threatFill"/);
+  assert.match(source,/id="threatSub"/);
+  assert.match(hud,/state\.isLimitBreak\?'LIMIT BREAK'/);
+  assert.match(hud,/state\.nextKills/);
+  assert.match(hud,/617|progressStart/);
+
+  assert.match(reset,/threatLevel=0;limitBreakLevel=0;threatFlash=0/);
+  assert.doesNotMatch(source,/save\.(?:threat|limitBreak)/);
+});
+
+test('THREAT edge flash is run-local and decays during update',()=>{
+  const update=functionSource('update');
+  assert.match(source,/let threatLevel=0,limitBreakLevel=0,threatFlash=0/);
+  assert.match(update,/threatFlash=Math\.max\(0,threatFlash-dt\*/);
+  assert.match(source,/id="threatEdgeFlash"/);
 });
