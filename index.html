@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.19</title>
+<title>BREAK SURVIVORS - Stage 10.20</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.19</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.20</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -2580,6 +2580,7 @@ let activeGunnerVoices = 0;
 let activeBombCatVoices = 0;
 let activeNovaVoices = 0;
 let activeMissileQueenVoices = 0;
+let missileQueenPrimarySources = [];
 let activeLightningVoices = 0;
 let activeEventVoices = 0;
 const MAX_ATTACK_VOICES = 5;
@@ -2587,6 +2588,8 @@ const MAX_GUNNER_VOICES = 8;
 const MAX_BOMBCAT_VOICES = 9;
 const MAX_NOVA_VOICES = 8;
 const MAX_MISSILE_QUEEN_VOICES = 8;
+const MAX_MISSILE_QUEEN_PRIMARY_VOICES = 2;
+const MAX_MISSILE_QUEEN_SUPPORT_VOICES = MAX_MISSILE_QUEEN_VOICES-MAX_MISSILE_QUEEN_PRIMARY_VOICES;
 const MAX_LIGHTNING_VOICES = 8;
 const MAX_EVENT_VOICES = 3;
 let attackSfxVolume = clamp(Number(localStorage.getItem('break_survivors_attack_sfx_volume') ?? 44) / 100, 0, 1);
@@ -2934,7 +2937,7 @@ function playMissileQueenDirect(name,volume=.5,rate=1,opts={}){
   const key=pickWeaponSfx('missile','queen_direct_sprite');
   const buffer=attackBuffers[key];
   if(!buffer){loadAttackSfx().catch(()=>{});return}
-  if(activeMissileQueenVoices>=MAX_MISSILE_QUEEN_VOICES&&!opts.priority)return;
+  if(activeMissileQueenVoices>=MAX_MISSILE_QUEEN_SUPPORT_VOICES&&!opts.priority)return;
 
   const source=ac.createBufferSource();
   const lowpass=ac.createBiquadFilter();
@@ -2965,7 +2968,16 @@ function playMissileQueenSample(phase,volume=.5,rate=1,opts={}){
   const key=pickWeaponSfx('missile',phase);
   const buffer=attackBuffers[key];
   if(!buffer){loadAttackSfx().catch(()=>{});return}
-  if(activeMissileQueenVoices>=MAX_MISSILE_QUEEN_VOICES&&!opts.priority)return;
+
+  const primary=!!opts.primary;
+  if(primary){
+    while(missileQueenPrimarySources.length>=MAX_MISSILE_QUEEN_PRIMARY_VOICES){
+      const oldest=missileQueenPrimarySources.shift();
+      try{oldest.stop()}catch{}
+    }
+  }else if(activeMissileQueenVoices>=MAX_MISSILE_QUEEN_SUPPORT_VOICES&&!opts.priority){
+    return;
+  }
 
   const source=ac.createBufferSource();
   const lowpass=ac.createBiquadFilter();
@@ -2979,25 +2991,34 @@ function playMissileQueenSample(phase,volume=.5,rate=1,opts={}){
   harshCut.type='peaking';harshCut.frequency.value=opts.harshFreq||3200;harshCut.Q.value=.82;harshCut.gain.value=opts.harshGain??-3.1;
   body.type='peaking';body.frequency.value=opts.bodyFreq||165;body.Q.value=.72;body.gain.value=opts.bodyGain??1.0;
 
-  const overlapDuck=opts.priority?1:activeMissileQueenVoices>=6?.54:activeMissileQueenVoices>=4?.68:activeMissileQueenVoices>=2?.84:1;
-  const finalVol=clamp(volume*overlapDuck,0,.86);
+  const primaryDuck=primary?(missileQueenPrimarySources.length>=1?.90:1):1;
+  const supportDuck=opts.priority?1:activeMissileQueenVoices>=5?.58:activeMissileQueenVoices>=3?.72:activeMissileQueenVoices>=1?.88:1;
+  const finalVol=clamp(volume*(primary?primaryDuck:supportDuck),0,.86);
   gain.gain.value=finalVol;
 
   source.connect(lowpass).connect(harshCut).connect(body).connect(gain).connect(attackFilter);
-  activeMissileQueenVoices++;
-  source.onended=()=>{activeMissileQueenVoices=Math.max(0,activeMissileQueenVoices-1)};
+  if(primary){
+    missileQueenPrimarySources.push(source);
+    source.onended=()=>{
+      const i=missileQueenPrimarySources.indexOf(source);
+      if(i>=0)missileQueenPrimarySources.splice(i,1);
+    };
+  }else{
+    activeMissileQueenVoices++;
+    source.onended=()=>{activeMissileQueenVoices=Math.max(0,activeMissileQueenVoices-1)};
+  }
   source.start();
 }
 function playMissileQueenVolley(volley=0,command=false){
   if(command){
     playMissileQueenSample('queen_primary_a',.40,.90,{
-      gap:110,lowpass:5000,bodyFreq:135,bodyGain:1.15,harshFreq:3150,harshGain:-3.8
+      primary:true,gap:110,lowpass:5000,bodyFreq:135,bodyGain:1.15,harshFreq:3150,harshGain:-3.8
     });
     return;
   }
   const alt=volley%2===0;
-  playMissileQueenSample('queen_primary_a',alt?.36:.34,alt?1.00:.97,{
-    gap:82,lowpass:5450,bodyFreq:175,bodyGain:.62,harshFreq:3300,harshGain:-3.55
+  playMissileQueenSample('queen_primary_a',alt?.39:.37,alt?1.00:.97,{
+    primary:true,gap:82,lowpass:5450,bodyFreq:175,bodyGain:.62,harshFreq:3300,harshGain:-3.55
   });
 }
 function playMissileQueenSwarmSplit(royal=false){
@@ -3583,6 +3604,12 @@ function playWeaponFireSfx(kind,special=false){
 
 function playWeaponImpactSfx(kind,strong=false){
   if(!soundEnabled) return;
+
+  if(kind==='missile'&&currentCharacter.id==='missilequeen'){
+    if(!characterSfxAllowed('hit_missilequeen',260))return;
+    playAttackSample(pickWeaponSfx('missile','hit'),.28,1);
+    return;
+  }
 
   const gap=({pierce:125,explosion:185,lightning:360,slash:155,laser:165,missile:195}[kind]||155);
   const gate='hit_'+kind+(strong?'_strong':'');
