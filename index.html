@@ -1679,6 +1679,17 @@ function getThreatSpawnShape(densityMul,rng=Math.random()){
   const roll=Math.min(.999999999,Math.max(0,Number(rng)||0));
   return {intervalMul,batchSize:Math.max(1,whole+(roll<frac?1:0))};
 }
+function getThreatEliteChance(state,gameTimeValue){
+  if((Number(gameTimeValue)||0)<=120)return 0;
+  const table=[.035,.04,.06,.11,.17,.24];
+  return table[Math.max(0,Math.min(5,state?.threat||0))];
+}
+function buildThreatSurgePlan(level){
+  const l=Math.max(1,Math.min(5,Math.floor(Number(level)||1)));
+  const counts=[10,14,20,28,38];
+  const elites=[0,1,3,6,10];
+  return {count:counts[l-1],eliteCount:elites[l-1]};
+}
 // END THREAT BREAKPOINT MODEL
 let toastTimer=null;
 
@@ -2161,16 +2172,17 @@ function getWorldSpawnPoint(type='normal'){
   return {x,y};
 }
 
-function spawnEnemy(type='normal'){
+function spawnEnemy(type='normal',opts={}){
   const d=enemyDefs[type]; if(!d)return null;
-  const pos=getWorldSpawnPoint(type);
+  const pos=opts.position||getWorldSpawnPoint(type);
   const x=pos.x,y=pos.y;
 
-  const hpScale=1+gameTime/70;
+  const threatState=getThreatState(runKills);
+  const hpScale=(1+gameTime/70)*threatState.hpMul;
   const speedScale=(1+Math.min(gameTime/600,.45))*FAR_CAMERA_SPEED_SCALE;
   const e={
     type,x,y,r:d.r,hp:d.hp*hpScale,maxHp:d.hp*hpScale,
-    speed:d.speed*speedScale,reward:d.reward,touch:d.touch,
+    speed:d.speed*speedScale,reward:d.reward*threatState.rewardMul,touch:d.touch,
     color:d.color,shootCd:rnd(.4,1.5),flash:0,dead:false,
     gold:eventActive('gold')&&type!=='boss',
     gemCharged:eventActive('gem')&&type!=='boss',
@@ -2178,6 +2190,39 @@ function spawnEnemy(type='normal'){
     phase:type==='boss'?1:null,phaseTriggered:false,specialCd:type==='boss'?3.4:null,telegraph:0,novaReady:false
   };
   enemies.push(e);return e;
+}
+
+function pickThreatSpawnType(state){
+  if(eventActive('swarm'))return Math.random()<.58?'runner':'normal';
+  if(gameTime>120&&Math.random()<getThreatEliteChance(state,gameTime))return 'elite';
+  const r=Math.random();
+  if(gameTime>70&&r<.15)return 'shooter';
+  if(gameTime>40&&r<.30)return 'tank';
+  if(gameTime>15&&r<.48)return 'runner';
+  return 'normal';
+}
+function getThreatSurgeEdgePoint(index,total){
+  const pad=90,side=index%4,t=(Math.floor(index/4)+.5)/Math.max(1,Math.ceil(total/4));
+  if(side===0)return {x:pad+(WORLD_W-pad*2)*t,y:pad};
+  if(side===1)return {x:WORLD_W-pad,y:pad+(WORLD_H-pad*2)*t};
+  if(side===2)return {x:WORLD_W-pad-(WORLD_W-pad*2)*t,y:WORLD_H-pad};
+  return {x:pad,y:WORLD_H-pad-(WORLD_H-pad*2)*t};
+}
+function spawnThreatSurge(level){
+  const plan=buildThreatSurgePlan(level);
+  const nonElite=Math.max(0,plan.count-plan.eliteCount);
+  for(let i=0;i<plan.count;i++){
+    let type='normal';
+    if(i>=nonElite){
+      type='elite';
+    }else{
+      const cycle=i%4;
+      if(gameTime>70&&cycle===0)type='shooter';
+      else if(gameTime>40&&cycle===1)type='tank';
+      else if(gameTime>15&&cycle===2)type='runner';
+    }
+    spawnEnemy(type,{position:getThreatSurgeEdgePoint(i,plan.count)});
+  }
 }
 
 function nearestEnemy(x=player.x,y=player.y,exclude=new Set()){
@@ -4797,17 +4842,12 @@ function update(dt,refreshHud=true){
   spawnTimer-=dt;
   if(spawnTimer<=0){
     const base=Math.max(.055,.30-gameTime*.0010);
-    spawnTimer=base/(spawnMul*(feverActive()?1.45:1)*eventSpawnMultiplier());
-    let r=Math.random(), type='normal';
-    if(eventActive('swarm')){
-      type=r<.58?'runner':'normal';
-    }else{
-      if(gameTime>120 && r<.035) type='elite';
-      else if(gameTime>70 && r<.15) type='shooter';
-      else if(gameTime>40 && r<.30) type='tank';
-      else if(gameTime>15 && r<.48) type='runner';
+    const threatState=getThreatState(runKills);
+    const spawnShape=getThreatSpawnShape(threatState.densityMul,Math.random());
+    spawnTimer=base/(spawnMul*(feverActive()?1.45:1)*eventSpawnMultiplier()*spawnShape.intervalMul);
+    for(let spawnIndex=0;spawnIndex<spawnShape.batchSize;spawnIndex++){
+      spawnEnemy(pickThreatSpawnType(threatState));
     }
-    spawnEnemy(type);
   }
 
   firePrimary();
