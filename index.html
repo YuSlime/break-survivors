@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.14</title>
+<title>BREAK SURVIVORS - Stage 10.15</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.14</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.15</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1605,7 +1605,7 @@ const growthDefs = {
       arsenal:{name:'ARSENAL',desc:'ミサイル +2 / 飛翔速度 +15% / 旋回性能UP。物量制圧型。'},
       warhead:{name:'WARHEAD',desc:'Damage +30% / 弾頭サイズ・爆発範囲UP。重量誘導弾型。'}
     },
-    ultimate:"ROYAL SKYFALL — 6基を上空へ射出 → MISSILE RAIN 3波 → QUEEN'S DECREE垂直落下 → CROWN BURST×12。"
+    ultimate:"ROYAL SKYFALL — SOVEREIGN ANNIHILATION。8→12→16発のMISSILE RAIN → QUEEN'S DECREE → SECOND SHOCKWAVE → CROWN BURST×16。"
   }
 };
 
@@ -4371,25 +4371,26 @@ function fireMissile(dmg,opts={}){
 }
 function buildRoyalSkyfallPlan(){
   return [
-    {delay:1450,count:6,damageMul:.56,speed:510},
-    {delay:1630,count:8,damageMul:.61,speed:535},
-    {delay:1810,count:10,damageMul:.67,speed:560}
+    {delay:1450,count:8,damageMul:1.00,speed:525,radius:86,scale:1.00},
+    {delay:1650,count:12,damageMul:1.20,speed:555,radius:96,scale:1.08},
+    {delay:1870,count:16,damageMul:1.50,speed:590,radius:112,scale:1.24}
   ];
 }
-function spawnSkyfallMissile(target,index,wave){
+function spawnSkyfallMissile(target,index,wave,waveCfg=null){
   if(!target||target.dead)return null;
+  const cfg=waveCfg||buildRoyalSkyfallPlan()[wave]||{damageMul:1,speed:520,radius:90,scale:1};
   const side=index%2===0?-1:1;
   const spread=140+(index%5)*42+rnd(0,90);
   const x=clamp(target.x+side*spread,34,WORLD_W-34);
   const y=clamp(target.y-rnd(430,620),34,WORLD_H-34);
   const angle=Math.atan2(target.y-y,target.x-x);
   return launchQueenMissile({
-    x,y,target,baseAngle:angle,side:0,initialSpeed:300+wave*24,
-    speed:510+wave*25,turnRate:8.6,life:2.6,
-    dmg:ps.damage*(.56+wave*.055),radius:(76+wave*6)*ps.area,
+    x,y,target,baseAngle:angle,side:0,initialSpeed:310+wave*26,
+    speed:cfg.speed,turnRate:8.8+wave*.45,life:2.7,
+    dmg:ps.damage*cfg.damageMul,radius:cfg.radius*ps.area,
     microChildren:0,secondStageChildren:0,
-    royal:true,command:true,skyfall:true,missileScale:.88+wave*.05,
-    color:wave===2?'#fff4ae':'#ffe27a',lockLife:.16
+    royal:true,command:true,skyfall:true,missileScale:cfg.scale,
+    color:wave===2?'#fff8c9':'#ffe27a',lockLife:.18
   });
 }
 function spawnSkyfallTargetFx(target,wave=0,life=1.18){
@@ -4410,51 +4411,59 @@ function spawnRoyalSkyfallAscenders(){
     });
   }
 }
-function triggerCrownBurst(x,y,dmg,radius,count=12){
+function triggerQueensDecreeShockwave(x,y){
+  const r=338*ps.area;
+  rings.push({x,y,r:18,max:r*1.12,life:.52,total:.52,color:'#fff7cf'});
+  rings.push({x,y,r:10,max:r*.82,life:.38,total:.38,color:'#ffe07a'});
+  explode(x,y,r,ps.damage*3.0,'#fff4bd',{royal:true,silent:true,noShake:true});
+  missileQueenFlash=Math.max(missileQueenFlash,.48);
+  hitStop=Math.max(hitStop,.030);
+}
+function triggerCrownBurst(x,y,dmg,radius,count=16){
   playMissileQueenCrownBurst();
-  rings.push({x,y,r:8,max:radius*1.65,life:.40,total:.40,color:'#fff0a0'});
+  rings.push({x,y,r:8,max:radius*1.85,life:.46,total:.46,color:'#fff0a0'});
   launchQueenChildren(x,y,count,dmg,radius,{
-    speed:455,turnRate:8.8,life:2.15,mini:true,royal:true,preferStrong:true,
-    missileScale:.66,color:'#fff3a4'
+    speed:485,turnRate:9.2,life:2.25,mini:true,royal:true,preferStrong:true,
+    missileScale:.72,color:'#fff6b4'
   });
 }
 function launchQueensDecree(){
   const targets=getMissileQueenTargets(1,player.x,player.y,true);
   if(!targets.length)return false;
   const initial=targets[0];
-  missileQueenFx.push({type:'decree_target',target:initial,life:.62,total:.62,royal:true});
+  missileQueenFx.push({type:'decree_target',target:initial,life:.72,total:.72,royal:true});
   setTimeout(()=>{
     if(!running)return;
     const target=!initial.dead?initial:getMissileQueenTargets(1,player.x,player.y,true)[0];
     if(!target)return;
     playMissileQueenDecreeDrop();
-    const impactRadius=188*ps.area;
-    spawnDecreeTargetZone(target,impactRadius,2.15);
-    const x=clamp(target.x+rnd(-55,55),42,WORLD_W-42);
-    const y=clamp(target.y-720,42,WORLD_H-42);
+    const impactRadius=260*ps.area;
+    spawnDecreeTargetZone(target,impactRadius,2.35);
+    const x=clamp(target.x+rnd(-42,42),42,WORLD_W-42);
+    const y=clamp(target.y-820,42,WORLD_H-42);
     const angle=Math.atan2(target.y-y,target.x-x);
     launchQueenMissile({
-      x,y,target,baseAngle:angle,side:0,initialSpeed:245,
-      speed:390,turnRate:7.8,life:3.2,
-      dmg:ps.damage*4.2,radius:impactRadius,
+      x,y,target,baseAngle:angle,side:0,initialSpeed:255,
+      speed:430,turnRate:8.2,life:3.25,
+      dmg:ps.damage*9.0,radius:impactRadius,
       microChildren:0,secondStageChildren:0,
-      royal:true,command:true,queenFinal:true,decree:true,crownCount:12,
-      heavy:true,missileScale:2.55,color:'#fff6b0',lockLife:.48
+      royal:true,command:true,queenFinal:true,decree:true,crownCount:16,
+      heavy:true,missileScale:3.15,color:'#fff9cc',lockLife:.58
     });
-  },300);
+  },340);
   return true;
 }
 function startRoyalSkyfall(){
   const targets=enemies.filter(e=>!e.dead);
   if(!targets.length)return false;
 
-  hitStop=Math.max(hitStop,.042);
-  missileQueenFlash=Math.max(missileQueenFlash,.28);
+  hitStop=Math.max(hitStop,.090);
+  missileQueenFlash=Math.max(missileQueenFlash,.36);
   playMissileQueenUltStart();
   spawnMissileRackFx();
 
-  const lockTargets=getMissileQueenTargets(Math.min(12,targets.length),player.x,player.y,true);
-  for(const t of lockTargets)spawnMissileLockFx(t,true,.82);
+  const lockTargets=enemies.filter(e=>!e.dead);
+  for(const t of lockTargets)spawnMissileLockFx(t,true,.92);
 
   setTimeout(()=>{
     if(!running)return;
@@ -4468,25 +4477,43 @@ function startRoyalSkyfall(){
     setTimeout(()=>{
       if(!running)return;
       lockedTargets=getMissileQueenTargets(Math.max(1,Math.min(wave.count,enemies.length)),player.x,player.y,waveIndex===2);
-      for(const t of lockedTargets)spawnSkyfallTargetFx(t,waveIndex,1.24+waveIndex*.08);
-    },Math.max(0,wave.delay-260));
+      for(const t of lockedTargets)spawnSkyfallTargetFx(t,waveIndex,1.34+waveIndex*.10);
+    },Math.max(0,wave.delay-300));
 
     setTimeout(()=>{
       if(!running)return;
       playMissileQueenSkyfallDive(waveIndex);
-      let waveTargets=lockedTargets.filter(t=>t&&!t.dead);
-      if(!waveTargets.length)waveTargets=getMissileQueenTargets(Math.max(1,Math.min(wave.count,enemies.length)),player.x,player.y,waveIndex===2);
-      if(!waveTargets.length)return;
-      for(let i=0;i<wave.count;i++){
-        const target=waveTargets[i%waveTargets.length];
-        spawnSkyfallMissile(target,i,waveIndex);
+      let alive=enemies.filter(e=>!e.dead);
+      if(!alive.length)return;
+
+      const firstPass=lockedTargets.filter(t=>t&&!t.dead);
+      if(!firstPass.length)firstPass=getMissileQueenTargets(Math.min(wave.count,alive.length),player.x,player.y,false);
+
+      const volleyTargets=[];
+      for(const t of firstPass){
+        if(volleyTargets.length>=wave.count)break;
+        volleyTargets.push(t);
       }
-      missileQueenFlash=Math.max(missileQueenFlash,.12+waveIndex*.04);
-      shake=Math.min(2.8,shake+.34);
+
+      if(volleyTargets.length<wave.count){
+        const strong=alive.slice().sort((a,b)=>(b.hp||0)-(a.hp||0));
+        let i=0;
+        while(volleyTargets.length<wave.count&&strong.length){
+          volleyTargets.push(strong[i%strong.length]);
+          i++;
+        }
+      }
+
+      for(let i=0;i<volleyTargets.length;i++){
+        spawnSkyfallMissile(volleyTargets[i],i,waveIndex,wave);
+      }
+
+      missileQueenFlash=Math.max(missileQueenFlash,.15+waveIndex*.06);
+      shake=Math.min(3.0,shake+.38);
     },wave.delay);
   });
 
-  setTimeout(()=>{if(running)launchQueensDecree()},2110);
+  setTimeout(()=>{if(running)launchQueensDecree()},2240);
   return true;
 }
 
@@ -4715,10 +4742,11 @@ function update(dt,refreshHud=true){
       explode(mx,my,m.radius,m.dmg,m.royal||m.queenFinal?'#fff0a0':'#ffd35a',decreeHit?{royal:true,silent:true,noShake:true}:{});
       if(decreeHit){
         playMissileQueenDecreeImpact();
-        missileQueenFlash=Math.max(missileQueenFlash,.92);
-        hitStop=Math.max(hitStop,.058);
-        shake=Math.min(3.2,shake+1.0);
-        setTimeout(()=>{if(running)triggerCrownBurst(mx,my,m.dmg*.24,m.radius*.36,m.crownCount||12)},92);
+        missileQueenFlash=Math.max(missileQueenFlash,1.0);
+        hitStop=Math.max(hitStop,.072);
+        shake=Math.min(3.4,shake+1.15);
+        setTimeout(()=>{if(running)triggerQueensDecreeShockwave(mx,my)},120);
+        setTimeout(()=>{if(running)triggerCrownBurst(mx,my,ps.damage*1.15,92*ps.area,m.crownCount||16)},230);
       }else{
         if((m.microChildren||0)>0&&!m.mini&&!m.stage2){
           setTimeout(()=>{
@@ -5174,7 +5202,7 @@ function draw(){
       ctx.fillStyle='#ff9a55';ctx.fillRect(-10,-2,5,4);ctx.restore();
     }else if(fx.type==='skyfall_target'&&fx.target&&!fx.target.dead){
       const t=fx.target,p=1-a;
-      const base=28+(fx.wave||0)*4,r=base+(1-p)*22;
+      const base=30+(fx.wave||0)*7,r=base+(1-p)*(fx.wave===2?34:24);
       ctx.save();ctx.translate(t.x,t.y);
       ctx.globalAlpha=.34+.62*(1-p*.35);
       ctx.strokeStyle=fx.wave===2?'#fff7c7':'#ffe27a';ctx.fillStyle='rgba(255,214,107,.10)';
@@ -5197,8 +5225,8 @@ function draw(){
       ctx.restore();
     }else if(fx.type==='decree_zone'&&fx.target&&!fx.target.dead){
       const t=fx.target,p=1-a;
-      const zoneR=Math.min(190,Math.max(78,(fx.radius||150)*.62));
-      const outer=zoneR+(1-p)*54;
+      const zoneR=Math.min(240,Math.max(96,(fx.radius||150)*.68));
+      const outer=zoneR+(1-p)*72;
       const pulse=.5+.5*Math.sin(p*Math.PI*10);
       ctx.save();ctx.translate(t.x,t.y);
       ctx.fillStyle='rgba(255,224,112,'+(performanceMode?.08:.14)+')';
@@ -5207,6 +5235,10 @@ function draw(){
       ctx.globalAlpha=.58+.34*pulse;
       ctx.beginPath();ctx.arc(0,0,zoneR,0,Math.PI*2);ctx.fill();ctx.stroke();
       ctx.globalAlpha=.45+.45*a;ctx.beginPath();ctx.arc(0,0,outer,0,Math.PI*2);ctx.stroke();
+      if(!performanceMode){
+        ctx.globalAlpha=.22+.24*pulse;
+        ctx.beginPath();ctx.arc(0,0,zoneR*.72,0,Math.PI*2);ctx.stroke();
+      }
       ctx.globalAlpha=.75;
       ctx.beginPath();ctx.moveTo(-zoneR*.55,0);ctx.lineTo(zoneR*.55,0);ctx.moveTo(0,-zoneR*.55);ctx.lineTo(0,zoneR*.55);ctx.stroke();
       const spin=p*Math.PI*3;
