@@ -177,3 +177,9 @@ test('visual pressure scaling trims only FX and respects floors',()=>{
   }
   assert.match(trim,/getThreatFxScale\(getThreatState\(runKills\),performanceMode\)/);
 });
+
+
+test('stale THREAT surge timer cannot leak into a restarted run',()=>{
+  const trigger=functionSource('triggerThreatUp');
+  assert.match(trigger,/if\(running&&threatLevel>=newLevel\)spawnThreatSurge\(newLevel\)/);
+});
