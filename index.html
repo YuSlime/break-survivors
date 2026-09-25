@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.12</title>
+<title>BREAK SURVIVORS - Stage 10.13</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.12</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.13</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -2776,7 +2776,7 @@ const attackSfxFiles = {
     queen_skyfall_dive:['assets/sfx/missilequeen/queen_skyfall_dive.mp3'],
     queen_decree_drop:['assets/sfx/missilequeen/queen_decree_drop.mp3'],
     queen_crown_burst:['assets/sfx/missilequeen/queen_crown_burst.mp3'],
-    queen_direct_master:['assets/sfx/missilequeen/queen_direct_master.mp3']
+    queen_direct_sprite:['assets/sfx/missilequeen/queen_direct_sprite.mp3']
   }
 };
 
@@ -2899,12 +2899,39 @@ function playNovaUltimateFinal(){
   playNovaSample('nova_ult_final',.78,.97,{gap:480,priority:true,lowpass:6100,bodyFreq:118,bodyGain:2.75,harshFreq:3150,harshGain:-3.7});
 }
 
+const MISSILE_QUEEN_DIRECT_CLIPS={
+  launch_a:{offset:0.000000,duration:1.050000},
+  launch_b:{offset:1.170000,duration:1.120000},
+  command_launch:{offset:1.170000,duration:1.120000},
+  swarm:{offset:2.410000,duration:.497333},
+  swarm_tail_a:{offset:2.410000,duration:.497333},
+  swarm_tail_b:{offset:2.410000,duration:.497333},
+  second:{offset:3.027333,duration:1.250000},
+  second_tail:{offset:3.027333,duration:1.250000},
+  skyfall_launch:{offset:4.397333,duration:1.445437},
+  skyfall_launch_b:{offset:4.397333,duration:1.445437},
+  skyfall_launch_c:{offset:4.397333,duration:1.445437},
+  skyfall_dive_0:{offset:5.962770,duration:.950000},
+  skyfall_dive_1:{offset:5.962770,duration:.950000},
+  skyfall_dive_2:{offset:5.962770,duration:.950000},
+  decree:{offset:7.032770,duration:3.091396},
+  decree_body:{offset:7.032770,duration:3.091396},
+  crown_0:{offset:10.244166,duration:.631125},
+  crown_1:{offset:10.244166,duration:.631125},
+  crown_2:{offset:10.244166,duration:.631125},
+  crown_3:{offset:10.244166,duration:.631125}
+};
+function getMissileQueenDirectClip(name){
+  return MISSILE_QUEEN_DIRECT_CLIPS[name]||null;
+}
 function playMissileQueenDirect(name,volume=.5,rate=1,opts={}){
   if(!soundEnabled)return;
+  const clip=getMissileQueenDirectClip(name);
+  if(!clip)return;
   const gap=opts.gap??70;
   if(gap>0&&!characterSfxAllowed('missilequeen_direct_'+name,gap))return;
   const ac=getAudio();if(!ac||!attackFilter)return;
-  const key=pickWeaponSfx('missile','queen_direct_master');
+  const key=pickWeaponSfx('missile','queen_direct_sprite');
   const buffer=attackBuffers[key];
   if(!buffer){loadAttackSfx().catch(()=>{});return}
   if(activeMissileQueenVoices>=MAX_MISSILE_QUEEN_VOICES&&!opts.priority)return;
@@ -2927,7 +2954,7 @@ function playMissileQueenDirect(name,volume=.5,rate=1,opts={}){
   source.connect(lowpass).connect(harshCut).connect(body).connect(gain).connect(attackFilter);
   activeMissileQueenVoices++;
   source.onended=()=>{activeMissileQueenVoices=Math.max(0,activeMissileQueenVoices-1)};
-  source.start();
+  source.start(0,clip.offset,clip.duration);
 }
 
 function playMissileQueenSample(phase,volume=.5,rate=1,opts={}){
