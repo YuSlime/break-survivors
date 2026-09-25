@@ -2265,7 +2265,7 @@ function triggerThreatUp(previousLevel,newLevel){
   const state=getThreatState(THREAT_THRESHOLDS[Math.max(0,newLevel-1)]||runKills);
   const main=newLevel===5?'THREAT MAXIMUM':'THREAT UP — '+newLevel;
   showBreakCallout(main,'SURGE WAVE  •  DENSITY ×'+state.densityMul.toFixed(2),'#ff795a');
-  setTimeout(()=>{if(running)spawnThreatSurge(newLevel)},240);
+  setTimeout(()=>{if(running&&threatLevel>=newLevel)spawnThreatSurge(newLevel)},240);
 }
 function updateThreatProgression(){
   const state=getThreatState(runKills);
