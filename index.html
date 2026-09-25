@@ -1676,7 +1676,7 @@ function getThreatSpawnShape(densityMul,rng=Math.random()){
   const expectedBatch=density/intervalMul;
   const whole=Math.floor(expectedBatch);
   const frac=expectedBatch-whole;
-  const roll=clamp(Number(rng)||0,0,.999999999);
+  const roll=Math.min(.999999999,Math.max(0,Number(rng)||0));
   return {intervalMul,batchSize:Math.max(1,whole+(roll<frac?1:0))};
 }
 // END THREAT BREAKPOINT MODEL
