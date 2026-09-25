@@ -1,0 +1,75 @@
+name: Build Missile Queen SE Pack
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/build-missilequeen-se-pack.yml'
+permissions:
+  contents: write
+jobs:
+  build-pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build current Missile Queen SE pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="pack_missile_queen_se"
+          rm -rf "$ROOT"
+          mkdir -p "$ROOT/original_used" "$ROOT/split_direct_sprite" assets/downloads
+
+          cp assets/sfx/missilequeen/queen_primary_a.mp3 "$ROOT/original_used/"
+          cp assets/sfx/missilequeen/queen_primary_command.mp3 "$ROOT/original_used/"
+          cp assets/sfx/missilequeen/queen_command.mp3 "$ROOT/original_used/"
+          cp assets/sfx/missilequeen/queen_ult_lock.mp3 "$ROOT/original_used/"
+          cp assets/sfx/missilequeen/queen_ult_rack.mp3 "$ROOT/original_used/"
+          cp assets/sfx/missilequeen/queen_ult_final.mp3 "$ROOT/original_used/"
+          cp assets/sfx/missilequeen/queen_direct_sprite.mp3 "$ROOT/original_used/"
+
+          ffmpeg -hide_banner -loglevel error -y -ss 2.410000 -t 0.497333 -i assets/sfx/missilequeen/queen_direct_sprite.mp3 -c:a libmp3lame -q:a 2 "$ROOT/split_direct_sprite/01_swarm_split.mp3"
+          ffmpeg -hide_banner -loglevel error -y -ss 3.027333 -t 1.250000 -i assets/sfx/missilequeen/queen_direct_sprite.mp3 -c:a libmp3lame -q:a 2 "$ROOT/split_direct_sprite/02_second_stage.mp3"
+          ffmpeg -hide_banner -loglevel error -y -ss 4.397333 -t 1.445437 -i assets/sfx/missilequeen/queen_direct_sprite.mp3 -c:a libmp3lame -q:a 2 "$ROOT/split_direct_sprite/03_skyfall_launch.mp3"
+          ffmpeg -hide_banner -loglevel error -y -ss 5.962770 -t 0.950000 -i assets/sfx/missilequeen/queen_direct_sprite.mp3 -c:a libmp3lame -q:a 2 "$ROOT/split_direct_sprite/04_skyfall_dive.mp3"
+          ffmpeg -hide_banner -loglevel error -y -ss 7.032770 -t 3.091396 -i assets/sfx/missilequeen/queen_direct_sprite.mp3 -c:a libmp3lame -q:a 2 "$ROOT/split_direct_sprite/05_queens_decree.mp3"
+          ffmpeg -hide_banner -loglevel error -y -ss 10.244166 -t 0.631125 -i assets/sfx/missilequeen/queen_direct_sprite.mp3 -c:a libmp3lame -q:a 2 "$ROOT/split_direct_sprite/06_crown_armada.mp3"
+
+          cat > "$ROOT/README.txt" <<'EOF'
+Missile Queen - Current SE Pack (Stage 10.18)
+
+[original_used]
+queen_primary_a.mp3        Current normal attack SE
+queen_primary_command.mp3  COMMAND SALVO launch
+queen_command.mp3          COMMAND lock/confirm
+queen_ult_lock.mp3         ULT lock
+queen_ult_rack.mp3         ULT launcher deploy
+queen_ult_final.mp3        Heavy final impact
+queen_direct_sprite.mp3    Source audio sprite for split/ULT sounds
+
+[split_direct_sprite]
+01_swarm_split.mp3         SWARM SPLIT
+02_second_stage.mp3        SECOND STAGE
+03_skyfall_launch.mp3      ROYAL SKYFALL launch
+04_skyfall_dive.mp3        SKYFALL dive
+05_queens_decree.mp3       QUEEN'S DECREE descent
+06_crown_armada.mp3        CROWN ARMADA source section
+
+The game applies playback-rate/EQ/volume variations at runtime.
+queen_primary_b.mp3 was removed in Stage 10.18.
+EOF
+
+          rm -f assets/downloads/Missile_Queen_Current_SE.zip
+          (cd "$ROOT/.." && zip -qr "assets/downloads/Missile_Queen_Current_SE.zip" "$(basename "$ROOT")")
+          test -s assets/downloads/Missile_Queen_Current_SE.zip
+      - name: Commit pack and remove workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/build-missilequeen-se-pack.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add current Missile Queen SE pack"
+          git push
