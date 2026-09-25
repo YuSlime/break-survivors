@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.20</title>
+<title>BREAK SURVIVORS - Stage 11.0</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -41,13 +41,24 @@
   #breakHud.fever #breakLabel,#breakHud.fever #comboText,#breakHud.fever #breakSub{color:#ffe981;text-shadow:0 0 15px #ffb938}
   #breakHud.fever #breakFill{background:linear-gradient(90deg,#fff394,#ffb02e,#ff65a8,#9b7cff);animation:feverBar .45s linear infinite alternate}
   @keyframes feverBar{from{filter:brightness(1)}to{filter:brightness(1.55)}}
+  #threatHud{position:absolute;left:50%;top:112px;transform:translateX(-50%);width:min(300px,54vw);z-index:4;pointer-events:none;padding:7px 9px;border:1px solid #ff765477;border-radius:10px;background:#150d12d9;box-shadow:0 7px 24px #0008,inset 0 0 22px #ff5c2920}
+  #threatHud .threatTop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:9px;font-weight:1000;letter-spacing:.10em}
+  #threatLabel{color:#ff9a72}
+  #threatValue{color:#e9d8d2;font-size:8px}
+  #threatBar{height:5px;margin-top:5px;border:1px solid #563128;border-radius:999px;background:#09070a;overflow:hidden}
+  #threatFill{height:100%;width:0;background:linear-gradient(90deg,#ff824f,#ff465f,#c54dff);box-shadow:0 0 12px #ff664d;transition:width .10s linear}
+  #threatSub{font-size:7px;font-weight:900;color:#bca8a8;margin-top:3px;text-align:right;letter-spacing:.08em}
+  #threatHud.limit{border-color:#d76dff99;box-shadow:0 7px 24px #0008,inset 0 0 28px #a64cff2b}
+  #threatHud.limit #threatLabel{color:#ef9cff}
+  #threatHud.limit #threatFill{background:linear-gradient(90deg,#a653ff,#ff56cf,#fff08a);box-shadow:0 0 14px #d55cff}
+  #threatEdgeFlash{position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;box-shadow:inset 0 0 0 3px #ff765a,inset 0 0 90px #ff3f532e;transition:opacity .05s linear}
   #feverOverlay{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;box-shadow:inset 0 0 0 3px #ffd85c,inset 0 0 80px #ff9e2033;background:radial-gradient(circle at 50% 50%,transparent 50%,#ffae1610 100%);transition:opacity .2s}
   #feverOverlay.show{opacity:1;animation:feverPulse .62s ease-in-out infinite alternate}
-  #eventHud{position:absolute;left:50%;top:118px;transform:translateX(-50%);z-index:5;display:none;align-items:center;gap:10px;padding:7px 13px;border-radius:999px;background:#0c1220e8;border:1px solid var(--eventColor,#6ee7ff);box-shadow:0 0 22px color-mix(in srgb,var(--eventColor,#6ee7ff) 28%,transparent);pointer-events:none;font-size:11px;font-weight:900;letter-spacing:.08em;white-space:nowrap}
+  #eventHud{position:absolute;left:50%;top:158px;transform:translateX(-50%);z-index:5;display:none;align-items:center;gap:10px;padding:7px 13px;border-radius:999px;background:#0c1220e8;border:1px solid var(--eventColor,#6ee7ff);box-shadow:0 0 22px color-mix(in srgb,var(--eventColor,#6ee7ff) 28%,transparent);pointer-events:none;font-size:11px;font-weight:900;letter-spacing:.08em;white-space:nowrap}
   #eventHud.show{display:flex}
   #eventHud b{color:var(--eventColor,#fff);font-size:12px}
   #eventTimer{color:#fff}
-  #bossHud{position:absolute;left:50%;top:151px;transform:translateX(-50%);z-index:5;width:min(460px,66vw);display:none;pointer-events:none}
+  #bossHud{position:absolute;left:50%;top:191px;transform:translateX(-50%);z-index:5;width:min(460px,66vw);display:none;pointer-events:none}
   #bossHud.show{display:block}
   #bossTop{display:flex;justify-content:space-between;align-items:end;font-size:11px;font-weight:1000;letter-spacing:.09em;text-shadow:0 2px 8px #000;margin-bottom:4px}
   #bossName{color:#ff87ff}
@@ -651,8 +662,9 @@
     #sidebar{right:8px!important;top:8px!important;bottom:8px!important;width:min(330px,calc(100vw - 16px))!important}
     #mobilePad{display:block}
     #breakHud{top:102px;width:min(300px,56vw)}
-    #eventHud{top:142px;max-width:72vw}
-    #bossHud{top:174px;width:min(360px,68vw)}
+    #threatHud{top:140px;width:min(270px,52vw)}
+    #eventHud{top:180px;max-width:72vw}
+    #bossHud{top:212px;width:min(360px,68vw)}
     #comboText{font-size:15px}
     #ultButton{width:88px;height:88px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));font-size:9px}
     #ultButton span{font-size:16px}
@@ -679,8 +691,10 @@
     #comboText{font-size:13px}
     #breakLabel{font-size:7px}
     #breakSub{font-size:6px}
-    #eventHud{top:184px;max-width:210px}
-    #bossHud{top:215px;width:230px}
+    #threatHud{top:180px;width:196px;padding:5px 7px}
+    #threatHud .threatTop{font-size:7px}#threatValue{font-size:6px}#threatSub{font-size:6px}
+    #eventHud{top:220px;max-width:210px}
+    #bossHud{top:251px;width:230px}
     #bossTop{font-size:7px}
 
     #quickActions{right:8px;top:69px;display:grid;gap:4px}
@@ -701,8 +715,9 @@
     #runHud{transform:translateX(-50%) scale(.86);transform-origin:top center}
     #attackBanner{top:56px}
     #breakHud{top:86px}
-    #eventHud{top:122px}
-    #bossHud{top:150px}
+    #threatHud{top:116px;width:220px;padding:4px 7px}
+    #eventHud{top:150px}
+    #bossHud{top:178px}
     #mobilePad{width:102px;height:102px}
     #mobilePad button{width:34px;height:34px}
     #up{left:34px}#down{left:34px}#left{top:34px}#right{top:34px}
@@ -947,6 +962,8 @@
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
   body.adminOpen #breakHud,
+  body.adminOpen #threatHud,
+  body.adminOpen #threatEdgeFlash,
   body.adminOpen #eventHud,
   body.adminOpen #bossHud,
   body.adminOpen #breakCallout,
@@ -959,7 +976,7 @@
     visibility:hidden!important;
     pointer-events:none!important;
   }
-  #hud,#attackBanner,#breakHud,#eventHud,#bossHud,#ultButton,#mobilePad,#hudMenuBtn,#quickActions{
+  #hud,#attackBanner,#breakHud,#threatHud,#eventHud,#bossHud,#ultButton,#mobilePad,#hudMenuBtn,#quickActions{
     transition:opacity .14s ease,visibility .14s ease;
   }
 
@@ -1126,6 +1143,12 @@
       <div id="breakBar"><div id="breakFill"></div></div>
       <div id="breakSub">NEXT ×1.2</div>
     </div>
+    <div id="threatHud">
+      <div class="threatTop"><b id="threatLabel">THREAT 0</b><span id="threatValue">0 / 150 KILLS</span></div>
+      <div id="threatBar"><div id="threatFill"></div></div>
+      <div id="threatSub">DENSITY ×1.00</div>
+    </div>
+    <div id="threatEdgeFlash"></div>
     <div id="breakCallout"><b id="breakCalloutMain">BREAK!</b><span id="breakCalloutSub"></span></div>
     <div id="eventHud"><b id="eventName">EVENT</b><span id="eventTimer">0.0s</span></div>
     <div id="bossHud">
@@ -1254,7 +1277,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.20</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 11.0</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1691,6 +1714,7 @@ function buildThreatSurgePlan(level){
   return {count:counts[l-1],eliteCount:elites[l-1]};
 }
 // END THREAT BREAKPOINT MODEL
+let threatLevel=0,limitBreakLevel=0,threatFlash=0;
 let toastTimer=null;
 
 // Stage 9.7 — Rookie Gunner sustained-fire identity.
@@ -2134,6 +2158,7 @@ function resetRun(){
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
   enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];novaUltCores=[];missileQueenFx=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
+  threatLevel=0;limitBreakLevel=0;threatFlash=0;
   gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;
   bombCatFlash=0;novaFlash=0;missileQueenFlash=0;
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
@@ -2222,6 +2247,28 @@ function spawnThreatSurge(level){
       else if(gameTime>15&&cycle===2)type='runner';
     }
     spawnEnemy(type,{position:getThreatSurgeEdgePoint(i,plan.count)});
+  }
+}
+function triggerThreatUp(previousLevel,newLevel){
+  threatFlash=1;
+  hitStop=Math.max(hitStop,.030);
+  shake=Math.min(2.8,shake+.55);
+  const state=getThreatState(THREAT_THRESHOLDS[Math.max(0,newLevel-1)]||runKills);
+  const main=newLevel===5?'THREAT MAXIMUM':'THREAT UP — '+newLevel;
+  showBreakCallout(main,'SURGE WAVE  •  DENSITY ×'+state.densityMul.toFixed(2),'#ff795a');
+  setTimeout(()=>{if(running)spawnThreatSurge(newLevel)},240);
+}
+function updateThreatProgression(){
+  const state=getThreatState(runKills);
+  if(state.threat>threatLevel){
+    const from=threatLevel;
+    for(let newLevel=from+1;newLevel<=state.threat;newLevel++)triggerThreatUp(newLevel-1,newLevel);
+    threatLevel=state.threat;
+  }
+  if(state.limitBreak>limitBreakLevel){
+    limitBreakLevel=state.limitBreak;
+    threatFlash=Math.max(threatFlash,.62);
+    showBreakCallout('LIMIT BREAK '+limitBreakLevel,'DENSITY ×'+state.densityMul.toFixed(2)+'  •  REWARD ×'+state.rewardMul.toFixed(2),'#e86cff');
   }
 }
 
@@ -2607,6 +2654,7 @@ function killEnemy(e,meta={}){
 
   const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()*eventCoinMultiplier()));
   runKills++;
+  updateThreatProgression();
   save.totalKills++;
 
   spawnEnemyDrops(e,coinGain);
@@ -4822,6 +4870,7 @@ function update(dt,refreshHud=true){
   bombCatFlash=Math.max(0,bombCatFlash-dt*5.2);
   novaFlash=Math.max(0,novaFlash-dt*5.8);
   missileQueenFlash=Math.max(0,missileQueenFlash-dt*4.9);
+  threatFlash=Math.max(0,threatFlash-dt*2.8);
   for(const c of novaUltCores){c.life-=dt;c.angle+=dt*2.25}
   if(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive()){
     gunnerMomentumIdle=Math.max(0,gunnerMomentumIdle-dt);
@@ -5608,6 +5657,25 @@ function updateHud(){
   document.getElementById('timeText').textContent=m+':'+s;
   document.getElementById('gemText').textContent=compactHudNumber(save.gems);
   const gg=document.getElementById('gachaGemText'); if(gg) gg.textContent=save.gems.toLocaleString();
+
+  const state=getThreatState(runKills);
+  const threatHud=document.getElementById('threatHud');
+  const threatLabel=document.getElementById('threatLabel');
+  const threatValue=document.getElementById('threatValue');
+  const threatFill=document.getElementById('threatFill');
+  const threatSub=document.getElementById('threatSub');
+  const threatEdge=document.getElementById('threatEdgeFlash');
+  if(threatHud&&threatLabel&&threatValue&&threatFill&&threatSub){
+    threatHud.classList.toggle('limit',state.isLimitBreak);
+    threatLabel.textContent=state.isLimitBreak?'LIMIT BREAK':'THREAT '+state.threat;
+    threatValue.textContent=(state.isLimitBreak?'LB'+state.limitBreak+'  •  ':'')+runKills+' / '+state.nextKills+' KILLS';
+    const span=Math.max(1,(state.progressEnd||state.nextKills)-state.progressStart);
+    const pct=clamp((runKills-state.progressStart)/span*100,0,100);
+    threatFill.style.width=pct+'%';
+    threatSub.textContent='DENSITY ×'+state.densityMul.toFixed(2)+'  •  HP ×'+state.hpMul.toFixed(2)+'  •  REWARD ×'+state.rewardMul.toFixed(2);
+  }
+  if(threatEdge)threatEdge.style.opacity=Math.min(.82,threatFlash).toFixed(3);
+
   const tier=breakTier();
   const bh=document.getElementById('breakHud'),bf=document.getElementById('breakFill');
   const bl=document.getElementById('breakLabel'),ct=document.getElementById('comboText'),bs=document.getElementById('breakSub');
