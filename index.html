@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.4 EXP</title>
+<title>BREAK SURVIVORS - Stage 10.5</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.4 EXP</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.5</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1538,19 +1538,19 @@ const growthDefs = {
   },
   nova:{
     nodes:[
-      [1,'Main','Nova Laser'],
-      [5,'Wide Core','レーザー幅 +25%'],
-      [10,'Twin Prism','2本のレーザーへ分裂'],
-      [20,'Branch','集束 / プリズム'],
-      [30,'ULT','NOVA ARRAY'],
-      [40,'Resonance','レーザーが遅れて再照射'],
-      [50,'AWAKEN','SUPERNOVA MODE']
+      [1,'Main','NOVA BEAM — 予備光 → 本照射 → 残光'],
+      [5,'OVERCHARGED CORE','白熱コア / レーザー幅 +25%'],
+      [10,'TWIN PRISM','途中からY字に分裂'],
+      [20,'Branch','FOCUS CORE / PRISM CORE'],
+      [30,'ULT','ORBITAL NOVA ARRAY'],
+      [40,'RESONANCE','紫色の残響レーザーが再照射'],
+      [50,'AWAKEN','SUPERNOVA MODE — 4発ごとにCORE OVERLOAD']
     ],
     branches:{
-      focus:{name:'FOCUS CORE',desc:'Damage +35%。太い集束レーザー1本へ変化。'},
-      prism:{name:'PRISM CORE',desc:'3方向レーザーへ変化。広範囲を制圧。'}
+      focus:{name:'FOCUS CORE',desc:'1本へ超集束。極太・多段ヒットの高火力レーザー。'},
+      prism:{name:'PRISM CORE',desc:'命中地点からレーザーが屈折。敵密度が高いほど広がる。'}
     },
-    ultimate:'NOVA ARRAY — 全方向レーザーを複数波照射。'
+    ultimate:'ORBITAL NOVA ARRAY — 6基のコアが回転照射し、最後に超巨大FINAL BEAMへ集束。'
   },
   missilequeen:{
     nodes:[
@@ -1584,7 +1584,7 @@ ensureCharacterSave();
 let currentCharacter = characterDefs.find(c=>c.id===save.selectedCharacter && save.characters[c.id]?.owned) || characterDefs[0];
 save.selectedCharacter=currentCharacter.id;
 let attackType=currentCharacter.attack, god=false, dmgMul=1, spawnMul=1;
-let enemies=[], bullets=[], bombFragments=[], bombExplosionFx=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
+let enemies=[], bullets=[], bombFragments=[], bombExplosionFx=[], novaUltCores=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
 let keys = {};
 let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
 let ultCharge=0;
@@ -1600,6 +1600,21 @@ const gunnerMomentumMul=()=>1+GUNNER_MOMENTUM_MAX_BONUS*clamp(gunnerMomentum/100
 
 // Stage 10.0 — Bomb Cat chain-destruction identity.
 let bombCatFlash=0;
+let novaFlash=0;
+
+function getNovaCombatProfile(lv,branch,count){
+  const focus=lv>=20&&branch==='focus';
+  const prism=lv>=20&&branch==='prism';
+  return {
+    widthMul:lv>=5?1.25:1,
+    twin:lv>=10&&!focus&&!prism,
+    focus,prism,
+    resonance:lv>=40,
+    supernova:lv>=50&&count>0&&count%4===0,
+    coreCharge:lv>=50?count%4:0
+  };
+}
+
 function getBombCatCombatProfile(lv,branch,count){
   const chain=lv>=20&&branch==='chain';
   const payload=lv>=20&&branch==='payload';
@@ -1913,7 +1928,7 @@ function resetRun(){
   setAttack(attackType);
   ps=playerStats();
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
-  enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
+  enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];novaUltCores=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
   gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;
   breakCombo=0;breakTimer=0;maxBreakCombo=0;feverTime=0;hitStop=0;
@@ -3506,18 +3521,13 @@ function firePrimary(force=false){
     }
   }
   else if(attackType==='laser'){
-    const count=own&&currentCharacter.id==='nova'?nextAttackCount('nova'):0;
-    let widthMul=1;
-    if(own&&currentCharacter.id==='nova'&&lv>=5)widthMul*=1.25;
-    let shots=[[0,1]];
-    if(own&&currentCharacter.id==='nova'&&lv>=10)shots=[[-.045,.78],[.045,.78]];
-    if(own&&currentCharacter.id==='nova'&&lv>=20&&br==='focus')shots=[[0,1.55]];
-    if(own&&currentCharacter.id==='nova'&&lv>=20&&br==='prism')shots=[[-.09,.72],[0,.78],[.09,.72]];
-    if(own&&currentCharacter.id==='nova'&&lv>=50&&count%4===0)shots=[[-.16,.65],[-.08,.72],[0,1.05],[.08,.72],[.16,.65]];
-    for(const [off,mul] of shots) doLaser(base*.85*mul,off,widthMul,lv>=50&&own?'#b9ffff':'#65f7ff');
-    if(own&&currentCharacter.id==='nova'&&lv>=40){
-      const echoShots=shots.map(x=>[x[0],x[1]*.45]);
-      setTimeout(()=>{if(running)for(const [off,mul] of echoShots)doLaser(base*.85*mul,off,widthMul*.92,'#9a8cff',true)},105);
+    const isNova=own&&currentCharacter.id==='nova';
+    if(isNova){
+      const count=nextAttackCount('nova');
+      const profile=getNovaCombatProfile(lv,br,count);
+      fireNovaPattern(base*.85,profile);
+    }else{
+      doLaser(base*.85,0,1,'#65f7ff');
     }
     player.attackCd=0.42/Math.max(1,rate/2.7);
   }
@@ -3784,6 +3794,155 @@ function doCrossSlash(dmg,opts={}){
   doSlashLine(dmg,baseAngle-Math.PI/4,len,width,color,{centered:true,quiet:true,heavy:opts.heavy,edgeBossBonus:opts.edgeBossBonus,life:opts.life||.17,bend:-1,finisher:opts.finisher,silentSfx:true});
 }
 
+function damageNovaBeamSegment(x1,y1,x2,y2,width,dmg,opts={}){
+  const dx=x2-x1,dy=y2-y1,len=Math.max(1,Math.hypot(dx,dy)),vx=dx/len,vy=dy/len;
+  const hits=[];
+  for(const e of enemies){
+    if(e.dead)continue;
+    const px=e.x-x1,py=e.y-y1,t=clamp(px*vx+py*vy,0,len);
+    const cx=x1+vx*t,cy=y1+vy*t;
+    if(Math.hypot(e.x-cx,e.y-cy)<=width+e.r){
+      damageEnemy(e,dmg);
+      hits.push({enemy:e,t,x:cx,y:cy});
+      if(opts.spark!==false){
+        for(let i=0;i<3;i++)particles.push({
+          x:cx,y:cy,vx:rnd(-85,85),vy:rnd(-85,85),life:rnd(.08,.18),size:rnd(1.2,3.2),
+          color:opts.echo?'#b9a7ff':'#bfffff'
+        });
+      }
+    }
+  }
+  hits.sort((a,b)=>a.t-b.t);
+  if(opts.focusTicks&&hits.length){
+    const tickDmg=dmg*(opts.focusTickMul||.16);
+    for(const delay of [54,104])setTimeout(()=>{
+      if(!running)return;
+      for(const h of hits)if(!h.enemy.dead)damageEnemy(h.enemy,tickDmg);
+    },delay);
+  }
+  return hits;
+}
+function pushNovaBeamVisual(x1,y1,x2,y2,width,color,opts={}){
+  const delay=opts.delay??.032;
+  if(!opts.noTelegraph)beams.push({
+    x1,y1,x2,y2,width:Math.max(2,width*.18),life:.045,total:.045,color:'#eaffff',
+    nova:true,novaStyle:'telegraph',alpha:opts.echo?.34:.55,delay:0
+  });
+  beams.push({
+    x1,y1,x2,y2,width,life:opts.life||.15,total:opts.life||.15,color,
+    nova:true,novaStyle:'main',alpha:opts.alpha??1,delay
+  });
+  beams.push({
+    x1,y1,x2,y2,width:width*1.16,life:opts.afterLife||.16,total:opts.afterLife||.16,
+    color:opts.echo?'#8f7cff':opts.afterColor||'#73e9ff',
+    nova:true,novaStyle:'after',alpha:opts.echo?.32:.20,delay:delay+.070
+  });
+}
+function emitNovaSegment(opts={}){
+  const x1=opts.x1??player.x,y1=opts.y1??player.y,ang=opts.angle??player.angle;
+  const len=opts.len||820,width=opts.width||22*ps.area;
+  const x2=x1+Math.cos(ang)*len,y2=y1+Math.sin(ang)*len;
+  pushNovaBeamVisual(x1,y1,x2,y2,width,opts.color||'#65f7ff',opts);
+  return damageNovaBeamSegment(x1,y1,x2,y2,width,opts.dmg||ps.damage,opts);
+}
+function fireNovaTwinPrism(dmg,profile,opts={}){
+  const av=aimVector(),ang=Math.atan2(av.y,av.x),split=235;
+  const x=player.x+Math.cos(ang)*split,y=player.y+Math.sin(ang)*split;
+  const width=18*ps.area*1.15*profile.widthMul*(opts.echo?.90:1);
+  const color=opts.echo?'#9a8cff':'#65f7ff';
+  emitNovaSegment({x1:player.x,y1:player.y,angle:ang,len:split,width:width*.78,dmg:dmg*.34,color,echo:opts.echo});
+  emitNovaSegment({x1:x,y1:y,angle:ang-.105,len:620,width,dmg:dmg*.72,color,echo:opts.echo,noTelegraph:true});
+  emitNovaSegment({x1:x,y1:y,angle:ang+.105,len:620,width,dmg:dmg*.72,color,echo:opts.echo,noTelegraph:true});
+}
+function fireNovaFocus(dmg,profile,opts={}){
+  const av=aimVector(),ang=Math.atan2(av.y,av.x);
+  const supernova=!!profile.supernova&&!opts.echo;
+  const width=18*ps.area*1.15*profile.widthMul*(supernova?2.65:1.80)*(opts.echo?.88:1);
+  emitNovaSegment({
+    angle:ang,len:supernova?1180:940,width,
+    dmg:dmg*(supernova?1.68:1.0)*(opts.echo?.42:1),
+    color:opts.echo?'#9a8cff':supernova?'#eaffff':'#71fbff',
+    focusTicks:true,focusTickMul:supernova?.20:.16,echo:opts.echo,
+    life:supernova?.25:.19,afterLife:supernova?.24:.18
+  });
+  if(supernova){
+    novaFlash=Math.max(novaFlash,.58);hitStop=Math.max(hitStop,.034);shake=Math.min(7,shake+2.2);
+  }
+}
+function fireNovaPrism(dmg,profile,opts={}){
+  const av=aimVector(),ang=Math.atan2(av.y,av.x);
+  const supernova=!!profile.supernova&&!opts.echo;
+  const width=18*ps.area*1.15*profile.widthMul*(supernova?1.52:1.05)*(opts.echo?.90:1);
+  const hits=emitNovaSegment({
+    angle:ang,len:supernova?1050:860,width,
+    dmg:dmg*(supernova?1.05:.82)*(opts.echo?.42:1),
+    color:opts.echo?'#9a8cff':supernova?'#dfffff':'#65f7ff',
+    echo:opts.echo,life:supernova?.21:.16
+  });
+  const maxSources=supernova?3:2;
+  const sources=hits.slice(0,maxSources);
+  for(const h of sources){
+    const angles=supernova?[-.72,-.38,.38,.72]:[-.56,.56];
+    for(const off of angles)emitNovaSegment({
+      x1:h.enemy.x,y1:h.enemy.y,angle:ang+off,len:supernova?430:335,
+      width:width*(supernova?.52:.48),
+      dmg:dmg*(supernova?.30:.32)*(opts.echo?.40:1),
+      color:opts.echo?'#8f7cff':off<0?'#86e7ff':'#b7a0ff',
+      echo:opts.echo,noTelegraph:true,life:.13,afterLife:.12
+    });
+  }
+  if(supernova){
+    novaFlash=Math.max(novaFlash,.42);hitStop=Math.max(hitStop,.025);
+  }
+}
+function fireNovaPattern(dmg,profile,opts={}){
+  if(profile.focus)fireNovaFocus(dmg,profile,opts);
+  else if(profile.prism)fireNovaPrism(dmg,profile,opts);
+  else if(profile.twin)fireNovaTwinPrism(dmg*(profile.supernova&&!opts.echo?1.16:1),profile,opts);
+  else{
+    const av=aimVector(),ang=Math.atan2(av.y,av.x);
+    const supernova=!!profile.supernova&&!opts.echo;
+    emitNovaSegment({
+      angle:ang,len:supernova?1080:820,
+      width:18*ps.area*1.15*profile.widthMul*(supernova?2.05:1),
+      dmg:dmg*(supernova?1.45:1)*(opts.echo?.42:1),
+      color:opts.echo?'#9a8cff':supernova?'#eaffff':'#65f7ff',
+      echo:opts.echo,life:supernova?.22:.15
+    });
+    if(supernova)novaFlash=Math.max(novaFlash,.48);
+  }
+  if(profile.resonance&&!opts.echo){
+    const echoProfile={...profile,supernova:false,resonance:false};
+    setTimeout(()=>{if(running)fireNovaPattern(dmg,echoProfile,{echo:true})},112);
+  }
+}
+function startNovaArray(){
+  const lv=charLevel('nova'),br=growthBranch();
+  novaUltCores=[];
+  for(let i=0;i<6;i++)novaUltCores.push({angle:i*Math.PI*2/6,orbit:68,life:1.20,total:1.20});
+  for(let w=0;w<6;w++)setTimeout(()=>{
+    if(!running)return;
+    for(let i=0;i<6;i++){
+      const c=novaUltCores[i];if(!c)continue;
+      const a=c.angle+w*.19;
+      const x=player.x+Math.cos(c.angle)*c.orbit,y=player.y+Math.sin(c.angle)*c.orbit;
+      emitNovaSegment({
+        x1:x,y1:y,angle:a,len:820,width:14*ps.area,
+        dmg:ps.damage*.32,color:w===5?'#dfffff':'#78f4ff',
+        noTelegraph:w>0,life:.13,afterLife:.12
+      });
+    }
+    shake=Math.min(5,shake+.38);
+  },120+w*88);
+  setTimeout(()=>{
+    if(!running)return;
+    novaUltCores.length=0;
+    novaFlash=Math.max(novaFlash,.84);hitStop=Math.max(hitStop,.052);
+    const profile={...getNovaCombatProfile(lv,br,4),supernova:true,resonance:false};
+    fireNovaPattern(ps.damage*2.05,profile,{ultFinal:true});
+  },760);
+}
+
 function doLaser(dmg,angleOffset=0,widthMul=1,color='#65f7ff',quiet=false){
   const av=aimVector(),ang=Math.atan2(av.y,av.x)+angleOffset,v={x:Math.cos(ang),y:Math.sin(ang)};
   const len=760,width=18*ps.area*(currentCharacter.id==='nova'?1.15:1)*widthMul;
@@ -3875,8 +4034,9 @@ function useUltimate(){
   if(!running)return;
   if(lv<30){showGrowthToast('ULT LOCKED','Character Lv30 で解放');return}
   if(ultCharge<100){showGrowthToast('ULT CHARGING',Math.floor(ultCharge)+'%');return}
-  ultCharge=0;shake=16;
+  ultCharge=0;
   const id=currentCharacter.id;
+  shake=id==='nova'?5:16;
   if(id==='blademaster')playBladeTechniqueSfx('ult',{gate:'blade_ult',gap:700,volume:.66,rate:1});
   else if(id==='gunner')playGunnerUltimateStart();
   else playWeaponFireSfx(currentCharacter.attack,true);
@@ -3922,7 +4082,7 @@ function useUltimate(){
       shake=18;
     },670);
   }else if(id==='nova'){
-    for(let w=0;w<3;w++)setTimeout(()=>{if(running)radialLaserWave(12,ps.damage*1.15,26*ps.area,w===2?'#fff1a8':'#9affff')},w*150);
+    startNovaArray();
   }else if(id==='missilequeen'){
     const targets=enemies.filter(e=>!e.dead);
     if(!targets.length){ultCharge=100;showGrowthToast('NO TARGET','敵が出てから使用できます');return}
@@ -3941,6 +4101,8 @@ function update(dt){
 
   gunnerRecoil=Math.max(0,gunnerRecoil-dt*8.5);
   bombCatFlash=Math.max(0,bombCatFlash-dt*5.2);
+  novaFlash=Math.max(0,novaFlash-dt*5.8);
+  for(const c of novaUltCores){c.life-=dt;c.angle+=dt*2.25}
   if(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive()){
     gunnerMomentumIdle=Math.max(0,gunnerMomentumIdle-dt);
     if(gunnerMomentumIdle<=0)gunnerMomentum=Math.max(0,gunnerMomentum-dt*38);
@@ -4090,7 +4252,10 @@ function update(dt){
 
   for(const p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;p.life-=dt}
   for(const fx of bombExplosionFx)fx.life-=dt;
-  for(const x of beams)x.life-=dt;
+  for(const x of beams){
+    if((x.delay||0)>0)x.delay=Math.max(0,x.delay-dt);
+    else x.life-=dt;
+  }
   for(const x of slashFx)x.life-=dt;
   for(const x of rings)x.life-=dt;
   for(const x of lightnings)x.life-=dt;
@@ -4103,7 +4268,8 @@ function update(dt){
   enemyBullets=enemyBullets.filter(x=>x.life>0 && x.x>-80&&x.x<WORLD_W+80&&x.y>-80&&x.y<WORLD_H+80);
   particles=particles.filter(x=>x.life>0);
   bombExplosionFx=bombExplosionFx.filter(x=>x.life>0);
-  beams=beams.filter(x=>x.life>0); slashFx=slashFx.filter(x=>x.life>0); rings=rings.filter(x=>x.life>0); lightnings=lightnings.filter(x=>x.life>0);
+  novaUltCores=novaUltCores.filter(x=>x.life>0);
+  beams=beams.filter(x=>x.life>0||(x.delay||0)>0); slashFx=slashFx.filter(x=>x.life>0); rings=rings.filter(x=>x.life>0); lightnings=lightnings.filter(x=>x.life>0);
   enemies=enemies.filter(e=>!e.dead);
 
   if(player.hp<=0) endRun();
@@ -4295,12 +4461,39 @@ function draw(){
   }
   ctx.shadowBlur=0;ctx.globalAlpha=1;
 
+  for(const c of novaUltCores){
+    const a=clamp(c.life/c.total,0,1),x=player.x+Math.cos(c.angle)*c.orbit,y=player.y+Math.sin(c.angle)*c.orbit;
+    ctx.save();ctx.translate(x,y);ctx.rotate(c.angle+Math.PI/4);
+    ctx.globalAlpha=a;ctx.shadowBlur=20;ctx.shadowColor='#7ffcff';ctx.fillStyle='#dfffff';
+    ctx.fillRect(-7,-7,14,14);ctx.fillStyle='#62dfff';ctx.fillRect(-3,-3,6,6);ctx.restore();
+  }
+  ctx.shadowBlur=0;ctx.globalAlpha=1;
+
   for(const b of beams){
-    ctx.globalAlpha=clamp(b.life/b.total,0,1);
-    ctx.strokeStyle=b.color;ctx.lineWidth=b.width*2.5;ctx.shadowBlur=20;ctx.shadowColor=b.color;
-    ctx.beginPath();ctx.moveTo(b.x1,b.y1);ctx.lineTo(b.x2,b.y2);ctx.stroke();
-    ctx.lineWidth=b.width;ctx.strokeStyle='#ffffff';
-    ctx.beginPath();ctx.moveTo(b.x1,b.y1);ctx.lineTo(b.x2,b.y2);ctx.stroke();
+    if((b.delay||0)>0)continue;
+    const a=clamp(b.life/b.total,0,1)*(b.alpha??1);
+    if(b.nova){
+      ctx.save();ctx.globalAlpha=a;ctx.lineCap='round';
+      if(b.novaStyle==='telegraph'){
+        ctx.strokeStyle=b.color;ctx.lineWidth=Math.max(1.4,b.width);ctx.shadowBlur=9;ctx.shadowColor=b.color;
+        ctx.beginPath();ctx.moveTo(b.x1,b.y1);ctx.lineTo(b.x2,b.y2);ctx.stroke();
+      }else if(b.novaStyle==='after'){
+        ctx.strokeStyle=b.color;ctx.lineWidth=b.width*1.35;ctx.shadowBlur=24;ctx.shadowColor=b.color;
+        ctx.beginPath();ctx.moveTo(b.x1,b.y1);ctx.lineTo(b.x2,b.y2);ctx.stroke();
+      }else{
+        ctx.strokeStyle=b.color;ctx.lineWidth=b.width*2.7;ctx.shadowBlur=28;ctx.shadowColor=b.color;
+        ctx.beginPath();ctx.moveTo(b.x1,b.y1);ctx.lineTo(b.x2,b.y2);ctx.stroke();
+        ctx.globalAlpha=a*.94;ctx.strokeStyle='#ffffff';ctx.lineWidth=Math.max(2,b.width*.38);ctx.shadowBlur=14;ctx.shadowColor='#ffffff';
+        ctx.beginPath();ctx.moveTo(b.x1,b.y1);ctx.lineTo(b.x2,b.y2);ctx.stroke();
+      }
+      ctx.restore();
+    }else{
+      ctx.globalAlpha=a;
+      ctx.strokeStyle=b.color;ctx.lineWidth=b.width*2.5;ctx.shadowBlur=20;ctx.shadowColor=b.color;
+      ctx.beginPath();ctx.moveTo(b.x1,b.y1);ctx.lineTo(b.x2,b.y2);ctx.stroke();
+      ctx.lineWidth=b.width;ctx.strokeStyle='#ffffff';
+      ctx.beginPath();ctx.moveTo(b.x1,b.y1);ctx.lineTo(b.x2,b.y2);ctx.stroke();
+    }
   }
   ctx.shadowBlur=0;ctx.globalAlpha=1;
 
@@ -4446,6 +4639,18 @@ function draw(){
     ctx.stroke();
     ctx.globalAlpha=1;
   }
+  if(currentCharacter.id==='nova'&&attackType==='laser'&&charLevel('nova')>=50){
+    ctx.save();ctx.rotate(-player.angle);
+    const charge=(attackCounters.nova||0)%4;
+    for(let i=0;i<4;i++){
+      const x=(i-1.5)*10,y=-player.r-14;
+      ctx.save();ctx.translate(x,y);ctx.rotate(Math.PI/4);
+      ctx.globalAlpha=i<charge?1:.25;
+      ctx.shadowBlur=i<charge?12:0;ctx.shadowColor='#8fffff';
+      ctx.fillStyle=i<charge?'#dfffff':'#48636d';ctx.fillRect(-3.2,-3.2,6.4,6.4);ctx.restore();
+    }
+    ctx.restore();
+  }
   ctx.restore();ctx.shadowBlur=0;
 
   ctx.restore();
@@ -4454,6 +4659,13 @@ function draw(){
     ctx.save();
     ctx.globalAlpha=Math.min(.46,bombCatFlash*.62);
     ctx.fillStyle='#fff8d8';
+    ctx.fillRect(0,0,W,H);
+    ctx.restore();
+  }
+  if(novaFlash>0){
+    ctx.save();
+    ctx.globalAlpha=Math.min(.34,novaFlash*.40);
+    ctx.fillStyle='#dfffff';
     ctx.fillRect(0,0,W,H);
     ctx.restore();
   }
