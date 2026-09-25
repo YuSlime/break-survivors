@@ -36,7 +36,7 @@ function threatContext(){
   const block=source.slice(start,end);
   const context={Math};
   vm.createContext(context);
-  vm.runInContext(block+'\nthis.THREAT_THRESHOLDS=THREAT_THRESHOLDS;this.THREAT_PROFILES=THREAT_PROFILES;this.getThreatState=getThreatState;this.getThreatSpawnShape=getThreatSpawnShape;this.getThreatEliteChance=getThreatEliteChance;this.buildThreatSurgePlan=buildThreatSurgePlan;',context);
+  vm.runInContext(block+'\nthis.THREAT_THRESHOLDS=THREAT_THRESHOLDS;this.THREAT_PROFILES=THREAT_PROFILES;this.getThreatState=getThreatState;this.getThreatSpawnShape=getThreatSpawnShape;this.getThreatEliteChance=getThreatEliteChance;this.buildThreatSurgePlan=buildThreatSurgePlan;this.getThreatFxScale=getThreatFxScale;',context);
   return context;
 }
 
@@ -151,4 +151,29 @@ test('THREAT edge flash is run-local and decays during update',()=>{
   assert.match(source,/let threatLevel=0,limitBreakLevel=0,threatFlash=0/);
   assert.match(update,/threatFlash=Math\.max\(0,threatFlash-dt\*/);
   assert.match(source,/id="threatEdgeFlash"/);
+});
+
+
+test('visual pressure scaling trims only FX and respects floors',()=>{
+  const {getThreatState,getThreatFxScale}=threatContext();
+  const t0=getThreatState(0);
+  const t5=getThreatState(2600);
+  const lb20=getThreatState(12600);
+
+  assert.equal(getThreatFxScale(t0,false),1);
+  const t5Full=getThreatFxScale(t5,false);
+  const t5Low=getThreatFxScale(t5,true);
+  assert.ok(t5Full>=.55&&t5Full<=.75);
+  assert.ok(t5Low<t5Full);
+  assert.ok(getThreatFxScale(lb20,false)>=.45);
+  assert.ok(getThreatFxScale(lb20,true)>=.32);
+
+  const trim=functionSource('trimVisualEffects');
+  for(const allowed of ['particles','rings','beams','slashFx','lightnings','bombExplosionFx','missileQueenFx','novaUltCores','floatingTexts']){
+    assert.match(trim,new RegExp('trim\\('+allowed));
+  }
+  for(const forbidden of ['enemies','bullets','missiles','enemyBullets','pickups']){
+    assert.doesNotMatch(trim,new RegExp('trim\\('+forbidden));
+  }
+  assert.match(trim,/getThreatFxScale\(getThreatState\(runKills\),performanceMode\)/);
 });
