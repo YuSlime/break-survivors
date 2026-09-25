@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.13</title>
+<title>BREAK SURVIVORS - Stage 10.14</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.13</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.14</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -2954,7 +2954,7 @@ function playMissileQueenDirect(name,volume=.5,rate=1,opts={}){
   source.connect(lowpass).connect(harshCut).connect(body).connect(gain).connect(attackFilter);
   activeMissileQueenVoices++;
   source.onended=()=>{activeMissileQueenVoices=Math.max(0,activeMissileQueenVoices-1)};
-  source.start(0,clip.offset,clip.duration);
+  source.start(0,clip.offset,Math.min(clip.duration,opts.clipDuration??clip.duration));
 }
 
 function playMissileQueenSample(phase,volume=.5,rate=1,opts={}){
@@ -2990,13 +2990,15 @@ function playMissileQueenSample(phase,volume=.5,rate=1,opts={}){
 }
 function playMissileQueenVolley(volley=0,command=false){
   if(command){
-    playMissileQueenSample('queen_command',.18,.99,{gap:145,lowpass:5100,bodyFreq:145,bodyGain:.65,harshGain:-4.0});
-    setTimeout(()=>{if(running)playMissileQueenDirect('command_launch',.43,.94,{gap:0,lowpass:6300,bodyFreq:175,bodyGain:.30,harshGain:-2.6})},24);
+    playMissileQueenSample('queen_command',.16,.99,{gap:145,lowpass:5100,bodyFreq:145,bodyGain:.60,harshGain:-4.0});
+    setTimeout(()=>{if(running)playMissileQueenDirect('skyfall_launch',.39,.96,{
+      gap:0,clipDuration:.84,lowpass:6350,bodyFreq:165,bodyGain:.44,harshFreq:3500,harshGain:-2.7
+    })},22);
     return;
   }
   const alt=volley%2===0;
-  playMissileQueenDirect(alt?'launch_a':'launch_b',.43,alt?1.12:.98,{
-    gap:82,lowpass:6500,bodyFreq:190,bodyGain:.10,harshFreq:3500,harshGain:-2.3
+  playMissileQueenDirect('skyfall_launch',alt?.37:.34,alt?1.26:1.38,{
+    gap:82,clipDuration:.72,lowpass:6500,bodyFreq:185,bodyGain:.16,harshFreq:3500,harshGain:-2.55
   });
 }
 function playMissileQueenSwarmSplit(royal=false){
@@ -4390,6 +4392,14 @@ function spawnSkyfallMissile(target,index,wave){
     color:wave===2?'#fff4ae':'#ffe27a',lockLife:.16
   });
 }
+function spawnSkyfallTargetFx(target,wave=0,life=1.18){
+  if(!target||target.dead)return;
+  missileQueenFx.push({type:'skyfall_target',target,wave,life,total:life,royal:true});
+}
+function spawnDecreeTargetZone(target,radius,life=2.15){
+  if(!target||target.dead)return;
+  missileQueenFx.push({type:'decree_zone',target,radius,life,total:life,royal:true});
+}
 function spawnRoyalSkyfallAscenders(){
   for(let i=0;i<6;i++){
     const off=(i-2.5)*13;
@@ -4412,19 +4422,21 @@ function launchQueensDecree(){
   const targets=getMissileQueenTargets(1,player.x,player.y,true);
   if(!targets.length)return false;
   const initial=targets[0];
-  missileQueenFx.push({type:'decree_target',target:initial,life:.56,total:.56,royal:true});
+  missileQueenFx.push({type:'decree_target',target:initial,life:.62,total:.62,royal:true});
   setTimeout(()=>{
     if(!running)return;
     const target=!initial.dead?initial:getMissileQueenTargets(1,player.x,player.y,true)[0];
     if(!target)return;
     playMissileQueenDecreeDrop();
+    const impactRadius=188*ps.area;
+    spawnDecreeTargetZone(target,impactRadius,2.15);
     const x=clamp(target.x+rnd(-55,55),42,WORLD_W-42);
     const y=clamp(target.y-720,42,WORLD_H-42);
     const angle=Math.atan2(target.y-y,target.x-x);
     launchQueenMissile({
       x,y,target,baseAngle:angle,side:0,initialSpeed:245,
       speed:390,turnRate:7.8,life:3.2,
-      dmg:ps.damage*4.2,radius:188*ps.area,
+      dmg:ps.damage*4.2,radius:impactRadius,
       microChildren:0,secondStageChildren:0,
       royal:true,command:true,queenFinal:true,decree:true,crownCount:12,
       heavy:true,missileScale:2.55,color:'#fff6b0',lockLife:.48
@@ -4451,18 +4463,28 @@ function startRoyalSkyfall(){
   },120);
 
   const plan=buildRoyalSkyfallPlan();
-  plan.forEach((wave,waveIndex)=>setTimeout(()=>{
-    if(!running)return;
-    playMissileQueenSkyfallDive(waveIndex);
-    const waveTargets=getMissileQueenTargets(Math.max(1,Math.min(wave.count,enemies.length)),player.x,player.y,waveIndex===2);
-    if(!waveTargets.length)return;
-    for(let i=0;i<wave.count;i++){
-      const target=waveTargets[i%waveTargets.length];
-      spawnSkyfallMissile(target,i,waveIndex);
-    }
-    missileQueenFlash=Math.max(missileQueenFlash,.12+waveIndex*.04);
-    shake=Math.min(2.8,shake+.34);
-  },wave.delay));
+  plan.forEach((wave,waveIndex)=>{
+    let lockedTargets=[];
+    setTimeout(()=>{
+      if(!running)return;
+      lockedTargets=getMissileQueenTargets(Math.max(1,Math.min(wave.count,enemies.length)),player.x,player.y,waveIndex===2);
+      for(const t of lockedTargets)spawnSkyfallTargetFx(t,waveIndex,1.24+waveIndex*.08);
+    },Math.max(0,wave.delay-260));
+
+    setTimeout(()=>{
+      if(!running)return;
+      playMissileQueenSkyfallDive(waveIndex);
+      let waveTargets=lockedTargets.filter(t=>t&&!t.dead);
+      if(!waveTargets.length)waveTargets=getMissileQueenTargets(Math.max(1,Math.min(wave.count,enemies.length)),player.x,player.y,waveIndex===2);
+      if(!waveTargets.length)return;
+      for(let i=0;i<wave.count;i++){
+        const target=waveTargets[i%waveTargets.length];
+        spawnSkyfallMissile(target,i,waveIndex);
+      }
+      missileQueenFlash=Math.max(missileQueenFlash,.12+waveIndex*.04);
+      shake=Math.min(2.8,shake+.34);
+    },wave.delay);
+  });
 
   setTimeout(()=>{if(running)launchQueensDecree()},2110);
   return true;
@@ -5150,6 +5172,21 @@ function draw(){
       ctx.strokeStyle='#fff1a0';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-22,0);ctx.lineTo(-5,0);ctx.stroke();
       ctx.fillStyle='#fff5bd';ctx.shadowBlur=fxBlur(14);ctx.shadowColor='#ffe477';ctx.fillRect(-5,-3,13,6);
       ctx.fillStyle='#ff9a55';ctx.fillRect(-10,-2,5,4);ctx.restore();
+    }else if(fx.type==='skyfall_target'&&fx.target&&!fx.target.dead){
+      const t=fx.target,p=1-a;
+      const base=28+(fx.wave||0)*4,r=base+(1-p)*22;
+      ctx.save();ctx.translate(t.x,t.y);
+      ctx.globalAlpha=.34+.62*(1-p*.35);
+      ctx.strokeStyle=fx.wave===2?'#fff7c7':'#ffe27a';ctx.fillStyle='rgba(255,214,107,.10)';
+      ctx.lineWidth=performanceMode?2:2.6;ctx.shadowBlur=fxBlur(performanceMode?0:12);ctx.shadowColor='#ffe98a';
+      ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();ctx.stroke();
+      const inner=Math.max(10,r*(.58-.18*p));
+      ctx.globalAlpha=.35+.45*a;ctx.beginPath();ctx.arc(0,0,inner,0,Math.PI*2);ctx.stroke();
+      for(let k=0;k<4;k++){
+        const ang=k*Math.PI/2+p*.9,outer=r+12,tip=r+2;
+        ctx.beginPath();ctx.moveTo(Math.cos(ang)*outer,Math.sin(ang)*outer);ctx.lineTo(Math.cos(ang)*tip,Math.sin(ang)*tip);ctx.stroke();
+      }
+      ctx.restore();
     }else if(fx.type==='decree_target'&&fx.target&&!fx.target.dead){
       const t=fx.target,p=1-a,r=t.r+22+(1-p)*58;
       ctx.save();ctx.translate(t.x,t.y);ctx.globalAlpha=.35+.65*a;
@@ -5157,6 +5194,31 @@ function draw(){
       ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.stroke();
       ctx.beginPath();ctx.moveTo(0,-r-46);ctx.lineTo(0,-r-9);ctx.stroke();
       ctx.beginPath();ctx.moveTo(-10,-r-18);ctx.lineTo(0,-r-8);ctx.lineTo(10,-r-18);ctx.stroke();
+      ctx.restore();
+    }else if(fx.type==='decree_zone'&&fx.target&&!fx.target.dead){
+      const t=fx.target,p=1-a;
+      const zoneR=Math.min(190,Math.max(78,(fx.radius||150)*.62));
+      const outer=zoneR+(1-p)*54;
+      const pulse=.5+.5*Math.sin(p*Math.PI*10);
+      ctx.save();ctx.translate(t.x,t.y);
+      ctx.fillStyle='rgba(255,224,112,'+(performanceMode?.08:.14)+')';
+      ctx.strokeStyle='#fff3a6';ctx.lineWidth=performanceMode?3:4;
+      ctx.shadowBlur=fxBlur(performanceMode?0:24);ctx.shadowColor='#fff0a0';
+      ctx.globalAlpha=.58+.34*pulse;
+      ctx.beginPath();ctx.arc(0,0,zoneR,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.globalAlpha=.45+.45*a;ctx.beginPath();ctx.arc(0,0,outer,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=.75;
+      ctx.beginPath();ctx.moveTo(-zoneR*.55,0);ctx.lineTo(zoneR*.55,0);ctx.moveTo(0,-zoneR*.55);ctx.lineTo(0,zoneR*.55);ctx.stroke();
+      const spin=p*Math.PI*3;
+      for(let k=0;k<4;k++){
+        const ang=spin+k*Math.PI/2,r1=zoneR+18,r2=zoneR+2;
+        ctx.beginPath();ctx.moveTo(Math.cos(ang)*r1,Math.sin(ang)*r1);ctx.lineTo(Math.cos(ang)*r2,Math.sin(ang)*r2);ctx.stroke();
+      }
+      if(!performanceMode){
+        const beamH=150+70*p;
+        ctx.globalAlpha=.16+.16*pulse;
+        ctx.fillStyle='#fff7cf';ctx.fillRect(-5,-zoneR-beamH,10,beamH);
+      }
       ctx.restore();
     }else if(fx.type==='command'||fx.type==='decree'){
       ctx.save();ctx.globalAlpha=a*(fx.type==='decree'?.28:.18);ctx.strokeStyle='#fff0a0';ctx.lineWidth=4;
