@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
-<title>BREAK SURVIVORS - Stage 10.17</title>
+<title>BREAK SURVIVORS - Stage 10.18</title>
 <style>
   :root{
     --bg:#090b12; --panel:#121726; --panel2:#1a2032; --line:#2b3550;
@@ -1254,7 +1254,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 10.17</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 10.18</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -2778,7 +2778,6 @@ const attackSfxFiles = {
     queen_crown_burst:['assets/sfx/missilequeen/queen_crown_burst.mp3'],
     queen_direct_sprite:['assets/sfx/missilequeen/queen_direct_sprite.mp3'],
     queen_primary_a:['assets/sfx/missilequeen/queen_primary_a.mp3'],
-    queen_primary_b:['assets/sfx/missilequeen/queen_primary_b.mp3'],
     queen_primary_command:['assets/sfx/missilequeen/queen_primary_command.mp3']
   }
 };
@@ -3000,7 +2999,7 @@ function playMissileQueenVolley(volley=0,command=false){
     return;
   }
   const alt=volley%2===0;
-  playMissileQueenSample(alt?'queen_primary_a':'queen_primary_b',alt?.36:.34,alt?1.00:.985,{
+  playMissileQueenSample('queen_primary_a',alt?.36:.34,alt?1.00:.97,{
     gap:82,lowpass:5450,bodyFreq:175,bodyGain:.62,harshFreq:3300,harshGain:-3.55
   });
 }
