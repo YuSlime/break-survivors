@@ -1628,6 +1628,58 @@ let keys = {};
 let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
 let ultCharge=0;
 let attackCounters={};
+
+// Stage 11.0 — THREAT BREAKPOINT MODEL
+const THREAT_THRESHOLDS=[150,450,900,1600,2600];
+const THREAT_PROFILES=[
+  {densityMul:1.00,hpMul:1.00,rewardMul:1.00},
+  {densityMul:1.30,hpMul:1.05,rewardMul:1.10},
+  {densityMul:1.60,hpMul:1.12,rewardMul:1.25},
+  {densityMul:2.00,hpMul:1.20,rewardMul:1.45},
+  {densityMul:2.50,hpMul:1.30,rewardMul:1.70},
+  {densityMul:3.10,hpMul:1.40,rewardMul:2.00}
+];
+function getThreatState(kills){
+  const k=Math.max(0,Math.floor(Number(kills)||0));
+  let threat=0;
+  for(let i=0;i<THREAT_THRESHOLDS.length;i++){
+    if(k>=THREAT_THRESHOLDS[i])threat=i+1;
+    else break;
+  }
+  const isLimitBreak=threat>=5;
+  const limitBreak=isLimitBreak?Math.max(0,Math.floor((k-THREAT_THRESHOLDS[4])/500)):0;
+  const base=THREAT_PROFILES[Math.min(5,threat)];
+  const lbDensity=1+limitBreak*.12;
+  const lbHp=1+limitBreak*.05;
+  const lbReward=1+limitBreak*.10;
+  let progressStart=0,progressEnd=null,nextKills=null;
+  if(!isLimitBreak){
+    progressStart=threat===0?0:THREAT_THRESHOLDS[threat-1];
+    progressEnd=THREAT_THRESHOLDS[threat];
+    nextKills=progressEnd;
+  }else{
+    progressStart=THREAT_THRESHOLDS[4]+limitBreak*500;
+    progressEnd=progressStart+500;
+    nextKills=progressEnd;
+  }
+  return {
+    threat,isLimitBreak,limitBreak,
+    densityMul:base.densityMul*lbDensity,
+    hpMul:base.hpMul*lbHp,
+    rewardMul:base.rewardMul*lbReward,
+    nextKills,progressStart,progressEnd
+  };
+}
+function getThreatSpawnShape(densityMul,rng=Math.random()){
+  const density=Math.max(1,Number(densityMul)||1);
+  const intervalMul=Math.sqrt(density);
+  const expectedBatch=density/intervalMul;
+  const whole=Math.floor(expectedBatch);
+  const frac=expectedBatch-whole;
+  const roll=clamp(Number(rng)||0,0,.999999999);
+  return {intervalMul,batchSize:Math.max(1,whole+(roll<frac?1:0))};
+}
+// END THREAT BREAKPOINT MODEL
 let toastTimer=null;
 
 // Stage 9.7 — Rookie Gunner sustained-fire identity.
