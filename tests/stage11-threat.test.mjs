@@ -8,7 +8,16 @@ const source=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 function functionSource(name){
   const start=source.indexOf('function '+name+'(');
   assert.ok(start>=0,'function '+name+' must exist');
-  const open=source.indexOf('{',start);
+  const paren=source.indexOf('(',start);
+  let pDepth=0,close=-1;
+  for(let i=paren;i<source.length;i++){
+    if(source[i]==='(')pDepth++;
+    else if(source[i]===')'){
+      pDepth--;
+      if(pDepth===0){close=i;break}
+    }
+  }
+  const open=source.indexOf('{',close);
   let depth=0;
   for(let i=open;i<source.length;i++){
     if(source[i]==='{')depth++;
