@@ -128,6 +128,79 @@
   .stat{font-size:13px;margin:4px 0}
   input[type=range]{width:100%}
   #death,#shop{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#05070bcc;backdrop-filter:blur(6px);z-index:5}
+  #death{
+    z-index:44;
+    background:
+      radial-gradient(circle at 50% 22%,#17305788 0%,#09101ddd 34%,#030509f3 78%),
+      #030509f3;
+    overflow:auto;padding:18px;
+  }
+  .resultPanel{
+    width:min(720px,96vw);max-height:min(92vh,820px);overflow:auto;
+    border:1px solid #4d6387;border-radius:24px;padding:18px;
+    background:linear-gradient(180deg,#101a2bf4,#080d17f6);
+    box-shadow:0 28px 90px #000d,0 0 46px #5899ff1d,inset 0 1px 0 #ffffff13;
+    animation:resultPanelIn .52s cubic-bezier(.16,.82,.24,1) both;
+  }
+  .resultEyebrow{text-align:center;font-size:9px;font-weight:1000;letter-spacing:.22em;color:#8193ae}
+  #deathTitle{text-align:center;margin:5px 0 2px;font-size:clamp(28px,6vw,54px);line-height:.95;letter-spacing:.045em;color:#f4f8ff;text-shadow:0 6px 28px #000}
+  #deathSubtitle{text-align:center;font-size:11px;font-weight:900;letter-spacing:.11em;color:#90a4c2;margin-bottom:14px}
+  #resultRecord{
+    display:none;margin:0 auto 13px;width:max-content;padding:7px 14px;border-radius:999px;
+    border:1px solid #ffe07488;background:#3a2b0ddc;color:#ffe885;font-size:10px;font-weight:1000;
+    letter-spacing:.12em;box-shadow:0 0 25px #ffd34f44;animation:recordPop .6s cubic-bezier(.15,.9,.2,1) both;
+  }
+  #resultRecord.show{display:block}
+  .resultHero{
+    display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:center;
+    padding:12px;border:1px solid #32445f;border-radius:18px;background:#0b1321c7;
+  }
+  #resultCharacterIcon{
+    width:104px;height:104px;border-radius:20px;display:grid;place-items:center;font-size:52px;
+    border:1px solid var(--resultColor,#6ee7ff);background:radial-gradient(circle at 50% 30%,#ffffff17,#0a1220);
+    box-shadow:0 0 30px color-mix(in srgb,var(--resultColor,#6ee7ff) 24%,transparent),inset 0 1px 0 #ffffff16;
+  }
+  .resultHeroLabel{font-size:8px;font-weight:1000;letter-spacing:.16em;color:#7285a1}
+  #resultCharacterName{font-size:20px;font-weight:1000;color:#fff;margin-top:3px}
+  #resultCharacterMeta{font-size:10px;color:#a9b8cc;margin-top:4px}
+  #resultCause{margin-top:8px;font-size:10px;font-weight:900;color:#ff9b9b;letter-spacing:.04em}
+  .resultStats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;
+  }
+  .resultStat{
+    min-height:72px;padding:10px;border-radius:14px;border:1px solid #2d3d56;background:#0b1320;
+    display:flex;flex-direction:column;justify-content:center;text-align:center;
+  }
+  .resultStat span{font-size:7px;font-weight:1000;letter-spacing:.14em;color:#71839e}
+  .resultStat b{font-size:19px;margin-top:6px;font-variant-numeric:tabular-nums;color:#f7fbff}
+  .resultStat.coin b{color:#ffd76a}.resultStat.gem b{color:#8ff5ff}.resultStat.break b{color:#a6eaff}
+  .resultProgress{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;
+  }
+  .resultMini{
+    padding:8px 10px;border-radius:12px;border:1px solid #29384e;background:#09101bd4;
+    display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:8px;color:#7e91ad;font-weight:900;
+  }
+  .resultMini b{font-size:11px;color:#fff}
+  .resultActions{margin-top:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  #restart{
+    grid-column:1/-1;height:54px;font-size:14px;letter-spacing:.10em;border-color:#5fa979;
+    background:linear-gradient(180deg,#1e5a38,#123923);box-shadow:0 10px 28px #0008,0 0 20px #49d07a24;
+  }
+  .resultSecondary{height:42px;font-size:10px}
+  @keyframes resultPanelIn{0%{opacity:0;transform:translateY(18px) scale(.96)}100%{opacity:1;transform:none}}
+  @keyframes recordPop{0%{opacity:0;transform:scale(.65)}55%{transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+  @media(max-width:520px){
+    #death{padding:7px}
+    .resultPanel{padding:12px;border-radius:18px}
+    .resultHero{grid-template-columns:76px minmax(0,1fr);gap:10px;padding:9px}
+    #resultCharacterIcon{width:76px;height:76px;border-radius:16px;font-size:39px}
+    #resultCharacterName{font-size:16px}
+    .resultStats{grid-template-columns:repeat(2,1fr);gap:6px}
+    .resultStat{min-height:60px;padding:8px}.resultStat b{font-size:16px}
+    .resultProgress{grid-template-columns:1fr 1fr;gap:6px}
+    .resultActions{gap:6px}
+  }
   .modal{width:min(520px,92vw);max-height:86vh;overflow:auto;background:#111827;border:1px solid #33405f;border-radius:18px;padding:20px;box-shadow:0 20px 80px #000a}
   .modal h3{margin:0 0 8px;font-size:24px}
   .upgrade{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid #2b3550;border-radius:12px;padding:10px;margin:8px 0;background:#161d2d}
@@ -1299,12 +1372,43 @@
     </div>
 
     <div id="death">
-      <div class="modal">
-        <h3 id="deathTitle">RUN OVER</h3>
-        <p>今回のキル: <b id="deathKills">0</b>　獲得コイン: <b id="deathCoins">0</b></p>
-        <p>MAX BREAK: <b id="deathCombo">0</b> K.O.</p>
-        <button id="openShop" class="gold full">永久アップグレード</button>
-        <button id="restart" class="good full" style="margin-top:8px">もう一度出撃</button>
+      <div class="resultPanel">
+        <div class="resultEyebrow">BREAK SURVIVORS // RUN REPORT</div>
+        <h3 id="deathTitle">RUN ENDED</h3>
+        <div id="deathSubtitle">SURVIVED 0:00</div>
+        <div id="resultRecord">★ NEW RECORD ★</div>
+
+        <div class="resultHero" id="resultHero">
+          <div id="resultCharacterIcon">🔫</div>
+          <div>
+            <div class="resultHeroLabel">SURVIVOR</div>
+            <div id="resultCharacterName">Rookie Gunner</div>
+            <div id="resultCharacterMeta">LV.1 // Common</div>
+            <div id="resultCause">DEFEATED BY ENEMY SWARM</div>
+          </div>
+        </div>
+
+        <div class="resultStats">
+          <div class="resultStat"><span>KILLS</span><b id="deathKills">0</b></div>
+          <div class="resultStat"><span>SURVIVAL</span><b id="deathTime">0:00</b></div>
+          <div class="resultStat coin"><span>COINS</span><b id="deathCoins">+0</b></div>
+          <div class="resultStat gem"><span>GEMS</span><b id="deathGems">+0</b></div>
+          <div class="resultStat break"><span>MAX BREAK</span><b id="deathCombo">0</b></div>
+          <div class="resultStat"><span>LIMIT BREAK</span><b id="deathLimitBreak">0</b></div>
+        </div>
+
+        <div class="resultProgress">
+          <div class="resultMini"><span>THREAT</span><b id="deathThreat">0</b></div>
+          <div class="resultMini"><span>ELITES</span><b id="deathElites">0</b></div>
+          <div class="resultMini"><span>BOSSES</span><b id="deathBosses">0</b></div>
+        </div>
+
+        <div class="resultActions">
+          <button id="restart" class="good">RETRY</button>
+          <button id="openShop" class="gold resultSecondary">UPGRADES</button>
+          <button id="deathCharacters" class="resultSecondary">CHARACTER</button>
+          <button id="deathGacha" class="resultSecondary">GACHA</button>
+        </div>
       </div>
     </div>
 
@@ -1550,6 +1654,7 @@ save.gems ??= 1000;
 save.selectedCharacter ??= 'gunner';
 save.characters ??= {gunner:{owned:true,dupes:0}};
 save.performanceMode ??= false;
+save.bestTime ??= 0;
 function ensureCharacterSave(){
   for(const c of characterDefs){
     save.characters[c.id] ??= {owned:c.id==='gunner',dupes:0,level:1,branch:null};
@@ -1786,7 +1891,8 @@ let joystickPointerId=null;
 let joystickMode=localStorage.getItem('break_survivors_joystick_mode')||'floating';
 let controlScale=Math.max(.8,Math.min(1.3,Number(localStorage.getItem('break_survivors_control_scale'))||1));
 let controlOpacity=Math.max(.45,Math.min(1,Number(localStorage.getItem('break_survivors_control_opacity'))||1));
-let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
+let gameTime=0, runKills=0, runCoins=0, runGems=0, runElites=0, runBosses=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
+let lastDamageSource='ENEMY SWARM';
 let ultCharge=0;
 let attackCounters={};
 
@@ -2315,12 +2421,12 @@ function grantLimitBreakEventReward(e){
     showLbSplash('MEGA SURGE CLEARED','+'+coins.toLocaleString()+' COINS  •  ULT +50%','#ff8a63',LB_EVENT_CLEAR_DISPLAY_SECONDS*1000);
   }else if(e.type==='dominion'){
     const coins=scaleLbCurrency(5000,tier),gems=scaleLbCurrency(75,tier);
-    save.coins+=coins;runCoins+=coins;save.gems+=gems;
+    save.coins+=coins;runCoins+=coins;save.gems+=gems;runGems+=gems;
     addLbRewardBuff({source:'dominion',remaining:15,damage:1.25,attackRate:1.20});
     showLbSplash('ELITE DOMINION CLEARED','+'+coins.toLocaleString()+' COINS  •  +'+gems+' GEMS','#ffc45b',LB_EVENT_CLEAR_DISPLAY_SECONDS*1000);
   }else{
     const coins=scaleLbCurrency(10000,tier),gems=scaleLbCurrency(150,tier);
-    save.coins+=coins;runCoins+=coins;save.gems+=gems;ultCharge=100;
+    save.coins+=coins;runCoins+=coins;save.gems+=gems;runGems+=gems;ultCharge=100;
     addLbRewardBuff({source:'apocalypse',remaining:20,damage:1.35,attackRate:1.25,move:1.20,breakGrace:1});
     showLbSplash('APOCALYPSE CLEARED','OVERDRIVE 20s  •  +'+coins.toLocaleString()+' COINS  •  +'+gems+' GEMS','#d98cff',LB_EVENT_CLEAR_DISPLAY_SECONDS*1000);
   }
@@ -2862,7 +2968,7 @@ function resetRun(){
   ps=playerStats();
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
   enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];novaUltCores=[];missileQueenFx=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
-  gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
+  gameTime=0;runKills=0;runCoins=0;runGems=0;runElites=0;runBosses=0;lastDamageSource='ENEMY SWARM';spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
   mobileMoveX=0;mobileMoveY=0;dashCooldown=0;dashInvuln=0;specialCooldown=0;
   threatLevel=0;limitBreakLevel=0;threatFlash=0;
   lbRunGeneration++;lbEventState=null;lbEventQueue=[];lbRewardBuffs=[];stopLbEventMusic();hideLbSplash();
@@ -3122,6 +3228,7 @@ function collectPickup(p){
 
   if(p.type==='gem'){
     save.gems+=p.value;
+    runGems+=p.value;
     if(floatingTexts.length<36)floatingTexts.push({
       x:p.x,y:p.y-8,text:'+'+p.value+' GEM',color:'#8ff7ff',life:.90,total:.90,vy:-48
     });
@@ -3368,6 +3475,8 @@ function killEnemy(e,meta={}){
 
   const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()*eventCoinMultiplier()));
   runKills++;
+  if(e.type==='elite')runElites++;
+  if(e.type==='boss')runBosses++;
   updateThreatProgression();
   save.totalKills++;
 
@@ -5799,6 +5908,7 @@ function update(dt,refreshHud=true){
     e.x=clamp(e.x,e.r+WORLD_EDGE_PAD,WORLD_W-e.r-WORLD_EDGE_PAD);
     e.y=clamp(e.y,e.r+WORLD_EDGE_PAD,WORLD_H-e.r-WORLD_EDGE_PAD);
     if(Math.hypot(player.x-e.x,player.y-e.y)<player.r+e.r && player.hitCd<=0 && !god && dashInvuln<=0){
+      lastDamageSource=e.type==='boss'?'VOID TYRANT':e.type==='elite'?(e.eliteVariant?e.eliteVariant.toUpperCase()+' ELITE':'ELITE ENEMY'):e.type.toUpperCase()+' ENEMY';
       player.hp-=e.touch;player.hitCd=.4;shake=6;
     }
   }
@@ -5807,7 +5917,7 @@ function update(dt,refreshHud=true){
     if(lbWorldFrozen)continue;
     b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
     if(b.life>0 && Math.hypot(player.x-b.x,player.y-b.y)<player.r+b.r){
-      b.life=0;if(!god&&dashInvuln<=0){player.hp-=b.dmg;shake=5}
+      b.life=0;if(!god&&dashInvuln<=0){lastDamageSource='ENEMY PROJECTILE';player.hp-=b.dmg;shake=5}
     }
   }
 
@@ -5846,16 +5956,92 @@ function update(dt,refreshHud=true){
   if(refreshHud)updateHud();
 }
 
+function formatRunTime(seconds){
+  const s=Math.max(0,Math.floor(seconds||0)),m=Math.floor(s/60);
+  return m+':'+String(s%60).padStart(2,'0');
+}
+function animateResultNumber(id,value,prefix='',duration=620){
+  const el=document.getElementById(id);if(!el)return;
+  const target=Math.max(0,Math.floor(value||0)),start=performance.now();
+  const tick=now=>{
+    const p=clamp((now-start)/duration,0,1);
+    const eased=1-Math.pow(1-p,3);
+    const v=Math.floor(target*eased);
+    el.textContent=prefix+v.toLocaleString();
+    if(p<1)requestAnimationFrame(tick);
+    else el.textContent=prefix+target.toLocaleString();
+  };
+  requestAnimationFrame(tick);
+}
 function endRun(reason='normal'){
+  if(!running)return;
+  const finalLbState=lbEventState?{
+    type:lbEventState.type,phaseIndex:lbEventState.phaseIndex,kills:lbEventState.kills,target:lbEventState.target,
+    mode:lbEventState.mode
+  }:null;
+  const finalTime=gameTime,finalKills=runKills,finalCoins=runCoins,finalGems=runGems;
+  const finalCombo=maxBreakCombo,finalLb=limitBreakLevel,finalThreat=threatLevel;
+  const finalElites=runElites,finalBosses=runBosses;
+  const previousBestKills=save.bestKills||0,previousBestTime=save.bestTime||0;
+  const newKillRecord=finalKills>previousBestKills;
+  const newTimeRecord=finalTime>previousBestTime;
+
   running=false;
   lbRunGeneration++;lbEventQueue=[];lbEventState=null;stopLbEventMusic();hideLbSplash();
   setSidebarVisible(false);
-  save.bestKills=Math.max(save.bestKills,runKills);persist();
-  document.getElementById('deathTitle').textContent=reason==='limit_break_failed'?'LIMIT BREAK FAILED':'RUN OVER';
-  document.getElementById('deathKills').textContent=runKills;
-  document.getElementById('deathCoins').textContent=runCoins;
-  document.getElementById('deathCombo').textContent=maxBreakCombo;
-  document.getElementById('death').style.display='flex';syncGameplayTouchBlock();
+
+  save.bestKills=Math.max(previousBestKills,finalKills);
+  save.bestTime=Math.max(previousBestTime,finalTime);
+  persist();
+
+  const failedLb=reason==='limit_break_failed';
+  document.getElementById('deathTitle').textContent=failedLb?'LIMIT BREAK FAILED':'RUN ENDED';
+  document.getElementById('deathSubtitle').textContent='SURVIVED '+formatRunTime(finalTime);
+  document.getElementById('deathTime').textContent=formatRunTime(finalTime);
+  document.getElementById('deathLimitBreak').textContent=finalLb;
+  document.getElementById('deathThreat').textContent=finalThreat;
+  document.getElementById('deathElites').textContent=finalElites;
+  document.getElementById('deathBosses').textContent=finalBosses;
+
+  const record=document.getElementById('resultRecord');
+  const records=[];
+  if(newKillRecord)records.push('KILL RECORD');
+  if(newTimeRecord)records.push('TIME RECORD');
+  record.textContent=records.length?'★ NEW '+records.join(' + ')+' ★':'';
+  record.classList.toggle('show',records.length>0);
+
+  const icon=document.getElementById('resultCharacterIcon');
+  icon.textContent=currentCharacter.icon;
+  icon.style.setProperty('--resultColor',currentCharacter.color);
+  document.getElementById('resultHero').style.setProperty('--resultColor',currentCharacter.color);
+  document.getElementById('resultCharacterName').textContent=currentCharacter.name;
+  document.getElementById('resultCharacterMeta').textContent='LV.'+charLevel(currentCharacter.id)+' // '+currentCharacter.rarity;
+
+  let cause='DEFEATED BY '+lastDamageSource;
+  if(failedLb&&finalLbState){
+    if(finalLbState.type==='apocalypse'){
+      const ph=APOCALYPSE_PHASES[finalLbState.phaseIndex]||APOCALYPSE_PHASES[0];
+      cause='LIMIT BREAK FAILED // '+ph.name+' // '+(finalLbState.kills||0)+' / '+(finalLbState.target||0)+' KILLS';
+    }else{
+      cause='LIMIT BREAK FAILED // '+lbEventName(finalLbState.type);
+    }
+  }
+  document.getElementById('resultCause').textContent=cause;
+
+  document.getElementById('deathKills').textContent='0';
+  document.getElementById('deathCoins').textContent='+0';
+  document.getElementById('deathGems').textContent='+0';
+  document.getElementById('deathCombo').textContent='0';
+
+  document.getElementById('death').style.display='flex';
+  syncGameplayTouchBlock();
+
+  setTimeout(()=>{
+    animateResultNumber('deathKills',finalKills,'',680);
+    animateResultNumber('deathCoins',finalCoins,'+',760);
+    animateResultNumber('deathGems',finalGems,'+',820);
+    animateResultNumber('deathCombo',finalCombo,'',700);
+  },170);
 }
 
 function draw(){
@@ -6946,6 +7132,8 @@ document.getElementById('finishSummon').onclick=()=>{
 document.getElementById('pull1').onclick=()=>doGacha(1);
 document.getElementById('pull10').onclick=()=>doGacha(10);
 document.getElementById('openCharacters').onclick=()=>{setSidebarVisible(false);buildCharacterList();document.getElementById('characters').style.display='flex';syncGameplayTouchBlock()};
+document.getElementById('deathCharacters').onclick=()=>document.getElementById('openCharacters').click();
+document.getElementById('deathGacha').onclick=()=>document.getElementById('openGacha').click();
 document.getElementById('closeCharacters').onclick=()=>{document.getElementById('characters').style.display='none';syncGameplayTouchBlock()};
 document.getElementById('killAll').onclick=()=>{[...enemies].forEach(killEnemy)};
 document.getElementById('toggleGod').onclick=e=>{god=!god;e.target.textContent='Invincible: '+(god?'ON':'OFF');e.target.classList.toggle('active',god)};
