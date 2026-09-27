@@ -2023,10 +2023,12 @@ function startLbEventCombat(e){
   playLbEventCue(e.type==='apocalypse'?'apocalypse':'start',e.type==='apocalypse'?1.2:1);
   showLbSplash(lbEventName(e.type),'START',lbEventColor(e.type),520);
   if(e.type==='mega'){
+    e.phase='mega';
     e.timeRemaining=25;e.waveIndex=0;e.finalSpawned=false;
     e.target=4*scaleLbEventCount(20,e.tier)+scaleLbEventCount(16,e.tier);
     spawnMegaWave(e,0);e.waveIndex=1;
   }else if(e.type==='dominion'){
+    e.phase='dominion';
     e.timeRemaining=30;
     const counts=scaleLbComposition([4,4,4],e.tier);
     e.target=counts.reduce((a,b)=>a+b,0);
@@ -2133,7 +2135,6 @@ function registerLbEventKill(e){
   if(!s||s.mode!=='combat'||!e||e.lbKillCredited)return;
   if(e.lbEventInstanceId!==s.instanceId||e.lbEventPhase!==s.phase)return;
   e.lbKillCredited=true;s.kills++;
-  if(s.type==='apocalypse'&&s.kills>=s.target)startBreakExecution(s);
 }
 function countAliveLbEnemies(s,phase=s?.phase){
   return enemies.filter(e=>!e.dead&&e.lbEventInstanceId===s?.instanceId&&e.lbEventPhase===phase).length;
@@ -6756,6 +6757,8 @@ document.getElementById('closeShop').onclick=()=>document.getElementById('shop')
 document.getElementById('addCoins').onclick=()=>{save.coins+=100000;persist();updateHud()};
 document.getElementById('toggleSound').onclick=e=>{
   soundEnabled=!soundEnabled;
+  if(!soundEnabled)stopLbEventMusic();
+  else if(lbEventState)startLbEventMusic(lbEventState.nextMilestone?.type||lbEventState.type);
   e.target.textContent='Attack SFX: '+(soundEnabled?'ON':'OFF');
   e.target.classList.toggle('active',soundEnabled);
   if(soundEnabled){
