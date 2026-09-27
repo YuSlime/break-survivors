@@ -142,10 +142,10 @@
     border:2px solid #b8dcff;box-shadow:0 6px 18px #0009,0 0 18px #65aaff55,inset 0 1px 0 #ffffff55;
     pointer-events:none;will-change:transform;
   }
-  #mobileActions{display:none;position:absolute;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;pointer-events:none}
+  #mobileActions{display:none;position:absolute;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;pointer-events:none;width:210px;height:170px}
   #mobileActions button{pointer-events:auto;position:absolute;border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none}
-  #mobileSpecial{width:58px;height:58px;right:68px;bottom:10px;background:#183958e8;border:2px solid #67c7ff;color:#dff8ff;font-size:9px;font-weight:1000;box-shadow:0 8px 22px #000a,0 0 18px #55bfff44}
-  #mobileDash{width:52px;height:52px;right:6px;bottom:92px;background:#2c2855e8;border:2px solid #a994ff;color:#eee9ff;font-size:8px;font-weight:1000;box-shadow:0 8px 22px #000a,0 0 18px #947fff44}
+  #mobileSpecial{width:58px;height:58px;right:120px;bottom:8px;background:#183958e8;border:2px solid #67c7ff;color:#dff8ff;font-size:9px;font-weight:1000;box-shadow:0 8px 22px #000a,0 0 18px #55bfff44}
+  #mobileDash{width:52px;height:52px;right:76px;bottom:94px;background:#2c2855e8;border:2px solid #a994ff;color:#eee9ff;font-size:8px;font-weight:1000;box-shadow:0 8px 22px #000a,0 0 18px #947fff44}
   #mobileDash.cooldown,#mobileSpecial.cooldown{opacity:.55;filter:saturate(.5)}
   #settings{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#05070bcc;backdrop-filter:blur(7px);z-index:45}
   #settings .modal{width:min(500px,92vw)}
@@ -907,7 +907,7 @@
   @media(max-width:900px){
     #joystickZone{display:block!important;pointer-events:auto}
     #mobilePad{display:block!important}
-    #mobileActions{display:block!important;width:150px;height:160px}
+    #mobileActions{display:block!important;width:210px;height:170px}
     #ultButton{display:block!important}
   }
 
@@ -1028,8 +1028,8 @@
   @media(max-width:520px){
     #mobilePad{width:112px!important;height:112px!important;left:10px!important}
     #joystickKnob{width:44px;height:44px}
-    #mobileSpecial{width:54px;height:54px;right:60px;bottom:6px}
-    #mobileDash{width:48px;height:48px;right:4px;bottom:76px}
+    #mobileSpecial{width:54px;height:54px;right:86px;bottom:4px}
+    #mobileDash{width:48px;height:48px;right:72px;bottom:72px}
   }
   body.adminOpen #joystickZone,
   body.adminOpen #mobileActions,
@@ -7027,9 +7027,9 @@ function setJoystickFromPointer(ev){
     let cx=ev.clientX-zoneRect.left,cy=ev.clientY-zoneRect.top;
     cx=clamp(cx,size*.55,zoneRect.width-size*.55);
     cy=clamp(cy,size*.55,zoneRect.height-size*.55);
-    mobilePad.style.left=(cx-size/2)+'px';
-    mobilePad.style.top=(cy-size/2)+'px';
-    mobilePad.style.bottom='auto';
+    mobilePad.style.setProperty('left',(cx-size/2)+'px','important');
+    mobilePad.style.setProperty('top',(cy-size/2)+'px','important');
+    mobilePad.style.setProperty('bottom','auto','important');
   }
   const r=mobilePad.getBoundingClientRect();
   const cx=r.left+r.width/2,cy=r.top+r.height/2;
@@ -7047,7 +7047,9 @@ function releaseJoystick(ev){
   joystickPointerId=null;mobileMoveX=0;mobileMoveY=0;
   joystickKnob.style.transform='translate(-50%,-50%)';
   mobilePad.classList.add('idle');
-  if(joystickMode==='floating'){mobilePad.style.top='';mobilePad.style.left='';mobilePad.style.bottom=''}
+  if(joystickMode==='floating'){
+    mobilePad.style.removeProperty('top');mobilePad.style.removeProperty('left');mobilePad.style.removeProperty('bottom');
+  }
 }
 joystickZone.addEventListener('pointerdown',ev=>{
   if(joystickPointerId!==null)return;
@@ -7102,7 +7104,7 @@ controlOpacityEl.oninput=e=>{
   applyMobileControlSettings();
 };
 document.getElementById('joystickFloating').onclick=()=>{joystickMode='floating';localStorage.setItem('break_survivors_joystick_mode',joystickMode);applyMobileControlSettings()};
-document.getElementById('joystickFixed').onclick=()=>{joystickMode='fixed';localStorage.setItem('break_survivors_joystick_mode',joystickMode);mobilePad.style.top='';mobilePad.style.left='';mobilePad.style.bottom='';applyMobileControlSettings()};
+document.getElementById('joystickFixed').onclick=()=>{joystickMode='fixed';localStorage.setItem('break_survivors_joystick_mode',joystickMode);mobilePad.style.removeProperty('top');mobilePad.style.removeProperty('left');mobilePad.style.removeProperty('bottom');applyMobileControlSettings()};
 document.getElementById('closeSettings').onclick=closeSettings;
 
 
