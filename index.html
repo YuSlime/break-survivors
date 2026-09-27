@@ -132,11 +132,28 @@
   .modal h3{margin:0 0 8px;font-size:24px}
   .upgrade{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid #2b3550;border-radius:12px;padding:10px;margin:8px 0;background:#161d2d}
   .upgrade button{min-width:115px}
-  #mobilePad{display:none;position:absolute;left:18px;bottom:92px;width:140px;height:140px;z-index:4}
+  #joystickZone{display:none;position:absolute;left:0;bottom:0;width:52%;height:58%;z-index:39;touch-action:none;pointer-events:none}
+  #mobilePad{display:none;position:absolute;left:18px;bottom:92px;width:140px;height:140px;z-index:40}
   #closeSidebar{position:sticky;top:0;float:right;z-index:5;width:34px;height:34px;padding:0;border-radius:50%;font-size:18px;background:#281820;border-color:#6d3340}
   #openSidebar{display:none;position:absolute;right:12px;top:12px;z-index:4;border-radius:999px;padding:10px 14px;background:#121b2d;border:1px solid #3d4f79;box-shadow:0 8px 30px #0008}
-  #mobilePad button{position:absolute;width:46px;height:46px;border-radius:50%;background:#15213dcc}
-  #up{left:47px;top:0} #down{left:47px;bottom:0} #left{left:0;top:47px} #right{right:0;top:47px}
+  #joystickKnob{
+    position:absolute;left:50%;top:50%;width:48px;height:48px;transform:translate(-50%,-50%);
+    border-radius:50%;background:linear-gradient(180deg,#5b8bd0,#29496f);
+    border:2px solid #b8dcff;box-shadow:0 6px 18px #0009,0 0 18px #65aaff55,inset 0 1px 0 #ffffff55;
+    pointer-events:none;will-change:transform;
+  }
+  #mobileActions{display:none;position:absolute;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:40;pointer-events:none}
+  #mobileActions button{pointer-events:auto;position:absolute;border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none}
+  #mobileSpecial{width:58px;height:58px;right:68px;bottom:10px;background:#183958e8;border:2px solid #67c7ff;color:#dff8ff;font-size:9px;font-weight:1000;box-shadow:0 8px 22px #000a,0 0 18px #55bfff44}
+  #mobileDash{width:52px;height:52px;right:6px;bottom:92px;background:#2c2855e8;border:2px solid #a994ff;color:#eee9ff;font-size:8px;font-weight:1000;box-shadow:0 8px 22px #000a,0 0 18px #947fff44}
+  #mobileDash.cooldown,#mobileSpecial.cooldown{opacity:.55;filter:saturate(.5)}
+  #settings{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#05070bcc;backdrop-filter:blur(7px);z-index:45}
+  #settings .modal{width:min(500px,92vw)}
+  .settingRow{margin:14px 0}
+  .settingRow .row{margin-bottom:6px}
+  .settingValue{font-variant-numeric:tabular-nums;color:#9fe5ff}
+  .settingToggle{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .settingToggle button.active{border-color:#72d7ff;background:#17364d;outline:none}
   .legend{display:grid;grid-template-columns:auto 1fr;gap:5px 9px;font-size:12px}
   .characterCard{border:1px solid #2b3550;border-radius:14px;padding:12px;background:#151c2c;position:relative;overflow:hidden}
   .characterCard.equipped{outline:2px solid #6ee7ff}
@@ -888,7 +905,9 @@
   #ultButton.ready::before{color:#fff1a6;text-shadow:0 0 15px #ffd85c}
 
   @media(max-width:900px){
+    #joystickZone{display:block!important;pointer-events:auto}
     #mobilePad{display:block!important}
+    #mobileActions{display:block!important;width:150px;height:160px}
     #ultButton{display:block!important}
   }
 
@@ -994,6 +1013,30 @@
   }
 
 
+  /* Stage 11.2 mobile control refinement */
+  #mobilePad{
+    width:126px!important;height:126px!important;left:14px!important;
+    bottom:calc(var(--safe-bottom) + 14px)!important;border-radius:50%!important;
+    background:radial-gradient(circle,#223a60e8 0 35%,#10213edf 36% 68%,#0a1429b8 69% 100%)!important;
+    border:2px solid #79a7d999!important;
+    box-shadow:0 0 0 5px #07102099,0 12px 38px #000b,0 0 24px #559dff2f!important;
+    transition:opacity .15s ease;
+  }
+  #mobilePad.floating.idle{opacity:.35}
+  #mobilePad.fixed{opacity:.95}
+  #joystickKnob{width:50px;height:50px}
+  @media(max-width:520px){
+    #mobilePad{width:112px!important;height:112px!important;left:10px!important}
+    #joystickKnob{width:44px;height:44px}
+    #mobileSpecial{width:54px;height:54px;right:60px;bottom:6px}
+    #mobileDash{width:48px;height:48px;right:4px;bottom:76px}
+  }
+  body.adminOpen #joystickZone,
+  body.adminOpen #mobileActions,
+  body.settingsOpen #joystickZone,
+  body.settingsOpen #mobileActions,
+  body.settingsOpen #ultButton{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+
   /* Stage 9.7 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
   body.adminOpen #attackBanner,
@@ -1007,7 +1050,9 @@
   body.adminOpen #ultButton,
   body.adminOpen #mobilePad,
   body.adminOpen #hudMenuBtn,
-  body.adminOpen #quickActions{
+  body.adminOpen #quickActions,
+  body.adminOpen #joystickZone,
+  body.adminOpen #mobileActions{
     opacity:0!important;
     visibility:hidden!important;
     pointer-events:none!important;
@@ -1202,13 +1247,51 @@
     <div id="quickActions">
       <button id="quickCharacters" class="quickAction" title="Character">CHAR</button>
       <button id="quickGacha" class="quickAction" title="Gacha">GACHA</button>
+      <button id="quickSettings" class="quickAction" title="Settings">SETTINGS</button>
     </div>
     <button id="openSidebar" class="adminLauncher" title="Admin">ADMIN</button>
     <button id="ultButton" class="locked">ULT<span id="ultButtonText">Lv30</span></button>
     <div id="growthToast"><b id="growthToastTitle"></b><div class="small" id="growthToastText"></div></div>
 
-    <div id="mobilePad">
-      <button id="up">▲</button><button id="down">▼</button><button id="left">◀</button><button id="right">▶</button>
+    <div id="joystickZone">
+      <div id="mobilePad" class="floating idle"><div id="joystickKnob"></div></div>
+    </div>
+    <div id="mobileActions">
+      <button id="mobileSpecial">SKILL</button>
+      <button id="mobileDash">DASH</button>
+    </div>
+
+    <div id="settings">
+      <div class="modal">
+        <h3>SETTINGS</h3>
+        <div class="small">操作と表示を端末に合わせて調整できます。</div>
+
+        <div class="settingRow">
+          <div class="row"><span>ステージ拡大率</span><b id="cameraZoomText" class="settingValue">40%</b></div>
+          <input id="cameraZoom" type="range" min="30" max="70" value="40" step="5"/>
+          <div class="small">小さくすると広く見え、大きくするとキャラや敵が大きく見えます。</div>
+        </div>
+
+        <div class="settingRow">
+          <div class="row"><span>ジョイスティック</span><b id="joystickModeText" class="settingValue">FLOATING</b></div>
+          <div class="settingToggle">
+            <button id="joystickFloating">Floating</button>
+            <button id="joystickFixed">Fixed</button>
+          </div>
+        </div>
+
+        <div class="settingRow">
+          <div class="row"><span>操作サイズ</span><b id="controlScaleText" class="settingValue">100%</b></div>
+          <input id="controlScale" type="range" min="80" max="130" value="100" step="5"/>
+        </div>
+
+        <div class="settingRow">
+          <div class="row"><span>操作UI透明度</span><b id="controlOpacityText" class="settingValue">100%</b></div>
+          <input id="controlOpacity" type="range" min="45" max="100" value="100" step="5"/>
+        </div>
+
+        <button id="closeSettings" class="full" style="margin-top:8px">閉じる</button>
+      </div>
     </div>
 
     <div id="death">
@@ -1320,7 +1403,7 @@
   <aside id="sidebar">
     <button id="closeSidebar" title="管理者パネルを閉じる">×</button>
     <div class="adminEyebrow">CONTROL PANEL</div>
-    <h1>BREAK SURVIVORS <span>Stage 11.0</span></h1>
+    <h1>BREAK SURVIVORS <span>Stage 11.1</span></h1>
 
     <div class="section">
       <div class="row"><div><b id="equippedName">Rookie Gunner</b><div class="small" id="equippedInfo">Common / Pierce</div></div><div class="stars" id="equippedStars">★☆☆☆☆</div></div>
@@ -1408,7 +1491,7 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
 // Stage 9.7 camera: player-centered ~2.5x far view without shrinking the DOM HUD.
-const CAMERA_ZOOM = 0.40;
+let CAMERA_ZOOM=Math.max(.30,Math.min(.70,Number(localStorage.getItem('break_survivors_camera_zoom'))||.40));
 const FAR_CAMERA_SPEED_SCALE = 1.8;
 
 // Stage 9.7 finite battlefield.
@@ -1693,6 +1776,12 @@ save.selectedCharacter=currentCharacter.id;
 let attackType=currentCharacter.attack, god=false, dmgMul=1, spawnMul=1;
 let enemies=[], bullets=[], bombFragments=[], bombExplosionFx=[], novaUltCores=[], missileQueenFx=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
 let keys = {};
+let mobileMoveX=0,mobileMoveY=0;
+let dashCooldown=0,dashInvuln=0,specialCooldown=0;
+let joystickPointerId=null;
+let joystickMode=localStorage.getItem('break_survivors_joystick_mode')||'floating';
+let controlScale=Math.max(.8,Math.min(1.3,Number(localStorage.getItem('break_survivors_control_scale'))||1));
+let controlOpacity=Math.max(.45,Math.min(1,Number(localStorage.getItem('break_survivors_control_opacity'))||1));
 let gameTime=0, runKills=0, runCoins=0, running=true, spawnTimer=0, bossTimer=0, shake=0;
 let ultCharge=0;
 let attackCounters={};
@@ -2770,6 +2859,7 @@ function resetRun(){
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
   enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];novaUltCores=[];missileQueenFx=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
+  mobileMoveX=0;mobileMoveY=0;dashCooldown=0;dashInvuln=0;specialCooldown=0;
   threatLevel=0;limitBreakLevel=0;threatFlash=0;
   lbRunGeneration++;lbEventState=null;lbEventQueue=[];lbRewardBuffs=[];stopLbEventMusic();hideLbSplash();
   document.getElementById('deathTitle').textContent='RUN OVER';
@@ -5380,6 +5470,27 @@ function startRoyalSkyfall(){
   return true;
 }
 
+function useMobileSkill(){
+  if(!running||specialCooldown>0||isLbPlayerCombatLocked())return;
+  specialCooldown=6;
+  specialAttack();
+}
+function useDash(){
+  if(!running||dashCooldown>0||lbEventState?.mode==='failed')return;
+  let dx=mobileMoveX,dy=mobileMoveY;
+  if(Math.hypot(dx,dy)<.1){
+    dx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);
+    dy=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
+  }
+  if(Math.hypot(dx,dy)<.1){dx=Math.cos(player.angle||0);dy=Math.sin(player.angle||0)}
+  const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;
+  const distance=210;
+  player.x=clamp(player.x+dx*distance,player.r+WORLD_EDGE_PAD,WORLD_W-player.r-WORLD_EDGE_PAD);
+  player.y=clamp(player.y+dy*distance,player.r+WORLD_EDGE_PAD,WORLD_H-player.r-WORLD_EDGE_PAD);
+  dashCooldown=2.5;dashInvuln=.15;
+  rings.push({x:player.x,y:player.y,r:10,max:68,life:.22,total:.22,color:'#a995ff'});
+  for(let i=0;i<(performanceMode?6:14);i++)particles.push({x:player.x,y:player.y,vx:rnd(-150,150),vy:rnd(-150,150),life:rnd(.12,.28),size:rnd(2,5),color:i%2?'#d9d0ff':'#7ebfff'});
+}
 function specialAttack(){
   playWeaponFireSfx(activeWeaponKey(), true);
   if(attackType==='pierce'){
@@ -5493,6 +5604,7 @@ function update(dt,refreshHud=true){
   const lbWorldFrozen=isLbWorldFrozen();
   if(!lbWorldFrozen)updateLbRewardBuffs(dt);
   gameTime+=dt; player.attackCd-=dt; player.hitCd-=dt;
+  dashCooldown=Math.max(0,dashCooldown-dt);dashInvuln=Math.max(0,dashInvuln-dt);specialCooldown=Math.max(0,specialCooldown-dt);
   for(const k of ['boots','drink','sword'])if(itemBuffs[k]>0)itemBuffs[k]=Math.max(0,itemBuffs[k]-dt);
 
   gunnerRecoil=Math.max(0,gunnerRecoil-dt*8.5);
@@ -5511,8 +5623,8 @@ function update(dt,refreshHud=true){
   if(isLbEventActive())nextEventAt+=dt;
   else updateChaosDirector(dt);
 
-  let mx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);
-  let my=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
+  let mx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0)+mobileMoveX;
+  let my=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0)+mobileMoveY;
   if(lbEventState?.mode==='failed'){mx=0;my=0}
   if(mx||my){const l=Math.hypot(mx,my);mx/=l;my/=l}
   const rushMove=ps.move*FAR_CAMERA_SPEED_SCALE*(feverActive()?1.20:1)*(itemBuffs.boots>0?1.6:1);
@@ -5682,7 +5794,7 @@ function update(dt,refreshHud=true){
     } else {e.x+=dx/l*e.speed*pursuitBoost*dt;e.y+=dy/l*e.speed*pursuitBoost*dt}
     e.x=clamp(e.x,e.r+WORLD_EDGE_PAD,WORLD_W-e.r-WORLD_EDGE_PAD);
     e.y=clamp(e.y,e.r+WORLD_EDGE_PAD,WORLD_H-e.r-WORLD_EDGE_PAD);
-    if(Math.hypot(player.x-e.x,player.y-e.y)<player.r+e.r && player.hitCd<=0 && !god){
+    if(Math.hypot(player.x-e.x,player.y-e.y)<player.r+e.r && player.hitCd<=0 && !god && dashInvuln<=0){
       player.hp-=e.touch;player.hitCd=.4;shake=6;
     }
   }
@@ -5691,7 +5803,7 @@ function update(dt,refreshHud=true){
     if(lbWorldFrozen)continue;
     b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
     if(b.life>0 && Math.hypot(player.x-b.x,player.y-b.y)<player.r+b.r){
-      b.life=0;if(!god){player.hp-=b.dmg;shake=5}
+      b.life=0;if(!god&&dashInvuln<=0){player.hp-=b.dmg;shake=5}
     }
   }
 
@@ -6422,6 +6534,17 @@ function updateHud(){
     itemHud.innerHTML=chips.join('');
   }
 
+  const mobileDashBtn=document.getElementById('mobileDash');
+  if(mobileDashBtn){
+    mobileDashBtn.textContent=dashCooldown>0?'DASH '+dashCooldown.toFixed(1):'DASH';
+    mobileDashBtn.classList.toggle('cooldown',dashCooldown>0);
+  }
+  const mobileSpecialBtn=document.getElementById('mobileSpecial');
+  if(mobileSpecialBtn){
+    mobileSpecialBtn.textContent=specialCooldown>0?'SKILL '+specialCooldown.toFixed(1):'SKILL';
+    mobileSpecialBtn.classList.toggle('cooldown',specialCooldown>0);
+  }
+
   const attackBannerEl=document.getElementById('attackBanner');
   if(attackBannerEl){
     if(currentCharacter.id==='gunner'&&attackType==='pierce'){
@@ -6868,15 +6991,120 @@ addEventListener('keydown',e=>{
   keys[e.key]=true;
   if(['1','2','3','4','5','6'].includes(e.key)) setAttack(attacks[+e.key-1].id);
   if(e.key.toLowerCase()==='q'){e.preventDefault();useUltimate()}
+  if(e.key.toLowerCase()==='e'){e.preventDefault();useMobileSkill()}
+  if(e.key.toLowerCase()==='shift'){e.preventDefault();useDash()}
   if(e.code==='Space'){e.preventDefault();specialAttack()}
 });
 addEventListener('keyup',e=>keys[e.key]=false);
 
-[['up','ArrowUp'],['down','ArrowDown'],['left','ArrowLeft'],['right','ArrowRight']].forEach(([id,key])=>{
-  const el=document.getElementById(id);
-  ['pointerdown','touchstart'].forEach(ev=>el.addEventListener(ev,e=>{e.preventDefault();keys[key]=true},{passive:false}));
-  ['pointerup','pointercancel','touchend'].forEach(ev=>el.addEventListener(ev,e=>{e.preventDefault();keys[key]=false},{passive:false}));
+const joystickZone=document.getElementById('joystickZone');
+const mobilePad=document.getElementById('mobilePad');
+const joystickKnob=document.getElementById('joystickKnob');
+
+function applyMobileControlSettings(){
+  mobilePad.classList.toggle('floating',joystickMode==='floating');
+  mobilePad.classList.toggle('fixed',joystickMode==='fixed');
+  mobilePad.classList.toggle('idle',Math.hypot(mobileMoveX,mobileMoveY)<.01);
+  document.getElementById('joystickModeText').textContent=joystickMode.toUpperCase();
+  document.getElementById('joystickFloating').classList.toggle('active',joystickMode==='floating');
+  document.getElementById('joystickFixed').classList.toggle('active',joystickMode==='fixed');
+  const scale=controlScale;
+  mobilePad.style.scale=String(scale);
+  mobilePad.style.transformOrigin='bottom left';
+  document.getElementById('mobileActions').style.transform='scale('+scale+')';
+  document.getElementById('mobileActions').style.transformOrigin='bottom right';
+  document.getElementById('ultButton').style.transform='scale('+scale+')';
+  document.getElementById('ultButton').style.transformOrigin='bottom right';
+  joystickZone.style.opacity=String(controlOpacity);
+  document.getElementById('mobileActions').style.opacity=String(controlOpacity);
+  document.getElementById('ultButton').style.opacity=String(controlOpacity);
+}
+
+function setJoystickFromPointer(ev){
+  const zoneRect=joystickZone.getBoundingClientRect();
+  if(joystickMode==='floating'&&joystickPointerId===null){
+    const size=mobilePad.getBoundingClientRect().width||112;
+    let cx=ev.clientX-zoneRect.left,cy=ev.clientY-zoneRect.top;
+    cx=clamp(cx,size*.55,zoneRect.width-size*.55);
+    cy=clamp(cy,size*.55,zoneRect.height-size*.55);
+    mobilePad.style.left=(cx-size/2)+'px';
+    mobilePad.style.top=(cy-size/2)+'px';
+    mobilePad.style.bottom='auto';
+  }
+  const r=mobilePad.getBoundingClientRect();
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const dx=ev.clientX-cx,dy=ev.clientY-cy;
+  const max=r.width*.31;
+  const len=Math.hypot(dx,dy);
+  const mag=Math.min(1,len/Math.max(1,max));
+  const nx=len?dx/len:0,ny=len?dy/len:0;
+  mobileMoveX=nx*mag;mobileMoveY=ny*mag;
+  joystickKnob.style.transform='translate(calc(-50% + '+(nx*max*mag)+'px),calc(-50% + '+(ny*max*mag)+'px))';
+  mobilePad.classList.remove('idle');
+}
+function releaseJoystick(ev){
+  if(joystickPointerId!==null&&ev.pointerId!==undefined&&ev.pointerId!==joystickPointerId)return;
+  joystickPointerId=null;mobileMoveX=0;mobileMoveY=0;
+  joystickKnob.style.transform='translate(-50%,-50%)';
+  mobilePad.classList.add('idle');
+  if(joystickMode==='floating'){mobilePad.style.top='';mobilePad.style.left='';mobilePad.style.bottom=''}
+}
+joystickZone.addEventListener('pointerdown',ev=>{
+  if(joystickPointerId!==null)return;
+  ev.preventDefault();joystickPointerId=ev.pointerId;
+  try{joystickZone.setPointerCapture(ev.pointerId)}catch(_){}
+  setJoystickFromPointer(ev);
 });
+joystickZone.addEventListener('pointermove',ev=>{if(ev.pointerId===joystickPointerId){ev.preventDefault();setJoystickFromPointer(ev)}});
+joystickZone.addEventListener('pointerup',releaseJoystick);
+joystickZone.addEventListener('pointercancel',releaseJoystick);
+
+document.getElementById('mobileSpecial').addEventListener('pointerdown',e=>{e.preventDefault();useMobileSkill()});
+document.getElementById('mobileDash').addEventListener('pointerdown',e=>{e.preventDefault();useDash()});
+
+const settingsEl=document.getElementById('settings');
+const cameraZoomEl=document.getElementById('cameraZoom');
+const cameraZoomText=document.getElementById('cameraZoomText');
+const controlScaleEl=document.getElementById('controlScale');
+const controlOpacityEl=document.getElementById('controlOpacity');
+
+function syncSettingsUi(){
+  cameraZoomEl.value=String(Math.round(CAMERA_ZOOM*100));
+  cameraZoomText.textContent=Math.round(CAMERA_ZOOM*100)+'%';
+  controlScaleEl.value=String(Math.round(controlScale*100));
+  document.getElementById('controlScaleText').textContent=Math.round(controlScale*100)+'%';
+  controlOpacityEl.value=String(Math.round(controlOpacity*100));
+  document.getElementById('controlOpacityText').textContent=Math.round(controlOpacity*100)+'%';
+  applyMobileControlSettings();
+}
+function openSettings(){
+  closeQuickMenu();
+  settingsEl.style.display='flex';document.body.classList.add('settingsOpen');syncSettingsUi();
+}
+function closeSettings(){
+  settingsEl.style.display='none';document.body.classList.remove('settingsOpen');
+}
+cameraZoomEl.oninput=e=>{
+  CAMERA_ZOOM=Math.max(.30,Math.min(.70,Number(e.target.value)/100));
+  localStorage.setItem('break_survivors_camera_zoom',String(CAMERA_ZOOM));
+  cameraZoomText.textContent=Math.round(CAMERA_ZOOM*100)+'%';
+};
+controlScaleEl.oninput=e=>{
+  controlScale=Math.max(.8,Math.min(1.3,Number(e.target.value)/100));
+  localStorage.setItem('break_survivors_control_scale',String(controlScale));
+  document.getElementById('controlScaleText').textContent=Math.round(controlScale*100)+'%';
+  applyMobileControlSettings();
+};
+controlOpacityEl.oninput=e=>{
+  controlOpacity=Math.max(.45,Math.min(1,Number(e.target.value)/100));
+  localStorage.setItem('break_survivors_control_opacity',String(controlOpacity));
+  document.getElementById('controlOpacityText').textContent=Math.round(controlOpacity*100)+'%';
+  applyMobileControlSettings();
+};
+document.getElementById('joystickFloating').onclick=()=>{joystickMode='floating';localStorage.setItem('break_survivors_joystick_mode',joystickMode);applyMobileControlSettings()};
+document.getElementById('joystickFixed').onclick=()=>{joystickMode='fixed';localStorage.setItem('break_survivors_joystick_mode',joystickMode);mobilePad.style.top='';mobilePad.style.left='';mobilePad.style.bottom='';applyMobileControlSettings()};
+document.getElementById('closeSettings').onclick=closeSettings;
+
 
 
 const sidebar = document.getElementById('sidebar');
@@ -6900,6 +7128,7 @@ openSidebarBtn.onclick = ()=>{closeQuickMenu();setSidebarVisible(true)};
 hudMenuBtn.onclick = e=>{e.stopPropagation();quickActions.classList.toggle('show')};
 document.getElementById('quickCharacters').onclick=()=>{closeQuickMenu();document.getElementById('openCharacters').click()};
 document.getElementById('quickGacha').onclick=()=>{closeQuickMenu();document.getElementById('openGacha').click()};
+document.getElementById('quickSettings').onclick=openSettings;
 document.addEventListener('pointerdown',e=>{
   if(!quickActions.contains(e.target)&&e.target!==hudMenuBtn)closeQuickMenu();
 });
@@ -6913,7 +7142,7 @@ function loop(now){
   draw();
   requestAnimationFrame(loop);
 }
-buildAttackButtons();buildCharacterList();updateHud();persist();setSidebarVisible(false);requestAnimationFrame(loop);
+syncSettingsUi();buildAttackButtons();buildCharacterList();updateHud();persist();setSidebarVisible(false);requestAnimationFrame(loop);
 })();
 </script>
 </body>
