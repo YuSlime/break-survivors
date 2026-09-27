@@ -132,7 +132,7 @@
   .modal h3{margin:0 0 8px;font-size:24px}
   .upgrade{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid #2b3550;border-radius:12px;padding:10px;margin:8px 0;background:#161d2d}
   .upgrade button{min-width:115px}
-  #joystickZone{display:none;position:absolute;left:0;bottom:0;width:52%;height:58%;z-index:39;touch-action:none;pointer-events:none}
+  #joystickZone{display:none;position:absolute;left:0;bottom:0;width:52%;height:58%;z-index:3;touch-action:none;pointer-events:none}
   #mobilePad{display:none;position:absolute;left:18px;bottom:92px;width:140px;height:140px;z-index:40}
   #closeSidebar{position:sticky;top:0;float:right;z-index:5;width:34px;height:34px;padding:0;border-radius:50%;font-size:18px;background:#281820;border-color:#6d3340}
   #openSidebar{display:none;position:absolute;right:12px;top:12px;z-index:4;border-radius:999px;padding:10px 14px;background:#121b2d;border:1px solid #3d4f79;box-shadow:0 8px 30px #0008}
@@ -1035,7 +1035,11 @@
   body.adminOpen #mobileActions,
   body.settingsOpen #joystickZone,
   body.settingsOpen #mobileActions,
-  body.settingsOpen #ultButton{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+  body.settingsOpen #ultButton,
+  body.gameUiBlocked #joystickZone,
+  body.gameUiBlocked #mobilePad,
+  body.gameUiBlocked #mobileActions,
+  body.gameUiBlocked #ultButton{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 
   /* Stage 9.7 — ADMIN is an exclusive panel, never stacked over gameplay panels */
   body.adminOpen #hud,
@@ -2869,7 +2873,7 @@ function resetRun(){
   activeEvent=null;eventTime=0;eventPulse=0;nextEventAt=rnd(38,48);
   treasureTimer=rnd(24,34);bossPending=false;bossWarningTime=0;lootStreak=0;lootStreakTimer=0;
   itemBuffs={boots:0,drink:0,sword:0};
-  document.getElementById('death').style.display='none';
+  document.getElementById('death').style.display='none';syncGameplayTouchBlock();
 }
 
 function getWorldSpawnPoint(type='normal'){
@@ -5851,7 +5855,7 @@ function endRun(reason='normal'){
   document.getElementById('deathKills').textContent=runKills;
   document.getElementById('deathCoins').textContent=runCoins;
   document.getElementById('deathCombo').textContent=maxBreakCombo;
-  document.getElementById('death').style.display='flex';
+  document.getElementById('death').style.display='flex';syncGameplayTouchBlock();
 }
 
 function draw(){
@@ -6875,8 +6879,8 @@ function buildShop(){
 }
 
 document.getElementById('restart').onclick=resetRun;
-document.getElementById('openShop').onclick=()=>{setSidebarVisible(false);buildShop();document.getElementById('shop').style.display='flex'};
-document.getElementById('closeShop').onclick=()=>document.getElementById('shop').style.display='none';
+document.getElementById('openShop').onclick=()=>{setSidebarVisible(false);buildShop();document.getElementById('shop').style.display='flex';syncGameplayTouchBlock()};
+document.getElementById('closeShop').onclick=()=>{document.getElementById('shop').style.display='none';syncGameplayTouchBlock()};
 document.getElementById('addCoins').onclick=()=>{save.coins+=100000;persist();updateHud()};
 document.getElementById('toggleSound').onclick=e=>{
   soundEnabled=!soundEnabled;
@@ -6917,7 +6921,7 @@ sfxVolumeEl.oninput=()=>{
 document.getElementById('addGems').onclick=()=>{save.gems+=10000;persist();updateHud()};
 document.getElementById('openGacha').onclick=()=>{
   setSidebarVisible(false);
-  document.getElementById('gacha').style.display='block';
+  document.getElementById('gacha').style.display='block';syncGameplayTouchBlock();
   document.getElementById('gachaResults').innerHTML='';
   closeSummonOverlays();
   gachaBusy=false;summonPhase='idle';setSummonButtons(false);
@@ -6929,7 +6933,7 @@ document.getElementById('openGacha').onclick=()=>{
 document.getElementById('closeGacha').onclick=()=>{
   showResultsImmediately();
   closeSummonOverlays();
-  document.getElementById('gacha').style.display='none';
+  document.getElementById('gacha').style.display='none';syncGameplayTouchBlock();
 };
 document.getElementById('skipSummon').onclick=e=>{e.stopPropagation();showResultsImmediately();};
 document.getElementById('cinemaTapTarget').onclick=openSummonCapsule;
@@ -6941,8 +6945,8 @@ document.getElementById('finishSummon').onclick=()=>{
 };
 document.getElementById('pull1').onclick=()=>doGacha(1);
 document.getElementById('pull10').onclick=()=>doGacha(10);
-document.getElementById('openCharacters').onclick=()=>{setSidebarVisible(false);buildCharacterList();document.getElementById('characters').style.display='flex'};
-document.getElementById('closeCharacters').onclick=()=>document.getElementById('characters').style.display='none';
+document.getElementById('openCharacters').onclick=()=>{setSidebarVisible(false);buildCharacterList();document.getElementById('characters').style.display='flex';syncGameplayTouchBlock()};
+document.getElementById('closeCharacters').onclick=()=>{document.getElementById('characters').style.display='none';syncGameplayTouchBlock()};
 document.getElementById('killAll').onclick=()=>{[...enemies].forEach(killEnemy)};
 document.getElementById('toggleGod').onclick=e=>{god=!god;e.target.textContent='Invincible: '+(god?'ON':'OFF');e.target.classList.toggle('active',god)};
 document.getElementById('forceDeath').onclick=()=>{player.hp=0};
@@ -6984,7 +6988,7 @@ document.getElementById('spawnMul').oninput=e=>{spawnMul=+e.target.value;documen
 
 document.querySelectorAll('[data-spawn]').forEach(b=>b.onclick=()=>{for(let i=0;i<+b.dataset.count;i++)spawnEnemy(b.dataset.spawn)});
 
-addEventListener('pointerdown',()=>{if(soundEnabled){try{unlockAudio()}catch(_){}}});
+addEventListener('pointerdown',()=>{syncGameplayTouchBlock();if(soundEnabled){try{unlockAudio()}catch(_){}}});
 addEventListener('touchstart',()=>{if(soundEnabled){try{unlockAudio()}catch(_){}}},{passive:true});
 addEventListener('keydown',e=>{
   if(soundEnabled){try{unlockAudio()}catch(_){}}
@@ -7000,6 +7004,25 @@ addEventListener('keyup',e=>keys[e.key]=false);
 const joystickZone=document.getElementById('joystickZone');
 const mobilePad=document.getElementById('mobilePad');
 const joystickKnob=document.getElementById('joystickKnob');
+
+function gameplayOverlayOpen(){
+  const ids=['characters','gacha','shop','settings','death'];
+  if(document.body.classList.contains('adminOpen'))return true;
+  for(const id of ids){
+    const el=document.getElementById(id);
+    if(!el)continue;
+    const style=getComputedStyle(el);
+    if(style.display!=='none'&&style.visibility!=='hidden')return true;
+  }
+  return false;
+}
+function syncGameplayTouchBlock(){
+  const blocked=gameplayOverlayOpen();
+  document.body.classList.toggle('gameUiBlocked',blocked);
+  if(blocked&&joystickPointerId!==null)releaseJoystick({pointerId:joystickPointerId});
+  return blocked;
+}
+
 
 function applyMobileControlSettings(){
   mobilePad.classList.toggle('floating',joystickMode==='floating');
@@ -7052,7 +7075,8 @@ function releaseJoystick(ev){
   }
 }
 joystickZone.addEventListener('pointerdown',ev=>{
-  if(joystickPointerId!==null)return;
+  if(joystickPointerId!==null||syncGameplayTouchBlock())return;
+  if(ev.target!==joystickZone&&ev.target!==mobilePad&&ev.target!==joystickKnob)return;
   ev.preventDefault();joystickPointerId=ev.pointerId;
   try{joystickZone.setPointerCapture(ev.pointerId)}catch(_){}
   setJoystickFromPointer(ev);
@@ -7081,10 +7105,10 @@ function syncSettingsUi(){
 }
 function openSettings(){
   closeQuickMenu();
-  settingsEl.style.display='flex';document.body.classList.add('settingsOpen');syncSettingsUi();
+  settingsEl.style.display='flex';document.body.classList.add('settingsOpen');syncSettingsUi();syncGameplayTouchBlock();
 }
 function closeSettings(){
-  settingsEl.style.display='none';document.body.classList.remove('settingsOpen');
+  settingsEl.style.display='none';document.body.classList.remove('settingsOpen');syncGameplayTouchBlock();
 }
 cameraZoomEl.oninput=e=>{
   CAMERA_ZOOM=Math.max(.30,Math.min(.70,Number(e.target.value)/100));
@@ -7118,6 +7142,7 @@ function setSidebarVisible(visible){
   openSidebarBtn.style.display = visible ? 'none' : 'inline-flex';
   document.body.classList.toggle('adminOpen',visible);
   if(visible)quickActions?.classList.remove('show');
+  queueMicrotask(syncGameplayTouchBlock);
   const app = document.getElementById('app');
   app.style.gridTemplateColumns = '1fr';
   resize();
