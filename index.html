@@ -6033,6 +6033,7 @@ function endRun(reason='normal'){
   document.getElementById('deathGems').textContent='+0';
   document.getElementById('deathCombo').textContent='0';
 
+  resultSubscreenOpen=false;
   document.getElementById('death').style.display='flex';
   syncGameplayTouchBlock();
 
@@ -7064,9 +7065,39 @@ function buildShop(){
   });
 }
 
-document.getElementById('restart').onclick=resetRun;
-document.getElementById('openShop').onclick=()=>{setSidebarVisible(false);buildShop();document.getElementById('shop').style.display='flex';syncGameplayTouchBlock()};
-document.getElementById('closeShop').onclick=()=>{document.getElementById('shop').style.display='none';syncGameplayTouchBlock()};
+let resultSubscreenOpen=false;
+
+function hideResultForSubscreen(){
+  const death=document.getElementById('death');
+  if(!running&&death&&getComputedStyle(death).display!=='none'){
+    death.style.display='none';
+    resultSubscreenOpen=true;
+    syncGameplayTouchBlock();
+    return true;
+  }
+  return false;
+}
+function returnToResultIfNeeded(){
+  if(!resultSubscreenOpen||running)return;
+  resultSubscreenOpen=false;
+  const death=document.getElementById('death');
+  if(death)death.style.display='flex';
+  syncGameplayTouchBlock();
+}
+
+document.getElementById('restart').onclick=()=>{resultSubscreenOpen=false;resetRun()};
+document.getElementById('openShop').onclick=()=>{
+  hideResultForSubscreen();
+  setSidebarVisible(false);
+  buildShop();
+  document.getElementById('shop').style.display='flex';
+  syncGameplayTouchBlock();
+};
+document.getElementById('closeShop').onclick=()=>{
+  document.getElementById('shop').style.display='none';
+  returnToResultIfNeeded();
+  syncGameplayTouchBlock();
+};
 document.getElementById('addCoins').onclick=()=>{save.coins+=100000;persist();updateHud()};
 document.getElementById('toggleSound').onclick=e=>{
   soundEnabled=!soundEnabled;
@@ -7119,7 +7150,9 @@ document.getElementById('openGacha').onclick=()=>{
 document.getElementById('closeGacha').onclick=()=>{
   showResultsImmediately();
   closeSummonOverlays();
-  document.getElementById('gacha').style.display='none';syncGameplayTouchBlock();
+  document.getElementById('gacha').style.display='none';
+  returnToResultIfNeeded();
+  syncGameplayTouchBlock();
 };
 document.getElementById('skipSummon').onclick=e=>{e.stopPropagation();showResultsImmediately();};
 document.getElementById('cinemaTapTarget').onclick=openSummonCapsule;
@@ -7132,9 +7165,19 @@ document.getElementById('finishSummon').onclick=()=>{
 document.getElementById('pull1').onclick=()=>doGacha(1);
 document.getElementById('pull10').onclick=()=>doGacha(10);
 document.getElementById('openCharacters').onclick=()=>{setSidebarVisible(false);buildCharacterList();document.getElementById('characters').style.display='flex';syncGameplayTouchBlock()};
-document.getElementById('deathCharacters').onclick=()=>document.getElementById('openCharacters').click();
-document.getElementById('deathGacha').onclick=()=>document.getElementById('openGacha').click();
-document.getElementById('closeCharacters').onclick=()=>{document.getElementById('characters').style.display='none';syncGameplayTouchBlock()};
+document.getElementById('deathCharacters').onclick=()=>{
+  hideResultForSubscreen();
+  document.getElementById('openCharacters').click();
+};
+document.getElementById('deathGacha').onclick=()=>{
+  hideResultForSubscreen();
+  document.getElementById('openGacha').click();
+};
+document.getElementById('closeCharacters').onclick=()=>{
+  document.getElementById('characters').style.display='none';
+  returnToResultIfNeeded();
+  syncGameplayTouchBlock();
+};
 document.getElementById('killAll').onclick=()=>{[...enemies].forEach(killEnemy)};
 document.getElementById('toggleGod').onclick=e=>{god=!god;e.target.textContent='Invincible: '+(god?'ON':'OFF');e.target.classList.toggle('active',god)};
 document.getElementById('forceDeath').onclick=()=>{player.hp=0};
