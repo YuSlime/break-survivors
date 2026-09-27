@@ -143,7 +143,8 @@ test('Elite variants include Berserker, Titan chain, and Gold reward behavior',(
   assert.doesNotMatch(titan,/player\.hp/);
   assert.match(behavior,/chargeTelegraph=\.35/);
   assert.match(behavior,/dashVx=Math\.cos\(a\)\*480/);
-  assert.match(kill=functionSource('killEnemy'),/eliteVariant==='gold'[\s\S]*i<5/);
+  const kill=functionSource('killEnemy');
+  assert.match(kill,/eliteVariant==='gold'[\s\S]*i<5/);
 });
 
 test('spawn and world progression multipliers are wired without changing Stage 11.0 density math',()=>{
