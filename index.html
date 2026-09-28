@@ -154,7 +154,7 @@
   }
   .resultPanel{
     position:relative;z-index:1;
-    width:min(720px,96vw);max-height:min(92vh,820px);overflow:auto;
+    width:min(1040px,94vw);max-height:min(92vh,840px);overflow:auto;
     padding:18px;border:3px solid #79dbff;border-radius:0;
     background:
       linear-gradient(180deg,#07111bf4,#030811f8),
@@ -199,9 +199,14 @@
     animation:recordPixelPop .36s steps(5,end) both;
   }
   #resultRecord.show{display:block}
+  .resultMain{
+    display:grid;grid-template-columns:minmax(250px,30%) minmax(0,1fr);gap:12px;align-items:stretch;
+  }
+  .resultLeft{display:flex;min-width:0}
+  .resultRight{min-width:0}
   .resultHero{
-    position:relative;display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:center;
-    padding:12px;border:2px solid #344e6d;border-radius:0;background:#07101bd9;
+    position:relative;display:flex;flex-direction:column;align-items:stretch;justify-content:center;
+    width:100%;min-height:100%;padding:16px;border:2px solid #344e6d;border-radius:0;background:#07101bd9;
     box-shadow:inset 0 0 0 2px #0c1a2a,3px 3px 0 #02050a;
   }
   .resultHero::after{
@@ -209,7 +214,7 @@
     font-size:6px;font-weight:1000;letter-spacing:.14em;color:#5c7b9e;
   }
   #resultCharacterIcon{
-    width:104px;height:104px;border-radius:0;display:grid;place-items:center;font-size:52px;
+    width:132px;height:132px;margin:6px auto 14px;border-radius:0;display:grid;place-items:center;font-size:64px;
     border:3px solid var(--resultColor,#6ee7ff);
     background:
       linear-gradient(45deg,#ffffff08 25%,transparent 25% 75%,#ffffff08 75%),
@@ -218,16 +223,16 @@
     box-shadow:4px 4px 0 #02050a,0 0 22px color-mix(in srgb,var(--resultColor,#6ee7ff) 28%,transparent);
     image-rendering:pixelated;
   }
-  .resultHeroLabel{font-size:8px;font-weight:1000;letter-spacing:.16em;color:#6b82a0}
-  #resultCharacterName{font-size:20px;font-weight:1000;color:#f7fbff;margin-top:4px;text-shadow:2px 0 #325f82}
-  #resultCharacterMeta{font-size:10px;color:#a9bad0;margin-top:4px}
+  .resultHeroLabel{font-size:8px;font-weight:1000;letter-spacing:.16em;color:#6b82a0;text-align:center}
+  #resultCharacterName{font-size:22px;font-weight:1000;color:#f7fbff;margin-top:5px;text-align:center;text-shadow:2px 0 #325f82}
+  #resultCharacterMeta{font-size:10px;color:#a9bad0;margin-top:5px;text-align:center}
   #resultCause{
-    margin-top:9px;padding:5px 7px;width:max-content;max-width:100%;
+    margin:12px auto 0;padding:6px 8px;width:max-content;max-width:100%;
     font-size:9px;font-weight:1000;color:#ff9ea9;letter-spacing:.04em;
     border-left:3px solid #ff6176;background:#2a0911;
   }
   .resultStats{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:0;
   }
   .resultStat{
     position:relative;min-height:72px;padding:10px;border:2px solid #243d58;border-radius:0;
@@ -248,13 +253,75 @@
   .resultProgress{
     display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;
   }
+  .resultRunProgress{
+    position:relative;margin-top:12px;padding:12px 14px;border:2px solid #24415b;background:#050c15;
+    box-shadow:3px 3px 0 #02050a,inset 0 0 0 1px #ffffff08;
+  }
+  .resultRunProgressTop{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px;
+    font-size:8px;font-weight:1000;letter-spacing:.13em;color:#6f8aa7;
+  }
+  #resultNextGoal{color:#8fe9ff;text-align:right}
+  .resultRunTrack{
+    position:relative;height:16px;border:2px solid #25435f;background:#02070d;overflow:hidden;
+    box-shadow:inset 0 0 0 2px #081321;
+  }
+  #resultRunFill{
+    position:absolute;left:0;top:0;bottom:0;width:0%;
+    background:
+      repeating-linear-gradient(90deg,#48dfff 0 7px,#75a8ff 7px 11px,#985cff 11px 15px);
+    box-shadow:0 0 14px #5fe6ff66;transition:width .5s steps(12,end);
+  }
+  .resultRunMarker{
+    position:absolute;top:50%;width:2px;height:100%;transform:translate(-1px,-50%);background:#ffffff24;
+  }
+  .resultMilestones{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:8px;
+  }
+  .resultMilestone{
+    min-width:0;padding:6px 4px;border:1px solid #20354b;background:#07101a;
+    text-align:center;font-size:6px;font-weight:1000;letter-spacing:.06em;color:#526b86;
+  }
+  .resultMilestone b{display:block;margin-top:3px;font-size:8px;color:#718aa5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .resultMilestone.reached{border-color:#2e7892;color:#79e5ff;background:#08202a}
+  .resultMilestone.reached b{color:#e5fbff}
+  .resultMilestone.current{border-color:#ffe067;color:#ffe78c;background:#2a2208;box-shadow:0 0 12px #ffd84f22}
+  .resultAmbient{
+    position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+    font-family:"Courier New",ui-monospace,monospace;
+  }
+  .resultAmbient::before,.resultAmbient::after{
+    content:"";position:absolute;top:11%;bottom:11%;width:1px;
+    background:linear-gradient(transparent,#4ddfff35 15% 85%,transparent);
+    box-shadow:0 0 12px #52e0ff33;
+  }
+  .resultAmbient::before{left:8%}.resultAmbient::after{right:8%}
+  .resultAmbientLabel{
+    position:absolute;font-size:7px;font-weight:1000;letter-spacing:.16em;color:#4d718b55;
+  }
+  .resultAmbientLabel.a{left:3%;top:17%;writing-mode:vertical-rl}
+  .resultAmbientLabel.b{right:3%;bottom:17%;writing-mode:vertical-rl;transform:rotate(180deg)}
+  .resultAmbientLabel.c{left:5%;bottom:8%}
+  .resultAmbientLabel.d{right:5%;top:8%}
+  .resultPixelField{
+    position:absolute;inset:0;opacity:.42;
+    background-image:
+      linear-gradient(#58dfff88 0 0),
+      linear-gradient(#8e5cff77 0 0);
+    background-size:2px 2px,2px 2px;
+    background-repeat:repeat;
+    background-position:17px 31px,63px 17px;
+    mask-image:
+      repeating-linear-gradient(90deg,#000 0 2px,transparent 2px 97px),
+      repeating-linear-gradient(0deg,#000 0 2px,transparent 2px 97px);
+  }
   .resultMini{
     padding:8px 10px;border-radius:0;border:2px solid #20354d;background:#050b14;
     display:flex;align-items:center;justify-content:space-between;gap:7px;
     font-size:8px;color:#6e87a5;font-weight:1000;box-shadow:2px 2px 0 #02050a;
   }
   .resultMini b{font-size:11px;color:#eef8ff}
-  .resultActions{margin-top:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .resultActions{margin-top:13px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
   .resultActions button{
     border-radius:0!important;
     font-family:"Courier New",ui-monospace,monospace!important;
@@ -293,19 +360,26 @@
     50%{transform:translate(-50%,-50%) translateX(3px)}
     100%{transform:translate(-50%,-50%)}
   }
-  @media(max-width:520px){
+  @media(max-width:720px){
     #death{padding:7px}
-    .resultPanel{padding:11px;border-width:2px}
-    .resultHero{grid-template-columns:76px minmax(0,1fr);gap:10px;padding:9px}
-    #resultCharacterIcon{width:76px;height:76px;font-size:39px;border-width:2px}
+    .resultPanel{width:min(96vw,620px);padding:11px;border-width:2px}
+    .resultMain{grid-template-columns:1fr;gap:8px}
+    .resultHero{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;padding:9px}
+    #resultCharacterIcon{width:76px;height:76px;margin:0;font-size:39px;border-width:2px}
+    .resultHeroLabel,#resultCharacterName,#resultCharacterMeta{text-align:left}
     #resultCharacterName{font-size:16px}
-    #resultCause{font-size:7px;padding:4px 5px}
+    #resultCause{font-size:7px;padding:4px 5px;margin:7px 0 0}
     .resultStats{grid-template-columns:repeat(2,1fr);gap:6px}
     .resultStat{min-height:60px;padding:8px;border-width:1px}.resultStat b{font-size:16px}
     .resultProgress{grid-template-columns:1fr 1fr;gap:6px}
-    .resultActions{gap:6px}
+    .resultRunProgress{padding:9px}
+    .resultMilestones{grid-template-columns:repeat(3,1fr)}
+    .resultActions{grid-template-columns:1fr 1fr;gap:6px}
+    #restart{grid-column:1/-1;height:50px}
+    #deathGacha{grid-column:1/-1}
     .resultSecondary{height:39px;font-size:9px}
-    #restart{height:50px}
+    .resultAmbientLabel{display:none}
+    .resultAmbient::before{left:2%}.resultAmbient::after{right:2%}
   }
   .modal{width:min(520px,92vw);max-height:86vh;overflow:auto;background:#111827;border:1px solid #33405f;border-radius:18px;padding:20px;box-shadow:0 20px 80px #000a}
   .modal h3{margin:0 0 8px;font-size:24px}
@@ -1478,35 +1552,62 @@
     </div>
 
     <div id="death">
+      <div class="resultAmbient">
+        <div class="resultPixelField"></div>
+        <div class="resultAmbientLabel a">RUN ARCHIVE // SIGNAL CHANNEL 04</div>
+        <div class="resultAmbientLabel b">SURVIVOR TELEMETRY // RECOVERED</div>
+        <div class="resultAmbientLabel c">SYSTEM_NODE: BRK-11 // DATA STREAM ACTIVE</div>
+        <div class="resultAmbientLabel d">MEMORY BLOCK // 0x11A7</div>
+      </div>
+
       <div class="resultPanel">
         <div class="resultEyebrow">BREAK_SURVIVORS // RUN.DATA</div>
         <h3 id="deathTitle">RUN ENDED</h3>
         <div id="deathSubtitle">SURVIVED 0:00</div>
         <div id="resultRecord">★ NEW RECORD ★</div>
 
-        <div class="resultHero" id="resultHero">
-          <div id="resultCharacterIcon">🔫</div>
-          <div>
-            <div class="resultHeroLabel">SURVIVOR_ID</div>
-            <div id="resultCharacterName">Rookie Gunner</div>
-            <div id="resultCharacterMeta">LV.1 // Common</div>
-            <div id="resultCause">DEFEATED BY ENEMY SWARM</div>
+        <div class="resultMain">
+          <div class="resultLeft">
+            <div class="resultHero" id="resultHero">
+              <div id="resultCharacterIcon">🔫</div>
+              <div class="resultHeroLabel">SURVIVOR_ID</div>
+              <div id="resultCharacterName">Rookie Gunner</div>
+              <div id="resultCharacterMeta">LV.1 // Common</div>
+              <div id="resultCause">DEFEATED BY ENEMY SWARM</div>
+            </div>
+          </div>
+
+          <div class="resultRight">
+            <div class="resultStats">
+              <div class="resultStat"><span>KILLS</span><b id="deathKills">0</b></div>
+              <div class="resultStat"><span>SURVIVAL</span><b id="deathTime">0:00</b></div>
+              <div class="resultStat coin"><span>COINS</span><b id="deathCoins">+0</b></div>
+              <div class="resultStat gem"><span>GEMS</span><b id="deathGems">+0</b></div>
+              <div class="resultStat break"><span>MAX BREAK</span><b id="deathCombo">0</b></div>
+              <div class="resultStat"><span>LIMIT BREAK</span><b id="deathLimitBreak">0</b></div>
+            </div>
+
+            <div class="resultProgress">
+              <div class="resultMini"><span>THREAT</span><b id="deathThreat">0</b></div>
+              <div class="resultMini"><span>ELITES</span><b id="deathElites">0</b></div>
+              <div class="resultMini"><span>BOSSES</span><b id="deathBosses">0</b></div>
+            </div>
           </div>
         </div>
 
-        <div class="resultStats">
-          <div class="resultStat"><span>KILLS</span><b id="deathKills">0</b></div>
-          <div class="resultStat"><span>SURVIVAL</span><b id="deathTime">0:00</b></div>
-          <div class="resultStat coin"><span>COINS</span><b id="deathCoins">+0</b></div>
-          <div class="resultStat gem"><span>GEMS</span><b id="deathGems">+0</b></div>
-          <div class="resultStat break"><span>MAX BREAK</span><b id="deathCombo">0</b></div>
-          <div class="resultStat"><span>LIMIT BREAK</span><b id="deathLimitBreak">0</b></div>
-        </div>
-
-        <div class="resultProgress">
-          <div class="resultMini"><span>THREAT</span><b id="deathThreat">0</b></div>
-          <div class="resultMini"><span>ELITES</span><b id="deathElites">0</b></div>
-          <div class="resultMini"><span>BOSSES</span><b id="deathBosses">0</b></div>
+        <div class="resultRunProgress">
+          <div class="resultRunProgressTop">
+            <span>RUN PROGRESS</span>
+            <span id="resultNextGoal">NEXT: THREAT 1 // 150 KILLS</span>
+          </div>
+          <div class="resultRunTrack">
+            <div id="resultRunFill"></div>
+            <i class="resultRunMarker" style="left:20%"></i>
+            <i class="resultRunMarker" style="left:40%"></i>
+            <i class="resultRunMarker" style="left:60%"></i>
+            <i class="resultRunMarker" style="left:80%"></i>
+          </div>
+          <div id="resultMilestones" class="resultMilestones"></div>
         </div>
 
         <div class="resultActions">
@@ -6067,6 +6168,74 @@ function formatRunTime(seconds){
   const s=Math.max(0,Math.floor(seconds||0)),m=Math.floor(s/60);
   return m+':'+String(s%60).padStart(2,'0');
 }
+function buildResultRunProgress(finalKills){
+  const kills=Math.max(0,Math.floor(finalKills||0));
+  const state=getThreatState(kills);
+  const milestones=[
+    {label:'START',kills:0},
+    ...THREAT_THRESHOLDS.map((k,i)=>({label:'THREAT '+(i+1),kills:k}))
+  ];
+
+  // After THREAT 5, surface meaningful LIMIT BREAK event checkpoints.
+  if(kills>=THREAT_THRESHOLDS[4]||state.isLimitBreak){
+    const currentLb=Math.max(0,state.limitBreak||0);
+    const nextEvent=getNextLimitBreakEventMilestone(currentLb);
+    const candidates=[3,5,10,15,20,25,30,35,40,45,50,55];
+    for(const lb of candidates){
+      const k=THREAT_THRESHOLDS[4]+lb*500;
+      if(k<=kills||lb===(nextEvent?.lb||-1)){
+        milestones.push({label:'LB'+lb,kills:k});
+      }
+    }
+  }
+
+  milestones.sort((a,b)=>a.kills-b.kills);
+
+  // Keep the timeline readable: 5 recent reached milestones + the next one.
+  const reached=milestones.filter(m=>m.kills<=kills);
+  let next=milestones.find(m=>m.kills>kills);
+  if(!next){
+    if(state.isLimitBreak){
+      const nextLb=Math.max(1,(state.limitBreak||0)+1);
+      next={label:'LB'+nextLb,kills:THREAT_THRESHOLDS[4]+nextLb*500};
+    }else{
+      next={label:'THREAT '+Math.min(5,(state.threat||0)+1),kills:state.nextKills||THREAT_THRESHOLDS[4]};
+    }
+  }
+
+  const visible=[...reached.slice(-5),next];
+  while(visible.length<6&&visible[0]?.kills>0){
+    const prior=milestones.filter(m=>m.kills<visible[0].kills).pop();
+    if(!prior)break;
+    visible.unshift(prior);
+  }
+
+  const container=document.getElementById('resultMilestones');
+  if(container){
+    container.innerHTML=visible.map(m=>{
+      const done=kills>=m.kills;
+      const current=!done&&m===next;
+      return '<div class="resultMilestone '+(done?'reached ':'')+(current?'current':'')+'"><span>'+((done?'✓ ':'')+m.label)+'</span><b>'+m.kills.toLocaleString()+'</b></div>';
+    }).join('');
+  }
+
+  const start=state.progressStart||0;
+  const end=Math.max(start+1,state.progressEnd||next.kills||1);
+  const pct=clamp((kills-start)/(end-start),0,1);
+  const fill=document.getElementById('resultRunFill');
+  if(fill){
+    fill.style.transition='none';fill.style.width='0%';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      fill.style.transition='width .58s steps(14,end)';
+      fill.style.width=(pct*100).toFixed(1)+'%';
+    }));
+  }
+
+  const remain=Math.max(0,next.kills-kills);
+  const goal=document.getElementById('resultNextGoal');
+  if(goal)goal.textContent='NEXT: '+next.label+' // '+remain.toLocaleString()+' KILLS TO GO';
+}
+
 function animateResultNumber(id,value,prefix='',duration=620){
   const el=document.getElementById(id);if(!el)return;
   const target=Math.max(0,Math.floor(value||0)),start=performance.now();
@@ -6109,6 +6278,7 @@ function endRun(reason='normal'){
   document.getElementById('deathThreat').textContent=finalThreat;
   document.getElementById('deathElites').textContent=finalElites;
   document.getElementById('deathBosses').textContent=finalBosses;
+  buildResultRunProgress(finalKills);
 
   const record=document.getElementById('resultRecord');
   const records=[];
