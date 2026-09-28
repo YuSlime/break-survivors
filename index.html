@@ -129,77 +129,183 @@
   input[type=range]{width:100%}
   #death,#shop{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#05070bcc;backdrop-filter:blur(6px);z-index:5}
   #death{
-    z-index:44;
+    z-index:44;overflow:auto;padding:18px;
+    font-family:"Courier New",ui-monospace,monospace;
     background:
-      radial-gradient(circle at 50% 22%,#17305788 0%,#09101ddd 34%,#030509f3 78%),
-      #030509f3;
-    overflow:auto;padding:18px;
+      linear-gradient(#02050ad8,#02050ad8),
+      repeating-linear-gradient(0deg,#7ceaff08 0 2px,transparent 2px 5px),
+      radial-gradient(circle at 50% 20%,#163756 0%,#08111f 42%,#020409 82%);
+  }
+  #death::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      repeating-linear-gradient(0deg,transparent 0 3px,#9deeff08 3px 4px),
+      linear-gradient(90deg,#00d9ff08,transparent 22%,transparent 78%,#a85cff08);
+    mix-blend-mode:screen;opacity:.85;
+  }
+  #death.glitching::after{
+    content:"SIGNAL LOST // RECOVERING RUN DATA";
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+    z-index:80;padding:8px 12px;background:#02050af2;border:2px solid #ff5e7a;color:#fff;
+    font:1000 11px/1 "Courier New",monospace;letter-spacing:.12em;
+    box-shadow:6px 0 #54e6ff,-6px 0 #a957ff,0 0 30px #ff557755;
+    animation:resultGlitchCard .09s steps(2,end) infinite;
+    pointer-events:none;
   }
   .resultPanel{
+    position:relative;z-index:1;
     width:min(720px,96vw);max-height:min(92vh,820px);overflow:auto;
-    border:1px solid #4d6387;border-radius:24px;padding:18px;
-    background:linear-gradient(180deg,#101a2bf4,#080d17f6);
-    box-shadow:0 28px 90px #000d,0 0 46px #5899ff1d,inset 0 1px 0 #ffffff13;
-    animation:resultPanelIn .52s cubic-bezier(.16,.82,.24,1) both;
+    padding:18px;border:3px solid #79dbff;border-radius:0;
+    background:
+      linear-gradient(180deg,#07111bf4,#030811f8),
+      repeating-linear-gradient(0deg,#ffffff05 0 2px,transparent 2px 6px);
+    box-shadow:
+      5px 5px 0 #14233a,
+      8px 8px 0 #02050a,
+      0 0 0 1px #b6efff33,
+      0 0 34px #52d9ff24;
+    clip-path:polygon(
+      10px 0,calc(100% - 10px) 0,calc(100% - 10px) 4px,100% 4px,
+      100% calc(100% - 10px),calc(100% - 4px) calc(100% - 10px),
+      calc(100% - 4px) 100%,10px 100%,10px calc(100% - 4px),0 calc(100% - 4px),
+      0 10px,4px 10px,4px 4px,10px 4px
+    );
+    animation:resultPanelIn .34s steps(5,end) both;
   }
-  .resultEyebrow{text-align:center;font-size:9px;font-weight:1000;letter-spacing:.22em;color:#8193ae}
-  #deathTitle{text-align:center;margin:5px 0 2px;font-size:clamp(28px,6vw,54px);line-height:.95;letter-spacing:.045em;color:#f4f8ff;text-shadow:0 6px 28px #000}
-  #deathSubtitle{text-align:center;font-size:11px;font-weight:900;letter-spacing:.11em;color:#90a4c2;margin-bottom:14px}
+  .resultPanel::before{
+    content:"";position:absolute;inset:6px;pointer-events:none;
+    border:1px dashed #68eaff33;
+    box-shadow:inset 0 0 24px #58dfff0b;
+  }
+  .resultEyebrow{
+    text-align:center;font-size:9px;font-weight:1000;letter-spacing:.20em;color:#68dfff;
+    text-shadow:2px 0 #3b1f6f;
+  }
+  #deathTitle{
+    position:relative;text-align:center;margin:7px 0 3px;
+    font-size:clamp(30px,6vw,56px);line-height:.92;letter-spacing:.055em;color:#effcff;
+    text-shadow:3px 0 #00d9ff,-3px 0 #9b4dff,0 4px #02050a,0 0 16px #5de8ff55;
+  }
+  #death.glitching #deathTitle{animation:resultTitleGlitch .08s steps(2,end) infinite}
+  #deathSubtitle{
+    text-align:center;font-size:10px;font-weight:1000;letter-spacing:.12em;color:#91a6c2;
+    margin-bottom:13px;
+  }
   #resultRecord{
-    display:none;margin:0 auto 13px;width:max-content;padding:7px 14px;border-radius:999px;
-    border:1px solid #ffe07488;background:#3a2b0ddc;color:#ffe885;font-size:10px;font-weight:1000;
-    letter-spacing:.12em;box-shadow:0 0 25px #ffd34f44;animation:recordPop .6s cubic-bezier(.15,.9,.2,1) both;
+    display:none;margin:0 auto 13px;width:max-content;padding:7px 14px;
+    border:2px solid #ffe26a;border-radius:0;background:#2b2104;color:#fff19b;
+    font-size:10px;font-weight:1000;letter-spacing:.12em;
+    box-shadow:3px 3px 0 #6e5213,0 0 18px #ffd84f44;
+    animation:recordPixelPop .36s steps(5,end) both;
   }
   #resultRecord.show{display:block}
   .resultHero{
-    display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:center;
-    padding:12px;border:1px solid #32445f;border-radius:18px;background:#0b1321c7;
+    position:relative;display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:center;
+    padding:12px;border:2px solid #344e6d;border-radius:0;background:#07101bd9;
+    box-shadow:inset 0 0 0 2px #0c1a2a,3px 3px 0 #02050a;
+  }
+  .resultHero::after{
+    content:"SURVIVOR.DATA";position:absolute;right:8px;top:6px;
+    font-size:6px;font-weight:1000;letter-spacing:.14em;color:#5c7b9e;
   }
   #resultCharacterIcon{
-    width:104px;height:104px;border-radius:20px;display:grid;place-items:center;font-size:52px;
-    border:1px solid var(--resultColor,#6ee7ff);background:radial-gradient(circle at 50% 30%,#ffffff17,#0a1220);
-    box-shadow:0 0 30px color-mix(in srgb,var(--resultColor,#6ee7ff) 24%,transparent),inset 0 1px 0 #ffffff16;
+    width:104px;height:104px;border-radius:0;display:grid;place-items:center;font-size:52px;
+    border:3px solid var(--resultColor,#6ee7ff);
+    background:
+      linear-gradient(45deg,#ffffff08 25%,transparent 25% 75%,#ffffff08 75%),
+      #07111e;
+    background-size:8px 8px;
+    box-shadow:4px 4px 0 #02050a,0 0 22px color-mix(in srgb,var(--resultColor,#6ee7ff) 28%,transparent);
+    image-rendering:pixelated;
   }
-  .resultHeroLabel{font-size:8px;font-weight:1000;letter-spacing:.16em;color:#7285a1}
-  #resultCharacterName{font-size:20px;font-weight:1000;color:#fff;margin-top:3px}
-  #resultCharacterMeta{font-size:10px;color:#a9b8cc;margin-top:4px}
-  #resultCause{margin-top:8px;font-size:10px;font-weight:900;color:#ff9b9b;letter-spacing:.04em}
+  .resultHeroLabel{font-size:8px;font-weight:1000;letter-spacing:.16em;color:#6b82a0}
+  #resultCharacterName{font-size:20px;font-weight:1000;color:#f7fbff;margin-top:4px;text-shadow:2px 0 #325f82}
+  #resultCharacterMeta{font-size:10px;color:#a9bad0;margin-top:4px}
+  #resultCause{
+    margin-top:9px;padding:5px 7px;width:max-content;max-width:100%;
+    font-size:9px;font-weight:1000;color:#ff9ea9;letter-spacing:.04em;
+    border-left:3px solid #ff6176;background:#2a0911;
+  }
   .resultStats{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px;
   }
   .resultStat{
-    min-height:72px;padding:10px;border-radius:14px;border:1px solid #2d3d56;background:#0b1320;
+    position:relative;min-height:72px;padding:10px;border:2px solid #243d58;border-radius:0;
+    background:
+      linear-gradient(180deg,#0a1624,#060d17);
     display:flex;flex-direction:column;justify-content:center;text-align:center;
+    box-shadow:3px 3px 0 #02050a,inset 0 0 0 1px #ffffff08;
   }
-  .resultStat span{font-size:7px;font-weight:1000;letter-spacing:.14em;color:#71839e}
-  .resultStat b{font-size:19px;margin-top:6px;font-variant-numeric:tabular-nums;color:#f7fbff}
-  .resultStat.coin b{color:#ffd76a}.resultStat.gem b{color:#8ff5ff}.resultStat.break b{color:#a6eaff}
+  .resultStat::before{
+    content:"";position:absolute;left:4px;top:4px;width:5px;height:5px;background:#4b7ca1;
+    box-shadow:calc(100% + 0px) 0 #4b7ca1;
+  }
+  .resultStat span{font-size:7px;font-weight:1000;letter-spacing:.14em;color:#6f8ba9}
+  .resultStat b{font-size:19px;margin-top:6px;font-variant-numeric:tabular-nums;color:#f7fbff;text-shadow:2px 0 #223c54}
+  .resultStat.coin{border-color:#6f5c25}.resultStat.coin b{color:#ffe071;text-shadow:2px 0 #654d0f}
+  .resultStat.gem{border-color:#27656d}.resultStat.gem b{color:#8ffcff;text-shadow:2px 0 #15545b}
+  .resultStat.break{border-color:#315f7a}.resultStat.break b{color:#a7efff}
   .resultProgress{
     display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;
   }
   .resultMini{
-    padding:8px 10px;border-radius:12px;border:1px solid #29384e;background:#09101bd4;
-    display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:8px;color:#7e91ad;font-weight:900;
+    padding:8px 10px;border-radius:0;border:2px solid #20354d;background:#050b14;
+    display:flex;align-items:center;justify-content:space-between;gap:7px;
+    font-size:8px;color:#6e87a5;font-weight:1000;box-shadow:2px 2px 0 #02050a;
   }
-  .resultMini b{font-size:11px;color:#fff}
+  .resultMini b{font-size:11px;color:#eef8ff}
   .resultActions{margin-top:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  #restart{
-    grid-column:1/-1;height:54px;font-size:14px;letter-spacing:.10em;border-color:#5fa979;
-    background:linear-gradient(180deg,#1e5a38,#123923);box-shadow:0 10px 28px #0008,0 0 20px #49d07a24;
+  .resultActions button{
+    border-radius:0!important;
+    font-family:"Courier New",ui-monospace,monospace!important;
+    text-transform:uppercase;
+    border-width:2px!important;
+    box-shadow:3px 3px 0 #02050a,inset 0 0 0 1px #ffffff10!important;
   }
-  .resultSecondary{height:42px;font-size:10px}
-  @keyframes resultPanelIn{0%{opacity:0;transform:translateY(18px) scale(.96)}100%{opacity:1;transform:none}}
-  @keyframes recordPop{0%{opacity:0;transform:scale(.65)}55%{transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+  .resultActions button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #02050a!important}
+  #restart{
+    grid-column:1/-1;height:54px;font-size:14px;letter-spacing:.11em;
+    border-color:#71ff9c!important;color:#dffff0!important;
+    background:linear-gradient(180deg,#123c25,#082516)!important;
+    box-shadow:4px 4px 0 #02050a,0 0 20px #4bff8b22!important;
+    position:relative;
+  }
+  #restart::before{content:"> ";color:#72ff9a}
+  #restart::after{content:" <";color:#72ff9a}
+  .resultSecondary{height:42px;font-size:10px;background:#0b1624!important;border-color:#35516f!important;color:#d9efff!important}
+  @keyframes resultPanelIn{
+    0%{opacity:0;transform:translateY(14px) scale(.98);filter:brightness(2)}
+    35%{opacity:1;transform:translateY(6px) scale(.99)}
+    100%{opacity:1;transform:none;filter:none}
+  }
+  @keyframes recordPixelPop{
+    0%{opacity:0;transform:scale(.7)}
+    60%{opacity:1;transform:scale(1.08)}
+    100%{opacity:1;transform:scale(1)}
+  }
+  @keyframes resultTitleGlitch{
+    0%{transform:translateX(0);text-shadow:3px 0 #00d9ff,-3px 0 #9b4dff}
+    50%{transform:translateX(2px);text-shadow:-5px 0 #00eaff,4px 0 #ff4f7d}
+    100%{transform:translateX(-2px);text-shadow:5px 0 #00d9ff,-4px 0 #a64fff}
+  }
+  @keyframes resultGlitchCard{
+    0%{transform:translate(-50%,-50%) translateX(-3px)}
+    50%{transform:translate(-50%,-50%) translateX(3px)}
+    100%{transform:translate(-50%,-50%)}
+  }
   @media(max-width:520px){
     #death{padding:7px}
-    .resultPanel{padding:12px;border-radius:18px}
+    .resultPanel{padding:11px;border-width:2px}
     .resultHero{grid-template-columns:76px minmax(0,1fr);gap:10px;padding:9px}
-    #resultCharacterIcon{width:76px;height:76px;border-radius:16px;font-size:39px}
+    #resultCharacterIcon{width:76px;height:76px;font-size:39px;border-width:2px}
     #resultCharacterName{font-size:16px}
+    #resultCause{font-size:7px;padding:4px 5px}
     .resultStats{grid-template-columns:repeat(2,1fr);gap:6px}
-    .resultStat{min-height:60px;padding:8px}.resultStat b{font-size:16px}
+    .resultStat{min-height:60px;padding:8px;border-width:1px}.resultStat b{font-size:16px}
     .resultProgress{grid-template-columns:1fr 1fr;gap:6px}
     .resultActions{gap:6px}
+    .resultSecondary{height:39px;font-size:9px}
+    #restart{height:50px}
   }
   .modal{width:min(520px,92vw);max-height:86vh;overflow:auto;background:#111827;border:1px solid #33405f;border-radius:18px;padding:20px;box-shadow:0 20px 80px #000a}
   .modal h3{margin:0 0 8px;font-size:24px}
@@ -1373,7 +1479,7 @@
 
     <div id="death">
       <div class="resultPanel">
-        <div class="resultEyebrow">BREAK SURVIVORS // RUN REPORT</div>
+        <div class="resultEyebrow">BREAK_SURVIVORS // RUN.DATA</div>
         <h3 id="deathTitle">RUN ENDED</h3>
         <div id="deathSubtitle">SURVIVED 0:00</div>
         <div id="resultRecord">★ NEW RECORD ★</div>
@@ -1381,7 +1487,7 @@
         <div class="resultHero" id="resultHero">
           <div id="resultCharacterIcon">🔫</div>
           <div>
-            <div class="resultHeroLabel">SURVIVOR</div>
+            <div class="resultHeroLabel">SURVIVOR_ID</div>
             <div id="resultCharacterName">Rookie Gunner</div>
             <div id="resultCharacterMeta">LV.1 // Common</div>
             <div id="resultCause">DEFEATED BY ENEMY SWARM</div>
@@ -2979,6 +3085,7 @@ function resetRun(){
   activeEvent=null;eventTime=0;eventPulse=0;nextEventAt=rnd(38,48);
   treasureTimer=rnd(24,34);bossPending=false;bossWarningTime=0;lootStreak=0;lootStreakTimer=0;
   itemBuffs={boots:0,drink:0,sword:0};
+  document.getElementById('death').classList.remove('glitching');
   document.getElementById('death').style.display='none';syncGameplayTouchBlock();
 }
 
@@ -6034,8 +6141,11 @@ function endRun(reason='normal'){
   document.getElementById('deathCombo').textContent='0';
 
   resultSubscreenOpen=false;
-  document.getElementById('death').style.display='flex';
+  const deathScreen=document.getElementById('death');
+  deathScreen.style.display='flex';
+  deathScreen.classList.add('glitching');
   syncGameplayTouchBlock();
+  setTimeout(()=>deathScreen.classList.remove('glitching'),360);
 
   setTimeout(()=>{
     animateResultNumber('deathKills',finalKills,'',680);
