@@ -386,108 +386,28 @@
   .upgrade{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid #2b3550;border-radius:12px;padding:10px;margin:8px 0;background:#161d2d}
   .upgrade button{min-width:115px}
 
-  /* Stage 12 — CORE GRID */
-  #shop{
-    z-index:46;background:
-      radial-gradient(circle at 50% 45%,#132945cc 0%,#050a12f2 46%,#020408fa 100%);
-    padding:12px;backdrop-filter:blur(10px);
-  }
-  .coreShell{
-    width:min(1180px,98vw);height:min(880px,96vh);display:flex;flex-direction:column;overflow:hidden;
-    border:2px solid #426a8e;background:#050a12;
-    box-shadow:0 24px 100px #000e,0 0 45px #45d9ff18,inset 0 0 0 1px #ffffff08;
-    font-family:"Courier New",ui-monospace,monospace;clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
-  }
-  .coreTopbar{
-    position:relative;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;
-    padding:14px 58px 12px 16px;border-bottom:2px solid #18314a;
-    background:linear-gradient(180deg,#0a1725,#07101a);
-  }
-  .coreEyebrow{font-size:7px;font-weight:1000;letter-spacing:.18em;color:#5ccff0}
-  .coreTitle{font-size:30px;line-height:1;font-weight:1000;letter-spacing:.08em;color:#f2fbff;text-shadow:3px 0 #275eff,-3px 0 #8b43d7}
-  .coreSub{margin-top:6px;font-size:8px;color:#7890aa;letter-spacing:.03em}
-  .coreWallet{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-  .coreWallet>div{padding:7px 10px;border:1px solid #29435d;background:#08131f;font-size:9px;font-weight:1000;color:#cfefff}
-  .coreWallet .coreCount{border-color:#416b5e;color:#93f4c3}
-  .coreClose{
-    position:absolute;right:12px;top:12px;width:36px;height:36px;padding:0;border-radius:0;
-    border:2px solid #6e3240;background:#270c14;color:#ff9dac;font-size:20px;font-family:inherit;font-weight:1000;
-  }
-  .coreAdminBanner{
-    display:none;padding:7px 12px;text-align:center;border-bottom:2px solid #ffb14d;
-    background:#351d05;color:#ffd38c;font-size:8px;font-weight:1000;letter-spacing:.10em;
-    animation:coreAdminPulse 1.2s steps(2,end) infinite;
-  }
-  .coreAdminBanner.show{display:block}
-  .coreViewport{
-    position:relative;flex:1;min-height:0;overflow:auto;touch-action:pan-x pan-y!important;
-    overscroll-behavior:contain;background:
-      linear-gradient(#08111a88 1px,transparent 1px),
-      linear-gradient(90deg,#08111a88 1px,transparent 1px),
-      radial-gradient(circle at center,#10263b 0%,#050b13 52%,#020509 100%);
-    background-size:24px 24px,24px 24px,100% 100%;
-    scrollbar-color:#315875 #07101a;
-  }
-  .coreCanvas{position:relative;width:1280px;height:900px;min-width:1280px;min-height:900px}
-  .coreCanvas::before{
-    content:"";position:absolute;left:640px;top:450px;width:560px;height:560px;transform:translate(-50%,-50%) rotate(45deg);
-    border:1px solid #39617a22;box-shadow:inset 0 0 70px #4cdfff08;pointer-events:none;
-  }
-  .coreLinks{position:absolute;inset:0;width:1280px;height:900px;pointer-events:none;overflow:visible}
-  .coreLink{stroke:#20384e;stroke-width:3;vector-effect:non-scaling-stroke}
-  .coreLink.available{stroke:#3c7795;stroke-dasharray:7 7;animation:coreDash 1.1s linear infinite}
-  .coreLink.owned{stroke:#6de4ff;stroke-width:4;filter:drop-shadow(0 0 5px #53dcff)}
-  .coreNode{
-    --coreColor:#7ddfff;position:absolute;transform:translate(-50%,-50%);width:120px;min-height:66px;
-    padding:8px 7px;border:2px solid #253b50;border-radius:0;background:#07101a;color:#6e8197;
-    box-shadow:3px 3px 0 #020509;font-family:inherit;text-align:center;cursor:pointer;transition:.12s ease;
-  }
-  .coreNode .nodeType{font-size:5px;font-weight:1000;letter-spacing:.13em;opacity:.65}
-  .coreNode .nodeName{margin-top:3px;font-size:8px;line-height:1.05;font-weight:1000;letter-spacing:.035em}
-  .coreNode .nodeDesc{margin-top:4px;font-size:6px;line-height:1.15;color:#70849b}
-  .coreNode .nodeCost{margin-top:5px;font-size:6px;font-weight:1000;color:#62778c}
-  .coreNode.major{width:142px;min-height:78px;border-width:3px}
-  .coreNode.major .nodeName{font-size:9px}
-  .coreNode.available{border-color:color-mix(in srgb,var(--coreColor) 72%,#38506a);color:#e7f8ff;background:#091725;box-shadow:3px 3px 0 #020509,0 0 16px color-mix(in srgb,var(--coreColor) 18%,transparent)}
-  .coreNode.available .nodeDesc{color:#9eb6cc}.coreNode.available .nodeCost{color:var(--coreColor)}
-  .coreNode.available:hover{transform:translate(-50%,-50%) scale(1.045);filter:brightness(1.15)}
-  .coreNode.locked{opacity:.55;filter:saturate(.35)}
-  .coreNode.owned{
-    border-color:var(--coreColor);color:#fff;background:color-mix(in srgb,var(--coreColor) 12%,#06101a);
-    box-shadow:3px 3px 0 #020509,0 0 16px color-mix(in srgb,var(--coreColor) 32%,transparent),inset 0 0 18px color-mix(in srgb,var(--coreColor) 8%,transparent);
-  }
-  .coreNode.owned .nodeDesc{color:#c2d8e7}.coreNode.owned .nodeCost{color:var(--coreColor)}
-  .coreNode.adminTarget{border-color:#ffb454!important;color:#fff!important;opacity:1;filter:none;box-shadow:3px 3px 0 #020509,0 0 14px #ff9e3d44}
-  .coreNode.unlockFlash{animation:coreUnlock .38s steps(4,end)}
-  .coreBranchLabel{
-    position:absolute;font-size:13px;font-weight:1000;letter-spacing:.24em;opacity:.22;pointer-events:none;
-  }
-  .coreBranchLabel.power{left:72px;top:215px;color:#ff667f;transform:rotate(-90deg)}
-  .coreBranchLabel.break{left:600px;top:15px;color:#56ddff}
-  .coreBranchLabel.ult{right:25px;top:235px;color:#ae73ff;transform:rotate(90deg)}
-  .coreBranchLabel.mobility{left:585px;bottom:12px;color:#75ff9a}
-  .coreLegend{
-    display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:9px 14px;border-top:2px solid #18314a;
-    background:#06101a;font-size:7px;font-weight:1000;letter-spacing:.07em;color:#728ba4;
-  }
-  .coreLegendDot{display:inline-block;width:8px;height:8px;margin-right:5px;vertical-align:-1px;border:1px solid #2a4055}
-  .coreLegendDot.owned{background:#55dfff;border-color:#9bfbff;box-shadow:0 0 7px #55dfff}
-  .coreLegendDot.available{background:#173149;border-color:#5796bd}
-  .coreLegendDot.locked{background:#0a1119}
-  .coreLegendHint{margin-left:auto;color:#4d6b85}
-  @keyframes coreDash{to{stroke-dashoffset:-28}}
-  @keyframes coreUnlock{0%{filter:brightness(4);transform:translate(-50%,-50%) scale(.82)}60%{transform:translate(-50%,-50%) scale(1.12)}100%{filter:none;transform:translate(-50%,-50%) scale(1)}}
-  @keyframes coreAdminPulse{50%{background:#4a2705}}
-  @media(max-width:720px){
-    #shop{padding:4px}
-    .coreShell{width:100%;height:100%;clip-path:none;border-width:1px}
-    .coreTopbar{grid-template-columns:1fr;padding:10px 46px 9px 10px;gap:7px}
-    .coreTitle{font-size:23px}.coreSub{font-size:6px}
-    .coreWallet{justify-content:flex-start;gap:5px}.coreWallet>div{padding:5px 7px;font-size:7px}
-    .coreClose{right:8px;top:8px;width:32px;height:32px}
-    .coreLegend{gap:9px;padding:7px 9px;font-size:6px}.coreLegendHint{display:none}
-  }
-  #joystickZone{display:none;position:absolute;left:0;bottom:0;width:52%;height:58%;z-index:3;touch-action:none;pointer-events:none}
+  /* Stage 12.1 — dense hex skill tree */
+  #shop{z-index:46;background:#02050af5;padding:8px;backdrop-filter:blur(10px)}
+  .treeShell{width:min(1580px,99vw);height:min(920px,98vh);display:flex;flex-direction:column;overflow:hidden;border:2px solid #3c6688;background:#050910;color:#d7edff;box-shadow:0 28px 110px #000f,0 0 50px #42d8ff18;font-family:"Courier New",ui-monospace,monospace}
+  .treeBody{flex:1;min-height:0;display:grid;grid-template-columns:210px minmax(0,1fr) 300px}.treeLeft,.treeDetails{background:linear-gradient(180deg,#08131f,#050a12);border-color:#1d3b56}.treeLeft{border-right:2px solid #1d3b56;padding:14px 12px;overflow:auto}
+  .treeBrand{font-size:18px;font-weight:1000;letter-spacing:.05em;color:#effaff;text-shadow:2px 0 #356dff,-2px 0 #b44cff}.treeMode{margin-top:9px;padding:8px;border:2px solid #294c68;background:#07111c;font-size:9px;color:#78cfff}.treeMode b{color:#ffd778}
+  .treeResources{margin-top:10px;border:2px solid #203d57;background:#06101a}.treeResources>div{display:flex;justify-content:space-between;padding:9px 10px;border-bottom:1px solid #17304a;font-size:8px}.treeResources>div:last-child{border-bottom:0}.treeResources span{color:#71a9d1;font-weight:1000}.treeResources b{font-size:11px;color:#fff}
+  .treeCategoryTitle{margin:15px 0 6px;font-size:7px;font-weight:1000;letter-spacing:.16em;color:#557591}.treeCategories{display:grid;gap:5px}.treeCategories button{height:34px;padding:0 9px;text-align:left;border-radius:0;border:1px solid #1f3c56;background:#07111b;color:#7893ae;font:1000 8px "Courier New",monospace;box-shadow:none}.treeCategories button.active{border-color:#5edfff;color:#e9fbff;background:#0a2735;box-shadow:inset 3px 0 #5edfff}
+  .treeTip{margin-top:14px;padding:10px;border:1px solid #17324a;background:#06101a}.treeTip b{display:block;font-size:8px;color:#63dcff}.treeTip span{display:block;margin-top:5px;font-size:7px;line-height:1.45;color:#617b94}
+  .coreAdminBanner{display:none;flex:none;padding:7px 12px;text-align:center;border-bottom:2px solid #ffb14d;background:#351d05;color:#ffd38c;font-size:8px;font-weight:1000;letter-spacing:.10em;animation:coreAdminPulse 1.2s steps(2,end) infinite}.coreAdminBanner.show{display:block}
+  .coreViewport{position:relative;min-width:0;min-height:0;overflow:auto;touch-action:pan-x pan-y!important;overscroll-behavior:contain;background:radial-gradient(circle at 50% 50%,#12243d99,transparent 43%),linear-gradient(#09131f88 1px,transparent 1px),linear-gradient(90deg,#09131f88 1px,transparent 1px),#03070d;background-size:100% 100%,32px 32px,32px 32px;scrollbar-color:#315875 #07101a}
+  .coreCanvas{position:relative;width:1500px;height:1100px;min-width:1500px;min-height:1100px}.coreCanvas::before{content:"";position:absolute;left:750px;top:550px;width:900px;height:900px;transform:translate(-50%,-50%);background:radial-gradient(circle,#17345822 0 1px,transparent 2px);background-size:24px 24px;opacity:.7;pointer-events:none}
+  .coreLinks{position:absolute;inset:0;width:1500px;height:1100px;pointer-events:none}.coreLink{stroke:#172a3c;stroke-width:3}.coreLink.available{stroke:#386985;stroke-dasharray:6 7;animation:coreDash 1s linear infinite}.coreLink.owned{stroke:var(--linkColor,#65dcff);stroke-width:4;filter:drop-shadow(0 0 5px var(--linkColor,#65dcff))}
+  .coreNode{--coreColor:#6ee7ff;position:absolute;transform:translate(-50%,-50%);width:76px;height:68px;padding:0;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);border:0;border-radius:0;background:#08111b;color:#60758b;font-family:"Courier New",monospace;cursor:pointer;overflow:visible;transition:.11s}
+  .coreNode::before{content:"";position:absolute;inset:3px;clip-path:inherit;background:#0a1420;z-index:-1}.coreNode::after{content:"";position:absolute;inset:0;clip-path:inherit;background:#283c50;z-index:-2}.coreNode .nodeIcon{font-size:13px;line-height:1;font-weight:1000}.coreNode .nodeName{margin-top:4px;font-size:5.5px;line-height:1.02;font-weight:1000;padding:0 6px}.coreNode .nodeCost{margin-top:3px;font-size:5px;font-weight:1000;color:#51677d}
+  .coreNode.major{width:98px;height:88px}.coreNode.major .nodeIcon{font-size:19px}.coreNode.major .nodeName{font-size:7px}.coreNode.available{color:#eaf9ff;filter:drop-shadow(0 0 7px color-mix(in srgb,var(--coreColor) 45%,transparent))}.coreNode.available::after{background:var(--coreColor)}.coreNode.owned{color:#fff;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--coreColor) 70%,transparent))}.coreNode.owned::after{background:var(--coreColor)}.coreNode.owned::before{background:color-mix(in srgb,var(--coreColor) 15%,#07111b)}.coreNode.locked{opacity:.36;filter:saturate(.2)}.coreNode.adminTarget{opacity:1;color:#fff;filter:drop-shadow(0 0 9px #ffae4d)}.coreNode.adminTarget::after{background:#ffae4d}.coreNode.selected{transform:translate(-50%,-50%) scale(1.17);z-index:5;filter:drop-shadow(0 0 14px #fff)}.coreNode.filtered{opacity:.10!important;pointer-events:none}.coreNode:hover:not(.filtered){transform:translate(-50%,-50%) scale(1.08);z-index:4}.coreNode.unlockFlash{animation:coreUnlock .38s steps(4,end)}
+  .treeDetails{position:relative;border-left:2px solid #1d3b56;padding:14px;overflow:auto}.coreClose{position:absolute;right:9px;top:9px;width:34px;height:34px;padding:0;border:1px solid #613447;border-radius:0;background:#260b14;color:#ff9aaa;font-size:18px}.detailEyebrow{font-size:8px;font-weight:1000;letter-spacing:.16em;color:#61d9ff;margin-bottom:14px}.detailHead{display:grid;grid-template-columns:68px 1fr;gap:10px;align-items:center;padding-bottom:12px;border-bottom:1px solid #24445f}
+  .detailIcon{width:64px;height:58px;display:grid;place-items:center;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:var(--detailColor,#5edfff);color:#fff;font-size:15px;font-weight:1000;filter:drop-shadow(0 0 9px var(--detailColor,#5edfff))}.detailName{font-size:15px;font-weight:1000;line-height:1.05;color:#fff}.detailType{margin-top:4px;font-size:7px;color:var(--detailColor,#62dbff);font-weight:1000}.detailStatus{margin-top:11px;padding:6px 8px;width:max-content;border:1px solid #315069;background:#07131f;font-size:7px;font-weight:1000}.detailDesc{margin-top:11px;font-size:8px;line-height:1.48;color:#b9cadd;min-height:48px}
+  .detailSection{margin-top:15px;padding-top:10px;border-top:1px solid #24445f}.detailSectionTitle{font-size:8px;font-weight:1000;color:#62d8ff}.detailLines{margin-top:7px;display:grid;gap:5px;font-size:7.5px;color:#bdcede}.goodLine{color:#7df49c}.badLine{color:#ff7d88}.detailCost{margin-top:8px;font-size:12px;font-weight:1000;color:#ffd96d}.coreConfirm{width:100%;height:43px;margin-top:16px;border-radius:0;border:2px solid #61dfff;background:#092337;color:#eaffff;font:1000 9px "Courier New",monospace}.coreConfirm:disabled{opacity:.42;border-color:#34495c}
+  .treeFooter{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:48px;padding:7px 11px;border-top:2px solid #1d3b56;background:#06101a}.treeLegend{display:flex;gap:14px;font-size:6px;font-weight:1000;color:#71869b}.legendPixel{display:inline-block;width:9px;height:9px;margin-right:5px;vertical-align:-2px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}.legendPixel.owned{background:#61e6ff}.legendPixel.available{background:#345e77}.legendPixel.locked{background:#1a2633}.treeFooterActions{display:flex;gap:6px}.treeFooterActions button{height:30px;padding:0 12px;border-radius:0;border:1px solid #274760;background:#08131f;color:#91abc2;font:1000 7px "Courier New",monospace}
+  @keyframes coreDash{to{stroke-dashoffset:-26}}@keyframes coreUnlock{0%{filter:brightness(4);transform:translate(-50%,-50%) scale(.7)}60%{transform:translate(-50%,-50%) scale(1.22)}100%{filter:none;transform:translate(-50%,-50%) scale(1)}}@keyframes coreAdminPulse{50%{background:#4a2705}}
+  @media(max-width:900px){#shop{padding:0}.treeShell{width:100%;height:100%;border:0}.treeBody{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) auto}.treeLeft{border-right:0;border-bottom:1px solid #1d3b56;padding:7px 42px 7px 8px;display:grid;grid-template-columns:1fr auto;gap:6px}.treeBrand{font-size:12px}.treeMode,.treeTip,.treeCategoryTitle{display:none}.treeResources{margin:0;display:flex;border:0;gap:4px}.treeResources>div{padding:5px 7px;border:1px solid #18334b;font-size:6px}.treeResources b{font-size:7px}.treeCategories{grid-column:1/-1;display:flex;overflow-x:auto;gap:4px}.treeCategories button{flex:0 0 auto;height:27px;font-size:6px;padding:0 7px}.treeDetails{border-left:0;border-top:1px solid #1d3b56;padding:8px 44px 8px 9px;max-height:184px}.detailEyebrow{display:none}.detailHead{grid-template-columns:42px 1fr;padding-bottom:5px}.detailIcon{width:40px;height:36px;font-size:10px}.detailName{font-size:10px}.detailStatus{margin-top:5px;padding:3px 5px}.detailDesc{margin-top:5px;min-height:0;font-size:6px}.detailSection{display:inline-block;width:48%;vertical-align:top;margin-top:6px;padding-top:5px}.detailCostSection{display:none}.detailLines{font-size:5.5px;gap:2px}.coreConfirm{position:absolute;right:5px;bottom:5px;width:86px;height:31px;font-size:6px}.coreClose{right:5px;top:5px;width:30px;height:30px}.treeFooter{display:none}}
+  #joystickZone  #joystickZone{display:none;position:absolute;left:0;bottom:0;width:52%;height:58%;z-index:3;touch-action:none;pointer-events:none}
   #mobilePad{display:none;position:absolute;left:18px;bottom:92px;width:140px;height:140px;z-index:40}
   #closeSidebar{position:sticky;top:0;float:right;z-index:5;width:34px;height:34px;padding:0;border-radius:50%;font-size:18px;background:#281820;border-color:#6d3340}
   #openSidebar{display:none;position:absolute;right:12px;top:12px;z-index:4;border-radius:999px;padding:10px 14px;background:#121b2d;border:1px solid #3d4f79;box-shadow:0 8px 30px #0008}
@@ -1808,39 +1728,35 @@
     </div>
 
     <div id="shop">
-      <div class="coreShell">
-        <div class="coreTopbar">
-          <div>
-            <div class="coreEyebrow">STAGE 12 // PERMANENT EVOLUTION</div>
-            <div class="coreTitle">CORE GRID</div>
-            <div class="coreSub">ポイント上限なし。接続されたCOREを解放してSURVIVORを恒久強化。</div>
-          </div>
-          <div class="coreWallet">
-            <div>🪙 <b id="coreCoins">0</b></div>
-            <div>💎 <b id="coreGems">0</b></div>
-            <div class="coreCount"><b id="coreCount">1</b> / 33 CORES</div>
-          </div>
-          <button id="closeShop" class="coreClose">×</button>
+      <div class="treeShell">
+        <div id="coreAdminBanner" class="coreAdminBanner">ADMIN MANUAL UNLOCK // TAP A NODE TO FORCE UNLOCK</div>
+        <div class="treeBody">
+          <aside class="treeLeft">
+            <div class="treeBrand">BREAK SURVIVORS</div><div class="treeMode">SKILL TREE: <b>SURVIVOR</b></div>
+            <div class="treeResources"><div><span>CORES</span><b><span id="coreCount">1</span>/<span id="coreTotal">61</span></b></div><div><span>COINS</span><b id="coreCoins">0</b></div><div><span>GEMS</span><b id="coreGems">0</b></div></div>
+            <div class="treeCategoryTitle">CATEGORY</div>
+            <div class="treeCategories">
+              <button data-core-filter="all" class="active">◆ ALL NODES</button><button data-core-filter="assault">⚔ ATTACK</button><button data-core-filter="projectile">➤ PROJECTILE</button>
+              <button data-core-filter="ability">✦ ABILITIES</button><button data-core-filter="break">∞ BREAK</button><button data-core-filter="mobility">≫ MOBILITY</button><button data-core-filter="control">◎ RANGE / CONTROL</button>
+            </div>
+            <div class="treeTip"><b>BUILD YOUR CORE</b><span>攻撃範囲・弾数・速度・攻撃仕様・特殊能力まで恒久強化。</span></div>
+          </aside>
+          <main id="coreViewport" class="coreViewport"><div id="coreCanvas" class="coreCanvas"><svg id="coreLinks" class="coreLinks" viewBox="0 0 1500 1100" preserveAspectRatio="none"></svg><div id="upgradeList" class="coreNodes"></div></div></main>
+          <aside class="treeDetails">
+            <button id="closeShop" class="coreClose">×</button><div class="detailEyebrow">NODE DETAILS</div>
+            <div class="detailHead"><div id="coreDetailIcon" class="detailIcon">◆</div><div><div id="coreDetailName" class="detailName">SURVIVOR CORE</div><div id="coreDetailType" class="detailType">CORE NODE</div></div></div>
+            <div id="coreDetailStatus" class="detailStatus">UNLOCKED</div><div id="coreDetailDesc" class="detailDesc">CORE GRID ONLINE</div>
+            <div class="detailSection"><div class="detailSectionTitle">EFFECT</div><div id="coreDetailEffects" class="detailLines"></div></div>
+            <div class="detailSection"><div class="detailSectionTitle">REQUIREMENTS</div><div id="coreDetailReqs" class="detailLines"></div></div>
+            <div class="detailSection detailCostSection"><div class="detailSectionTitle">UPGRADE COST</div><div id="coreDetailCost" class="detailCost">ONLINE</div></div>
+            <button id="coreConfirmBtn" class="coreConfirm" disabled>UNLOCKED</button>
+          </aside>
         </div>
-        <div id="coreAdminBanner" class="coreAdminBanner">ADMIN MANUAL UNLOCK // TAP ANY NODE TO FORCE UNLOCK</div>
-        <div id="coreViewport" class="coreViewport">
-          <div id="coreCanvas" class="coreCanvas">
-            <div class="coreBranchLabel power">POWER</div>
-            <div class="coreBranchLabel break">BREAK</div>
-            <div class="coreBranchLabel ult">ULT</div>
-            <div class="coreBranchLabel mobility">MOBILITY</div>
-            <svg id="coreLinks" class="coreLinks" viewBox="0 0 1280 900" preserveAspectRatio="none"></svg>
-            <div id="upgradeList" class="coreNodes"></div>
-          </div>
-        </div>
-        <div class="coreLegend">
-          <span><i class="coreLegendDot owned"></i>UNLOCKED</span>
-          <span><i class="coreLegendDot available"></i>AVAILABLE</span>
-          <span><i class="coreLegendDot locked"></i>LOCKED</span>
-          <span class="coreLegendHint">DRAG / SCROLL TO EXPLORE</span>
-        </div>
+        <div class="treeFooter"><div class="treeLegend"><span><i class="legendPixel owned"></i>UNLOCKED</span><span><i class="legendPixel available"></i>AVAILABLE</span><span><i class="legendPixel locked"></i>LOCKED</span></div><div class="treeFooterActions"><button id="coreCenterBtn">◎ CENTER</button><button id="coreResetViewBtn">↺ RESET VIEW</button><button id="coreBackBtn">← BACK</button></div></div>
       </div>
     </div>
+  </div>
+
   </div>
 
   <aside id="sidebar">
@@ -2063,81 +1979,136 @@ function upCost(k){
   return lv>=PERM_UPGRADE_MAX?Infinity:Math.floor(u.base*Math.pow(u.growth,lv));
 }
 
-// Stage 12 — CORE GRID
+// Stage 12.1 — CORE GRID: HEX MATRIX
+const CORE_CENTER={x:750,y:550};
 const CORE_BRANCHES={
-  core:{name:'SURVIVOR',color:'#79f7c0'},
-  power:{name:'POWER',color:'#ff667f'},
-  break:{name:'BREAK',color:'#56ddff'},
-  ult:{name:'ULT',color:'#ae73ff'},
-  mobility:{name:'MOBILITY',color:'#75ff9a'}
+  core:{name:'SURVIVOR',label:'CORE',color:'#7ef6ff'},
+  assault:{name:'ASSAULT',label:'ATTACK',color:'#ff5f6d'},
+  projectile:{name:'PROJECTILE',label:'PROJECTILE',color:'#ffc94f'},
+  ability:{name:'ABILITY',label:'ABILITY',color:'#c46cff'},
+  break:{name:'BREAK',label:'BREAK',color:'#55ddff'},
+  mobility:{name:'MOBILITY',label:'MOBILITY',color:'#65f58a'},
+  control:{name:'CONTROL',label:'RANGE',color:'#4f9cff'}
 };
+const CORE_BRANCH_LAYOUT=[
+  {r:122,p:0,parents:[]},{r:220,p:-58,parents:[0]},{r:220,p:58,parents:[0]},
+  {r:315,p:0,parents:[1,2]},{r:395,p:-74,parents:[3]},{r:395,p:74,parents:[3]},
+  {r:470,p:-82,parents:[4]},{r:470,p:82,parents:[5]},{r:485,p:0,parents:[3]},
+  {r:540,p:0,parents:[6,7,8]}
+];
+const CORE_COSTS=[350,800,950,1900,3000,3600,5200,6200,7800,0];
+function makeCoreBranch(prefix,branch,angleDeg,defs){
+  const a=angleDeg*Math.PI/180,px=-Math.sin(a),py=Math.cos(a);
+  return defs.map((d,i)=>{
+    const l=CORE_BRANCH_LAYOUT[i],id=prefix+(i+1),requires=i===0?['core']:l.parents.map(p=>prefix+(p+1));
+    return {id,branch,name:d.name,icon:d.icon,desc:d.desc,detail:d.detail||d.desc,effects:d.effects||[d.desc],effect:d.effect||{},major:!!d.major,
+      x:Math.round(CORE_CENTER.x+Math.cos(a)*l.r+px*l.p),y:Math.round(CORE_CENTER.y+Math.sin(a)*l.r+py*l.p),requires,
+      cost:d.cost??(d.major?d.gemCost||320:CORE_COSTS[i]),currency:d.currency||(d.major?'gem':'coin')};
+  });
+}
+const CORE_NODE_DEFS={
+assault:[
+{name:'FORCE AMP',icon:'DMG',desc:'Damage +8%',effect:{damage:.08}},
+{name:'RAPID CHAMBER',icon:'SPD',desc:'Attack Speed +6%',effect:{attackRate:.06}},
+{name:'CRITICAL LINK',icon:'CRT',desc:'CRIT Chance +3%',effect:{critChance:.03}},
+{name:'CRIT DRIVE',icon:'x2',desc:'CRIT Damage +18%',effect:{critDamage:.18}},
+{name:'REDLINE',icon:'UP',desc:'Damage +12%',effect:{damage:.12}},
+{name:'DOUBLE STRIKE',icon:'Ⅱ',desc:'8% chance to strike twice',detail:'攻撃が8%の確率で2回分のダメージを与える。',effects:['Double Strike Chance +8%','Second hit deals full damage'],effect:{doubleStrikeChance:.08}},
+{name:'EXECUTION',icon:'KO',desc:'Execute weakened targets',detail:'HP15%以下の敵へのダメージを大幅に増加。',effects:['Execute threshold: 15% HP','Damage below threshold +50%'],effect:{executeThreshold:.15,executeBonus:.50}},
+{name:'BERSERK CORE',icon:'BRK',desc:'Low HP = faster & stronger',effects:['Below 35% HP: Damage +25%','Below 35% HP: Attack Speed +15%'],effect:{berserkDamage:.25,berserkRate:.15}},
+{name:'HUNTER EDGE',icon:'HNT',desc:'Elite/Boss Damage +20%',effect:{eliteDamage:.20}},
+{name:'OMEGA ASSAULT',icon:'Ω',desc:'Massive offensive core',effects:['Damage +20%','Attack Speed +12%','Double Strike +5%'],major:true,effect:{damage:.20,attackRate:.12,doubleStrikeChance:.05}}
+],
+projectile:[
+{name:'BALLISTICS',icon:'>>',desc:'Projectile Speed +15%',effect:{projectileSpeed:.15}},
+{name:'PIERCE SHOT',icon:'P+',desc:'Pierce +2',effect:{pierceAdd:2}},
+{name:'PROJECTILE +1',icon:'+1',desc:'Fire +1 projectile',detail:'弾を使用する攻撃の発射数を1つ追加する。',effect:{extraProjectiles:1}},
+{name:'SPLIT SHOT',icon:'Y',desc:'18% chance to split on hit',effects:['Split Chance +18%','Creates 2 child shots'],effect:{splitChance:.18}},
+{name:'RICOCHET',icon:'↗',desc:'20% chance to ricochet',effects:['Ricochet Chance +20%','Ricochet +1 target'],effect:{ricochetChance:.20,ricochetCount:1}},
+{name:'MULTI SHOT',icon:'+1',desc:'Fire another +1 projectile',effect:{extraProjectiles:1}},
+{name:'BLAST MATRIX',icon:'AOE',desc:'Explosion Radius +18%',effect:{explosionRadius:.18}},
+{name:'MISSILE SWARM',icon:'MSL',desc:'Missile Count +2',effect:{missileExtra:2}},
+{name:'LASER WIDTH',icon:'LSR',desc:'Laser Width +25%',effect:{laserWidth:.25}},
+{name:'OMEGA VOLLEY',icon:'ΩV',desc:'Projectile system evolution',effects:['Projectile +1','Projectile Damage +15%','Missiles +2'],major:true,effect:{extraProjectiles:1,projectileDamage:.15,missileExtra:2}}
+],
+ability:[
+{name:'ABILITY CLOCK',icon:'CD',desc:'Skill Cooldown -10%',effect:{specialCd:.10}},
+{name:'SHOCK BURST',icon:'⚡',desc:'BREAK milestones discharge lightning',detail:'BREAKが25の倍数に到達するたび周囲へ雷を放つ。',effect:{shockBurst:1}},
+{name:'DASH STRIKE',icon:'DSH',desc:'DASH creates an attack burst',effects:['Dash impact damage 75%','Dash impact area attack'],effect:{dashStrike:.75}},
+{name:'VAMP STRIKE',icon:'HP',desc:'Kills restore 0.8% Max HP',effect:{killHeal:.008}},
+{name:'HUNTER MARK',icon:'◎',desc:'Elite/Boss Damage +15%',effect:{eliteDamage:.15}},
+{name:'ORBITAL SHOT',icon:'ORB',desc:'8% kill chance: orbital blast',effect:{orbitalChance:.08}},
+{name:'PHASE ROUND',icon:'PHS',desc:'Pierce +3 / Speed +10%',effect:{pierceAdd:3,projectileSpeed:.10}},
+{name:'OVERHEAT',icon:'HOT',desc:'BREAK 25+: Attack Speed +15%',effect:{breakAttackRate:.15}},
+{name:'ABILITY DRIVE',icon:'CD',desc:'Skill Cooldown -15%',effect:{specialCd:.15}},
+{name:'ROYAL SKYFALL',icon:'★',desc:'ULT triggers an extra skyfall',detail:'ULT発動後に追加の全方位攻撃を発生させる。',effects:['ULT bonus attack unlocked','12-way energy burst'],major:true,effect:{omegaVolley:1}}
+],
+break:[
+{name:'CHAIN MEMORY',icon:'MEM',desc:'BREAK Grace +0.25s',effect:{breakGrace:.25}},
+{name:'FEVER EXTEND',icon:'FVR',desc:'FEVER +1.0s',effect:{feverDuration:1}},
+{name:'BREAK PROFIT',icon:'$',desc:'BREAK Coins +10%',effect:{breakCoin:.10}},
+{name:'BREAK CHARGE',icon:'ULT',desc:'ULT Gain +12%',effect:{ultGain:.12}},
+{name:'FRENZY',icon:'SPD',desc:'BREAK 25+: Speed +10%',effect:{breakAttackRate:.10}},
+{name:'BREAK POWER',icon:'DMG',desc:'BREAK 25+: Damage +15%',effect:{breakDamage:.15}},
+{name:'UNBROKEN',icon:'∞',desc:'BREAK Grace +0.45s',effect:{breakGrace:.45}},
+{name:'FEVER ENGINE',icon:'F+',desc:'FEVER +1.5s',effect:{feverDuration:1.5}},
+{name:'OVERDRIVE',icon:'OD',desc:'BREAK Damage/Speed +15%',effect:{breakDamage:.15,breakAttackRate:.15}},
+{name:'MAXIMUM BREAK',icon:'MAX',desc:'Peak BREAK evolution',effects:['FEVER +2s','BREAK Coins +25%','BREAK Damage +20%'],major:true,effect:{feverDuration:2,breakCoin:.25,breakDamage:.20}}
+],
+mobility:[
+{name:'VECTOR DRIVE',icon:'MOV',desc:'Move Speed +6%',effect:{move:.06}},
+{name:'VITAL FRAME',icon:'HP',desc:'Max HP +15',effect:{maxHp:15}},
+{name:'MAGNET FIELD',icon:'MAG',desc:'Pickup Range +20%',effect:{pickupRange:.20}},
+{name:'DASH CLOCK',icon:'CD',desc:'DASH Cooldown -10%',effect:{dashCd:.10}},
+{name:'LONG STEP',icon:'>>',desc:'DASH Distance +15%',effect:{dashDistance:.15}},
+{name:'PHASE FRAME',icon:'INV',desc:'DASH Invuln +0.05s',effect:{dashInvuln:.05}},
+{name:'AFTERIMAGE',icon:'AFX',desc:'DASH impact grows +25%',effect:{dashStrike:.25}},
+{name:'COMBAT FLOW',icon:'FLW',desc:'Move +10% / Attack Speed +5%',effect:{move:.10,attackRate:.05}},
+{name:'MAGNET CORE',icon:'MAG',desc:'Pickup Range +35%',effect:{pickupRange:.35}},
+{name:'PHASE DRIVE',icon:'PHZ',desc:'Advanced mobility core',effects:['Move +15%','DASH CD -15%','DASH Distance +20%'],major:true,effect:{move:.15,dashCd:.15,dashDistance:.20}}
+],
+control:[
+{name:'AREA MATRIX',icon:'AOE',desc:'Attack Area +10%',effect:{area:.10}},
+{name:'WIDE FIELD',icon:'AOE',desc:'Attack Area +10%',effect:{area:.10}},
+{name:'CHAIN RANGE',icon:'⚡',desc:'Lightning Range +15%',effect:{chainRange:.15}},
+{name:'EXPLOSION SIZE',icon:'EXP',desc:'Explosion Radius +15%',effect:{explosionRadius:.15}},
+{name:'LASER ARC',icon:'LSR',desc:'Laser Width +15%',effect:{laserWidth:.15}},
+{name:'CHAIN LINK',icon:'+2',desc:'Lightning Links +2',effect:{chainLinks:2}},
+{name:'SHOCK RANGE',icon:'RNG',desc:'Lightning Range +20%',effect:{chainRange:.20}},
+{name:'DOMAIN',icon:'AOE',desc:'Attack Area +15%',effect:{area:.15}},
+{name:'TARGET DRIVE',icon:'SPD',desc:'Projectile Speed +15%',effect:{projectileSpeed:.15}},
+{name:'DOMAIN CORE',icon:'DOM',desc:'All range systems expanded',effects:['Attack Area +20%','Explosion Radius +20%','Laser Width +15%','Lightning Range +15%'],major:true,effect:{area:.20,explosionRadius:.20,laserWidth:.15,chainRange:.15}}
+]};
 const CORE_NODES=[
-  {id:'core',branch:'core',name:'SURVIVOR CORE',desc:'CORE GRID ONLINE',x:640,y:450,requires:[],cost:0,currency:'coin',major:true,effect:{}},
-
-  {id:'p1',branch:'power',name:'FORCE AMP',desc:'Damage +10%',x:510,y:450,requires:['core'],cost:350,currency:'coin',effect:{damage:.10}},
-  {id:'p2',branch:'power',name:'RAPID CHAMBER',desc:'Attack Speed +8%',x:390,y:380,requires:['p1'],cost:850,currency:'coin',effect:{attackRate:.08}},
-  {id:'p3',branch:'power',name:'CRITICAL LINK',desc:'CRIT Chance +4%',x:390,y:520,requires:['p1'],cost:950,currency:'coin',effect:{critChance:.04}},
-  {id:'p4',branch:'power',name:'OVERCLOCK',desc:'Damage +15%',x:275,y:450,requires:['p2','p3'],cost:2200,currency:'coin',effect:{damage:.15}},
-  {id:'p5',branch:'power',name:'AREA MATRIX',desc:'Attack Area +12%',x:165,y:365,requires:['p4'],cost:4200,currency:'coin',effect:{area:.12}},
-  {id:'p6',branch:'power',name:'CRIT DRIVE',desc:'CRIT Damage +25%',x:165,y:535,requires:['p4'],cost:4800,currency:'coin',effect:{critDamage:.25}},
-  {id:'p7',branch:'power',name:'REDLINE FEED',desc:'Attack Speed +12%',x:275,y:610,requires:['p3'],cost:7500,currency:'coin',effect:{attackRate:.12}},
-  {id:'p8',branch:'power',name:'REDLINE CORE',desc:'Damage +25% / CRIT +5%',x:70,y:450,requires:['p5','p6','p7'],cost:250,currency:'gem',major:true,effect:{damage:.25,critChance:.05}},
-
-  {id:'b1',branch:'break',name:'CHAIN MEMORY',desc:'BREAK Grace +0.25s',x:640,y:335,requires:['core'],cost:350,currency:'coin',effect:{breakGrace:.25}},
-  {id:'b2',branch:'break',name:'LOOT LINK',desc:'Coins +10%',x:565,y:235,requires:['b1'],cost:900,currency:'coin',effect:{coin:.10}},
-  {id:'b3',branch:'break',name:'MOMENTUM CELL',desc:'BREAK Grace +0.35s',x:715,y:235,requires:['b1'],cost:1100,currency:'coin',effect:{breakGrace:.35}},
-  {id:'b4',branch:'break',name:'FEVER ENGINE',desc:'FEVER +1.0s',x:640,y:135,requires:['b2','b3'],cost:2800,currency:'coin',effect:{feverDuration:1}},
-  {id:'b5',branch:'break',name:'CHAIN CHARGE',desc:'ULT Gain +12%',x:500,y:135,requires:['b2'],cost:3600,currency:'coin',effect:{ultGain:.12}},
-  {id:'b6',branch:'break',name:'PROFIT LOOP',desc:'Coins +15%',x:780,y:135,requires:['b3'],cost:4200,currency:'coin',effect:{coin:.15}},
-  {id:'b7',branch:'break',name:'UNBROKEN',desc:'BREAK Grace +0.50s',x:555,y:55,requires:['b4','b5'],cost:7200,currency:'coin',effect:{breakGrace:.50}},
-  {id:'b8',branch:'break',name:'MAXIMUM BREAK',desc:'FEVER +2s / BREAK Coins +25%',x:725,y:55,requires:['b4','b6'],cost:300,currency:'gem',major:true,effect:{feverDuration:2,breakCoin:.25}},
-
-  {id:'u1',branch:'ult',name:'CAPACITOR',desc:'ULT Gain +12%',x:770,y:450,requires:['core'],cost:400,currency:'coin',effect:{ultGain:.12}},
-  {id:'u2',branch:'ult',name:'STABILIZER',desc:'Max HP +15',x:890,y:380,requires:['u1'],cost:950,currency:'coin',effect:{maxHp:15}},
-  {id:'u3',branch:'ult',name:'RESERVE CELL',desc:'Keep 5% ULT after use',x:890,y:520,requires:['u1'],cost:1200,currency:'coin',effect:{ultRetain:.05}},
-  {id:'u4',branch:'ult',name:'RESONANCE',desc:'ULT Gain +18%',x:1005,y:450,requires:['u2','u3'],cost:3000,currency:'coin',effect:{ultGain:.18}},
-  {id:'u5',branch:'ult',name:'DEEP RESERVE',desc:'Keep +10% ULT after use',x:1115,y:365,requires:['u4'],cost:4800,currency:'coin',effect:{ultRetain:.10}},
-  {id:'u6',branch:'ult',name:'LIFE RETURN',desc:'ULT heals 8% Max HP',x:1115,y:535,requires:['u4'],cost:5200,currency:'coin',effect:{ultHeal:.08}},
-  {id:'u7',branch:'ult',name:'FAST CHARGE',desc:'ULT Gain +25%',x:1005,y:610,requires:['u3'],cost:7600,currency:'coin',effect:{ultGain:.25}},
-  {id:'u8',branch:'ult',name:'OMEGA CAPACITOR',desc:'Keep +15% / heal +12%',x:1210,y:450,requires:['u5','u6','u7'],cost:350,currency:'gem',major:true,effect:{ultRetain:.15,ultHeal:.12}},
-
-  {id:'m1',branch:'mobility',name:'VECTOR DRIVE',desc:'Move Speed +8%',x:640,y:565,requires:['core'],cost:300,currency:'coin',effect:{move:.08}},
-  {id:'m2',branch:'mobility',name:'VITAL FRAME',desc:'Max HP +20',x:565,y:670,requires:['m1'],cost:900,currency:'coin',effect:{maxHp:20}},
-  {id:'m3',branch:'mobility',name:'MAGNET FIELD',desc:'Pickup Range +20%',x:715,y:670,requires:['m1'],cost:950,currency:'coin',effect:{pickupRange:.20}},
-  {id:'m4',branch:'mobility',name:'DASH CLOCK',desc:'DASH Cooldown -10%',x:640,y:770,requires:['m2','m3'],cost:2600,currency:'coin',effect:{dashCd:.10}},
-  {id:'m5',branch:'mobility',name:'LONG STEP',desc:'DASH Distance +15%',x:500,y:770,requires:['m2'],cost:3500,currency:'coin',effect:{dashDistance:.15}},
-  {id:'m6',branch:'mobility',name:'PHASE FRAME',desc:'DASH Invuln +0.05s',x:780,y:770,requires:['m3'],cost:3900,currency:'coin',effect:{dashInvuln:.05}},
-  {id:'m7',branch:'mobility',name:'LIGHT FRAME',desc:'Move +12% / HP +20',x:555,y:850,requires:['m4','m5'],cost:7000,currency:'coin',effect:{move:.12,maxHp:20}},
-  {id:'m8',branch:'mobility',name:'PHASE DRIVE',desc:'DASH CD -15% / Distance +20%',x:725,y:850,requires:['m4','m6'],cost:300,currency:'gem',major:true,effect:{dashCd:.15,dashDistance:.20,pickupRange:.30}}
+{id:'core',branch:'core',name:'SURVIVOR CORE',icon:'◆',desc:'CORE GRID ONLINE',detail:'すべての恒久強化の起点。',effects:['CORE GRID ONLINE'],x:CORE_CENTER.x,y:CORE_CENTER.y,requires:[],cost:0,currency:'coin',major:true,effect:{}},
+...makeCoreBranch('a','assault',-90,CORE_NODE_DEFS.assault),
+...makeCoreBranch('p','projectile',-30,CORE_NODE_DEFS.projectile),
+...makeCoreBranch('s','ability',30,CORE_NODE_DEFS.ability),
+...makeCoreBranch('b','break',90,CORE_NODE_DEFS.break),
+...makeCoreBranch('m','mobility',150,CORE_NODE_DEFS.mobility),
+...makeCoreBranch('c','control',210,CORE_NODE_DEFS.control)
 ];
 const CORE_NODE_MAP=Object.fromEntries(CORE_NODES.map(n=>[n.id,n]));
-let adminCoreManual=false;
-let coreEffectsCache=null;
-
+let adminCoreManual=false,coreEffectsCache=null,selectedCoreId='core',coreFilter='all';
 function coreUnlocked(id){return id==='core'||!!save.coreGrid?.unlocked?.[id]}
 function coreRequirementsMet(node){return (node.requires||[]).every(coreUnlocked)}
 function rebuildCoreEffects(){
-  const fx={
-    damageMul:1,attackRateMul:1,maxHpAdd:0,moveMul:1,areaMul:1,coinMul:1,
-    critChance:0,critDamage:0,breakGrace:0,feverDuration:0,breakCoinMul:1,
-    ultGainMul:1,ultRetain:0,ultHeal:0,dashCooldownMul:1,dashDistanceMul:1,
-    dashInvulnAdd:0,pickupRangeMul:1
-  };
-  let damage=0,attackRate=0,move=0,area=0,coin=0,breakCoin=0,ultGain=0,dashCd=0,dashDistance=0,pickupRange=0;
-  for(const node of CORE_NODES){
-    if(!coreUnlocked(node.id))continue;
-    const e=node.effect||{};
-    damage+=e.damage||0;attackRate+=e.attackRate||0;move+=e.move||0;area+=e.area||0;coin+=e.coin||0;
-    breakCoin+=e.breakCoin||0;ultGain+=e.ultGain||0;dashCd+=e.dashCd||0;dashDistance+=e.dashDistance||0;pickupRange+=e.pickupRange||0;
-    fx.maxHpAdd+=e.maxHp||0;fx.critChance+=e.critChance||0;fx.critDamage+=e.critDamage||0;
-    fx.breakGrace+=e.breakGrace||0;fx.feverDuration+=e.feverDuration||0;fx.ultRetain+=e.ultRetain||0;fx.ultHeal+=e.ultHeal||0;
-    fx.dashInvulnAdd+=e.dashInvuln||0;
-  }
-  fx.damageMul=1+damage;fx.attackRateMul=1+attackRate;fx.moveMul=1+move;fx.areaMul=1+area;fx.coinMul=1+coin;
-  fx.breakCoinMul=1+breakCoin;fx.ultGainMul=1+ultGain;fx.dashCooldownMul=Math.max(.35,1-dashCd);
-  fx.dashDistanceMul=1+dashDistance;fx.pickupRangeMul=1+pickupRange;
-  coreEffectsCache=fx;
-  return fx;
+ const fx={damageMul:1,attackRateMul:1,maxHpAdd:0,moveMul:1,areaMul:1,coinMul:1,critChance:0,critDamage:0,breakGrace:0,feverDuration:0,breakCoinMul:1,
+ ultGainMul:1,ultRetain:0,ultHeal:0,dashCooldownMul:1,dashDistanceMul:1,dashInvulnAdd:0,pickupRangeMul:1,projectileSpeedMul:1,projectileDamageMul:1,
+ pierceAdd:0,extraProjectiles:0,ricochetChance:0,ricochetCount:0,splitChance:0,explosionRadiusMul:1,missileExtra:0,laserWidthMul:1,chainRangeMul:1,chainLinks:0,
+ doubleStrikeChance:0,executeThreshold:0,executeBonus:0,eliteDamage:0,berserkDamage:0,berserkRate:0,breakAttackRate:0,breakDamage:0,specialCooldownMul:1,
+ dashStrike:0,killHeal:0,orbitalChance:0,shockBurst:false,omegaVolley:false};
+ let damage=0,attackRate=0,move=0,area=0,coin=0,breakCoin=0,ultGain=0,dashCd=0,dashDistance=0,pickupRange=0,projectileSpeed=0,projectileDamage=0,explosionRadius=0,laserWidth=0,chainRange=0,specialCd=0;
+ for(const node of CORE_NODES){if(!coreUnlocked(node.id))continue;const e=node.effect||{};
+  damage+=e.damage||0;attackRate+=e.attackRate||0;move+=e.move||0;area+=e.area||0;coin+=e.coin||0;breakCoin+=e.breakCoin||0;ultGain+=e.ultGain||0;dashCd+=e.dashCd||0;dashDistance+=e.dashDistance||0;pickupRange+=e.pickupRange||0;
+  projectileSpeed+=e.projectileSpeed||0;projectileDamage+=e.projectileDamage||0;explosionRadius+=e.explosionRadius||0;laserWidth+=e.laserWidth||0;chainRange+=e.chainRange||0;specialCd+=e.specialCd||0;
+  fx.maxHpAdd+=e.maxHp||0;fx.critChance+=e.critChance||0;fx.critDamage+=e.critDamage||0;fx.breakGrace+=e.breakGrace||0;fx.feverDuration+=e.feverDuration||0;fx.ultRetain+=e.ultRetain||0;fx.ultHeal+=e.ultHeal||0;
+  fx.dashInvulnAdd+=e.dashInvuln||0;fx.pierceAdd+=e.pierceAdd||0;fx.extraProjectiles+=e.extraProjectiles||0;fx.ricochetChance+=e.ricochetChance||0;fx.ricochetCount+=e.ricochetCount||0;fx.splitChance+=e.splitChance||0;
+  fx.missileExtra+=e.missileExtra||0;fx.chainLinks+=e.chainLinks||0;fx.doubleStrikeChance+=e.doubleStrikeChance||0;fx.executeThreshold=Math.max(fx.executeThreshold,e.executeThreshold||0);fx.executeBonus+=e.executeBonus||0;fx.eliteDamage+=e.eliteDamage||0;
+  fx.berserkDamage+=e.berserkDamage||0;fx.berserkRate+=e.berserkRate||0;fx.breakAttackRate+=e.breakAttackRate||0;fx.breakDamage+=e.breakDamage||0;fx.dashStrike+=e.dashStrike||0;fx.killHeal+=e.killHeal||0;fx.orbitalChance+=e.orbitalChance||0;fx.shockBurst=fx.shockBurst||!!e.shockBurst;fx.omegaVolley=fx.omegaVolley||!!e.omegaVolley;
+ }
+ fx.damageMul=1+damage;fx.attackRateMul=1+attackRate;fx.moveMul=1+move;fx.areaMul=1+area;fx.coinMul=1+coin;fx.breakCoinMul=1+breakCoin;fx.ultGainMul=1+ultGain;fx.dashCooldownMul=Math.max(.35,1-dashCd);fx.dashDistanceMul=1+dashDistance;fx.pickupRangeMul=1+pickupRange;
+ fx.projectileSpeedMul=1+projectileSpeed;fx.projectileDamageMul=1+projectileDamage;fx.explosionRadiusMul=1+explosionRadius;fx.laserWidthMul=1+laserWidth;fx.chainRangeMul=1+chainRange;fx.specialCooldownMul=Math.max(.35,1-specialCd);coreEffectsCache=fx;return fx;
 }
 function getCoreEffects(){return coreEffectsCache||rebuildCoreEffects()}
 function unlockedCoreCount(){return CORE_NODES.filter(n=>coreUnlocked(n.id)).length}
@@ -7537,96 +7508,44 @@ function setAttack(id){
 }
 
 function updateCoreWallet(){
-  const c=document.getElementById('coreCoins'),g=document.getElementById('coreGems'),n=document.getElementById('coreCount');
-  if(c)c.textContent=(save.coins||0).toLocaleString();
-  if(g)g.textContent=(save.gems||0).toLocaleString();
-  if(n)n.textContent=unlockedCoreCount();
+ const c=document.getElementById('coreCoins'),g=document.getElementById('coreGems'),n=document.getElementById('coreCount'),t=document.getElementById('coreTotal');
+ if(c)c.textContent=(save.coins||0).toLocaleString();if(g)g.textContent=(save.gems||0).toLocaleString();if(n)n.textContent=unlockedCoreCount();if(t)t.textContent=CORE_NODES.length;
 }
-function coreNodeStatus(node){
-  if(coreUnlocked(node.id))return 'owned';
-  if(adminCoreManual)return 'adminTarget';
-  return coreRequirementsMet(node)?'available':'locked';
-}
-function coreCostText(node){
-  if(node.id==='core')return 'ONLINE';
-  return (node.currency==='gem'?'💎 ':'🪙 ')+(node.cost||0).toLocaleString();
-}
+function coreNodeStatus(node){if(coreUnlocked(node.id))return 'owned';if(adminCoreManual)return 'adminTarget';return coreRequirementsMet(node)?'available':'locked'}
+function coreCostText(node){if(node.id==='core')return 'ONLINE';return (node.currency==='gem'?'💎 ':'🪙 ')+(node.cost||0).toLocaleString()}
 function purchaseCoreNode(id){
-  const node=CORE_NODE_MAP[id];if(!node||coreUnlocked(id))return;
-  if(adminCoreManual){
-    save.coreGrid.unlocked[id]=true;
-  }else{
-    if(!coreRequirementsMet(node)){
-      showGrowthToast('CORE LOCKED','接続されたCOREを先に解放してください');
-      return;
-    }
-    const key=node.currency==='gem'?'gems':'coins';
-    if((save[key]||0)<node.cost){
-      showGrowthToast('NOT ENOUGH '+(node.currency==='gem'?'GEMS':'COINS'),coreCostText(node)+' REQUIRED');
-      return;
-    }
-    save[key]-=node.cost;
-    save.coreGrid.unlocked[id]=true;
-  }
-  coreEffectsCache=null;
-  persist();ps=playerStats();player.hp=Math.min(player.hp,ps.maxHp);
-  buildShop();updateHud();
-  requestAnimationFrame(()=>{
-    const el=document.querySelector('[data-core-id="'+id+'"]');
-    if(el){el.classList.add('unlockFlash');setTimeout(()=>el.classList.remove('unlockFlash'),420)}
-  });
-  showGrowthToast(adminCoreManual?'ADMIN CORE UNLOCK':'CORE UNLOCKED',node.name);
+ const node=CORE_NODE_MAP[id];if(!node||coreUnlocked(id))return;
+ if(adminCoreManual)save.coreGrid.unlocked[id]=true;
+ else{if(!coreRequirementsMet(node)){showGrowthToast('CORE LOCKED','接続されたCOREを先に解放してください');return}const key=node.currency==='gem'?'gems':'coins';if((save[key]||0)<node.cost){showGrowthToast('NOT ENOUGH '+(node.currency==='gem'?'GEMS':'COINS'),coreCostText(node)+' REQUIRED');return}save[key]-=node.cost;save.coreGrid.unlocked[id]=true}
+ coreEffectsCache=null;persist();ps=playerStats();player.hp=Math.min(player.hp,ps.maxHp);buildShop();updateHud();selectedCoreId=id;selectCoreNode(id);
+ requestAnimationFrame(()=>{const el=document.querySelector('[data-core-id="'+id+'"]');if(el){el.classList.add('unlockFlash');setTimeout(()=>el.classList.remove('unlockFlash'),420)}});showGrowthToast(adminCoreManual?'ADMIN CORE UNLOCK':'CORE UNLOCKED',node.name);
 }
+function coreBranchColor(node){return (CORE_BRANCHES[node?.branch]||CORE_BRANCHES.core).color}
+function updateCoreDetails(id=selectedCoreId){
+ const node=CORE_NODE_MAP[id]||CORE_NODE_MAP.core;selectedCoreId=node.id;const branch=CORE_BRANCHES[node.branch]||CORE_BRANCHES.core,status=coreNodeStatus(node);
+ const icon=document.getElementById('coreDetailIcon');if(icon){icon.textContent=node.icon||'◆';icon.style.setProperty('--detailColor',branch.color)}
+ const panel=document.querySelector('.treeDetails');if(panel)panel.style.setProperty('--detailColor',branch.color);
+ document.getElementById('coreDetailName').textContent=node.name;document.getElementById('coreDetailType').textContent=branch.name+(node.major?' // MAJOR NODE':' // NODE');
+ const se=document.getElementById('coreDetailStatus');se.textContent=status==='owned'?'UNLOCKED':status==='available'?'AVAILABLE':adminCoreManual?'ADMIN FORCE UNLOCK':'LOCKED';se.style.color=status==='owned'?'#7df6a4':status==='available'?'#8eeaff':status==='adminTarget'?'#ffd080':'#ff8a94';
+ document.getElementById('coreDetailDesc').textContent=node.detail||node.desc||'';document.getElementById('coreDetailEffects').innerHTML=(node.effects||[node.desc]).map(x=>'<div class="goodLine">+ '+x+'</div>').join('');
+ const req=document.getElementById('coreDetailReqs');req.innerHTML=node.id==='core'?'<div class="goodLine">✓ ROOT NODE</div>':(node.requires||[]).map(r=>{const p=CORE_NODE_MAP[r],ok=coreUnlocked(r);return '<div class="'+(ok?'goodLine':'badLine')+'">'+(ok?'✓ ':'✕ ')+(p?.name||r)+'</div>'}).join('');
+ document.getElementById('coreDetailCost').textContent=coreCostText(node);const btn=document.getElementById('coreConfirmBtn');
+ if(node.id==='core'||status==='owned'){btn.disabled=true;btn.textContent='UNLOCKED'}else if(adminCoreManual){btn.disabled=false;btn.textContent='ADMIN FORCE UNLOCK'}else if(status==='locked'){btn.disabled=true;btn.textContent='REQUIREMENTS NOT MET'}else{btn.disabled=false;btn.textContent='CONFIRM UPGRADE'}
+ document.querySelectorAll('.coreNode').forEach(el=>el.classList.toggle('selected',el.dataset.coreId===node.id));
+}
+function selectCoreNode(id){selectedCoreId=id;updateCoreDetails(id)}
+function applyCoreFilter(){document.querySelectorAll('.coreNode').forEach(el=>{const n=CORE_NODE_MAP[el.dataset.coreId];el.classList.toggle('filtered',coreFilter!=='all'&&n?.branch!==coreFilter&&n?.id!=='core')});document.querySelectorAll('[data-core-filter]').forEach(b=>b.classList.toggle('active',b.dataset.coreFilter===coreFilter))}
 function buildShop(){
-  const wrap=document.getElementById('upgradeList'),svg=document.getElementById('coreLinks');
-  if(!wrap||!svg)return;
-  wrap.innerHTML='';svg.innerHTML='';
-  const ns='http://www.w3.org/2000/svg';
-
-  for(const node of CORE_NODES){
-    for(const reqId of node.requires||[]){
-      const from=CORE_NODE_MAP[reqId];if(!from)continue;
-      const line=document.createElementNS(ns,'line');
-      line.setAttribute('x1',from.x);line.setAttribute('y1',from.y);line.setAttribute('x2',node.x);line.setAttribute('y2',node.y);
-      let cls='coreLink';
-      if(coreUnlocked(from.id)&&coreUnlocked(node.id))cls+=' owned';
-      else if(coreUnlocked(from.id)&&(adminCoreManual||coreRequirementsMet(node)))cls+=' available';
-      line.setAttribute('class',cls);svg.appendChild(line);
-    }
-  }
-
-  for(const node of CORE_NODES){
-    const branch=CORE_BRANCHES[node.branch]||CORE_BRANCHES.core;
-    const status=coreNodeStatus(node);
-    const b=document.createElement('button');
-    b.className='coreNode '+status+(node.major?' major':'');
-    b.dataset.coreId=node.id;
-    b.style.left=node.x+'px';b.style.top=node.y+'px';b.style.setProperty('--coreColor',branch.color);
-    b.innerHTML=
-      '<div class="nodeType">'+branch.name+(node.major?' // CORE':'')+'</div>'+
-      '<div class="nodeName">'+node.name+'</div>'+
-      '<div class="nodeDesc">'+node.desc+'</div>'+
-      '<div class="nodeCost">'+(status==='owned'?'✓ UNLOCKED':adminCoreManual?'ADMIN // TAP TO UNLOCK':coreCostText(node))+'</div>';
-    if(node.id==='core')b.disabled=true;
-    else b.onclick=()=>purchaseCoreNode(node.id);
-    wrap.appendChild(b);
-  }
-
-  document.getElementById('coreAdminBanner')?.classList.toggle('show',adminCoreManual);
-  updateCoreWallet();
+ const wrap=document.getElementById('upgradeList'),svg=document.getElementById('coreLinks');if(!wrap||!svg)return;wrap.innerHTML='';svg.innerHTML='';const ns='http://www.w3.org/2000/svg';
+ for(const node of CORE_NODES)for(const reqId of node.requires||[]){const from=CORE_NODE_MAP[reqId];if(!from)continue;const line=document.createElementNS(ns,'line');line.setAttribute('x1',from.x);line.setAttribute('y1',from.y);line.setAttribute('x2',node.x);line.setAttribute('y2',node.y);line.style.setProperty('--linkColor',coreBranchColor(node));let cls='coreLink';if(coreUnlocked(from.id)&&coreUnlocked(node.id))cls+=' owned';else if(coreUnlocked(from.id)&&(adminCoreManual||coreRequirementsMet(node)))cls+=' available';line.setAttribute('class',cls);svg.appendChild(line)}
+ for(const node of CORE_NODES){const branch=CORE_BRANCHES[node.branch]||CORE_BRANCHES.core,status=coreNodeStatus(node),b=document.createElement('button');b.className='coreNode '+status+(node.major?' major':'');b.dataset.coreId=node.id;b.style.left=node.x+'px';b.style.top=node.y+'px';b.style.setProperty('--coreColor',branch.color);b.innerHTML='<div class="nodeIcon">'+(node.icon||'◆')+'</div><div class="nodeName">'+node.name+'</div><div class="nodeCost">'+(status==='owned'?'✓':adminCoreManual?'ADMIN':coreCostText(node))+'</div>';b.onclick=()=>{if(adminCoreManual&&!coreUnlocked(node.id)&&node.id!=='core')purchaseCoreNode(node.id);else selectCoreNode(node.id)};wrap.appendChild(b)}
+ document.getElementById('coreAdminBanner')?.classList.toggle('show',adminCoreManual);updateCoreWallet();applyCoreFilter();updateCoreDetails(selectedCoreId);
+ const confirm=document.getElementById('coreConfirmBtn');if(confirm)confirm.onclick=()=>purchaseCoreNode(selectedCoreId);
+ document.querySelectorAll('[data-core-filter]').forEach(b=>b.onclick=()=>{coreFilter=b.dataset.coreFilter;applyCoreFilter()});
+ const center=document.getElementById('coreCenterBtn');if(center)center.onclick=centerCoreViewport;const reset=document.getElementById('coreResetViewBtn');if(reset)reset.onclick=()=>{coreFilter='all';selectedCoreId='core';centerCoreViewport();applyCoreFilter();updateCoreDetails('core')};const back=document.getElementById('coreBackBtn');if(back)back.onclick=()=>document.getElementById('closeShop').click();
 }
-function centerCoreViewport(){
-  const v=document.getElementById('coreViewport');if(!v)return;
-  v.scrollLeft=Math.max(0,640-v.clientWidth/2);
-  v.scrollTop=Math.max(0,450-v.clientHeight/2);
-}
-function syncCoreAdminButton(){
-  const b=document.getElementById('adminCoreManual');if(!b)return;
-  b.textContent='CORE MANUAL: '+(adminCoreManual?'ON':'OFF');
-  b.classList.toggle('active',adminCoreManual);
-  b.classList.toggle('gold',adminCoreManual);
-}
-
+function centerCoreViewport(){const v=document.getElementById('coreViewport');if(!v)return;v.scrollLeft=Math.max(0,CORE_CENTER.x-v.clientWidth/2);v.scrollTop=Math.max(0,CORE_CENTER.y-v.clientHeight/2)}
+function syncCoreAdminButton(){const b=document.getElementById('adminCoreManual');if(!b)return;b.textContent='CORE MANUAL: '+(adminCoreManual?'ON':'OFF');b.classList.toggle('active',adminCoreManual);b.classList.toggle('gold',adminCoreManual)}
 
 let resultSubscreenOpen=false;
 
