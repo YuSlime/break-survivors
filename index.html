@@ -3180,6 +3180,7 @@ function registerBreakKill(e,meta={}){
   maxBreakCombo=Math.max(maxBreakCombo,breakCombo);
   breakTimer=feverActive()?3.1:BREAK_TIMEOUT+getLbRewardStatMultipliers().breakGrace+getCoreEffects().breakGrace;
 
+  if(getCoreEffects().shockBurst&&breakCombo>0&&breakCombo%25===0)chainLightning(ps.damage*.72,6,{range:220*ps.area,decay:.88,width:3.5,color:'#9dfcff'});
   if(breakCombo===10)showBreakCallout('BREAK ×1.2','KEEP KILLING','#73e8ff');
   else if(breakCombo===25)showBreakCallout('BREAK ×2','COIN DROP ×1.4','#a58cff');
   else if(breakCombo===50)showBreakCallout('BREAK ×3','COIN DROP ×1.75','#ff8bdc');
@@ -3813,7 +3814,10 @@ function damageEnemy(e,dmg,impact=true){
   const hpBefore=e.hp;
   const core=getCoreEffects();
   const crit=impact && Math.random() < Math.min(.65,(feverActive()?.16:.11)+core.critChance);
-  const actualDmg=dmg*(itemBuffs.sword>0?2:1)*(crit?(1.85+core.critDamage):1);
+  let actualDmg=dmg*(itemBuffs.sword>0?2:1)*(crit?(1.85+core.critDamage):1);
+  if((e.type==='elite'||e.type==='boss')&&core.eliteDamage>0)actualDmg*=1+core.eliteDamage;
+  if(core.executeThreshold>0&&e.hp/Math.max(1,e.maxHp)<=core.executeThreshold)actualDmg*=1+core.executeBonus;
+  if(impact&&core.doubleStrikeChance>0&&Math.random()<core.doubleStrikeChance)actualDmg*=2;
   e.hp-=actualDmg;
 
   if(impact){
@@ -3878,6 +3882,10 @@ function killEnemy(e,meta={}){
   }
   maybeSpawnPowerup(e);
   if(e.type==='elite'&&e.eliteVariant==='titan')triggerTitanEliteExplosion(e);
+
+  const core=getCoreEffects();
+  if(core.killHeal>0)player.hp=Math.min(ps.maxHp,player.hp+ps.maxHp*core.killHeal);
+  if(core.orbitalChance>0&&Math.random()<core.orbitalChance)setTimeout(()=>{if(running)explode(e.x,e.y,74*ps.area,ps.damage*.82,'#b983ff',{silent:true,noShake:true})},55);
 
   if(e.type==='treasure'){
     breakCombo+=4;maxBreakCombo=Math.max(maxBreakCombo,breakCombo);breakTimer=Math.max(breakTimer,3);
@@ -5029,16 +5037,23 @@ function nextAttackCount(id){
   return attackCounters[id];
 }
 function addBullet(v,dmg,pierce=6,opts={}){
-  const speed=opts.speed||520, ang=Math.atan2(v.y,v.x)+(opts.angle||0);
-  bullets.push({
-    x:player.x,y:player.y,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed,
-    r:opts.r||5,life:opts.life||1.7,dmg,pierce,kind:opts.kind||'pierce',
-    color:opts.color||null,radius:opts.radius||0,clusterCount:opts.clusterCount||0,
-    royalClusterCount:opts.royalClusterCount||0,chainChance:opts.chainChance||0,
-    aftershock:!!opts.aftershock,nuke:!!opts.nuke,royal:!!opts.royal,
-    bombcat:!!opts.bombcat,bombVisual:!!opts.bombVisual,bombAngle:opts.bombAngle||0,bombSpin:opts.bombSpin||0,
-    gunner:!!opts.gunner,ult:!!opts.ult,trail:opts.trail??!!opts.gunner
-  });
+  const core=getCoreEffects(),baseSpeed=(opts.speed||520)*core.projectileSpeedMul;
+  const baseAng=Math.atan2(v.y,v.x)+(opts.angle||0);
+  const extra=opts.ult||opts.noCoreExtra?0:Math.max(0,Math.floor(core.extraProjectiles||0));
+  const shots=1+extra;
+  for(let i=0;i<shots;i++){
+    const off=shots===1?0:(i-(shots-1)/2)*.085,ang=baseAng+off;
+    bullets.push({
+      x:player.x,y:player.y,vx:Math.cos(ang)*baseSpeed,vy:Math.sin(ang)*baseSpeed,
+      r:opts.r||5,life:opts.life||1.7,dmg:dmg*core.projectileDamageMul,pierce:pierce+core.pierceAdd,kind:opts.kind||'pierce',
+      color:opts.color||null,radius:opts.radius||0,clusterCount:opts.clusterCount||0,
+      royalClusterCount:opts.royalClusterCount||0,chainChance:opts.chainChance||0,
+      aftershock:!!opts.aftershock,nuke:!!opts.nuke,royal:!!opts.royal,
+      bombcat:!!opts.bombcat,bombVisual:!!opts.bombVisual,bombAngle:opts.bombAngle||0,bombSpin:opts.bombSpin||0,
+      gunner:!!opts.gunner,ult:!!opts.ult,trail:opts.trail??!!opts.gunner,
+      ricochetChance:core.ricochetChance,ricochetLeft:core.ricochetCount,splitChance:core.splitChance,splitChild:false
+    });
+  }
 }
 
 function gunnerMuzzle(v,strong=false){
@@ -5088,11 +5103,13 @@ function firePrimary(force=false){
     if(!info.enemy || info.dist>engageRange+info.enemy.r) return;
   }
 
+  const core=getCoreEffects();
   const gunnerRate=(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive())?gunnerMomentumMul():1;
-  const rate=ps.attackRate*(feverActive()?1.35:1)*(itemBuffs.drink>0?2:1)*gunnerRate;
+  const lowHp=player.hp<=ps.maxHp*.35,breakBoost=breakCombo>=25;
+  const rate=ps.attackRate*(feverActive()?1.35:1)*(itemBuffs.drink>0?2:1)*gunnerRate*(lowHp?1+core.berserkRate:1)*(breakBoost?1+core.breakAttackRate:1);
   player.attackCd=1/rate;
   const v=aimVector(); player.angle=Math.atan2(v.y,v.x);
-  const base=ps.damage;
+  const base=ps.damage*(lowHp?1+core.berserkDamage:1)*(breakBoost?1+core.breakDamage:1);
   const own=ownGrowthActive(), lv=growthLv(), br=growthBranch();
   const bladeOwn=attackType==='slash'&&own&&currentCharacter.id==='blademaster';
   const gunnerOwn=attackType==='pierce'&&own&&currentCharacter.id==='gunner';
@@ -5418,6 +5435,7 @@ function spawnBombExplosionFx(x,y,r,color='#ff9f43',opts={}){
   bombExplosionFx.push({x,y,r,color,life:p.total,total:p.total,core:p.core,royal:!!opts.royal,lobes,shards,smoke});
 }
 function explode(x,y,r,dmg,color='#ff9f43',opts={}){
+  r*=getCoreEffects().explosionRadiusMul;
   if(!opts.silent){
     if(opts.bombcat){
       const phase=opts.royal?'royal':opts.cataclysm?'cataclysm':opts.chainReaction?'chain':opts.secondary?'cluster':'normal';
@@ -5446,8 +5464,10 @@ function explode(x,y,r,dmg,color='#ff9f43',opts={}){
 }
 
 function chainLightning(dmg,count=5,opts={}){
+  const core=getCoreEffects();
+  count+=core.chainLinks;
   let src={x:player.x,y:player.y};
-  const used=new Set(), range=opts.range||190*ps.area, decay=opts.decay??.82, hit=[];
+  const used=new Set(), range=(opts.range||190*ps.area)*core.chainRangeMul, decay=opts.decay??.82, hit=[];
   for(let i=0;i<count;i++){
     let target=null,bd=i===0?9999:range;
     for(const e of enemies){
@@ -5706,7 +5726,7 @@ function startNovaArray(){
 
 function doLaser(dmg,angleOffset=0,widthMul=1,color='#65f7ff',quiet=false){
   const av=aimVector(),ang=Math.atan2(av.y,av.x)+angleOffset,v={x:Math.cos(ang),y:Math.sin(ang)};
-  const len=760,width=18*ps.area*(currentCharacter.id==='nova'?1.15:1)*widthMul;
+  const len=760,width=18*ps.area*(currentCharacter.id==='nova'?1.15:1)*widthMul*getCoreEffects().laserWidthMul;
   const x2=player.x+v.x*len,y2=player.y+v.y*len;
   beams.push({x1:player.x,y1:player.y,x2,y2,width,life:.14,total:.14,color});
   for(const e of enemies){
@@ -5727,14 +5747,15 @@ function launchMiniMissile(x,y,dmg,radius){
 function fireMissile(dmg,opts={}){
   const t=nearestEnemy(); if(!t) return;
   if(opts.queen&&currentCharacter.id==='missilequeen'){
-    const profile=getMissileQueenProfile(opts.lv||1,opts.branch,opts.volley||0);
-    const targets=getMissileQueenTargets(profile.count,player.x,player.y,profile.command);
+    const core=getCoreEffects(),profile=getMissileQueenProfile(opts.lv||1,opts.branch,opts.volley||0);
+    const totalCount=profile.count+core.missileExtra;
+    const targets=getMissileQueenTargets(totalCount,player.x,player.y,profile.command);
     if(!targets.length)return;
     const radius=90*ps.area*profile.radiusMul;
     playMissileQueenVolley(opts.volley||0,profile.command);
-    for(let i=0;i<profile.count;i++){
+    for(let i=0;i<totalCount;i++){
       const target=targets[i%targets.length];
-      const side=profile.count===1?0:(i-(profile.count-1)/2)/Math.max(1,(profile.count-1)/2);
+      const side=totalCount===1?0:(i-(totalCount-1)/2)/Math.max(1,(totalCount-1)/2);
       launchQueenMissile({
         target,side,
         speed:profile.speed*(profile.command?profile.commandSpeedMul:1),
@@ -5755,8 +5776,12 @@ function fireMissile(dmg,opts={}){
     muzzle(profile.command?'#fff2a0':'#ffd66b');
     return;
   }
-  missiles.push({x:player.x,y:player.y,vx:rnd(-35,35),vy:rnd(-35,35),target:t,speed:330,turnRate:5.4,life:3,dmg,radius:90*ps.area,
-    microChildren:0,secondStageChildren:0,royal:false,color:'#ffd66b',trail:[],trailTick:0,missileScale:1});
+  const core=getCoreEffects(),alive=enemies.filter(e=>!e.dead),count=1+core.missileExtra;
+  for(let i=0;i<count;i++){
+    const target=alive.length?alive[i%alive.length]:t;
+    missiles.push({x:player.x,y:player.y,vx:rnd(-55,55),vy:rnd(-55,55),target,speed:330*core.projectileSpeedMul,turnRate:5.4,life:3,dmg:dmg*core.projectileDamageMul,radius:90*ps.area,
+      microChildren:0,secondStageChildren:0,royal:false,color:'#ffd66b',trail:[],trailTick:0,missileScale:1});
+  }
   muzzle('#ffd66b');
 }
 function buildRoyalSkyfallPlan(){
@@ -5977,7 +6002,7 @@ function startRoyalSkyfall(){
 
 function useMobileSkill(){
   if(!running||specialCooldown>0||isLbPlayerCombatLocked())return;
-  specialCooldown=6;
+  specialCooldown=6*getCoreEffects().specialCooldownMul;
   specialAttack();
 }
 function useDash(){
@@ -5994,6 +6019,7 @@ function useDash(){
   player.x=clamp(player.x+dx*distance,player.r+WORLD_EDGE_PAD,WORLD_W-player.r-WORLD_EDGE_PAD);
   player.y=clamp(player.y+dy*distance,player.r+WORLD_EDGE_PAD,WORLD_H-player.r-WORLD_EDGE_PAD);
   dashCooldown=2.5*core.dashCooldownMul;dashInvuln=.15+core.dashInvulnAdd;
+  if(core.dashStrike>0)explode(player.x,player.y,86*ps.area,ps.damage*core.dashStrike,'#9f8cff',{silent:true,noShake:true});
   rings.push({x:player.x,y:player.y,r:10,max:68,life:.22,total:.22,color:'#a995ff'});
   for(let i=0;i<(performanceMode?6:14);i++)particles.push({x:player.x,y:player.y,vx:rnd(-150,150),vy:rnd(-150,150),life:rnd(.12,.28),size:rnd(2,5),color:i%2?'#d9d0ff':'#7ebfff'});
 }
@@ -6102,6 +6128,7 @@ function useUltimate(){
   }else if(id==='missilequeen'){
     if(!startRoyalSkyfall()){ultCharge=100;showGrowthToast('NO TARGET','敵が出てから使用できます');return}
   }
+  if(core.omegaVolley)setTimeout(()=>{if(running)radialLaserWave(12,ps.damage*.68,18*ps.area,'#dcb4ff')},520);
 }
 
 function update(dt,refreshHud=true){
@@ -6162,6 +6189,15 @@ function update(dt,refreshHud=true){
         if(!b.hit) b.hit=new Set(); b.hit.add(e);
         damageEnemy(e,b.dmg);
         if(b.gunner)gunnerImpactFx(b,e);
+        if(!b.splitChild&&b.kind!=='explosion'&&b.splitChance>0&&Math.random()<b.splitChance){
+          const baseA=Math.atan2(b.vy,b.vx),spd=Math.hypot(b.vx,b.vy);
+          for(const off of [-.42,.42])bullets.push({...b,x:b.x,y:b.y,vx:Math.cos(baseA+off)*spd,vy:Math.sin(baseA+off)*spd,dmg:b.dmg*.58,pierce:Math.max(1,Math.floor(b.pierce*.5)),life:Math.min(1.1,b.life),hit:new Set(b.hit),splitChild:true,splitChance:0,ricochetLeft:0});
+        }
+        if(b.kind!=='explosion'&&b.ricochetLeft>0&&Math.random()<b.ricochetChance){
+          let target=null,bd=99999;
+          for(const q of enemies){if(q.dead||b.hit?.has(q))continue;const d=Math.hypot(q.x-b.x,q.y-b.y);if(d<bd){bd=d;target=q}}
+          if(target){const spd=Math.hypot(b.vx,b.vy),a=Math.atan2(target.y-b.y,target.x-b.x);b.vx=Math.cos(a)*spd;b.vy=Math.sin(a)*spd;b.ricochetLeft--}
+        }
         if(b.kind==='explosion'){
           const royal=!!(b.royal||b.nuke);
           const boomDmg=b.dmg*1.5*(royal?3.0:1);
