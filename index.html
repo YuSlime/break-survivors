@@ -1695,8 +1695,8 @@
                 <div class="cinemaTapRing"></div>
                 <div class="cinemaCore"></div>
               </div>
-              <div id="cinemaTapText" class="cinemaTapText">CHARGING...</div>
-              <div id="cinemaHint" class="cinemaHint">エネルギーを集めています</div>
+              <div id="cinemaTapText" class="cinemaTapText" data-i18n="gacha.charging">CHARGING...</div>
+              <div id="cinemaHint" class="cinemaHint" data-i18n="gacha.energy">エネルギーを集めています</div>
               <div id="cinemaProgress" class="cinemaProgress"></div>
             </div>
           </div>
@@ -2311,12 +2311,36 @@ en:{
 'core.skillTree':'SKILL TREE:','core.survivor':'SURVIVOR','core.category':'CATEGORY','core.all':'◆ ALL NODES','core.attack':'⚔ ATTACK','core.projectile':'➤ PROJECTILE','core.abilities':'✦ ABILITIES','core.break':'∞ BREAK','core.mobility':'≫ MOBILITY','core.range':'◎ RANGE / CONTROL',
 'core.build':'BUILD YOUR CORE','core.tip':'Permanently upgrade range, projectile count, speed, attack behavior, and special abilities.','core.details':'NODE DETAILS','core.effect':'EFFECT','core.requirements':'REQUIREMENTS','core.cost':'UPGRADE COST','core.center':'◎ CENTER','core.resetView':'↺ RESET VIEW','core.back':'← BACK'
 }};
+Object.assign(I18N.ja,{
+  'result.runEnded':'ラン終了','result.lbFailed':'LIMIT BREAK失敗','result.survived':'生存 {time}',
+  'result.defeatedBy':'撃破原因: {cause}','result.next':'次: {goal} // あと {kills} キル',
+  'result.newKill':'キル記録','result.newTime':'生存時間記録','result.newPrefix':'★ 新記録 ',
+  'gacha.new':'新キャラクター','gacha.duplicate':'重複',
+  'char.notOwned':'未所持','char.equipped':'装備中','char.equip':'装備','char.locked':'ロック',
+  'char.max':'最大レベル','char.levelUp':'レベルアップ','char.weapon':'武器','char.branchChoose':'どちらかを選択',
+  'core.unlocked':'解放済み','core.available':'解放可能','core.locked':'ロック','core.admin':'ADMIN強制解放',
+  'core.confirm':'解放する','core.requirementsNotMet':'条件未達成','core.root':'✓ ルートノード',
+  'core.node':'ノード','core.major':'大型ノード','core.notEnoughCoins':'コイン不足','core.notEnoughGems':'ジェム不足',
+  'gacha.charging':'チャージ中...','gacha.energy':'エネルギーを集めています'
+});
+Object.assign(I18N.en,{
+  'result.runEnded':'RUN ENDED','result.lbFailed':'LIMIT BREAK FAILED','result.survived':'SURVIVED {time}',
+  'result.defeatedBy':'DEFEATED BY {cause}','result.next':'NEXT: {goal} // {kills} KILLS TO GO',
+  'result.newKill':'KILL RECORD','result.newTime':'TIME RECORD','result.newPrefix':'★ NEW ',
+  'gacha.new':'NEW CHARACTER','gacha.duplicate':'DUPLICATE',
+  'char.notOwned':'NOT OWNED','char.equipped':'EQUIPPED','char.equip':'EQUIP','char.locked':'LOCKED',
+  'char.max':'MAX LEVEL','char.levelUp':'LEVEL UP','char.weapon':'Weapon','char.branchChoose':'Choose one',
+  'core.unlocked':'UNLOCKED','core.available':'AVAILABLE','core.locked':'LOCKED','core.admin':'ADMIN FORCE UNLOCK',
+  'core.confirm':'CONFIRM UPGRADE','core.requirementsNotMet':'REQUIREMENTS NOT MET','core.root':'✓ ROOT NODE',
+  'core.node':'NODE','core.major':'MAJOR NODE','core.notEnoughCoins':'NOT ENOUGH COINS','core.notEnoughGems':'NOT ENOUGH GEMS',
+  'gacha.charging':'CHARGING...','gacha.energy':'Gathering energy'
+});
 function tr(key,vars={}){
  let s=(I18N[uiLanguage]&&I18N[uiLanguage][key])??I18N.en[key]??key;
  for(const [k,v] of Object.entries(vars))s=s.replaceAll('{'+k+'}',String(v));
  return s;
 }
-function applyLanguage(){
+function applyLanguageStaticOnly(){
  document.documentElement.lang=uiLanguage==='ja'?'ja':'en';
  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=tr(el.dataset.i18n)});
  document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=tr(el.dataset.i18nHtml)});
@@ -2324,6 +2348,7 @@ function applyLanguage(){
  document.getElementById('languageJa')?.classList.toggle('active',uiLanguage==='ja');
  document.getElementById('languageEn')?.classList.toggle('active',uiLanguage==='en');
 }
+function applyLanguage(){applyLanguageStaticOnly()}
 function setLanguage(lang){
  if(!['ja','en'].includes(lang))return;
  uiLanguage=lang;localStorage.setItem('break_survivors_language',lang);applyLanguage();
@@ -2331,6 +2356,7 @@ function setLanguage(lang){
  if(typeof buildCharacterList==='function')buildCharacterList();
  if(typeof buildShop==='function'&&document.getElementById('shop')?.style.display!=='none')buildShop();
  if(typeof updateHud==='function')updateHud();
+ applyLanguageStaticOnly();
 }
 let joystickMode=localStorage.getItem('break_survivors_joystick_mode')||'floating';
 let controlScale=Math.max(.8,Math.min(1.3,Number(localStorage.getItem('break_survivors_control_scale'))||1));
@@ -6510,7 +6536,7 @@ function buildResultRunProgress(finalKills){
 
   const remain=Math.max(0,next.kills-kills);
   const goal=document.getElementById('resultNextGoal');
-  if(goal)goal.textContent='NEXT: '+next.label+' // '+remain.toLocaleString()+' KILLS TO GO';
+  if(goal)goal.textContent=tr('result.next',{goal:next.label,kills:remain.toLocaleString()});
 }
 
 function animateResultNumber(id,value,prefix='',duration=620){
@@ -6548,8 +6574,8 @@ function endRun(reason='normal'){
   persist();
 
   const failedLb=reason==='limit_break_failed';
-  document.getElementById('deathTitle').textContent=failedLb?'LIMIT BREAK FAILED':'RUN ENDED';
-  document.getElementById('deathSubtitle').textContent='SURVIVED '+formatRunTime(finalTime);
+  document.getElementById('deathTitle').textContent=failedLb?tr('result.lbFailed'):tr('result.runEnded');
+  document.getElementById('deathSubtitle').textContent=tr('result.survived',{time:formatRunTime(finalTime)});
   document.getElementById('deathTime').textContent=formatRunTime(finalTime);
   document.getElementById('deathLimitBreak').textContent=finalLb;
   document.getElementById('deathThreat').textContent=finalThreat;
@@ -6559,9 +6585,9 @@ function endRun(reason='normal'){
 
   const record=document.getElementById('resultRecord');
   const records=[];
-  if(newKillRecord)records.push('KILL RECORD');
-  if(newTimeRecord)records.push('TIME RECORD');
-  record.textContent=records.length?'★ NEW '+records.join(' + ')+' ★':'';
+  if(newKillRecord)records.push(tr('result.newKill'));
+  if(newTimeRecord)records.push(tr('result.newTime'));
+  record.textContent=records.length?tr('result.newPrefix')+records.join(' + ')+' ★':'';
   record.classList.toggle('show',records.length>0);
 
   const icon=document.getElementById('resultCharacterIcon');
@@ -6571,7 +6597,7 @@ function endRun(reason='normal'){
   document.getElementById('resultCharacterName').textContent=currentCharacter.name;
   document.getElementById('resultCharacterMeta').textContent='LV.'+charLevel(currentCharacter.id)+' // '+currentCharacter.rarity;
 
-  let cause='DEFEATED BY '+lastDamageSource;
+  let cause=tr('result.defeatedBy',{cause:lastDamageSource});
   if(failedLb&&finalLbState){
     if(finalLbState.type==='apocalypse'){
       const ph=APOCALYPSE_PHASES[finalLbState.phaseIndex]||APOCALYPSE_PHASES[0];
@@ -7351,12 +7377,12 @@ function buildCharacterList(){
         <div style="min-width:0">
           <b>${c.name}</b>
           <div class="rarity" style="color:${rarityColors[c.rarity]}">${c.rarity.toUpperCase()}</div>
-          <div class="stars">${owned?'★'.repeat(star)+'☆'.repeat(5-star):'LOCKED'}</div>
-          <div class="levelBadge">${owned?'LV.'+lv+' / 50':'NOT OWNED'}</div>
+          <div class="stars">${owned?'★'.repeat(star)+'☆'.repeat(5-star):tr('char.locked')}</div>
+          <div class="levelBadge">${owned?'LV.'+lv+' / 50':tr('char.notOwned')}</div>
         </div>
       </div>
       <div class="small">${c.passive}</div>
-      <div class="small" style="margin-top:4px">Weapon: ${attacks.find(a=>a.id===c.attack).name.replace(/^\d+\.\s*/,'')}</div>
+      <div class="small" style="margin-top:4px">${tr('char.weapon')}: ${attacks.find(a=>a.id===c.attack).name.replace(/^\d+\.\s*/,'')}</div>
       ${owned?`<div class="levelBar"><i style="width:${(lv/50)*100}%"></i></div>`:''}
       <div class="abilityRoad">
         ${gd.nodes.map(n=>{
@@ -7369,7 +7395,7 @@ function buildCharacterList(){
       <div class="milestoneText">${gd.ultimate}</div>
       ${owned&&lv>=20?`
         <div class="branchBox">
-          <div class="small"><b>Lv20 BRANCH</b> ${branchName?'— '+branchName:'— どちらかを選択'}</div>
+          <div class="small"><b>Lv20 BRANCH</b> ${branchName?'— '+branchName:'— '+tr('char.branchChoose')}</div>
           ${!data.branch?`<div class="branchChoices">
             ${Object.entries(gd.branches).map(([k,b])=>`<button class="branchBtn" data-char="${c.id}" data-branch="${k}"><b>${b.name}</b><span>${b.desc}</span></button>`).join('')}
           </div>`:`<div class="small" style="margin-top:6px">${gd.branches[data.branch].desc}</div>
@@ -7378,14 +7404,14 @@ function buildCharacterList(){
     `;
     const actions=document.createElement('div');actions.className='charActions';
     const equip=document.createElement('button');
-    equip.textContent=!owned?'未所持':currentCharacter.id===c.id?'EQUIPPED':'EQUIP';
+    equip.textContent=!owned?tr('char.notOwned'):currentCharacter.id===c.id?tr('char.equipped'):tr('char.equip');
     equip.disabled=!owned||currentCharacter.id===c.id;
     equip.onclick=()=>equipCharacter(c.id);
 
     const train=document.createElement('button');train.className='trainBtn';
-    if(!owned){train.textContent='LOCKED';train.disabled=true}
-    else if(lv>=50){train.textContent='MAX LEVEL';train.disabled=true}
-    else{train.innerHTML=`LEVEL UP<br><span class="small">${charLevelCost(c.id).toLocaleString()} Coins</span>`;train.onclick=()=>levelUpCharacter(c.id)}
+    if(!owned){train.textContent=tr('char.locked');train.disabled=true}
+    else if(lv>=50){train.textContent=tr('char.max');train.disabled=true}
+    else{train.innerHTML=tr('char.levelUp')+`<br><span class="small">${charLevelCost(c.id).toLocaleString()} Coins</span>`;train.onclick=()=>levelUpCharacter(c.id)}
     actions.append(equip,train);card.appendChild(actions);wrap.appendChild(card);
   }
   wrap.querySelectorAll('[data-branch]').forEach(b=>b.onclick=()=>chooseBranch(b.dataset.char,b.dataset.branch));
@@ -7555,7 +7581,7 @@ function makeSummaryCard(r){
     <b>${r.c.name}</b>
     <div class="rarity" style="color:${rarityColors[r.c.rarity]};margin-top:4px">${r.c.rarity.toUpperCase()}</div>
     <div class="stars">${'★'.repeat(r.star)}${'☆'.repeat(5-r.star)}</div>
-    <div class="resultNew">${r.isNew?'NEW CHARACTER':'DUPLICATE'}</div>`;
+    <div class="resultNew">${r.isNew?tr('gacha.new'):tr('gacha.duplicate')}</div>`;
   return d;
 }
 function showGachaSummary(){
@@ -7606,7 +7632,7 @@ function coreCostText(node){if(node.id==='core')return 'ONLINE';return (node.cur
 function purchaseCoreNode(id){
  const node=CORE_NODE_MAP[id];if(!node||coreUnlocked(id))return;
  if(adminCoreManual)save.coreGrid.unlocked[id]=true;
- else{if(!coreRequirementsMet(node)){showGrowthToast('CORE LOCKED','接続されたCOREを先に解放してください');return}const key=node.currency==='gem'?'gems':'coins';if((save[key]||0)<node.cost){showGrowthToast('NOT ENOUGH '+(node.currency==='gem'?'GEMS':'COINS'),coreCostText(node)+' REQUIRED');return}save[key]-=node.cost;save.coreGrid.unlocked[id]=true}
+ else{if(!coreRequirementsMet(node)){showGrowthToast('CORE LOCKED','接続されたCOREを先に解放してください');return}const key=node.currency==='gem'?'gems':'coins';if((save[key]||0)<node.cost){showGrowthToast(tr(node.currency==='gem'?'core.notEnoughGems':'core.notEnoughCoins'),coreCostText(node)+' REQUIRED');return}save[key]-=node.cost;save.coreGrid.unlocked[id]=true}
  coreEffectsCache=null;persist();ps=playerStats();player.hp=Math.min(player.hp,ps.maxHp);buildShop();updateHud();selectedCoreId=id;selectCoreNode(id);
  requestAnimationFrame(()=>{const el=document.querySelector('[data-core-id="'+id+'"]');if(el){el.classList.add('unlockFlash');setTimeout(()=>el.classList.remove('unlockFlash'),420)}});showGrowthToast(adminCoreManual?'ADMIN CORE UNLOCK':'CORE UNLOCKED',node.name);
 }
@@ -7615,12 +7641,12 @@ function updateCoreDetails(id=selectedCoreId){
  const node=CORE_NODE_MAP[id]||CORE_NODE_MAP.core;selectedCoreId=node.id;const branch=CORE_BRANCHES[node.branch]||CORE_BRANCHES.core,status=coreNodeStatus(node);
  const icon=document.getElementById('coreDetailIcon');if(icon){icon.textContent=node.icon||'◆';icon.style.setProperty('--detailColor',branch.color)}
  const panel=document.querySelector('.treeDetails');if(panel)panel.style.setProperty('--detailColor',branch.color);
- document.getElementById('coreDetailName').textContent=node.name;document.getElementById('coreDetailType').textContent=branch.name+(node.major?' // MAJOR NODE':' // NODE');
- const se=document.getElementById('coreDetailStatus');se.textContent=status==='owned'?'UNLOCKED':status==='available'?'AVAILABLE':adminCoreManual?'ADMIN FORCE UNLOCK':'LOCKED';se.style.color=status==='owned'?'#7df6a4':status==='available'?'#8eeaff':status==='adminTarget'?'#ffd080':'#ff8a94';
+ document.getElementById('coreDetailName').textContent=node.name;document.getElementById('coreDetailType').textContent=branch.name+' // '+tr(node.major?'core.major':'core.node');
+ const se=document.getElementById('coreDetailStatus');se.textContent=status==='owned'?tr('core.unlocked'):status==='available'?tr('core.available'):adminCoreManual?tr('core.admin'):tr('core.locked');se.style.color=status==='owned'?'#7df6a4':status==='available'?'#8eeaff':status==='adminTarget'?'#ffd080':'#ff8a94';
  document.getElementById('coreDetailDesc').textContent=node.detail||node.desc||'';document.getElementById('coreDetailEffects').innerHTML=(node.effects||[node.desc]).map(x=>'<div class="goodLine">+ '+x+'</div>').join('');
- const req=document.getElementById('coreDetailReqs');req.innerHTML=node.id==='core'?'<div class="goodLine">✓ ROOT NODE</div>':(node.requires||[]).map(r=>{const p=CORE_NODE_MAP[r],ok=coreUnlocked(r);return '<div class="'+(ok?'goodLine':'badLine')+'">'+(ok?'✓ ':'✕ ')+(p?.name||r)+'</div>'}).join('');
+ const req=document.getElementById('coreDetailReqs');req.innerHTML=node.id==='core'?'<div class="goodLine">'+tr('core.root')+'</div>':(node.requires||[]).map(r=>{const p=CORE_NODE_MAP[r],ok=coreUnlocked(r);return '<div class="'+(ok?'goodLine':'badLine')+'">'+(ok?'✓ ':'✕ ')+(p?.name||r)+'</div>'}).join('');
  document.getElementById('coreDetailCost').textContent=coreCostText(node);const btn=document.getElementById('coreConfirmBtn');
- if(node.id==='core'||status==='owned'){btn.disabled=true;btn.textContent='UNLOCKED'}else if(adminCoreManual){btn.disabled=false;btn.textContent='ADMIN FORCE UNLOCK'}else if(status==='locked'){btn.disabled=true;btn.textContent='REQUIREMENTS NOT MET'}else{btn.disabled=false;btn.textContent='CONFIRM UPGRADE'}
+ if(node.id==='core'||status==='owned'){btn.disabled=true;btn.textContent=tr('core.unlocked')}else if(adminCoreManual){btn.disabled=false;btn.textContent=tr('core.admin')}else if(status==='locked'){btn.disabled=true;btn.textContent=tr('core.requirementsNotMet')}else{btn.disabled=false;btn.textContent=tr('core.confirm')}
  document.querySelectorAll('.coreNode').forEach(el=>el.classList.toggle('selected',el.dataset.coreId===node.id));
 }
 function selectCoreNode(id){selectedCoreId=id;updateCoreDetails(id)}
