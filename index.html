@@ -1494,6 +1494,311 @@
 @media(max-width:800px){.gachaStatusPanel{grid-template-columns:1fr}.gachaRosterUnit{height:36px;grid-template-columns:20px 1fr}.gachaRosterUnit i{font-size:14px}.gachaMeta{font-size:9px}.gachaSummaryBanner.show{margin-top:10px}.gachaSummaryBanner b{font-size:15px}}
 @media(prefers-reduced-motion:reduce){.gachaPityBar i,.gachaSummaryBanner,.resultCard.legendaryCard,#singleReveal.active .revealPanel.legendary{transition:none!important;animation:none!important}}
 </style>
+<style id="stage124PixelGacha">
+/* Stage 12.4 — PIXEL GACHA REDESIGN */
+#gameWrap #gacha{
+  background:
+    linear-gradient(#08111b 0 0),
+    repeating-linear-gradient(90deg,#0b1623 0 18px,#09131f 18px 36px)!important;
+  image-rendering:pixelated;
+}
+#gameWrap #gacha::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(90deg,#52dfff0b 1px,transparent 1px),
+    linear-gradient(#52dfff08 1px,transparent 1px);
+  background-size:32px 32px;
+  mask-image:linear-gradient(to bottom,#0009,transparent 85%);
+}
+#gameWrap .pixelGacha{
+  min-height:100%;padding:18px 20px 34px;position:relative;overflow:hidden;
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+#gameWrap .gachaScanlines{
+  position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.16;
+  background:repeating-linear-gradient(180deg,transparent 0 3px,#ffffff0a 3px 4px);
+}
+#gameWrap .gachaTop{z-index:3;max-width:1100px;margin:0 auto}
+#gameWrap .pixelGachaTitle{
+  margin-top:4px;font-size:24px;line-height:1;font-weight:1000;letter-spacing:.08em;color:#f4fbff;
+  text-shadow:2px 2px 0 #000,0 0 14px #52dfff55;
+}
+#gameWrap .gachaEyebrow{font-size:10px;letter-spacing:.19em;color:#70e5ff;font-weight:1000}
+#gameWrap .gachaCurrency{
+  border-radius:0!important;border:2px solid #2c4c67!important;background:#08131f!important;
+  box-shadow:inset 0 0 0 2px #0d2232,3px 3px 0 #020609!important;
+  font-size:12px;letter-spacing:.06em;
+}
+#gameWrap .gachaClose{
+  border-radius:0!important;border:2px solid #5d3947!important;background:#241018!important;
+  color:#ff9cad!important;box-shadow:inset 0 0 0 2px #14090e,3px 3px 0 #020609!important;
+}
+#gameWrap .gachaHero.pixelSummonTerminal{
+  position:relative;z-index:3;max-width:1100px;min-height:328px;margin:16px auto 0;
+  display:grid;grid-template-columns:minmax(0,.92fr) minmax(360px,1.08fr);align-items:stretch;
+  border:2px solid #24465e!important;border-radius:0!important;overflow:hidden!important;
+  background:#09131e!important;
+  box-shadow:inset 0 0 0 2px #071019,6px 6px 0 #03070b,0 18px 42px #000a!important;
+}
+#gameWrap .pixelSummonTerminal::before{
+  content:"SUMMON TERMINAL // STAGE 12";position:absolute;left:12px;top:-1px;z-index:4;
+  padding:3px 8px;background:#17354a;color:#9beeff;border:1px solid #32708f;
+  font-size:7px;font-weight:1000;letter-spacing:.12em;
+}
+#gameWrap .pixelTerminalInfo{
+  padding:34px 28px 24px;display:flex;flex-direction:column;justify-content:center;
+  border-right:2px solid #1d3d54;
+  background:
+    linear-gradient(135deg,#0c1926 0 62%,#0a141f 62%),
+    #0a151f;
+}
+#gameWrap .pixelLabel{font-size:8px;font-weight:1000;letter-spacing:.18em;color:#66dcff}
+#gameWrap .pixelHeroTitle{
+  margin:12px 0 13px;font-size:clamp(34px,5vw,58px);line-height:.88;font-weight:1000;
+  letter-spacing:-.04em;color:#f5fbff;text-shadow:3px 3px 0 #0b2230;
+}
+#gameWrap .pixelTerminalInfo .gachaSub{
+  max-width:470px;color:#91a7b9;font-size:11px;line-height:1.65;
+}
+#gameWrap .pixelSystemRows{margin-top:20px;border-top:2px solid #19374c}
+#gameWrap .pixelSystemRows>div{
+  display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid #173145;
+  font-size:8px;font-weight:1000;letter-spacing:.12em;color:#637f93;
+}
+#gameWrap .pixelSystemRows b{color:#7cf5a0}
+#gameWrap .pixelMachine{
+  position:relative;display:grid;grid-template-rows:auto 1fr auto;min-height:328px;
+  background:#0b1824;
+}
+#gameWrap .pixelMachineHeader{
+  display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-bottom:2px solid #24465e;
+  color:#8be9ff;background:#0b1420;font-size:8px;font-weight:1000;letter-spacing:.15em;
+}
+#gameWrap .pixelMachineHeader b{color:#ffe46f}
+#gameWrap .pixelMachineWindow{
+  position:relative;display:grid;place-items:center;min-height:240px;overflow:hidden;
+  background:
+    linear-gradient(90deg,#17304633 1px,transparent 1px),
+    linear-gradient(#17304633 1px,transparent 1px),
+    radial-gradient(circle at 50% 45%,#20537145,transparent 48%),
+    #08131d;
+  background-size:22px 22px,22px 22px,auto,auto;
+}
+#gameWrap .pixelMachineGrid{
+  position:absolute;left:50%;bottom:28px;width:230px;height:42px;transform:translateX(-50%) skewX(-42deg);
+  border:1px solid #315b73;opacity:.45;
+  background:repeating-linear-gradient(90deg,#51dfff33 0 2px,transparent 2px 22px);
+}
+#gameWrap .pixelCapsule{
+  position:relative;z-index:2;width:132px;height:172px;animation:pixelCapsuleBob 1.6s steps(4,end) infinite;
+  filter:drop-shadow(0 0 11px #4edcff88);
+}
+#gameWrap .pixelCapsule i{position:absolute;display:block;left:50%;transform:translateX(-50%)}
+#gameWrap .pixelCapsule .capTop{
+  top:0;width:98px;height:28px;background:#73e5ff;
+  box-shadow:inset 8px 0 #b8f5ff,inset -10px 0 #258eb0,0 4px 0 #183d50;
+}
+#gameWrap .pixelCapsule .capGlass{
+  top:29px;width:122px;height:90px;background:#203b52;
+  border:6px solid #4d91b5;box-sizing:border-box;
+  box-shadow:inset 10px 0 #355d79,inset -10px 0 #112536;
+}
+#gameWrap .pixelCapsule .capCore{
+  top:56px;width:42px;height:42px;background:#fff678;
+  box-shadow:0 0 0 6px #f0a52f,0 0 20px #fff16a,inset 6px 6px #fffcc7,inset -6px -6px #d8781f;
+  animation:pixelCorePulse .8s steps(2,end) infinite;
+}
+#gameWrap .pixelCapsule .capBase{
+  bottom:0;width:92px;height:46px;background:#865cff;
+  box-shadow:inset 9px 0 #b8a2ff,inset -10px 0 #4b2ca8,0 -5px 0 #2d1a66;
+}
+#gameWrap .pixelMachineStatus{
+  min-height:36px;display:flex;justify-content:center;align-items:center;gap:9px;padding:7px 10px;
+  border-top:2px solid #24465e;background:#0b1420;color:#78e9ff;font-size:8px;font-weight:1000;letter-spacing:.11em;
+}
+#gameWrap .pixelMachineStatus i{width:6px;height:6px;background:#72ff9a;box-shadow:0 0 8px #72ff9a}
+#gameWrap .gachaControls{
+  z-index:3;max-width:1100px!important;margin-top:14px!important;gap:10px!important;
+}
+#gameWrap .summonBtn{
+  min-height:70px!important;border-radius:0!important;border:2px solid #315975!important;
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace!important;font-weight:1000!important;
+  letter-spacing:.06em!important;box-shadow:inset 0 0 0 2px #09141e,4px 4px 0 #020609!important;
+}
+#gameWrap .summonBtn::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.18;
+  background:repeating-linear-gradient(180deg,#fff 0 1px,transparent 1px 5px);
+}
+#gameWrap .summonBtn.primary{background:#153d58!important;border-color:#4bbbe5!important;color:#e8fbff!important}
+#gameWrap .summonBtn.gold{background:#584014!important;border-color:#d5a33f!important;color:#fff2b0!important}
+#gameWrap .summonBtn:not(:disabled):active{transform:translate(3px,3px);box-shadow:inset 0 0 0 2px #09141e,1px 1px 0 #020609!important}
+#gameWrap .tenGuarantee{font-size:7px!important;letter-spacing:.12em!important;color:#ffde6d!important}
+#gameWrap .gachaStatusPanel{
+  position:relative;z-index:3;max-width:1100px!important;margin:10px auto 0!important;gap:10px!important;
+}
+#gameWrap .gachaStatusBlock{
+  border-radius:0!important;border:2px solid #263f58!important;background:#09131f!important;
+  box-shadow:inset 0 0 0 2px #071019,4px 4px 0 #020609!important;padding:10px 12px!important;
+}
+#gameWrap .gachaStatusHead,#gameWrap .gachaStatusFoot{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace}
+#gameWrap .gachaPityBar{
+  height:10px!important;border-radius:0!important;border:2px solid #493d19!important;background:#171306!important;
+}
+#gameWrap .gachaPityBar i{
+  background:repeating-linear-gradient(90deg,#d59026 0 12px,#ffd95e 12px 24px)!important;
+  box-shadow:none!important;
+}
+#gameWrap .gachaRoster{grid-template-columns:repeat(6,1fr)!important}
+#gameWrap .gachaRosterUnit{
+  height:43px!important;border-radius:0!important;border:1px solid #23435b!important;background:#0a1722!important;
+}
+#gameWrap .gachaRosterUnit.owned{border-color:#3e7fa2!important;background:#0c1b29!important}
+#gameWrap .gachaMeta{
+  position:relative;z-index:3;max-width:1100px!important;margin:10px auto!important;
+  padding:7px 9px;border-left:2px solid #2d526d;color:#738b9d!important;font:1000 8px ui-monospace,"Cascadia Mono",Consolas,monospace!important;
+  letter-spacing:.05em;
+}
+#gameWrap #gachaResults{z-index:3;max-width:1100px!important;gap:8px!important}
+#gameWrap .resultCard{
+  min-height:172px!important;border-radius:0!important;border-width:2px!important;padding:12px 9px!important;
+  box-shadow:inset 0 0 0 2px #081019,4px 4px 0 #020609!important;
+  animation:pixelResultPop .28s steps(5,end) both!important;
+}
+#gameWrap .resultIcon{filter:none!important;text-shadow:3px 3px 0 #000}
+#gameWrap .resultNew{
+  border-radius:0!important;border:1px solid #3c5368!important;background:#08111a!important;
+  color:#dcecff!important;font-size:7px!important;letter-spacing:.08em!important;
+}
+#gameWrap .summaryProgress{font-size:7px!important;letter-spacing:.06em}
+#gameWrap .gachaSummaryBanner{
+  max-width:1100px!important;font-family:ui-monospace,"Cascadia Mono",Consolas,monospace!important;
+}
+#gameWrap .gachaSummaryBanner.show{
+  border-radius:0!important;border-width:2px!important;background:#08131e!important;
+  box-shadow:inset 0 0 0 2px #061019,4px 4px 0 #020609!important;
+}
+#gameWrap #summonCinematic{
+  background:#03070bf5!important;font-family:ui-monospace,"Cascadia Mono",Consolas,monospace!important;
+}
+#gameWrap #summonCinematic .cinemaBackdrop{
+  background:
+    linear-gradient(90deg,#34d8ff12 1px,transparent 1px),
+    linear-gradient(#34d8ff0d 1px,transparent 1px),
+    radial-gradient(circle at 50% 47%,#164665aa,transparent 42%),
+    #03070b!important;
+  background-size:26px 26px,26px 26px,auto,auto!important;
+  filter:none!important;
+}
+#gameWrap #summonCinematic .cinemaVignette{
+  background:repeating-linear-gradient(180deg,transparent 0 3px,#0006 3px 4px)!important;
+}
+#gameWrap .cinemaStage{min-height:390px!important}
+#gameWrap .cinemaLabel{font-size:8px!important;letter-spacing:.2em!important;color:#7aeaff!important}
+#gameWrap .cinemaCore{
+  width:112px!important;height:144px!important;border-radius:0!important;margin:26px auto 24px!important;
+  background:
+    linear-gradient(180deg,#75e5ff 0 18%,#24445c 18% 72%,#875dff 72% 100%)!important;
+  border:5px solid #183246!important;box-sizing:border-box!important;
+  box-shadow:inset 8px 0 #ffffff22,inset -8px 0 #0005,0 0 0 3px #07121b,0 0 26px #62ddff77!important;
+}
+#gameWrap .cinemaCore::before{
+  content:"";position:absolute!important;left:50%!important;top:50%!important;width:34px!important;height:34px!important;
+  transform:translate(-50%,-50%)!important;border:0!important;border-radius:0!important;background:#fff06c!important;
+  box-shadow:0 0 0 6px #d58a23,0 0 16px #ffe66a!important;inset:auto!important;
+  animation:pixelCorePulse .75s steps(2,end) infinite!important;
+}
+#gameWrap .cinemaCore::after{
+  content:"";position:absolute!important;inset:-18px!important;border:2px dashed #4ddfff88!important;border-radius:0!important;
+  animation:pixelFrameBlink .8s steps(2,end) infinite!important;
+}
+#gameWrap .cinemaTapRing{
+  border-radius:0!important;border:2px solid #4ddef688!important;
+  box-shadow:none!important;animation:pixelFrameBlink 1s steps(2,end) infinite!important;
+}
+#gameWrap .cinemaTapText{font-size:13px!important;letter-spacing:.12em!important}
+#gameWrap .cinemaHint{font-size:9px!important;color:#94a9ba!important}
+#gameWrap .cinemaProgress{
+  margin-top:10px!important;padding:5px 8px!important;border:1px solid #345671!important;background:#07121b!important;
+  font-size:8px!important;letter-spacing:.1em!important;
+}
+#gameWrap .cinemaSkip{
+  border-radius:0!important;border:2px solid #3c536d!important;background:#091521!important;
+  box-shadow:3px 3px 0 #020609!important;font:1000 8px ui-monospace,"Cascadia Mono",Consolas,monospace!important;
+}
+#gameWrap #singleReveal{background:#03070be8!important}
+#gameWrap .revealPanel{
+  border-radius:0!important;border-width:2px!important;background:#0a1420!important;
+  box-shadow:inset 0 0 0 2px #061019,6px 6px 0 #020609!important;
+}
+#gameWrap .revealPanel::before{
+  content:"";position:absolute;inset:6px;pointer-events:none;border:1px dashed #ffffff1b;
+}
+#gameWrap .revealIcon{filter:none!important;text-shadow:4px 4px 0 #000}
+#gameWrap .revealNew,#gameWrap .revealDupeProgress{
+  border-radius:0!important;border:1px solid #355069!important;background:#07111b!important;
+}
+#gameWrap .revealTap{
+  padding-top:12px!important;border-top:1px dashed #355069;color:#72e6ff!important;font-size:8px!important;letter-spacing:.14em!important;
+}
+#gameWrap #summonCinematic.legendary .cinemaBackdrop{
+  background:
+    repeating-linear-gradient(90deg,#ffcf3920 0 2px,transparent 2px 24px),
+    repeating-linear-gradient(0deg,#ffcf3914 0 2px,transparent 2px 24px),
+    radial-gradient(circle at 50% 48%,#ffdc6c88,transparent 38%),
+    #120b02!important;
+}
+#gameWrap #summonCinematic.legendary::before{
+  content:"WARNING // LEGENDARY SIGNAL";position:absolute;left:50%;top:11%;z-index:8;transform:translateX(-50%);
+  padding:7px 12px;border:2px solid #ffcf42;background:#2a1804;color:#ffe47d;
+  font:1000 10px ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.14em;
+  box-shadow:4px 4px 0 #000;animation:legendWarningBlink .45s steps(2,end) infinite;
+}
+#gameWrap #summonCinematic.legendary .cinemaCore{
+  background:linear-gradient(180deg,#ffe876 0 18%,#7d5518 18% 72%,#ff9e34 72% 100%)!important;
+  border-color:#8c621e!important;box-shadow:inset 8px 0 #fff7ba44,inset -8px 0 #0005,0 0 0 3px #241506,0 0 38px #ffd34a!important;
+}
+#gameWrap #summonCinematic.epic .cinemaCore{
+  background:linear-gradient(180deg,#da82ff 0 18%,#573077 18% 72%,#8b4adb 72% 100%)!important;
+}
+#gameWrap #summonCinematic.rare .cinemaCore{
+  background:linear-gradient(180deg,#74cfff 0 18%,#24527a 18% 72%,#2c83d5 72% 100%)!important;
+}
+@keyframes pixelCapsuleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pixelCorePulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.55)}}
+@keyframes pixelFrameBlink{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes pixelResultPop{0%{transform:translateY(16px) scale(.88);opacity:0}100%{transform:none;opacity:1}}
+@keyframes legendWarningBlink{0%,100%{opacity:1}50%{opacity:.35}}
+@media(max-width:900px){
+  #gameWrap .pixelGacha{padding:10px 9px 22px}
+  #gameWrap .pixelGachaTitle{font-size:18px}
+  #gameWrap .gachaHero.pixelSummonTerminal{grid-template-columns:1fr;min-height:0}
+  #gameWrap .pixelTerminalInfo{padding:28px 18px 15px;border-right:0;border-bottom:2px solid #1d3d54}
+  #gameWrap .pixelHeroTitle{font-size:36px}
+  #gameWrap .pixelSystemRows{display:none}
+  #gameWrap .pixelMachine{min-height:250px}
+  #gameWrap .pixelMachineWindow{min-height:190px}
+  #gameWrap .pixelCapsule{transform:scale(.82)}
+  #gameWrap .gachaStatusPanel{grid-template-columns:1fr!important}
+  #gameWrap .gachaRoster{grid-template-columns:repeat(3,1fr)!important}
+  #gameWrap .gachaMeta{font-size:7px!important}
+}
+@media(max-width:520px){
+  #gameWrap .gachaTop{align-items:flex-start}
+  #gameWrap .pixelGachaTitle{font-size:15px}
+  #gameWrap .pixelTerminalInfo .gachaSub{font-size:9px}
+  #gameWrap .pixelHeroTitle{font-size:31px}
+  #gameWrap .pixelMachine{min-height:220px}
+  #gameWrap .pixelMachineWindow{min-height:165px}
+  #gameWrap .pixelCapsule{transform:scale(.72)}
+  #gameWrap .gachaControls{grid-template-columns:1fr!important}
+  #gameWrap #gachaResults{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #gameWrap .resultCard{min-height:152px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap .pixelCapsule,#gameWrap .cinemaCore::before,#gameWrap .cinemaCore::after,
+  #gameWrap .cinemaTapRing,#gameWrap #summonCinematic.legendary::before{animation:none!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -1677,12 +1982,12 @@
     </div>
 
     <div id="gacha">
-      <div class="gachaScreen">
-        <div class="gachaStars"></div>
+      <div class="gachaScreen pixelGacha">
+        <div class="gachaStars"></div><div class="gachaScanlines"></div>
         <div class="gachaTop">
           <div>
             <div class="gachaEyebrow" data-i18n="gacha.terminal">SUMMON TERMINAL</div>
-            <div style="font-size:22px;font-weight:900" data-i18n="gacha.title">CHARACTER GACHA</div>
+            <div class="pixelGachaTitle" data-i18n="gacha.title">CHARACTER GACHA</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <div class="gachaCurrency">💎 <span id="gachaGemText">0</span></div>
@@ -1690,14 +1995,26 @@
           </div>
         </div>
 
-        <div class="gachaHero">
-          <div class="gachaCopy">
-            <div class="gachaEyebrow">BREAK SURVIVORS</div>
-            <div class="gachaTitle" data-i18n-html="gacha.hero">SUMMON<br>NEW POWER</div>
+        <div class="gachaHero pixelSummonTerminal">
+          <div class="pixelTerminalInfo">
+            <div class="pixelLabel">BREAK SURVIVORS // SUMMON UNIT</div>
+            <div class="pixelHeroTitle" data-i18n-html="gacha.hero">SUMMON<br>NEW POWER</div>
             <div class="gachaSub" data-i18n="gacha.sub">キャラクターごとに攻撃・パッシブ・育成ルートが変化。重複キャラは★ランク強化へ変換されます。</div>
+            <div class="pixelSystemRows">
+              <div><span>LINK</span><b>ONLINE</b></div>
+              <div><span>CAPSULE</span><b>READY</b></div>
+              <div><span>SIGNAL</span><b>STABLE</b></div>
+            </div>
           </div>
-          <div class="gachaShowcase">
-            <div class="gachaCore"></div>
+          <div class="pixelMachine">
+            <div class="pixelMachineHeader"><span>PIXEL CAPSULE</span><b>UNIT-07</b></div>
+            <div class="pixelMachineWindow">
+              <div class="pixelCapsule" aria-hidden="true">
+                <i class="capTop"></i><i class="capGlass"></i><i class="capCore"></i><i class="capBase"></i>
+              </div>
+              <div class="pixelMachineGrid"></div>
+            </div>
+            <div class="pixelMachineStatus"><i></i><span>INSERT GEMS // PRESS SUMMON</span><i></i></div>
           </div>
         </div>
 
@@ -1731,7 +2048,7 @@
           <div class="cinemaVignette"></div>
           <div class="cinemaStage" id="cinemaTapTarget">
             <div>
-              <div class="cinemaLabel">SUMMON CAPSULE</div>
+              <div class="cinemaLabel">PIXEL CAPSULE // SIGNAL LOCK</div>
               <div class="cinemaCoreWrap">
                 <div class="cinemaTapRing"></div>
                 <div class="cinemaCore"></div>
