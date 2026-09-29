@@ -1475,6 +1475,15 @@
   }
 
 </style>
+<style id="stage122CoreFun">
+.coreSyncCard{margin:10px 0 13px;padding:10px;border:1px solid #20445f;background:#07131f;box-shadow:inset 0 0 0 1px #0e273a}.coreSyncHead,.coreSyncMeta{display:flex;justify-content:space-between;gap:8px;align-items:center;font:1000 8px ui-monospace,"Cascadia Mono",Consolas,monospace;color:#8fa9bc;letter-spacing:.06em}.coreSyncHead b{font-size:10px;color:#7ef6ff}.coreSyncBar{height:8px;margin:8px 0 6px;background:#0b2030;border:1px solid #244b66;overflow:hidden}.coreSyncBar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4fa6ff,#78f8ff,#a978ff);transition:width .35s ease}.coreSyncMeta{font-size:7px}.coreSyncMeta span:last-child{color:#ffd572}.coreMasteryText{margin-top:7px;padding-top:7px;border-top:1px solid #19364c;font:1000 7px ui-monospace,"Cascadia Mono",Consolas,monospace;color:#89eaa4;letter-spacing:.08em}
+.treeCategories button{position:relative;padding-right:42px!important}.treeCategories button::after{content:attr(data-progress);position:absolute;right:7px;top:50%;transform:translateY(-50%);padding:2px 4px;border:1px solid #24445d;background:#07131f;color:#7894a9;font-size:6px;line-height:1}.treeCategories button.mastered::after{border-color:#7ee9a1;color:#9affb5;background:#0b2417}
+.coreNode .charBadge{position:absolute;right:-5px;top:-5px;min-width:23px;height:23px;padding:0 4px;display:grid;place-items:center;border:2px solid #ffd66f;background:#201705;color:#fff;border-radius:999px;font-size:11px;line-height:1;box-shadow:0 3px 8px #0009}.coreNode.characterLink::after{background:linear-gradient(135deg,var(--coreColor),#ffd66f)}.coreNode.characterInactive{opacity:.58}.coreNode.characterInactive .charBadge{border-color:#ff9b55;background:#27130a}.coreNode.characterInactive.owned .nodeCost::after{content:" OFF";color:#ffb26f}
+#coreUnlockBurst{position:absolute;left:50%;top:48%;z-index:50;min-width:260px;max-width:70%;padding:15px 24px;text-align:center;transform:translate(-50%,-50%) scale(.7);opacity:0;pointer-events:none;border:2px solid var(--burstColor,#6ee7ff);background:#06101af2;box-shadow:0 0 0 2px #000,0 10px 40px #000b;font-family:ui-monospace,"Cascadia Mono",Consolas,monospace}#coreUnlockBurst.show{animation:coreBurst 1.2s cubic-bezier(.2,.8,.2,1)}#coreUnlockBurst::before,#coreUnlockBurst::after{content:"";position:absolute;inset:-12px;border:2px solid var(--burstColor,#6ee7ff);opacity:.55;animation:coreBurstRing 1s ease-out forwards}#coreUnlockBurst::after{inset:-24px;animation-delay:.08s;opacity:.28}#coreUnlockBurst span{display:block;font-size:8px;font-weight:1000;letter-spacing:.2em;color:var(--burstColor,#6ee7ff)}#coreUnlockBurst b{display:block;margin-top:7px;font-size:18px;color:#fff;letter-spacing:.04em}#coreUnlockBurst em{display:block;margin-top:6px;font-size:8px;font-style:normal;font-weight:1000;color:#ffd86c}#coreUnlockBurst.milestone{border-color:#ffd86c;--burstColor:#ffd86c}#coreUnlockBurst.mastered em{color:#91ffaf}
+@keyframes coreBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.68)}14%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}30%,76%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.94)}}@keyframes coreBurstRing{0%{transform:scale(.72);opacity:.65}100%{transform:scale(1.28);opacity:0}}
+@media(max-width:900px){.coreSyncCard{margin:0;grid-column:1/-1;padding:6px 8px}.coreSyncHead,.coreSyncMeta{font-size:6px}.coreSyncHead b{font-size:7px}.coreSyncBar{height:5px;margin:4px 0}.coreMasteryText{display:none}.treeCategories button{padding-right:34px!important}.treeCategories button::after{right:4px;font-size:5px}.coreNode .charBadge{min-width:20px;height:20px;font-size:9px}#coreUnlockBurst{min-width:210px;padding:12px 16px}#coreUnlockBurst b{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.coreSyncBar i,#coreUnlockBurst.show,#coreUnlockBurst::before,#coreUnlockBurst::after{animation:none!important;transition:none!important}#coreUnlockBurst.show{opacity:1;transform:translate(-50%,-50%)}}
+</style>
 </head>
 <body>
 <div id="app">
@@ -1750,6 +1759,7 @@
           <aside class="treeLeft">
             <div class="treeBrand">BREAK SURVIVORS</div><div class="treeMode"><span data-i18n="core.skillTree">SKILL TREE:</span> <b data-i18n="core.survivor">SURVIVOR</b></div>
             <div class="treeResources"><div><span>CORES</span><b><span id="coreCount">1</span>/<span id="coreTotal">61</span></b></div><div><span>COINS</span><b id="coreCoins">0</b></div><div><span>GEMS</span><b id="coreGems">0</b></div></div>
+            <div class="coreSyncCard"><div class="coreSyncHead"><span>CORE SYNC</span><b id="coreSyncRank">BOOT</b></div><div class="coreSyncBar"><i id="coreSyncFill"></i></div><div class="coreSyncMeta"><span id="coreSyncText">0 / 5 CORES</span><span id="coreSyncNext">NEXT // PULSE I</span></div><div id="coreMasteryText" class="coreMasteryText">BRANCH MASTER 0/6</div></div>
             <div class="treeCategoryTitle" data-i18n="core.category">CATEGORY</div>
             <div class="treeCategories">
               <button data-core-filter="all" class="active" data-i18n="core.all">◆ ALL NODES</button><button data-core-filter="assault" data-i18n="core.attack">⚔ ATTACK</button><button data-core-filter="projectile" data-i18n="core.projectile">➤ PROJECTILE</button>
@@ -2018,7 +2028,7 @@ function makeCoreBranch(prefix,branch,angleDeg,defs){
   const a=angleDeg*Math.PI/180,px=-Math.sin(a),py=Math.cos(a);
   return defs.map((d,i)=>{
     const l=CORE_BRANCH_LAYOUT[i],id=prefix+(i+1),requires=i===0?['core']:l.parents.map(p=>prefix+(p+1));
-    return {id,branch,name:d.name,icon:d.icon,desc:d.desc,detail:d.detail||d.desc,effects:d.effects||[d.desc],effect:d.effect||{},major:!!d.major,
+    return {id,branch,name:d.name,icon:d.icon,desc:d.desc,detail:d.detail||d.desc,effects:d.effects||[d.desc],effect:d.effect||{},major:!!d.major,character:d.character||null,
       x:Math.round(CORE_CENTER.x+(Math.cos(a)*l.r+px*l.p)*CORE_LAYOUT_SCALE),
       y:Math.round(CORE_CENTER.y+(Math.sin(a)*l.r+py*l.p)*CORE_LAYOUT_SCALE),requires,
       cost:d.cost??(d.major?d.gemCost||320:CORE_COSTS[i]),currency:d.currency||(d.major?'gem':'coin')};
@@ -2039,27 +2049,27 @@ assault:[
 ],
 projectile:[
 {name:'BALLISTICS',icon:'>>',desc:'Projectile Speed +15%',effect:{projectileSpeed:.15}},
-{name:'PIERCE SHOT',icon:'P+',desc:'Pierce +2',effect:{pierceAdd:2}},
+{name:'PIERCE SHOT',icon:'P+',desc:'Pierce +2',character:'gunner',effect:{pierceAdd:2}},
 {name:'PROJECTILE +1',icon:'+1',desc:'Fire +1 projectile',detail:'弾を使用する攻撃の発射数を1つ追加する。',effect:{extraProjectiles:1}},
 {name:'SPLIT SHOT',icon:'Y',desc:'18% chance to split on hit',effects:['Split Chance +18%','Creates 2 child shots'],effect:{splitChance:.18}},
 {name:'RICOCHET',icon:'↗',desc:'20% chance to ricochet',effects:['Ricochet Chance +20%','Ricochet +1 target'],effect:{ricochetChance:.20,ricochetCount:1}},
 {name:'MULTI SHOT',icon:'+1',desc:'Fire another +1 projectile',effect:{extraProjectiles:1}},
-{name:'BLAST MATRIX',icon:'AOE',desc:'Explosion Radius +18%',effect:{explosionRadius:.18}},
-{name:'MISSILE SWARM',icon:'MSL',desc:'Missile Count +2',effect:{missileExtra:2}},
-{name:'LASER WIDTH',icon:'LSR',desc:'Laser Width +25%',effect:{laserWidth:.25}},
+{name:'BLAST MATRIX',icon:'AOE',desc:'Explosion Radius +18%',character:'bombcat',effect:{explosionRadius:.18}},
+{name:'MISSILE SWARM',icon:'MSL',desc:'Missile Count +2',character:'missilequeen',effect:{missileExtra:2}},
+{name:'LASER WIDTH',icon:'LSR',desc:'Laser Width +25%',character:'nova',effect:{laserWidth:.25}},
 {name:'OMEGA VOLLEY',icon:'ΩV',desc:'Projectile system evolution',effects:['Projectile +1','Projectile Damage +15%','Missiles +2'],major:true,effect:{extraProjectiles:1,projectileDamage:.15,missileExtra:2}}
 ],
 ability:[
 {name:'ABILITY CLOCK',icon:'CD',desc:'Skill Cooldown -10%',effect:{specialCd:.10}},
-{name:'SHOCK BURST',icon:'⚡',desc:'BREAK milestones discharge lightning',detail:'BREAKが25の倍数に到達するたび周囲へ雷を放つ。',effect:{shockBurst:1}},
+{name:'SHOCK BURST',icon:'⚡',desc:'BREAK milestones discharge lightning',detail:'BREAKが25の倍数に到達するたび周囲へ雷を放つ。',character:'thunderfox',effect:{shockBurst:1}},
 {name:'DASH STRIKE',icon:'DSH',desc:'DASH creates an attack burst',effects:['Dash impact damage 75%','Dash impact area attack'],effect:{dashStrike:.75}},
 {name:'VAMP STRIKE',icon:'HP',desc:'Kills restore 0.8% Max HP',effect:{killHeal:.008}},
 {name:'HUNTER MARK',icon:'◎',desc:'Elite/Boss Damage +15%',effect:{eliteDamage:.15}},
 {name:'ORBITAL SHOT',icon:'ORB',desc:'8% kill chance: orbital blast',effect:{orbitalChance:.08}},
-{name:'PHASE ROUND',icon:'PHS',desc:'Pierce +3 / Speed +10%',effect:{pierceAdd:3,projectileSpeed:.10}},
+{name:'PHASE ROUND',icon:'PHS',desc:'Pierce +3 / Speed +10%',character:'gunner',effect:{pierceAdd:3,projectileSpeed:.10}},
 {name:'OVERHEAT',icon:'HOT',desc:'BREAK 25+: Attack Speed +15%',effect:{breakAttackRate:.15}},
 {name:'ABILITY DRIVE',icon:'CD',desc:'Skill Cooldown -15%',effect:{specialCd:.15}},
-{name:'ROYAL SKYFALL',icon:'★',desc:'ULT triggers an extra skyfall',detail:'ULT発動後に追加の全方位攻撃を発生させる。',effects:['ULT bonus attack unlocked','12-way energy burst'],major:true,effect:{omegaVolley:1}}
+{name:'ROYAL SKYFALL',icon:'★',desc:'ULT triggers an extra skyfall',detail:'Missile Queen専用。ULT発動後に追加の全方位攻撃を発生させる。',effects:['MISSILE QUEEN ONLY','ULT bonus attack unlocked','12-way energy burst'],major:true,character:'missilequeen',effect:{omegaVolley:1}}
 ],
 break:[
 {name:'CHAIN MEMORY',icon:'MEM',desc:'BREAK Grace +0.25s',effect:{breakGrace:.25}},
@@ -2088,11 +2098,11 @@ mobility:[
 control:[
 {name:'AREA MATRIX',icon:'AOE',desc:'Attack Area +10%',effect:{area:.10}},
 {name:'WIDE FIELD',icon:'AOE',desc:'Attack Area +10%',effect:{area:.10}},
-{name:'CHAIN RANGE',icon:'⚡',desc:'Lightning Range +15%',effect:{chainRange:.15}},
+{name:'CHAIN RANGE',icon:'⚡',desc:'Lightning Range +15%',character:'thunderfox',effect:{chainRange:.15}},
 {name:'EXPLOSION SIZE',icon:'EXP',desc:'Explosion Radius +15%',effect:{explosionRadius:.15}},
 {name:'LASER ARC',icon:'LSR',desc:'Laser Width +15%',effect:{laserWidth:.15}},
-{name:'CHAIN LINK',icon:'+2',desc:'Lightning Links +2',effect:{chainLinks:2}},
-{name:'SHOCK RANGE',icon:'RNG',desc:'Lightning Range +20%',effect:{chainRange:.20}},
+{name:'CHAIN LINK',icon:'+2',desc:'Lightning Links +2',character:'thunderfox',effect:{chainLinks:2}},
+{name:'SHOCK RANGE',icon:'RNG',desc:'Lightning Range +20%',character:'thunderfox',effect:{chainRange:.20}},
 {name:'DOMAIN',icon:'AOE',desc:'Attack Area +15%',effect:{area:.15}},
 {name:'TARGET DRIVE',icon:'SPD',desc:'Projectile Speed +15%',effect:{projectileSpeed:.15}},
 {name:'DOMAIN CORE',icon:'DOM',desc:'All range systems expanded',effects:['Attack Area +20%','Explosion Radius +20%','Laser Width +15%','Lightning Range +15%'],major:true,effect:{area:.20,explosionRadius:.20,laserWidth:.15,chainRange:.15}}
@@ -2110,6 +2120,19 @@ const CORE_NODE_MAP=Object.fromEntries(CORE_NODES.map(n=>[n.id,n]));
 let adminCoreManual=false,coreEffectsCache=null,selectedCoreId='core',coreFilter='all';
 function coreUnlocked(id){return id==='core'||!!save.coreGrid?.unlocked?.[id]}
 function coreRequirementsMet(node){return (node.requires||[]).every(coreUnlocked)}
+function coreNodeCharacterActive(node){return !node?.character||node.character===currentCharacter.id}
+function coreNodeCharacterDef(node){return node?.character?characterDefs.find(c=>c.id===node.character)||null:null}
+function coreBranchUnlockedCount(branch){return CORE_NODES.filter(n=>n.branch===branch&&coreUnlocked(n.id)).length}
+const CORE_SYNC_MILESTONES=[
+ {at:5,name:'PULSE I',effect:{damage:.03}},
+ {at:12,name:'PULSE II',effect:{attackRate:.03}},
+ {at:20,name:'OVERCLOCK',effect:{move:.05}},
+ {at:30,name:'SURGE',effect:{ultGain:.08}},
+ {at:40,name:'FUSION',effect:{critChance:.03}},
+ {at:50,name:'ASCEND',effect:{damage:.05,attackRate:.04}},
+ {at:60,name:'OMEGA CORE',effect:{damage:.08,attackRate:.06,move:.05}}
+];
+function coreSyncState(){const invested=Math.max(0,unlockedCoreCount()-1),max=Math.max(1,CORE_NODES.length-1);const reached=[...CORE_SYNC_MILESTONES].reverse().find(m=>invested>=m.at)||{at:0,name:'BOOT'};const next=CORE_SYNC_MILESTONES.find(m=>invested<m.at)||null;const start=reached.at||0,end=next?.at||max;return {invested,max,reached,next,progress:next?Math.max(0,Math.min(1,(invested-start)/Math.max(1,end-start))):1}}
 function rebuildCoreEffects(){
  const fx={damageMul:1,attackRateMul:1,maxHpAdd:0,moveMul:1,areaMul:1,coinMul:1,critChance:0,critDamage:0,breakGrace:0,feverDuration:0,breakCoinMul:1,
  ultGainMul:1,ultRetain:0,ultHeal:0,dashCooldownMul:1,dashDistanceMul:1,dashInvulnAdd:0,pickupRangeMul:1,projectileSpeedMul:1,projectileDamageMul:1,
@@ -2117,7 +2140,7 @@ function rebuildCoreEffects(){
  doubleStrikeChance:0,executeThreshold:0,executeBonus:0,eliteDamage:0,berserkDamage:0,berserkRate:0,breakAttackRate:0,breakDamage:0,specialCooldownMul:1,
  dashStrike:0,killHeal:0,orbitalChance:0,shockBurst:false,omegaVolley:false};
  let damage=0,attackRate=0,move=0,area=0,coin=0,breakCoin=0,ultGain=0,dashCd=0,dashDistance=0,pickupRange=0,projectileSpeed=0,projectileDamage=0,explosionRadius=0,laserWidth=0,chainRange=0,specialCd=0;
- for(const node of CORE_NODES){if(!coreUnlocked(node.id))continue;const e=node.effect||{};
+ for(const node of CORE_NODES){if(!coreUnlocked(node.id)||!coreNodeCharacterActive(node))continue;const e=node.effect||{};
   damage+=e.damage||0;attackRate+=e.attackRate||0;move+=e.move||0;area+=e.area||0;coin+=e.coin||0;breakCoin+=e.breakCoin||0;ultGain+=e.ultGain||0;dashCd+=e.dashCd||0;dashDistance+=e.dashDistance||0;pickupRange+=e.pickupRange||0;
   projectileSpeed+=e.projectileSpeed||0;projectileDamage+=e.projectileDamage||0;explosionRadius+=e.explosionRadius||0;laserWidth+=e.laserWidth||0;chainRange+=e.chainRange||0;specialCd+=e.specialCd||0;
   fx.maxHpAdd+=e.maxHp||0;fx.critChance+=e.critChance||0;fx.critDamage+=e.critDamage||0;fx.breakGrace+=e.breakGrace||0;fx.feverDuration+=e.feverDuration||0;fx.ultRetain+=e.ultRetain||0;fx.ultHeal+=e.ultHeal||0;
@@ -2125,6 +2148,14 @@ function rebuildCoreEffects(){
   fx.missileExtra+=e.missileExtra||0;fx.chainLinks+=e.chainLinks||0;fx.doubleStrikeChance+=e.doubleStrikeChance||0;fx.executeThreshold=Math.max(fx.executeThreshold,e.executeThreshold||0);fx.executeBonus+=e.executeBonus||0;fx.eliteDamage+=e.eliteDamage||0;
   fx.berserkDamage+=e.berserkDamage||0;fx.berserkRate+=e.berserkRate||0;fx.breakAttackRate+=e.breakAttackRate||0;fx.breakDamage+=e.breakDamage||0;fx.dashStrike+=e.dashStrike||0;fx.killHeal+=e.killHeal||0;fx.orbitalChance+=e.orbitalChance||0;fx.shockBurst=fx.shockBurst||!!e.shockBurst;fx.omegaVolley=fx.omegaVolley||!!e.omegaVolley;
  }
+ const sync=coreSyncState();
+ for(const milestone of CORE_SYNC_MILESTONES){if(sync.invested<milestone.at)continue;const e=milestone.effect||{};damage+=e.damage||0;attackRate+=e.attackRate||0;move+=e.move||0;ultGain+=e.ultGain||0;fx.critChance+=e.critChance||0}
+ if(coreBranchUnlockedCount('assault')===10)damage+=.06;
+ if(coreBranchUnlockedCount('projectile')===10)projectileDamage+=.08;
+ if(coreBranchUnlockedCount('ability')===10)specialCd+=.05;
+ if(coreBranchUnlockedCount('break')===10)breakCoin+=.10;
+ if(coreBranchUnlockedCount('mobility')===10)move+=.05;
+ if(coreBranchUnlockedCount('control')===10)area+=.08;
  fx.damageMul=1+damage;fx.attackRateMul=1+attackRate;fx.moveMul=1+move;fx.areaMul=1+area;fx.coinMul=1+coin;fx.breakCoinMul=1+breakCoin;fx.ultGainMul=1+ultGain;fx.dashCooldownMul=Math.max(.35,1-dashCd);fx.dashDistanceMul=1+dashDistance;fx.pickupRangeMul=1+pickupRange;
  fx.projectileSpeedMul=1+projectileSpeed;fx.projectileDamageMul=1+projectileDamage;fx.explosionRadiusMul=1+explosionRadius;fx.laserWidthMul=1+laserWidth;fx.chainRangeMul=1+chainRange;fx.specialCooldownMul=Math.max(.35,1-specialCd);coreEffectsCache=fx;return fx;
 }
@@ -7368,8 +7399,8 @@ function updateHud(){
 function equipCharacter(id){
   const c=characterDefs.find(x=>x.id===id);
   if(!c || !save.characters[id]?.owned) return;
-  currentCharacter=c;save.selectedCharacter=id;attackType=c.attack;ultCharge=0;attackCounters={};gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;ps=playerStats();persist();
-  buildCharacterList();setAttack(attackType);updateHud();
+  currentCharacter=c;save.selectedCharacter=id;attackType=c.attack;ultCharge=0;attackCounters={};gunnerMomentum=0;gunnerMomentumIdle=0;gunnerRecoil=0;coreEffectsCache=null;ps=playerStats();persist();
+  buildCharacterList();setAttack(attackType);updateHud();if(document.body.classList.contains('coreGridOpen'))refreshCoreGridState();
 }
 
 
@@ -7636,15 +7667,27 @@ function setAttack(id){
 function updateCoreWallet(){
  const c=document.getElementById('coreCoins'),g=document.getElementById('coreGems'),n=document.getElementById('coreCount'),t=document.getElementById('coreTotal');
  if(c)c.textContent=(save.coins||0).toLocaleString();if(g)g.textContent=(save.gems||0).toLocaleString();if(n)n.textContent=unlockedCoreCount();if(t)t.textContent=CORE_NODES.length;
+ const sync=coreSyncState(),rank=document.getElementById('coreSyncRank'),fill=document.getElementById('coreSyncFill'),meta=document.getElementById('coreSyncText'),next=document.getElementById('coreSyncNext'),master=document.getElementById('coreMasteryText');
+ if(rank)rank.textContent=sync.reached.name;if(fill)fill.style.width=(sync.progress*100).toFixed(1)+'%';if(meta)meta.textContent=sync.next?(sync.invested+' / '+sync.next.at+' CORES'):(sync.invested+' / '+sync.max+' CORES');if(next)next.textContent=sync.next?('NEXT // '+sync.next.name):'OMEGA COMPLETE';
+ if(master){const mastered=Object.keys(CORE_BRANCHES).filter(k=>k!=='core'&&coreBranchUnlockedCount(k)===10).length;master.textContent='BRANCH MASTER '+mastered+'/6'}
+ document.querySelectorAll('[data-core-filter]').forEach(b=>{const branch=b.dataset.coreFilter;if(branch==='all'){b.dataset.progress=sync.invested+'/'+sync.max;b.classList.toggle('mastered',sync.invested>=sync.max);return}const total=CORE_NODES.filter(n=>n.branch===branch).length,count=coreBranchUnlockedCount(branch);b.dataset.progress=count+'/'+total;b.classList.toggle('mastered',total>0&&count===total)});
 }
 function coreNodeStatus(node){if(coreUnlocked(node.id))return 'owned';if(adminCoreManual)return 'adminTarget';return coreRequirementsMet(node)?'available':'locked'}
 function coreCostText(node){if(node.id==='core')return 'ONLINE';return (node.currency==='gem'?'💎 ':'🪙 ')+(node.cost||0).toLocaleString()}
+function showCoreUnlockBurst(node,milestone=null,mastered=false){
+ const shell=document.querySelector('#shop .treeShell');if(!shell)return;let fx=document.getElementById('coreUnlockBurst');if(!fx){fx=document.createElement('div');fx.id='coreUnlockBurst';shell.appendChild(fx)}
+ const branch=CORE_BRANCHES[node.branch]||CORE_BRANCHES.core;fx.style.setProperty('--burstColor',branch.color);fx.className='';void fx.offsetWidth;
+ fx.innerHTML='<span>'+(node.major?'KEYSTONE ONLINE':'CORE LINKED')+'</span><b>'+node.name+'</b><em>'+(milestone?('SYNC UP // '+milestone.name):mastered?'BRANCH MASTERED':('SYNC '+coreSyncState().invested+'/'+coreSyncState().max))+'</em>';
+ fx.className='show'+(node.major?' major':'')+(milestone?' milestone':'')+(mastered?' mastered':'');clearTimeout(fx._hideTimer);fx._hideTimer=setTimeout(()=>fx.className='',1250);
+}
 function purchaseCoreNode(id){
- const node=CORE_NODE_MAP[id];if(!node||coreUnlocked(id))return;
- if(adminCoreManual)save.coreGrid.unlocked[id]=true;
- else{if(!coreRequirementsMet(node)){showGrowthToast('CORE LOCKED','接続されたCOREを先に解放してください');return}const key=node.currency==='gem'?'gems':'coins';if((save[key]||0)<node.cost){showGrowthToast(tr(node.currency==='gem'?'core.notEnoughGems':'core.notEnoughCoins'),coreCostText(node)+' REQUIRED');return}save[key]-=node.cost;save.coreGrid.unlocked[id]=true}
+ const node=CORE_NODE_MAP[id];if(!node||coreUnlocked(id))return;const beforeSync=coreSyncState(),beforeBranch=node.branch==='core'?0:coreBranchUnlockedCount(node.branch);
+ if(adminCoreManual)save.coreGrid.unlocked[id]=true;else{if(!coreRequirementsMet(node)){showGrowthToast('CORE LOCKED','接続されたCOREを先に解放してください');return}const key=node.currency==='gem'?'gems':'coins';if((save[key]||0)<node.cost){showGrowthToast(tr(node.currency==='gem'?'core.notEnoughGems':'core.notEnoughCoins'),coreCostText(node)+' REQUIRED');return}save[key]-=node.cost;save.coreGrid.unlocked[id]=true}
  coreEffectsCache=null;persist();ps=playerStats();player.hp=Math.min(player.hp,ps.maxHp);selectedCoreId=id;refreshCoreGridState();updateHud();selectCoreNode(id);
- requestAnimationFrame(()=>{const el=document.querySelector('[data-core-id="'+id+'"]');if(el){el.classList.add('unlockFlash');setTimeout(()=>el.classList.remove('unlockFlash'),420)}});showGrowthToast(adminCoreManual?'ADMIN CORE UNLOCK':'CORE UNLOCKED',node.name);
+ const afterSync=coreSyncState(),milestone=CORE_SYNC_MILESTONES.find(m=>beforeSync.invested<m.at&&afterSync.invested>=m.at)||null;const mastered=node.branch!=='core'&&beforeBranch<10&&coreBranchUnlockedCount(node.branch)===10;
+ requestAnimationFrame(()=>{const el=document.querySelector('[data-core-id="'+id+'"]');if(el){el.classList.add('unlockFlash');setTimeout(()=>el.classList.remove('unlockFlash'),520)}showCoreUnlockBurst(node,milestone,mastered)});
+ try{navigator.vibrate?.(node.major?[25,30,55]:milestone?[25,25,45]:20)}catch(_){}
+ showGrowthToast(milestone?'CORE SYNC UP':mastered?'BRANCH MASTERED':adminCoreManual?'ADMIN CORE UNLOCK':'CORE UNLOCKED',milestone?(milestone.name+' // '+node.name):node.name);
 }
 function coreBranchColor(node){return (CORE_BRANCHES[node?.branch]||CORE_BRANCHES.core).color}
 function updateCoreDetails(id=selectedCoreId){
@@ -7652,9 +7695,9 @@ function updateCoreDetails(id=selectedCoreId){
  const icon=document.getElementById('coreDetailIcon');if(icon){icon.textContent=node.icon||'◆';icon.style.setProperty('--detailColor',branch.color)}
  const panel=document.querySelector('.treeDetails');if(panel)panel.style.setProperty('--detailColor',branch.color);
  document.getElementById('coreDetailName').textContent=node.name;document.getElementById('coreDetailType').textContent=branch.name+' // '+tr(node.major?'core.major':'core.node');
- const se=document.getElementById('coreDetailStatus');se.textContent=status==='owned'?tr('core.unlocked'):status==='available'?tr('core.available'):adminCoreManual?tr('core.admin'):tr('core.locked');se.style.color=status==='owned'?'#7df6a4':status==='available'?'#8eeaff':status==='adminTarget'?'#ffd080':'#ff8a94';
+ const se=document.getElementById('coreDetailStatus');se.textContent=status==='owned'?tr('core.unlocked'):status==='available'?tr('core.available'):adminCoreManual?tr('core.admin'):tr('core.locked');se.style.color=status==='owned'?'#7df6a4':status==='available'?'#8eeaff':status==='adminTarget'?'#ffd080':'#ff8a94';if(status==='owned'&&node.character&&!coreNodeCharacterActive(node)){se.textContent='UNLOCKED // INACTIVE';se.style.color='#ffd074'}
  document.getElementById('coreDetailDesc').textContent=node.detail||node.desc||'';document.getElementById('coreDetailEffects').innerHTML=(node.effects||[node.desc]).map(x=>'<div class="goodLine">+ '+x+'</div>').join('');
- const req=document.getElementById('coreDetailReqs');req.innerHTML=node.id==='core'?'<div class="goodLine">'+tr('core.root')+'</div>':(node.requires||[]).map(r=>{const p=CORE_NODE_MAP[r],ok=coreUnlocked(r);return '<div class="'+(ok?'goodLine':'badLine')+'">'+(ok?'✓ ':'✕ ')+(p?.name||r)+'</div>'}).join('');
+ const req=document.getElementById('coreDetailReqs');const pathReq=node.id==='core'?'<div class="goodLine">'+tr('core.root')+'</div>':(node.requires||[]).map(r=>{const p=CORE_NODE_MAP[r],ok=coreUnlocked(r);return '<div class="'+(ok?'goodLine':'badLine')+'">'+(ok?'✓ ':'✕ ')+(p?.name||r)+'</div>'}).join('');const linked=coreNodeCharacterDef(node),active=coreNodeCharacterActive(node);const charReq=linked?'<div class="'+(active?'goodLine':'badLine')+'">'+(active?'✓ ':'◇ ')+'CHARACTER LINK // '+linked.icon+' '+linked.name+(active?' ACTIVE':' ONLY')+'</div>':'';req.innerHTML=pathReq+charReq;
  document.getElementById('coreDetailCost').textContent=coreCostText(node);const btn=document.getElementById('coreConfirmBtn');
  if(node.id==='core'||status==='owned'){btn.disabled=true;btn.textContent=tr('core.unlocked')}else if(adminCoreManual){btn.disabled=false;btn.textContent=tr('core.admin')}else if(status==='locked'){btn.disabled=true;btn.textContent=tr('core.requirementsNotMet')}else{btn.disabled=false;btn.textContent=tr('core.confirm')}
  document.querySelectorAll('.coreNode').forEach(el=>el.classList.toggle('selected',el.dataset.coreId===node.id));
@@ -7666,8 +7709,7 @@ function refreshCoreGridState(){
  wrap.querySelectorAll('.coreNode').forEach(el=>{
    const node=CORE_NODE_MAP[el.dataset.coreId];if(!node)return;
    const status=coreNodeStatus(node);
-   el.classList.remove('owned','available','locked','adminTarget');
-   el.classList.add(status);
+   el.classList.remove('owned','available','locked','adminTarget');el.classList.add(status);el.classList.toggle('characterLink',!!node.character);el.classList.toggle('characterInactive',!!node.character&&!coreNodeCharacterActive(node));
    const cost=el.querySelector('.nodeCost');
    if(cost)cost.textContent=status==='owned'?'✓':adminCoreManual?'ADMIN':coreCostText(node);
  });
@@ -7697,10 +7739,10 @@ function buildShop(){
  svg.appendChild(lineFrag);
 
  for(const node of CORE_NODES){
-   const branch=CORE_BRANCHES[node.branch]||CORE_BRANCHES.core,b=document.createElement('button');
-   b.className='coreNode'+(node.major?' major':'');b.dataset.coreId=node.id;
+   const branch=CORE_BRANCHES[node.branch]||CORE_BRANCHES.core,b=document.createElement('button'),linkedChar=coreNodeCharacterDef(node);
+   b.className='coreNode'+(node.major?' major':'')+(node.character?' characterLink':'');b.dataset.coreId=node.id;
    b.style.left=node.x+'px';b.style.top=node.y+'px';b.style.setProperty('--coreColor',branch.color);
-   b.innerHTML='<div class="nodeIcon">'+(node.icon||'◆')+'</div><div class="nodeName">'+node.name+'</div><div class="nodeCost"></div>';
+   b.innerHTML='<div class="nodeIcon">'+(node.icon||'◆')+'</div><div class="nodeName">'+node.name+'</div><div class="nodeCost"></div>'+(linkedChar?'<div class="charBadge" title="'+linkedChar.name+' ONLY">'+linkedChar.icon+'</div>':'');
    b.onclick=()=>{if(adminCoreManual&&!coreUnlocked(node.id)&&node.id!=='core')purchaseCoreNode(node.id);else selectCoreNode(node.id)};
    nodeFrag.appendChild(b);
  }
