@@ -1899,6 +1899,44 @@
 @media(max-width:520px){#gameWrap .gashaponStage{margin-top:9px}.gashaCabinet{padding-left:8px!important;padding-right:8px!important}.gashaGlobe{width:220px!important;height:158px!important}.gashaBody{grid-template-columns:80px 1fr 88px!important}.gashaDisplay{padding:8px 6px!important}.gashaDisplay b{font-size:8px!important}.summonMachineScene{width:96vw!important}.summonSceneBody{height:280px!important}.cinemaGlobe{left:5px!important;top:34px!important;transform:scale(.67)!important}.cinemaCrankAssembly{left:28px!important;bottom:8px!important;transform:scale(.72)!important}.cinemaDropTube{display:none}.cinemaCoreWrap{right:-2px!important;top:55px!important;transform:scale(.68)!important}.cinemaWarningBand{top:2%!important;font-size:6px!important}.cinemaRack{gap:4px!important}.rackSlot{width:18px!important;height:18px!important}.cinemaReadout{padding:9px!important}}
 @media(prefers-reduced-motion:reduce){#gameWrap .gashaMarquee i,#gameWrap .gashaCapsule,#gameWrap .gashaSelector span,#gameWrap .gashaponMachine.summoning * ,#gameWrap #summonCinematic *{animation-duration:.001ms!important;animation-iteration-count:1!important}}
 </style>
+<style id="stage126TrueGacha">
+#gameWrap .gachaArcadeStage{position:relative;z-index:3;max-width:1160px;margin:12px auto 0;display:grid;grid-template-columns:minmax(0,1fr) 218px;gap:12px;align-items:stretch;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
+#gameWrap .gachaMachineScene{position:relative;min-height:420px;border:2px solid #274b63;background:linear-gradient(180deg,#0a1825 0 72%,#071019 72%);box-shadow:inset 0 0 0 2px #050b10,5px 5px 0 #020609;overflow:hidden;display:grid;place-items:end center;padding:58px 18px 20px}
+#gameWrap .gachaBackSign{position:absolute;left:20px;top:16px;right:20px;height:54px;display:flex;align-items:center;justify-content:center;gap:16px;border:2px solid #2e5c76;background:#0c2130;box-shadow:inset 0 -5px #07131d;color:#78eaff;font:1000 7px ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.13em}
+#gameWrap .gachaBackSign b{font-size:18px;color:#f2fbff;letter-spacing:.08em;text-shadow:2px 2px 0 #07121a}.gachaBackSign em{font-style:normal;color:#ffe16a}
+#gameWrap .gachaSceneGlow{position:absolute;left:50%;top:82px;width:430px;height:240px;transform:translateX(-50%);background:radial-gradient(circle,#4ddfff22,transparent 68%);pointer-events:none}
+#gameWrap .gachaSceneFloor{position:absolute;left:0;right:0;bottom:0;height:118px;background:linear-gradient(90deg,#28536d22 1px,transparent 1px),linear-gradient(#28536d22 1px,transparent 1px),#08131c;background-size:36px 36px;transform:perspective(190px) rotateX(52deg);transform-origin:bottom;opacity:.55}
+#gameWrap .megaCapsuleMachine{position:relative;z-index:3;width:min(620px,96%);filter:drop-shadow(0 17px 18px #0009)}
+#gameWrap .megaMachineTop{height:38px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 13px;border:4px solid #315f79;background:#102737;box-shadow:inset 0 -5px #08141d;color:#6fe5ff;font:1000 7px ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.13em}.megaMachineTop b{font-size:11px;color:#f1fbff}.megaMachineTop i{font-style:normal;color:#7cff9f;animation:megaReady 1s steps(2,end) infinite}
+#gameWrap .megaDome{position:relative;width:380px;height:238px;margin:0 auto;border:7px solid #4d809b;border-top:0;clip-path:polygon(10% 0,90% 0,100% 14%,100% 92%,94% 100%,6% 100%,0 92%,0 14%);background:linear-gradient(180deg,#173b51 0 70%,#0e2738 70%);box-shadow:inset 0 0 0 7px #0b202d,inset 0 -24px #0b1c28;overflow:hidden}
+#gameWrap .megaDomeGlass{position:absolute;inset:0;background:linear-gradient(112deg,#d8f8ff24 0 12%,transparent 12% 68%,#0003 68%),linear-gradient(90deg,#6ee9ff0d 1px,transparent 1px),linear-gradient(#6ee9ff0b 1px,transparent 1px);background-size:auto,22px 22px,22px 22px;pointer-events:none;z-index:5}
+#gameWrap .megaSpinner{position:absolute;left:50%;top:52%;width:102px;height:102px;transform:translate(-50%,-50%);border:9px solid #2c5e77;background:#081721;display:grid;place-items:center;z-index:2}.megaSpinner::after{content:"◆";display:grid;place-items:center;width:42px;height:42px;background:#102b3b;border:4px solid #4a8ba8;color:#ffe35f;box-sizing:border-box}.megaSpinner i{position:absolute;width:76px;height:6px;background:#3d87a6}.megaSpinner i:nth-child(2){transform:rotate(60deg)}.megaSpinner i:nth-child(3){transform:rotate(120deg)}
+#gameWrap .megaDome .gashaCapsule{width:50px;height:42px;z-index:3;animation:megaCapFloat 2.2s steps(5,end) infinite}.megaDome .gashaCapsule i,.megaDome .gashaCapsule b{width:50px;height:22px}.megaDome .h1{left:25px;top:30px;--rot:-10deg}.megaDome .h2{left:94px;top:18px;--rot:8deg}.megaDome .h3{left:165px;top:24px;--rot:-3deg}.megaDome .h4{right:35px;top:42px;--rot:13deg}.megaDome .h5{left:55px;top:93px;--rot:7deg}.megaDome .h6{left:145px;top:102px;--rot:-12deg}.megaDome .h7{right:54px;top:105px;--rot:9deg}.megaDome .h8{left:22px;bottom:26px;--rot:-6deg}.megaDome .h9{left:118px;bottom:20px;--rot:11deg}.megaDome .h10{right:99px;bottom:24px;--rot:-8deg}.megaDome .h11{right:22px;bottom:18px;--rot:6deg}
+#gameWrap .megaDome .h2 i,#gameWrap .megaDome .h7 i{background:#ff78ae;border-color:#ffd2e2}.megaDome .h2 b,.megaDome .h7 b{background:#ffb34a;border-color:#ffe2a4}.megaDome .h3 i,.megaDome .h9 i{background:#cb78ff;border-color:#efd3ff}.megaDome .h3 b,.megaDome .h9 b{background:#55cfff;border-color:#c9f2ff}.megaDome .h4 i,.megaDome .h10 i{background:#ffe56a;border-color:#fff8b7}.megaDome .h4 b,.megaDome .h10 b{background:#e58b33;border-color:#ffc47e}
+#gameWrap .megaConsole{position:relative;margin:-2px auto 0;width:540px;min-height:118px;display:grid;grid-template-columns:92px 116px 1fr 104px;gap:8px;align-items:center;padding:12px;border:5px solid #315f79;background:#142c3d;box-sizing:border-box;box-shadow:inset 8px 0 #1b4055,inset -8px 0 #08151f}
+#gameWrap .megaGemSlot,#gameWrap .megaCrank,#gameWrap .megaScreen,#gameWrap .megaChute{height:90px;border:3px solid #244b62;background:#091925;box-shadow:inset 0 0 0 3px #061019;box-sizing:border-box}
+#gameWrap .megaGemSlot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}.gemSlotLight{width:28px;height:9px;border:2px solid #295b72;background:#1e4357;box-sizing:border-box}.megaGemSlot b{font-size:7px;color:#6eeaff}.megaGemSlot span{font-size:6px;color:#829bac}
+#gameWrap .megaCrank{position:relative;display:grid;place-items:center}.megaCrankWheel{position:relative;width:62px;height:62px;border:9px solid #768c99;background:#152a36;box-shadow:inset 0 0 0 7px #07121a;box-sizing:border-box}.megaCrankWheel i{position:absolute;left:50%;top:50%;width:12px;height:12px;background:#d9edf2;transform:translate(-50%,-50%)}.megaCrankWheel b{position:absolute;left:50%;top:50%;width:46px;height:5px;background:#526d7b;transform:translate(-50%,-50%) rotate(45deg)}.megaCrankArm{position:absolute;right:4px;top:19px;width:12px;height:46px;background:#dce9ee;border:3px solid #536b77;box-shadow:3px 3px 0 #061019}.megaCrankArm i{position:absolute;left:-5px;bottom:-10px;width:20px;height:14px;background:#9fb2bb;border:2px solid #4d626d}.megaCrank>span{position:absolute;bottom:5px;font-size:6px;font-weight:1000;letter-spacing:.1em;color:#7891a2}
+#gameWrap .megaScreen{padding:12px 10px;display:flex;flex-direction:column;justify-content:center}.megaScreen>span{font-size:6px;letter-spacing:.15em;color:#5ba4c8}.megaScreen>b{margin-top:7px;font-size:12px;color:#78f39e}.megaScreen>em{margin-top:4px;font-size:6px;font-style:normal;color:#8399aa}.screenBars{display:flex;gap:3px;margin-top:9px}.screenBars i{display:block;width:22%;height:4px;background:#21445a}.screenBars i:nth-child(-n+3){background:#4ddfff}
+#gameWrap .megaChute{display:grid;place-items:center;align-content:center;gap:5px}.megaChuteDoor{width:70px;height:52px;padding:7px;border:4px solid #526b78;background:#172c38;box-sizing:border-box;position:relative}.megaChuteDoor i{display:block;width:100%;height:100%;background:#03070a;border:2px solid #284250}.megaChuteDoor b{position:absolute;left:9px;right:9px;top:10px;height:4px;background:#1f3642}.megaChute span{font-size:6px;font-weight:1000;color:#819aab}
+#gameWrap .megaMachineBase{height:27px;margin:0 auto;width:520px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;border:4px solid #294e65;border-top:0;background:#07141e;color:#5c7d90;font-size:5.5px;font-weight:1000;letter-spacing:.08em;box-sizing:border-box}.megaMachineBase b{color:#ffe05d}
+#gameWrap .gachaMachineSide{display:grid;grid-template-rows:auto auto 1fr;gap:10px}.sidePixelCard,.sideGuarantee{border:2px solid #294b62;background:#09141f;box-shadow:inset 0 0 0 2px #050b10,4px 4px 0 #020609}.sidePixelCard{padding:12px}.sideKicker{display:block;padding-bottom:8px;border-bottom:2px solid #1d3b4e;color:#69e5ff;font-size:7px;font-weight:1000;letter-spacing:.15em}.sideStep{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid #173044;font-size:8px;color:#9ab0c0}.sideStep b{font-size:10px;color:#ffe16a}
+#gameWrap .sideRate{display:grid;grid-template-columns:12px 1fr auto;gap:7px;align-items:center;padding:7px 0;border-bottom:1px solid #173044;font-size:7px;font-weight:1000}.sideRate i{width:9px;height:9px;background:currentColor}.sideRate.common{color:#aeb8c3}.sideRate.rare{color:#65c9ff}.sideRate.epic{color:#c978ff}.sideRate.legendary{color:#ffe26a}
+#gameWrap .sideGuarantee{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;background:#251d08;border-color:#725b18}.sideGuarantee b{font-size:25px;color:#ffe36b}.sideGuarantee span{font-size:7px;font-weight:1000;color:#e7d699;line-height:1.45}
+#gameWrap .megaCapsuleMachine.arming .gemSlotLight{background:#63eaff;box-shadow:0 0 12px #63eaff}.megaCapsuleMachine.arming .megaScreen>b{color:#ffe36b}.megaCapsuleMachine.cranking .megaCrankWheel{animation:megaCrankSpin .42s steps(8,end) infinite}.megaCapsuleMachine.cranking .megaCrankArm{animation:megaCrankArmSpin .42s steps(8,end) infinite;transform-origin:-27px 28px}.megaCapsuleMachine.cranking .megaSpinner{animation:megaSpinnerSpin .38s steps(8,end) infinite}.megaCapsuleMachine.cranking .gashaCapsule{animation:megaCapMix .38s steps(4,end) infinite}.megaCapsuleMachine.dropping .megaChuteDoor{animation:megaChuteOpen .5s steps(4,end)}.megaCapsuleMachine.legendary.cranking{filter:drop-shadow(0 0 25px #ffc93c77) drop-shadow(0 17px 18px #0009)}
+#gameWrap .cinemaGemStream{position:absolute;left:50%;top:20%;z-index:7;width:140px;height:190px;transform:translateX(-50%);pointer-events:none}.cinemaGemStream i{position:absolute;left:50%;top:-18px;color:#74eaff;font-style:normal;font-size:16px;text-shadow:2px 2px 0 #000;animation:gemFall .72s steps(6,end) var(--gd) both;transform:translateX(var(--gx))}
+#gameWrap .cinemaOmen{position:absolute;left:50%;top:14%;z-index:8;transform:translateX(-50%) scale(.8);min-width:220px;padding:9px 14px;text-align:center;border:2px solid #31546a;background:#07131ddd;color:#a8bac7;font:1000 8px ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.12em;opacity:0;pointer-events:none}.cinemaOmen span{display:block;font-size:18px}.cinemaOmen b{display:block;margin-top:4px}.cinemaOmen.common,.cinemaOmen.rare,.cinemaOmen.epic,.cinemaOmen.legendary,.cinemaOmen.blackout,.cinemaOmen.burst{opacity:1;transform:translateX(-50%) scale(1);animation:omenPop .28s steps(4,end) both}.cinemaOmen.rare{color:#6dccff;border-color:#3c99ca}.cinemaOmen.epic{color:#d287ff;border-color:#8750bd}.cinemaOmen.legendary{color:#ffe372;border-color:#d39e25;background:#2a1b05}.cinemaOmen.blackout{color:#ff9caa;border-color:#7e3041;background:#13080c}.cinemaOmen.burst{color:#fff}
+#gameWrap .cinemaBlackout{position:absolute;inset:0;z-index:7;background:#000;opacity:0;pointer-events:none}.phase-blackout .cinemaBlackout{animation:blackoutHit .5s steps(2,end) both}
+#gameWrap #summonCinematic.phase-insert .cinemaGemStream{display:block}.phase-crank .cinemaCrankWheel,.phase-crank .cinemaRotor{animation:megaSpinnerSpin .35s steps(8,end) infinite!important}.phase-crank .cinemaCrankWheel i{animation:crankHandleKick .35s steps(4,end) infinite}.phase-drop .cinemaCore{animation:capsuleDropIn .85s steps(8,end) both!important}.phase-drop .cinemaDropTube{animation:tubeFlash .5s steps(2,end) 2}.phase-upgrade .cinemaCore{animation:capsuleUpgrade .55s steps(5,end) both}.phase-legend .summonMachineScene{animation:legendSceneHit .55s steps(5,end) both}.phase-legend .cinemaWarningBand{color:#ffe36a!important}.phase-legend .cinemaWarningBand i{background:#ffc632!important}
+#gameWrap .cinemaRack{gap:6px!important}.rackCapsule{position:relative;width:31px;height:32px;display:block;opacity:.35;transform:translateY(-10px);transition:none}.rackCapsule i,.rackCapsule b{position:absolute;left:2px;width:27px;height:15px;border:2px solid #526a78;box-sizing:border-box}.rackCapsule i{top:1px;background:#405463}.rackCapsule b{bottom:1px;background:#223440}.rackCapsule em{position:absolute;inset:0;display:grid;place-items:center;z-index:3;font:1000 6px ui-monospace,"Cascadia Mono",Consolas,monospace;color:#a9bac6;font-style:normal}.rackCapsule.loaded{animation:rackCapsuleLoad .32s steps(4,end) var(--slotDelay) both}.rackCapsule.revealed{opacity:1;transform:none}.rackCapsule.revealed.common i{background:#aeb8c3}.rackCapsule.revealed.common b{background:#697582}.rackCapsule.revealed.rare i{background:#70ceff}.rackCapsule.revealed.rare b{background:#2d80c8}.rackCapsule.revealed.epic i{background:#d083ff}.rackCapsule.revealed.epic b{background:#7240c6}.rackCapsule.revealed.legendary i{background:#ffe66f;border-color:#fff4ae}.rackCapsule.revealed.legendary b{background:#df8d2f;border-color:#ffc677}.rackCapsule.revealed.legendary{filter:drop-shadow(0 0 8px #ffd64c)}
+#gameWrap .revealProgressStrip{position:absolute;left:50%;top:6%;z-index:5;transform:translateX(-50%);display:none;gap:5px;padding:6px 8px;border:2px solid #28485d;background:#061019cc}.revealProgressCap{width:23px;height:23px;display:grid;place-items:center;border:2px solid #29495d;background:#0b1822;color:#617e90;font:1000 6px ui-monospace,"Cascadia Mono",Consolas,monospace}.revealProgressCap.done.common{background:#8d99a5;color:#081019}.revealProgressCap.done.rare{background:#58c5ff;color:#06111a}.revealProgressCap.done.epic{background:#bf72ff;color:#0d0712}.revealProgressCap.done.legendary{background:#ffd85a;color:#211400;box-shadow:0 0 10px #ffd85a}
+#gameWrap .revealPixelField{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#ffffff08 1px,transparent 1px),linear-gradient(#ffffff06 1px,transparent 1px);background-size:28px 28px;opacity:.35}.revealSignalBurst{position:absolute;left:50%;top:18%;z-index:4;transform:translateX(-50%) scale(.5);opacity:0;pointer-events:none}.revealSignalBurst span{display:block;padding:7px 12px;border:2px solid var(--burstColor,#fff);background:#050b10;color:var(--burstColor,#fff);font:1000 15px ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.16em;box-shadow:4px 4px 0 #000}.revealSignalBurst.show{animation:rarityStamp 1s steps(7,end) both}.revealPanel.revealBurst .revealIcon{animation:characterIconReveal .65s steps(7,end) both}.revealPanel.legendary.revealBurst .revealIcon{animation:legendIconReveal .85s steps(8,end) both}.revealPanel.revealNewChar .revealName::after{content:" // NEW";color:#75f5a0;font-size:.45em;vertical-align:middle;letter-spacing:.08em}
+#gameWrap .resultCard{position:relative;overflow:hidden}.resultCard::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:currentColor;opacity:.9}.resultCard.legendaryCard::before{height:7px;background:repeating-linear-gradient(90deg,#ffe16a 0 12px,#ff9b35 12px 24px)}.resultCard.newCharacter{outline:2px solid #d9fbff55}
+@keyframes megaReady{50%{opacity:.35}}@keyframes megaCapFloat{0%,100%{transform:translateY(0) rotate(var(--rot))}50%{transform:translateY(-5px) rotate(var(--rot))}}@keyframes megaCrankSpin{to{transform:rotate(360deg)}}@keyframes megaCrankArmSpin{to{transform:rotate(360deg)}}@keyframes megaSpinnerSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes megaCapMix{0%{transform:translate(0,0) rotate(var(--rot))}25%{transform:translate(9px,-8px) rotate(22deg)}50%{transform:translate(-8px,7px) rotate(-20deg)}75%{transform:translate(7px,9px) rotate(14deg)}100%{transform:translate(0,0) rotate(var(--rot))}}@keyframes megaChuteOpen{50%{transform:translateY(7px);filter:brightness(1.4)}}@keyframes gemFall{0%{transform:translate(var(--gx),-20px) scale(.7);opacity:0}25%{opacity:1}100%{transform:translate(calc(var(--gx) * .25),180px) scale(1.1);opacity:0}}@keyframes omenPop{0%{transform:translateX(-50%) scale(.65);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}@keyframes blackoutHit{0%,100%{opacity:0}35%,70%{opacity:.96}}@keyframes crankHandleKick{50%{transform:rotate(28deg)}}@keyframes tubeFlash{50%{filter:brightness(2)}}@keyframes capsuleUpgrade{0%{filter:brightness(1);transform:scale(1)}45%{filter:brightness(3);transform:scale(1.14)}100%{filter:brightness(1);transform:scale(1)}}@keyframes legendSceneHit{0%{filter:brightness(1)}30%{filter:brightness(3)}100%{filter:brightness(1)}}@keyframes rackCapsuleLoad{0%{opacity:0;transform:translateY(-18px)}70%{opacity:1;transform:translateY(4px)}100%{opacity:.55;transform:translateY(0)}}@keyframes rarityStamp{0%{opacity:0;transform:translateX(-50%) scale(.55)}18%,60%{opacity:1;transform:translateX(-50%) scale(1.08)}100%{opacity:0;transform:translateX(-50%) scale(1)}}@keyframes characterIconReveal{0%{transform:scale(.2);filter:brightness(0);opacity:0}55%{filter:brightness(2);opacity:1;transform:scale(1.18)}100%{filter:none;transform:scale(1)}}@keyframes legendIconReveal{0%{transform:scale(.15);filter:brightness(0);opacity:0}35%{filter:brightness(4);opacity:1;transform:scale(1.3)}60%{transform:scale(.92)}100%{filter:none;transform:scale(1)}}
+@media(max-width:920px){#gameWrap .gachaArcadeStage{grid-template-columns:1fr}.gachaMachineSide{display:none!important}.gachaMachineScene{min-height:390px!important}.megaCapsuleMachine{transform:scale(.92);transform-origin:bottom center}}
+@media(max-width:620px){#gameWrap .gachaMachineScene{min-height:335px!important;padding:45px 4px 8px!important}.gachaBackSign{height:42px!important;left:7px!important;right:7px!important;top:6px!important}.gachaBackSign span,.gachaBackSign em{display:none}.gachaBackSign b{font-size:13px!important}.megaCapsuleMachine{transform:scale(.72)!important;width:600px!important}.revealProgressStrip{top:3%!important;gap:2px!important;padding:4px!important}.revealProgressCap{width:18px!important;height:18px!important;font-size:5px!important}.cinemaOmen{top:9%!important;min-width:170px!important}.cinemaOmen span{font-size:14px!important}}
+@media(prefers-reduced-motion:reduce){#gameWrap .megaCapsuleMachine *,#gameWrap #summonCinematic *,#gameWrap #singleReveal *{animation-duration:.001ms!important;animation-iteration-count:1!important}}
+</style>
 </head>
 <body>
 <div id="app">
@@ -2095,63 +2133,85 @@
           </div>
         </div>
 
-        <div class="gachaHero gashaponStage">
-          <section class="gashaponIntro">
-            <div class="pixelLabel">BREAK SURVIVORS // CAPSULE LAB</div>
-            <div class="gashaponTitle">SURVIVOR<br>CAPSULE</div>
-            <div class="gachaSub">Gemsを投入してハンドルを回し、カプセルから新しいSurvivorを召喚。</div>
-            <div class="gashaSteps">
-              <div><b>01</b><span>INSERT GEMS</span></div>
-              <div><b>02</b><span>TURN THE CORE</span></div>
-              <div><b>03</b><span>OPEN CAPSULE</span></div>
+        <div class="gachaHero gachaArcadeStage">
+          <section class="gachaMachineScene">
+            <div class="gachaBackSign">
+              <span>BREAK SURVIVORS</span>
+              <b>CAPSULE BREAK</b>
+              <em>TURN • DROP • CRACK</em>
             </div>
-          </section>
+            <div class="gachaSceneGlow"></div>
+            <div class="gachaSceneFloor"></div>
 
-          <section class="gashaponMachineWrap">
-            <div id="gachaMachine" class="gashaponMachine">
-              <div class="gashaMarquee"><span>BREAK</span><b>CAPSULE MACHINE</b><i>READY</i></div>
-              <div class="gashaCabinet">
-                <div class="gashaLampRow"><i></i><i></i><i></i><i></i><i></i></div>
-                <div class="gashaGlobe">
-                  <div class="gashaGlobeGrid"></div>
-                  <div class="gashaCapsule c1"><i></i><b></b></div>
-                  <div class="gashaCapsule c2"><i></i><b></b></div>
-                  <div class="gashaCapsule c3"><i></i><b></b></div>
-                  <div class="gashaCapsule c4"><i></i><b></b></div>
-                  <div class="gashaCapsule c5"><i></i><b></b></div>
-                  <div class="gashaCapsule c6"><i></i><b></b></div>
-                  <div class="gashaCapsule c7"><i></i><b></b></div>
-                  <div class="gashaSelector"><span>◆</span></div>
+            <div id="gachaMachine" class="gashaponMachine megaCapsuleMachine">
+              <div class="megaMachineTop">
+                <span>BS-99</span><b>SURVIVOR CAPSULE</b><i>READY</i>
+              </div>
+
+              <div class="megaDome">
+                <div class="megaDomeGlass"></div>
+                <div class="megaSpinner"><i></i><i></i><i></i></div>
+                <div class="gashaCapsule h1"><i></i><b></b></div>
+                <div class="gashaCapsule h2"><i></i><b></b></div>
+                <div class="gashaCapsule h3"><i></i><b></b></div>
+                <div class="gashaCapsule h4"><i></i><b></b></div>
+                <div class="gashaCapsule h5"><i></i><b></b></div>
+                <div class="gashaCapsule h6"><i></i><b></b></div>
+                <div class="gashaCapsule h7"><i></i><b></b></div>
+                <div class="gashaCapsule h8"><i></i><b></b></div>
+                <div class="gashaCapsule h9"><i></i><b></b></div>
+                <div class="gashaCapsule h10"><i></i><b></b></div>
+                <div class="gashaCapsule h11"><i></i><b></b></div>
+              </div>
+
+              <div class="megaConsole">
+                <div class="megaGemSlot">
+                  <div class="gemSlotLight"></div>
+                  <b>◆ GEM IN</b>
+                  <span>100 / 900</span>
                 </div>
-                <div class="gashaBody">
-                  <div class="gashaCrank">
-                    <div class="crankWheel"><i></i></div>
-                    <div class="crankHandle"></div>
-                    <span>TURN</span>
-                  </div>
-                  <div class="gashaDisplay">
-                    <span>SUMMON STATUS</span>
-                    <b>CAPSULE READY</b>
-                    <em>PRESS A SUMMON BUTTON</em>
-                  </div>
-                  <div class="gashaChute">
-                    <div class="chuteDoor"><i></i></div>
-                    <span>CAPSULE OUT</span>
-                  </div>
+
+                <div class="megaCrank">
+                  <div class="megaCrankWheel"><i></i><b></b></div>
+                  <div class="megaCrankArm"><i></i></div>
+                  <span>TURN CORE</span>
+                </div>
+
+                <div class="megaScreen">
+                  <span>MACHINE STATUS</span>
+                  <b id="homeMachineStatus">CAPSULE READY</b>
+                  <em id="homeMachineSub">SELECT 1× OR 10× SUMMON</em>
+                  <div class="screenBars"><i></i><i></i><i></i><i></i></div>
+                </div>
+
+                <div class="megaChute">
+                  <div class="megaChuteDoor"><i></i><b></b></div>
+                  <span>CAPSULE OUT</span>
                 </div>
               </div>
-              <div class="gashaFoot"><span>UNIT BS-99</span><b>◆ POWER ONLINE ◆</b><span>CORE LINK OK</span></div>
+
+              <div class="megaMachineBase">
+                <span>CORE LINK // ONLINE</span><b>◆</b><span>DISPENSER // ARMED</span>
+              </div>
             </div>
           </section>
 
-          <aside class="gashaponGuide">
-            <div class="guideTitle">DROP SIGNAL</div>
-            <div class="guideRarity common"><span>COMMON</span><b>45%</b></div>
-            <div class="guideRarity rare"><span>RARE</span><b>30%</b></div>
-            <div class="guideRarity epic"><span>EPIC</span><b>18%</b></div>
-            <div class="guideRarity legendary"><span>LEGENDARY</span><b>7%</b></div>
-            <div class="guideRule"><b>10×</b><span>EPIC+ GUARANTEE</span></div>
-            <div class="guideRule"><b>40</b><span>LEGENDARY HARD PITY</span></div>
+          <aside class="gachaMachineSide">
+            <div class="sidePixelCard">
+              <span class="sideKicker">HOW TO PULL</span>
+              <div class="sideStep"><b>01</b><span>GEMS投入</span></div>
+              <div class="sideStep"><b>02</b><span>ハンドル回転</span></div>
+              <div class="sideStep"><b>03</b><span>カプセル排出</span></div>
+              <div class="sideStep"><b>04</b><span>タップで開封</span></div>
+            </div>
+            <div class="sidePixelCard sideRates">
+              <span class="sideKicker">CAPSULE COLOR</span>
+              <div class="sideRate common"><i></i><span>COMMON</span><b>45%</b></div>
+              <div class="sideRate rare"><i></i><span>RARE</span><b>30%</b></div>
+              <div class="sideRate epic"><i></i><span>EPIC</span><b>18%</b></div>
+              <div class="sideRate legendary"><i></i><span>LEGENDARY</span><b>7%</b></div>
+            </div>
+            <div class="sideGuarantee"><b>10×</b><span>EPIC+<br>GUARANTEE</span></div>
           </aside>
         </div>
 
@@ -2183,6 +2243,9 @@
         <div id="summonCinematic">
           <div class="cinemaBackdrop"></div>
           <div class="cinemaVignette"></div>
+          <div id="cinemaBlackout" class="cinemaBlackout"></div>
+          <div id="cinemaGemStream" class="cinemaGemStream"></div>
+          <div id="cinemaOmen" class="cinemaOmen"><span>?</span><b id="cinemaOmenText">SIGNAL UNKNOWN</b></div>
           <div class="cinemaWarningBand"><i></i><b id="cinemaAlert">CAPSULE PROCESSOR ONLINE</b><i></i></div>
           <div class="cinemaStage" id="cinemaTapTarget">
             <div class="summonMachineScene">
@@ -2223,6 +2286,9 @@
         </div>
 
         <div id="singleReveal">
+          <div class="revealPixelField"></div>
+          <div id="revealSignalBurst" class="revealSignalBurst"><span id="revealBurstRarity"></span></div>
+          <div id="revealProgressStrip" class="revealProgressStrip"></div>
           <div id="revealPanel" class="revealPanel">
             <div id="revealCounter" class="revealCounter"></div>
             <div style="position:relative;z-index:2">
@@ -5659,6 +5725,18 @@ function playGachaSfx(kind){
   }else if(kind==='new'){
     oscTone(880,.10,'sine',.022,1320);
     oscTone(1320,.13,'triangle',.018,1760,.045);
+  }else if(kind==='coin'){
+    metallicPing(1380,.024,.10);oscTone(260,.08,'square',.012,390,.025);
+  }else if(kind==='crank'){
+    [0,1,2,3].forEach(i=>{oscTone(130+i*18,.055,'square',.012,null,i*.075);noiseBurst(.035,.010,'bandpass',700+i*90,i*.075)});
+  }else if(kind==='drop'){
+    oscTone(310,.16,'square',.018,120);noiseBurst(.09,.020,'lowpass',520,.06);
+  }else if(kind==='upgrade'){
+    oscTone(420,.16,'triangle',.025,840);oscTone(840,.18,'sine',.022,1680,.08);
+  }else if(kind==='fakeout'){
+    oscTone(118,.34,'sine',.036,62);noiseBurst(.22,.020,'bandpass',880,.10);
+  }else if(kind==='crack'){
+    noiseBurst(.16,.040,'highpass',2200);oscTone(180,.18,'square',.030,520,.02);
   }
 }
 
@@ -8053,20 +8131,64 @@ function doGacha(count){
 }
 function setHomeGachaMachineState(state='',rarity=''){
   const m=document.getElementById('gachaMachine');if(!m)return;
-  m.className='gashaponMachine'+(state?' '+state:'')+(rarity?' '+rarity.toLowerCase():'');
+  m.className='gashaponMachine megaCapsuleMachine'+(state?' '+state:'')+(rarity?' '+rarity.toLowerCase():'');
+  const a=document.getElementById('homeMachineStatus'),b=document.getElementById('homeMachineSub');
+  const map={
+    arming:['GEMS ACCEPTED','POWERING DISPENSER...'],
+    cranking:['TURNING CORE','CAPSULES SHUFFLING...'],
+    dropping:['CAPSULE RELEASE','DROP GATE OPEN'],
+    settle:['CAPSULE DISPENSED','CHECK RESULT'],
+    idle:['CAPSULE READY','SELECT 1× OR 10× SUMMON']
+  },v=map[state]||map.idle;
+  if(a)a.textContent=v[0];if(b)b.textContent=v[1];
 }
+
 function buildCinemaRack(){
   const rack=document.getElementById('cinemaRack');if(!rack)return;
   rack.innerHTML='';
   const count=lastPullCount===10?10:1;
-  for(let i=0;i<count;i++){const slot=document.createElement('i');slot.className='rackSlot';slot.style.setProperty('--slotDelay',(i*55)+'ms');rack.appendChild(slot)}
+  for(let i=0;i<count;i++){
+    const slot=document.createElement('span');
+    slot.className='rackCapsule unknown';
+    slot.dataset.index=i;
+    slot.style.setProperty('--slotDelay',(i*70)+'ms');
+    slot.innerHTML='<i></i><b></b><em>'+String(i+1).padStart(2,'0')+'</em>';
+    rack.appendChild(slot);
+  }
 }
-function revealCinemaRack(){
+function primeCinemaRack(){
   const rack=document.getElementById('cinemaRack');if(!rack)return;
-  [...rack.children].forEach((slot,i)=>{
-    const r=pendingGachaResults[i]||pendingGachaResults[0];
-    summonLater(()=>{slot.className='rackSlot revealed '+(r?.c?.rarity||'Common').toLowerCase()},i*65);
+  [...rack.children].forEach((slot,i)=>summonLater(()=>slot.classList.add('loaded'),i*85));
+}
+function markRackReveal(index,r){
+  const rack=document.getElementById('cinemaRack'),slot=rack?.children?.[index];if(!slot)return;
+  slot.className='rackCapsule loaded revealed '+r.c.rarity.toLowerCase();
+  slot.innerHTML='<i></i><b></b><em>'+r.c.icon+'</em>';
+}
+function buildRevealProgressStrip(){
+  const strip=document.getElementById('revealProgressStrip');if(!strip)return;
+  strip.innerHTML='';
+  if(lastPullCount!==10){strip.style.display='none';return}
+  strip.style.display='flex';
+  pendingGachaResults.forEach((r,i)=>{
+    const x=document.createElement('i');x.className='revealProgressCap';x.dataset.index=i;x.textContent=String(i+1);strip.appendChild(x);
   });
+}
+function updateRevealProgressStrip(index,r){
+  const strip=document.getElementById('revealProgressStrip'),x=strip?.children?.[index];if(!x)return;
+  x.className='revealProgressCap done '+r.c.rarity.toLowerCase();x.textContent=r.c.icon;
+}
+function buildCinemaGemStream(){
+  const host=document.getElementById('cinemaGemStream');if(!host)return;
+  host.innerHTML='';
+  const count=lastPullCount===10?14:7;
+  for(let i=0;i<count;i++){
+    const g=document.createElement('i');g.textContent='◆';g.style.setProperty('--gx',((i%5)-2)*28+'px');g.style.setProperty('--gd',(i*48)+'ms');host.appendChild(g);
+  }
+}
+function setCinemaOmen(mode,text=''){
+  const omen=document.getElementById('cinemaOmen'),label=document.getElementById('cinemaOmenText');if(!omen)return;
+  omen.className='cinemaOmen '+mode;if(label)label.textContent=text;
 }
 function spawnCinemaPixels(rarity){
   const cine=document.getElementById('summonCinematic');if(!cine)return;
@@ -8088,36 +8210,86 @@ function startGachaCharge(){
   document.getElementById('singleReveal').className='';
   const cine=document.getElementById('summonCinematic'),rarity=highestRarity(pendingGachaResults),cls=rarity.toLowerCase();
   const pityResult=pendingGachaResults.find(r=>r.pityHit),guaranteed=pendingGachaResults.find(r=>r.tenGuarantee);
-  buildCinemaRack();setHomeGachaMachineState('summoning',rarity);
+  buildCinemaRack();buildRevealProgressStrip();buildCinemaGemStream();setCinemaOmen('hidden','SIGNAL UNKNOWN');
   summonPhase='charging';
-  cine.className='active charging phase-power '+cls+(lastPullCount===10?' multi':'');
-  const initial=pityResult?'MAX PITY ROUTE':guaranteed?'10-PULL ROUTE':lastPullCount===10?'10 CAPSULE ROUTE':'SINGLE CAPSULE ROUTE';
-  setCinemaText('POWER ROUTE','INITIALIZING...','Gemsをコアへ送っています',initial);
-  const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CAPSULE PROCESSOR ONLINE';
-  playGachaSfx('charge');
+
+  setHomeGachaMachineState('arming',rarity);playGachaSfx('coin');
+  summonLater(()=>{setHomeGachaMachineState('cranking',rarity);playGachaSfx('crank')},320);
+
+  summonLater(()=>{
+    cine.className='active charging phase-insert '+cls+(lastPullCount===10?' multi':'');
+    const initial=pityResult?'MAX PITY ROUTE':guaranteed?'10-PULL EPIC+ ROUTE':lastPullCount===10?'TEN CAPSULE REQUEST':'SINGLE CAPSULE REQUEST';
+    setCinemaText('GEM INSERT','POWERING MACHINE...','Gemsを投入中',initial);
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='GEMS ACCEPTED // MOTOR START';
+    playGachaSfx('charge');
+  },650);
+
+  summonLater(()=>{
+    cine.className='active charging phase-crank '+cls+(lastPullCount===10?' multi':'');
+    setCinemaText('TURN CORE','CRANKING...','ハンドルを回してカプセルをシャッフル','MECHANICAL LOCK // RELEASED');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CRANK SHAFT // 100%';
+    playGachaSfx('crank');
+  },1250);
 
   summonLater(()=>{
     cine.className='active charging phase-mix '+cls+(lastPullCount===10?' multi':'');
-    setCinemaText('CAPSULE MIX','MIXING...','カプセルドラムを高速回転中',lastPullCount===10?'10 SIGNALS IN DRUM':'1 SIGNAL REQUESTED');
-    if(alert)alert.textContent='CORE CRANK // ACTIVE';
-  },430);
+    setCinemaText('CAPSULE MIX','RUMBLING...','ドラム内でカプセルが混ざっています',lastPullCount===10?'10 CAPSULES QUEUED':'CAPSULE SELECTING');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='DRUM SPEED // MAX';
+  },1850);
 
   summonLater(()=>{
-    cine.className='active charging phase-scan '+cls+(lastPullCount===10?' multi':'');
-    setCinemaText('SIGNAL SCAN','SCANNING...','排出カプセルの信号を解析中',rarity==='Legendary'?'SIGNAL SPIKE DETECTED':rarity==='Epic'?'HIGH ENERGY DETECTED':'SIGNAL STABLE');
-    if(alert)alert.textContent=rarity==='Legendary'?'WARNING // SIGNAL OVERFLOW':rarity==='Epic'?'SIGNAL BOOST // PURPLE':rarity==='Rare'?'ENHANCED SIGNAL // BLUE':'STANDARD SIGNAL';
-    if(rarity==='Epic'){playGachaSfx('epic');try{navigator.vibrate?.([25,25,35])}catch(_){}}
-    if(rarity==='Legendary'){playGachaSfx('legendaryPrelude');try{navigator.vibrate?.([35,30,55,30,75])}catch(_){}}
-  },980);
+    cine.className='active charging phase-drop '+cls+(lastPullCount===10?' multi':'');
+    setHomeGachaMachineState('dropping',rarity);
+    setCinemaText('CAPSULE DROP','DISPENSING...','排出口へカプセルが落下','CLACK // CLACK // DROP');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=lastPullCount===10?'10 CAPSULES // DISPENSING':'1 CAPSULE // DISPENSING';
+    primeCinemaRack();playGachaSfx('drop');
+    try{navigator.vibrate?.([22,35,30])}catch(_){}
+  },2550);
 
-  const readyDelay=rarity==='Legendary'?2700:rarity==='Epic'?2350:rarity==='Rare'?2100:1900;
+  summonLater(()=>{
+    const omenBase=rarity==='Common'?'common':'rare';
+    cine.className='active charging phase-omen '+omenBase+(lastPullCount===10?' multi':'');
+    setCinemaText('SIGNAL CHECK','READING COLOR...','カプセルの発光色を解析しています',rarity==='Common'?'WHITE SIGNAL':rarity==='Rare'?'BLUE SIGNAL':'BLUE SIGNAL...?');
+    setCinemaOmen(omenBase,rarity==='Common'?'STANDARD SIGNAL':rarity==='Rare'?'RARE SIGNAL':'SIGNAL RISING...');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='COLOR SENSOR // ACTIVE';
+    if(rarity==='Rare')playGachaSfx('rare');
+  },3150);
+
+  if(rarity==='Epic'||rarity==='Legendary'){
+    summonLater(()=>{
+      cine.className='active charging phase-upgrade epic'+(lastPullCount===10?' multi':'');
+      setCinemaText('SIGNAL UPGRADE','COLOR SHIFT!','青い光が紫へ変化した','EPIC SIGNAL');
+      setCinemaOmen('epic','EPIC SIGNAL');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SIGNAL UPGRADE // PURPLE';
+      playGachaSfx('upgrade');try{navigator.vibrate?.([28,20,46])}catch(_){}
+    },3650);
+  }
+
+  if(rarity==='Legendary'){
+    summonLater(()=>{
+      cine.className='active charging phase-blackout epic'+(lastPullCount===10?' multi':'');
+      setCinemaText('SIGNAL LOST','...','信号が途切れた','???');
+      setCinemaOmen('blackout','SIGNAL LOST');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ERROR // UNKNOWN SIGNAL';
+      playGachaSfx('fakeout');try{navigator.vibrate?.([70])}catch(_){}
+    },4200);
+    summonLater(()=>{
+      cine.className='active charging phase-legend legendary'+(lastPullCount===10?' multi':'');
+      setCinemaText('LIMIT BREAK','GOLDEN SIGNAL!!','カプセルが金色へ変化した','LEGENDARY');
+      setCinemaOmen('legendary','LEGENDARY SIGNAL');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='!!! LEGENDARY SIGNAL BREAK !!!';
+      playGachaSfx('legendaryPrelude');try{navigator.vibrate?.([45,25,65,25,100])}catch(_){}
+    },4580);
+  }
+
+  const readyDelay=rarity==='Legendary'?5350:rarity==='Epic'?4300:rarity==='Rare'?3750:3550;
   summonLater(()=>{
     const [title,hint]=rarityHint(rarity);
     cine.className='active ready phase-lock '+cls+(lastPullCount===10?' multi':'');
     summonPhase='ready';
-    setCinemaText('CAPSULE LOCK','TAP CAPSULE TO OPEN',hint,title);
-    if(alert)alert.textContent=rarity==='Legendary'?'!! LEGENDARY CAPSULE LOCKED !!':'CAPSULE LOCKED // READY';
-    if(rarity==='Legendary')try{navigator.vibrate?.([55,35,85])}catch(_){}
+    setCinemaText('CAPSULE LOCK','TAP TO CRACK',hint,title);
+    setCinemaOmen(cls,rarity.toUpperCase()+' CAPSULE');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=rarity==='Legendary'?'GOLD CAPSULE // TAP TO BREAK':'CAPSULE READY // TAP TO BREAK';
   },readyDelay);
 }
 function openSummonCapsule(){
@@ -8126,18 +8298,17 @@ function openSummonCapsule(){
   const cine=document.getElementById('summonCinematic'),rarity=highestRarity(pendingGachaResults),cls=rarity.toLowerCase();
   summonPhase='opening';
   cine.className='active opening phase-break '+cls+(lastPullCount===10?' multi':'');
-  setCinemaText('CAPSULE BREAK','OPENING!','カプセルロック解除','DATA EXTRACTION');
-  const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=rarity==='Legendary'?'LEGENDARY DATA BURST':'CAPSULE OPEN // DATA READ';
-  revealCinemaRack();spawnCinemaPixels(rarity);
-  playGachaSfx(rarity==='Legendary'?'legendary':rarity.toLowerCase());
-  try{navigator.vibrate?.(rarity==='Legendary'?[90,25,130,35,160]:rarity==='Epic'?[55,25,80]:[28,18,38])}catch(_){}
-  const openDelay=rarity==='Legendary'?1550:rarity==='Epic'?1180:rarity==='Rare'?980:820;
+  setCinemaText('CRACK CAPSULE','BREAK!','カプセルを開封中','SURVIVOR DATA RELEASE');
+  setCinemaOmen('burst',rarity.toUpperCase()+' BREAK');
+  const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=rarity==='Legendary'?'GOLD CORE // BURST':'CORE SHELL // BREAK';
+  spawnCinemaPixels(rarity);playGachaSfx('crack');
+  summonLater(()=>playGachaSfx(rarity==='Legendary'?'legendary':rarity.toLowerCase()),180);
+  try{navigator.vibrate?.(rarity==='Legendary'?[95,25,140,30,170]:rarity==='Epic'?[60,20,85]:[35,15,45])}catch(_){}
+  const openDelay=rarity==='Legendary'?1700:rarity==='Epic'?1250:rarity==='Rare'?1050:900;
   summonLater(()=>{
     cine.className='';
-    setHomeGachaMachineState('settle',rarity);
-    summonLater(()=>setHomeGachaMachineState('', ''),520);
-    revealIndex=0;
-    showCurrentReveal();
+    setHomeGachaMachineState('settle',rarity);summonLater(()=>setHomeGachaMachineState('', ''),650);
+    revealIndex=0;showCurrentReveal();
   },openDelay);
 }
 function showCurrentReveal(){
@@ -8149,6 +8320,10 @@ function showCurrentReveal(){
   panel.className='revealPanel '+r.c.rarity.toLowerCase()+' revealBurst'+(r.isNew?' revealNewChar':'')+(r.starUp?' revealRankUp':'');
   panel.style.setProperty('--revealColor',r.c.color);
   overlay.className='active '+r.c.rarity.toLowerCase();
+  markRackReveal(revealIndex,r);updateRevealProgressStrip(revealIndex,r);
+  const burst=document.getElementById('revealSignalBurst'),burstLabel=document.getElementById('revealBurstRarity');
+  if(burst){burst.className='revealSignalBurst show '+r.c.rarity.toLowerCase();burst.style.setProperty('--burstColor',rarityColors[r.c.rarity]);}
+  if(burstLabel)burstLabel.textContent=r.c.rarity.toUpperCase();
 
   document.getElementById('revealCounter').textContent=`${revealIndex+1} / ${pendingGachaResults.length}`;
   document.getElementById('revealNew').textContent=r.isNew?'NEW CHARACTER':'DUPLICATE';
@@ -8175,6 +8350,7 @@ function nextReveal(){
   if(summonPhase!=='reveal')return;
   unlockAudio();
   document.getElementById('singleReveal').className='';
+  const rb=document.getElementById('revealSignalBurst');if(rb)rb.className='revealSignalBurst';
   revealIndex++;
   if(revealIndex>=pendingGachaResults.length){
     showGachaSummary();
