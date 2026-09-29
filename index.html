@@ -1486,9 +1486,9 @@
           </div>
         </div>
 
-        <div class="topMetric"><span>KILLS</span><b id="killText">0</b></div>
-        <div class="topMetric"><span>TIME</span><b id="timeText">0:00</b></div>
-        <div class="topMetric comboMetric"><span>COMBO</span><b id="comboTopText">0</b></div>
+        <div class="topMetric"><span data-i18n="hud.kills">KILLS</span><b id="killText">0</b></div>
+        <div class="topMetric"><span data-i18n="hud.time">TIME</span><b id="timeText">0:00</b></div>
+        <div class="topMetric comboMetric"><span data-i18n="hud.combo">COMBO</span><b id="comboTopText">0</b></div>
         <div id="attackBanner">Pierce</div>
         <div class="topCurrency coinChip"><span>●</span><b id="coinText">0</b></div>
         <div class="topCurrency gemChip"><span>◆</span><b id="gemText">0</b></div>
@@ -1524,9 +1524,9 @@
     </div>
     <div id="itemBuffHud"></div>
     <div id="quickActions">
-      <button id="quickCharacters" class="quickAction" title="Character">CHAR</button>
-      <button id="quickGacha" class="quickAction" title="Gacha">GACHA</button>
-      <button id="quickSettings" class="quickAction" title="Settings">SETTINGS</button>
+      <button id="quickCharacters" class="quickAction" title="Character" data-i18n="quick.char">CHAR</button>
+      <button id="quickGacha" class="quickAction" title="Gacha" data-i18n="quick.gacha">GACHA</button>
+      <button id="quickSettings" class="quickAction" title="Settings" data-i18n="quick.settings">SETTINGS</button>
     </div>
     <button id="openSidebar" class="adminLauncher" title="Admin">ADMIN</button>
     <button id="ultButton" class="locked">ULT<span id="ultButtonText">Lv30</span></button>
@@ -1542,17 +1542,25 @@
 
     <div id="settings">
       <div class="modal">
-        <h3>SETTINGS</h3>
-        <div class="small">操作と表示を端末に合わせて調整できます。</div>
+        <h3 data-i18n="settings.title">SETTINGS</h3>
+        <div class="small" data-i18n="settings.sub">操作と表示を端末に合わせて調整できます。</div>
 
         <div class="settingRow">
-          <div class="row"><span>ステージ拡大率</span><b id="cameraZoomText" class="settingValue">40%</b></div>
-          <input id="cameraZoom" type="range" min="30" max="70" value="40" step="5"/>
-          <div class="small">小さくすると広く見え、大きくするとキャラや敵が大きく見えます。</div>
+          <div class="row"><span data-i18n="settings.language">言語</span><b id="languageText" class="settingValue">日本語</b></div>
+          <div class="settingToggle">
+            <button id="languageJa">日本語</button>
+            <button id="languageEn">English</button>
+          </div>
         </div>
 
         <div class="settingRow">
-          <div class="row"><span>ジョイスティック</span><b id="joystickModeText" class="settingValue">FLOATING</b></div>
+          <div class="row"><span data-i18n="settings.zoom">ステージ拡大率</span><b id="cameraZoomText" class="settingValue">40%</b></div>
+          <input id="cameraZoom" type="range" min="30" max="70" value="40" step="5"/>
+          <div class="small" data-i18n="settings.zoomHelp">小さくすると広く見え、大きくするとキャラや敵が大きく見えます。</div>
+        </div>
+
+        <div class="settingRow">
+          <div class="row"><span data-i18n="settings.joystick">ジョイスティック</span><b id="joystickModeText" class="settingValue">FLOATING</b></div>
           <div class="settingToggle">
             <button id="joystickFloating">Floating</button>
             <button id="joystickFixed">Fixed</button>
@@ -1560,16 +1568,16 @@
         </div>
 
         <div class="settingRow">
-          <div class="row"><span>操作サイズ</span><b id="controlScaleText" class="settingValue">100%</b></div>
+          <div class="row"><span data-i18n="settings.controlSize">操作サイズ</span><b id="controlScaleText" class="settingValue">100%</b></div>
           <input id="controlScale" type="range" min="80" max="130" value="100" step="5"/>
         </div>
 
         <div class="settingRow">
-          <div class="row"><span>操作UI透明度</span><b id="controlOpacityText" class="settingValue">100%</b></div>
+          <div class="row"><span data-i18n="settings.opacity">操作UI透明度</span><b id="controlOpacityText" class="settingValue">100%</b></div>
           <input id="controlOpacity" type="range" min="45" max="100" value="100" step="5"/>
         </div>
 
-        <button id="closeSettings" class="full" style="margin-top:8px">閉じる</button>
+        <button id="closeSettings" class="full" style="margin-top:8px" data-i18n="common.close">閉じる</button>
       </div>
     </div>
 
@@ -1592,7 +1600,7 @@
           <div class="resultLeft">
             <div class="resultHero" id="resultHero">
               <div id="resultCharacterIcon">🔫</div>
-              <div class="resultHeroLabel">SURVIVOR_ID</div>
+              <div class="resultHeroLabel" data-i18n="result.survivor">SURVIVOR_ID</div>
               <div id="resultCharacterName">Rookie Gunner</div>
               <div id="resultCharacterMeta">LV.1 // Common</div>
               <div id="resultCause">DEFEATED BY ENEMY SWARM</div>
@@ -1601,25 +1609,25 @@
 
           <div class="resultRight">
             <div class="resultStats">
-              <div class="resultStat"><span>KILLS</span><b id="deathKills">0</b></div>
-              <div class="resultStat"><span>SURVIVAL</span><b id="deathTime">0:00</b></div>
-              <div class="resultStat coin"><span>COINS</span><b id="deathCoins">+0</b></div>
-              <div class="resultStat gem"><span>GEMS</span><b id="deathGems">+0</b></div>
-              <div class="resultStat break"><span>MAX BREAK</span><b id="deathCombo">0</b></div>
-              <div class="resultStat"><span>LIMIT BREAK</span><b id="deathLimitBreak">0</b></div>
+              <div class="resultStat"><span data-i18n="result.kills">KILLS</span><b id="deathKills">0</b></div>
+              <div class="resultStat"><span data-i18n="result.survival">SURVIVAL</span><b id="deathTime">0:00</b></div>
+              <div class="resultStat coin"><span data-i18n="result.coins">COINS</span><b id="deathCoins">+0</b></div>
+              <div class="resultStat gem"><span data-i18n="result.gems">GEMS</span><b id="deathGems">+0</b></div>
+              <div class="resultStat break"><span data-i18n="result.maxBreak">MAX BREAK</span><b id="deathCombo">0</b></div>
+              <div class="resultStat"><span data-i18n="result.limitBreak">LIMIT BREAK</span><b id="deathLimitBreak">0</b></div>
             </div>
 
             <div class="resultProgress">
-              <div class="resultMini"><span>THREAT</span><b id="deathThreat">0</b></div>
-              <div class="resultMini"><span>ELITES</span><b id="deathElites">0</b></div>
-              <div class="resultMini"><span>BOSSES</span><b id="deathBosses">0</b></div>
+              <div class="resultMini"><span data-i18n="result.threat">THREAT</span><b id="deathThreat">0</b></div>
+              <div class="resultMini"><span data-i18n="result.elites">ELITES</span><b id="deathElites">0</b></div>
+              <div class="resultMini"><span data-i18n="result.bosses">BOSSES</span><b id="deathBosses">0</b></div>
             </div>
           </div>
         </div>
 
         <div class="resultRunProgress">
           <div class="resultRunProgressTop">
-            <span>RUN PROGRESS</span>
+            <span data-i18n="result.progress">RUN PROGRESS</span>
             <span id="resultNextGoal">NEXT: THREAT 1 // 150 KILLS</span>
           </div>
           <div class="resultRunTrack">
@@ -1633,10 +1641,10 @@
         </div>
 
         <div class="resultActions">
-          <button id="restart" class="good">RETRY</button>
-          <button id="openShop" class="gold resultSecondary">UPGRADES</button>
-          <button id="deathCharacters" class="resultSecondary">CHARACTER</button>
-          <button id="deathGacha" class="resultSecondary">GACHA</button>
+          <button id="restart" class="good" data-i18n="result.retry">RETRY</button>
+          <button id="openShop" class="gold resultSecondary" data-i18n="result.upgrades">UPGRADES</button>
+          <button id="deathCharacters" class="resultSecondary" data-i18n="result.character">CHARACTER</button>
+          <button id="deathGacha" class="resultSecondary" data-i18n="quick.gacha">GACHA</button>
         </div>
       </div>
     </div>
@@ -1646,8 +1654,8 @@
         <div class="gachaStars"></div>
         <div class="gachaTop">
           <div>
-            <div class="gachaEyebrow">SUMMON TERMINAL</div>
-            <div style="font-size:22px;font-weight:900">CHARACTER GACHA</div>
+            <div class="gachaEyebrow" data-i18n="gacha.terminal">SUMMON TERMINAL</div>
+            <div style="font-size:22px;font-weight:900" data-i18n="gacha.title">CHARACTER GACHA</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <div class="gachaCurrency">💎 <span id="gachaGemText">0</span></div>
@@ -1658,8 +1666,8 @@
         <div class="gachaHero">
           <div class="gachaCopy">
             <div class="gachaEyebrow">BREAK SURVIVORS</div>
-            <div class="gachaTitle">SUMMON<br>NEW POWER</div>
-            <div class="gachaSub">キャラクターごとに攻撃・パッシブ・育成ルートが変化。重複キャラは★ランク強化へ変換されます。</div>
+            <div class="gachaTitle" data-i18n-html="gacha.hero">SUMMON<br>NEW POWER</div>
+            <div class="gachaSub" data-i18n="gacha.sub">キャラクターごとに攻撃・パッシブ・育成ルートが変化。重複キャラは★ランク強化へ変換されます。</div>
           </div>
           <div class="gachaShowcase">
             <div class="gachaCore"></div>
@@ -1692,7 +1700,7 @@
               <div id="cinemaProgress" class="cinemaProgress"></div>
             </div>
           </div>
-          <button id="skipSummon" class="cinemaSkip">RESULTS</button>
+          <button id="skipSummon" class="cinemaSkip" data-i18n="gacha.results">RESULTS</button>
         </div>
 
         <div id="singleReveal">
@@ -1706,24 +1714,24 @@
               <div id="revealWeapon" class="revealWeapon"></div>
               <div id="revealPassive" class="revealPassive"></div>
               <div id="revealStars" class="revealStars"></div>
-              <div id="revealTap" class="revealTap">TAP TO CONTINUE</div>
+              <div id="revealTap" class="revealTap" data-i18n="gacha.tapContinue">TAP TO CONTINUE</div>
             </div>
           </div>
         </div>
 
         <div id="gachaSummaryActions">
-          <button id="summonAgain" class="summonBtn primary">SUMMON AGAIN</button>
-          <button id="finishSummon" class="summonBtn gold">DONE</button>
+          <button id="summonAgain" class="summonBtn primary" data-i18n="gacha.again">SUMMON AGAIN</button>
+          <button id="finishSummon" class="summonBtn gold" data-i18n="gacha.done">DONE</button>
         </div>
       </div>
     </div>
 
     <div id="characters" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#05070bcc;backdrop-filter:blur(6px);z-index:8">
       <div class="modal" style="width:min(1050px,96vw)">
-        <h3>CHARACTER GROWTH</h3>
-        <div class="small">コインでLv1〜50まで恒久育成。Lv20で分岐、Lv30でULT、Lv50で覚醒します。★ランクとは別成長です。</div>
+        <h3 data-i18n="char.title">CHARACTER GROWTH</h3>
+        <div class="small" data-i18n="char.sub">コインでLv1〜50まで恒久育成。Lv20で分岐、Lv30でULT、Lv50で覚醒します。★ランクとは別成長です。</div>
         <div id="characterList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px"></div>
-        <button id="closeCharacters" class="full" style="margin-top:12px">閉じる</button>
+        <button id="closeCharacters" class="full" style="margin-top:12px" data-i18n="common.close">閉じる</button>
       </div>
     </div>
 
@@ -1732,27 +1740,27 @@
         <div id="coreAdminBanner" class="coreAdminBanner">ADMIN MANUAL UNLOCK // TAP A NODE TO FORCE UNLOCK</div>
         <div class="treeBody">
           <aside class="treeLeft">
-            <div class="treeBrand">BREAK SURVIVORS</div><div class="treeMode">SKILL TREE: <b>SURVIVOR</b></div>
+            <div class="treeBrand">BREAK SURVIVORS</div><div class="treeMode"><span data-i18n="core.skillTree">SKILL TREE:</span> <b data-i18n="core.survivor">SURVIVOR</b></div>
             <div class="treeResources"><div><span>CORES</span><b><span id="coreCount">1</span>/<span id="coreTotal">61</span></b></div><div><span>COINS</span><b id="coreCoins">0</b></div><div><span>GEMS</span><b id="coreGems">0</b></div></div>
-            <div class="treeCategoryTitle">CATEGORY</div>
+            <div class="treeCategoryTitle" data-i18n="core.category">CATEGORY</div>
             <div class="treeCategories">
-              <button data-core-filter="all" class="active">◆ ALL NODES</button><button data-core-filter="assault">⚔ ATTACK</button><button data-core-filter="projectile">➤ PROJECTILE</button>
-              <button data-core-filter="ability">✦ ABILITIES</button><button data-core-filter="break">∞ BREAK</button><button data-core-filter="mobility">≫ MOBILITY</button><button data-core-filter="control">◎ RANGE / CONTROL</button>
+              <button data-core-filter="all" class="active" data-i18n="core.all">◆ ALL NODES</button><button data-core-filter="assault" data-i18n="core.attack">⚔ ATTACK</button><button data-core-filter="projectile" data-i18n="core.projectile">➤ PROJECTILE</button>
+              <button data-core-filter="ability" data-i18n="core.abilities">✦ ABILITIES</button><button data-core-filter="break" data-i18n="core.break">∞ BREAK</button><button data-core-filter="mobility" data-i18n="core.mobility">≫ MOBILITY</button><button data-core-filter="control" data-i18n="core.range">◎ RANGE / CONTROL</button>
             </div>
-            <div class="treeTip"><b>BUILD YOUR CORE</b><span>攻撃範囲・弾数・速度・攻撃仕様・特殊能力まで恒久強化。</span></div>
+            <div class="treeTip"><b data-i18n="core.build">BUILD YOUR CORE</b><span data-i18n="core.tip">攻撃範囲・弾数・速度・攻撃仕様・特殊能力まで恒久強化。</span></div>
           </aside>
           <main id="coreViewport" class="coreViewport"><div id="coreCanvas" class="coreCanvas"><svg id="coreLinks" class="coreLinks" viewBox="0 0 1500 1100" preserveAspectRatio="none"></svg><div id="upgradeList" class="coreNodes"></div></div></main>
           <aside class="treeDetails">
-            <button id="closeShop" class="coreClose">×</button><div class="detailEyebrow">NODE DETAILS</div>
+            <button id="closeShop" class="coreClose">×</button><div class="detailEyebrow" data-i18n="core.details">NODE DETAILS</div>
             <div class="detailHead"><div id="coreDetailIcon" class="detailIcon">◆</div><div><div id="coreDetailName" class="detailName">SURVIVOR CORE</div><div id="coreDetailType" class="detailType">CORE NODE</div></div></div>
             <div id="coreDetailStatus" class="detailStatus">UNLOCKED</div><div id="coreDetailDesc" class="detailDesc">CORE GRID ONLINE</div>
-            <div class="detailSection"><div class="detailSectionTitle">EFFECT</div><div id="coreDetailEffects" class="detailLines"></div></div>
-            <div class="detailSection"><div class="detailSectionTitle">REQUIREMENTS</div><div id="coreDetailReqs" class="detailLines"></div></div>
-            <div class="detailSection detailCostSection"><div class="detailSectionTitle">UPGRADE COST</div><div id="coreDetailCost" class="detailCost">ONLINE</div></div>
+            <div class="detailSection"><div class="detailSectionTitle" data-i18n="core.effect">EFFECT</div><div id="coreDetailEffects" class="detailLines"></div></div>
+            <div class="detailSection"><div class="detailSectionTitle" data-i18n="core.requirements">REQUIREMENTS</div><div id="coreDetailReqs" class="detailLines"></div></div>
+            <div class="detailSection detailCostSection"><div class="detailSectionTitle" data-i18n="core.cost">UPGRADE COST</div><div id="coreDetailCost" class="detailCost">ONLINE</div></div>
             <button id="coreConfirmBtn" class="coreConfirm" disabled>UNLOCKED</button>
           </aside>
         </div>
-        <div class="treeFooter"><div class="treeLegend"><span><i class="legendPixel owned"></i>UNLOCKED</span><span><i class="legendPixel available"></i>AVAILABLE</span><span><i class="legendPixel locked"></i>LOCKED</span></div><div class="treeFooterActions"><button id="coreCenterBtn">◎ CENTER</button><button id="coreResetViewBtn">↺ RESET VIEW</button><button id="coreBackBtn">← BACK</button></div></div>
+        <div class="treeFooter"><div class="treeLegend"><span><i class="legendPixel owned"></i>UNLOCKED</span><span><i class="legendPixel available"></i>AVAILABLE</span><span><i class="legendPixel locked"></i>LOCKED</span></div><div class="treeFooterActions"><button id="coreCenterBtn" data-i18n="core.center">◎ CENTER</button><button id="coreResetViewBtn" data-i18n="core.resetView">↺ RESET VIEW</button><button id="coreBackBtn" data-i18n="core.back">← BACK</button></div></div>
       </div>
     </div>
   </div>
@@ -2278,6 +2286,52 @@ let keys = {};
 let mobileMoveX=0,mobileMoveY=0;
 let dashCooldown=0,dashInvuln=0,specialCooldown=0;
 let joystickPointerId=null;
+let uiLanguage=localStorage.getItem('break_survivors_language')||'ja';
+if(!['ja','en'].includes(uiLanguage))uiLanguage='ja';
+const I18N={
+ja:{
+'settings.title':'設定','settings.sub':'操作と表示を端末に合わせて調整できます。','settings.language':'言語','settings.zoom':'ステージ拡大率',
+'settings.zoomHelp':'小さくすると広く見え、大きくするとキャラや敵が大きく見えます。','settings.joystick':'ジョイスティック','settings.controlSize':'操作サイズ','settings.opacity':'操作UI透明度',
+'common.close':'閉じる','quick.char':'キャラ','quick.gacha':'ガチャ','quick.settings':'設定','hud.kills':'キル','hud.time':'時間','hud.combo':'コンボ',
+'result.survivor':'サバイバー','result.kills':'キル','result.survival':'生存時間','result.coins':'コイン','result.gems':'ジェム','result.maxBreak':'最大BREAK','result.limitBreak':'LIMIT BREAK',
+'result.threat':'THREAT','result.elites':'エリート','result.bosses':'ボス','result.progress':'ラン進行','result.retry':'リトライ','result.upgrades':'アップグレード','result.character':'キャラクター',
+'gacha.terminal':'召喚ターミナル','gacha.title':'キャラクターガチャ','gacha.hero':'新たな力を<br>召喚','gacha.sub':'キャラクターごとに攻撃・パッシブ・育成ルートが変化。重複キャラは★ランク強化へ変換されます。','gacha.results':'結果','gacha.tapContinue':'タップして続行','gacha.again':'もう一度召喚','gacha.done':'完了',
+'char.title':'キャラクター育成','char.sub':'コインでLv1〜50まで恒久育成。Lv20で分岐、Lv30でULT、Lv50で覚醒します。★ランクとは別成長です。',
+'core.skillTree':'スキルツリー:','core.survivor':'サバイバー','core.category':'カテゴリ','core.all':'◆ すべて','core.attack':'⚔ 攻撃','core.projectile':'➤ 弾・飛び道具','core.abilities':'✦ 特殊能力','core.break':'∞ BREAK','core.mobility':'≫ 機動力','core.range':'◎ 範囲 / 制御',
+'core.build':'COREを構築','core.tip':'攻撃範囲・弾数・速度・攻撃仕様・特殊能力まで恒久強化。','core.details':'ノード詳細','core.effect':'効果','core.requirements':'解放条件','core.cost':'解放コスト','core.center':'◎ 中央へ','core.resetView':'↺ 表示をリセット','core.back':'← 戻る'
+},
+en:{
+'settings.title':'SETTINGS','settings.sub':'Adjust controls and display for your device.','settings.language':'Language','settings.zoom':'Stage Zoom',
+'settings.zoomHelp':'Lower shows more of the stage; higher makes characters and enemies larger.','settings.joystick':'Joystick','settings.controlSize':'Control Size','settings.opacity':'Control UI Opacity',
+'common.close':'Close','quick.char':'CHAR','quick.gacha':'GACHA','quick.settings':'SETTINGS','hud.kills':'KILLS','hud.time':'TIME','hud.combo':'COMBO',
+'result.survivor':'SURVIVOR_ID','result.kills':'KILLS','result.survival':'SURVIVAL','result.coins':'COINS','result.gems':'GEMS','result.maxBreak':'MAX BREAK','result.limitBreak':'LIMIT BREAK',
+'result.threat':'THREAT','result.elites':'ELITES','result.bosses':'BOSSES','result.progress':'RUN PROGRESS','result.retry':'RETRY','result.upgrades':'UPGRADES','result.character':'CHARACTER',
+'gacha.terminal':'SUMMON TERMINAL','gacha.title':'CHARACTER GACHA','gacha.hero':'SUMMON<br>NEW POWER','gacha.sub':'Each character has unique attacks, passives, and growth routes. Duplicates convert into ★ rank progress.','gacha.results':'RESULTS','gacha.tapContinue':'TAP TO CONTINUE','gacha.again':'SUMMON AGAIN','gacha.done':'DONE',
+'char.title':'CHARACTER GROWTH','char.sub':'Permanently level characters from 1–50 with Coins. Branch at Lv20, unlock ULT at Lv30, awaken at Lv50.',
+'core.skillTree':'SKILL TREE:','core.survivor':'SURVIVOR','core.category':'CATEGORY','core.all':'◆ ALL NODES','core.attack':'⚔ ATTACK','core.projectile':'➤ PROJECTILE','core.abilities':'✦ ABILITIES','core.break':'∞ BREAK','core.mobility':'≫ MOBILITY','core.range':'◎ RANGE / CONTROL',
+'core.build':'BUILD YOUR CORE','core.tip':'Permanently upgrade range, projectile count, speed, attack behavior, and special abilities.','core.details':'NODE DETAILS','core.effect':'EFFECT','core.requirements':'REQUIREMENTS','core.cost':'UPGRADE COST','core.center':'◎ CENTER','core.resetView':'↺ RESET VIEW','core.back':'← BACK'
+}};
+function tr(key,vars={}){
+ let s=(I18N[uiLanguage]&&I18N[uiLanguage][key])??I18N.en[key]??key;
+ for(const [k,v] of Object.entries(vars))s=s.replaceAll('{'+k+'}',String(v));
+ return s;
+}
+function applyLanguage(){
+ document.documentElement.lang=uiLanguage==='ja'?'ja':'en';
+ document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=tr(el.dataset.i18n)});
+ document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=tr(el.dataset.i18nHtml)});
+ const lt=document.getElementById('languageText');if(lt)lt.textContent=uiLanguage==='ja'?'日本語':'English';
+ document.getElementById('languageJa')?.classList.toggle('active',uiLanguage==='ja');
+ document.getElementById('languageEn')?.classList.toggle('active',uiLanguage==='en');
+}
+function setLanguage(lang){
+ if(!['ja','en'].includes(lang))return;
+ uiLanguage=lang;localStorage.setItem('break_survivors_language',lang);applyLanguage();
+ if(typeof syncSettingsUi==='function')syncSettingsUi();
+ if(typeof buildCharacterList==='function')buildCharacterList();
+ if(typeof buildShop==='function'&&document.getElementById('shop')?.style.display!=='none')buildShop();
+ if(typeof updateHud==='function')updateHud();
+}
 let joystickMode=localStorage.getItem('break_survivors_joystick_mode')||'floating';
 let controlScale=Math.max(.8,Math.min(1.3,Number(localStorage.getItem('break_survivors_control_scale'))||1));
 let controlOpacity=Math.max(.45,Math.min(1,Number(localStorage.getItem('break_survivors_control_opacity'))||1));
@@ -7849,6 +7903,10 @@ const controlScaleEl=document.getElementById('controlScale');
 const controlOpacityEl=document.getElementById('controlOpacity');
 
 function syncSettingsUi(){
+  const languageText=document.getElementById('languageText');
+  if(languageText)languageText.textContent=uiLanguage==='ja'?'日本語':'English';
+  document.getElementById('languageJa')?.classList.toggle('active',uiLanguage==='ja');
+  document.getElementById('languageEn')?.classList.toggle('active',uiLanguage==='en');
   cameraZoomEl.value=String(Math.round(CAMERA_ZOOM*100));
   cameraZoomText.textContent=Math.round(CAMERA_ZOOM*100)+'%';
   controlScaleEl.value=String(Math.round(controlScale*100));
@@ -7881,6 +7939,8 @@ controlOpacityEl.oninput=e=>{
   document.getElementById('controlOpacityText').textContent=Math.round(controlOpacity*100)+'%';
   applyMobileControlSettings();
 };
+document.getElementById('languageJa').onclick=()=>setLanguage('ja');
+document.getElementById('languageEn').onclick=()=>setLanguage('en');
 document.getElementById('joystickFloating').onclick=()=>{joystickMode='floating';localStorage.setItem('break_survivors_joystick_mode',joystickMode);applyMobileControlSettings()};
 document.getElementById('joystickFixed').onclick=()=>{joystickMode='fixed';localStorage.setItem('break_survivors_joystick_mode',joystickMode);mobilePad.style.removeProperty('top');mobilePad.style.removeProperty('left');mobilePad.style.removeProperty('bottom');applyMobileControlSettings()};
 document.getElementById('closeSettings').onclick=closeSettings;
@@ -7923,7 +7983,7 @@ function loop(now){
   draw();
   requestAnimationFrame(loop);
 }
-syncSettingsUi();buildAttackButtons();buildCharacterList();updateHud();persist();setSidebarVisible(false);requestAnimationFrame(loop);
+applyLanguage();syncSettingsUi();buildAttackButtons();buildCharacterList();updateHud();persist();setSidebarVisible(false);requestAnimationFrame(loop);
 })();
 </script>
 </body>
