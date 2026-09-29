@@ -2714,6 +2714,297 @@
   #gameWrap #singleReveal .revealIcon{animation-duration:.001ms!important;animation-iteration-count:1!important}
 }
 </style>
+<style id="stage130ArcadeContinuity">
+/* Stage 13.0 — ARCADE CONTINUITY
+   The pull animation is not a new machine anymore. It is the lobby cabinet in motion. */
+body.summonActive130{
+  overflow:hidden!important;overscroll-behavior:none!important;
+}
+body.summonActive130 #openSidebar,
+body.summonActive130 #quickActions,
+body.summonActive130 #hudMenuBtn,
+body.summonActive130 #mobileActions,
+body.summonActive130 #joystickZone{
+  visibility:hidden!important;pointer-events:none!important;
+}
+#gameWrap #summonCinematic{
+  position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;
+  max-height:100dvh!important;overflow:hidden!important;z-index:1000!important;
+  padding:max(8px,env(safe-area-inset-top)) 8px max(8px,env(safe-area-inset-bottom))!important;
+  box-sizing:border-box!important;
+  background:radial-gradient(circle at 50% 35%,#153d5a 0,#06111c 48%,#02060b 100%)!important;
+}
+#gameWrap #summonCinematic .cinemaStage{
+  width:100%!important;height:100%!important;min-height:0!important;
+  display:grid!important;place-items:center!important;padding:38px 0 56px!important;box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+#gameWrap #summonCinematic .summonMachineScene.summonArcade130{
+  position:relative!important;width:min(850px,96vw)!important;height:min(690px,82dvh)!important;
+  display:grid!important;grid-template-rows:72px 40px minmax(0,1fr) auto auto!important;
+  border:5px solid #421829!important;background:linear-gradient(180deg,#9c3343,#5a1d2d)!important;
+  box-shadow:inset 0 0 0 4px #d04a4b,inset 0 -14px #32101e,8px 8px 0 #000,0 0 38px #000c!important;
+  overflow:hidden!important;
+}
+#gameWrap .cinemaMarquee130{
+  position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;
+  padding:7px 20px;border-bottom:5px solid #351326;background:linear-gradient(180deg,#111535,#071a2b);
+  box-shadow:inset 0 -5px #050b14;color:#60e4ff;font:1000 8px ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.1em;
+}
+#gameWrap .cinemaMarquee130::before,#gameWrap .cinemaMarquee130::after{
+  content:"";position:absolute;left:0;right:0;height:4px;
+  background:repeating-linear-gradient(90deg,#ff4fc4 0 18px,#ff9c35 18px 36px,#4ce1ff 36px 54px);
+}
+#gameWrap .cinemaMarquee130::before{top:0}.cinemaMarquee130::after{bottom:0}
+#gameWrap .cinemaMarquee130 b{
+  text-align:center;font-size:clamp(23px,4vw,38px);line-height:1;color:#ffe05e;letter-spacing:.04em;
+  text-shadow:3px 3px 0 #bb334b,6px 6px 0 #301127;
+}
+#gameWrap .cinemaMarquee130 em{font-style:normal;color:#ffc33f;font-size:7px}
+#gameWrap #summonCinematic .summonSceneHeader{
+  height:auto!important;min-height:40px!important;padding:0 16px!important;
+  display:flex!important;justify-content:space-between!important;align-items:center!important;
+  border:0!important;border-bottom:4px solid #163e59!important;background:#0a2031!important;
+  color:#edfaff!important;
+}
+#gameWrap #summonCinematic .summonSceneHeader span{
+  display:block!important;font-size:11px!important;font-weight:1000!important;letter-spacing:.12em!important;color:#f2fbff!important;
+}
+#gameWrap #summonCinematic .summonSceneHeader b{
+  padding:0!important;border:0!important;background:transparent!important;font-size:7px!important;color:#6de6ff!important;
+}
+#gameWrap #summonCinematic .summonSceneBody{
+  position:relative!important;height:auto!important;min-height:0!important;margin:8px 10px 0!important;
+  overflow:hidden!important;border:5px solid #316580!important;border-radius:48px 48px 8px 8px!important;
+  background:
+    linear-gradient(90deg,#5ce5ff13 1px,transparent 1px),
+    linear-gradient(#5ce5ff10 1px,transparent 1px),
+    linear-gradient(180deg,#123b51 0 72%,#0a2635 72%)!important;
+  background-size:26px 26px,26px 26px,auto!important;
+  box-shadow:inset 0 0 0 7px #071a27,inset 0 -28px #0a1d2a!important;
+}
+#gameWrap #summonCinematic .summonSceneBody::before{
+  content:"";position:absolute;inset:0;z-index:20;pointer-events:none;
+  background:linear-gradient(112deg,#ffffff2c 0 8%,transparent 8% 63%,#ffffff12 63% 70%,transparent 70%);
+}
+#gameWrap #summonCinematic .cinemaGlobe{
+  position:absolute!important;left:50%!important;top:12px!important;width:min(510px,72%)!important;height:250px!important;
+  transform:translateX(-50%)!important;border:0!important;clip-path:none!important;background:transparent!important;
+  box-shadow:none!important;overflow:visible!important;
+}
+#gameWrap #summonCinematic .cinemaGlobeGrid{
+  position:absolute;inset:0!important;border:0!important;
+  background:none!important;
+}
+#gameWrap #summonCinematic .cinemaGlobe::before{
+  content:"✦";position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
+  width:78px;height:78px;display:grid;place-items:center;border:5px solid #2f789a;color:#3bc9f2;
+  font-size:44px;opacity:.44;
+}
+#gameWrap #summonCinematic .cinemaRotor{
+  left:50%!important;top:51%!important;width:92px!important;height:92px!important;z-index:2!important;
+  border-color:#2d627c!important;background:#071721!important;opacity:.5!important;
+}
+#gameWrap #summonCinematic .cinemaMiniCap{
+  position:absolute!important;width:62px!important;height:58px!important;z-index:4!important;
+  transform:rotate(var(--r,0deg));filter:drop-shadow(3px 4px 0 #051019)!important;
+}
+#gameWrap #summonCinematic .cinemaMiniCap>i,
+#gameWrap #summonCinematic .cinemaMiniCap>b{
+  position:absolute!important;left:2px!important;width:58px!important;height:29px!important;border:4px solid!important;box-sizing:border-box!important;
+}
+#gameWrap #summonCinematic .cinemaMiniCap>i{
+  top:1px!important;border-radius:29px 29px 7px 7px!important;
+  background:linear-gradient(145deg,#ecfbff 0 14%,#68dfff 15% 55%,#247bc2 56%)!important;border-color:#d8f9ff!important;
+  box-shadow:inset 8px 4px #ffffff55,inset -8px -7px #144c7c88!important;
+}
+#gameWrap #summonCinematic .cinemaMiniCap>b{
+  bottom:0!important;border-radius:7px 7px 29px 29px!important;
+  background:linear-gradient(145deg,#a07cff,#6c42d7 65%,#361675)!important;border-color:#ccbaff!important;
+  box-shadow:inset 8px 3px #d8cdff44,inset -8px -7px #25105f99!important;
+}
+#gameWrap #summonCinematic .miniBelt130{
+  position:absolute;left:0;right:0;top:50%;z-index:6;height:10px;transform:translateY(-50%);
+  border-top:2px solid #d8f6ff;border-bottom:2px solid #17394e;background:linear-gradient(180deg,#4d7e9a,#173647);
+}
+#gameWrap #summonCinematic .miniSigil130{
+  position:absolute;left:50%;top:50%;z-index:8;width:19px;height:19px;transform:translate(-50%,-50%);
+  display:grid;place-items:center;border:2px solid #bdf0ff;border-radius:50%;background:#071722;color:#e8fbff;
+  font-size:9px;font-weight:1000;
+}
+#gameWrap #summonCinematic .miniShine130{
+  position:absolute;left:12px;top:8px;z-index:9;width:18px;height:7px;border-radius:50%;background:#fff;opacity:.68;transform:rotate(-18deg);
+}
+/* Color variants inside the running machine mirror the idle cabinet. */
+#gameWrap #summonCinematic .mc2>i,#gameWrap #summonCinematic .mc7>i{background:linear-gradient(145deg,#ffd5ef,#ff6ab8 55%,#a12074)!important;border-color:#ffe6f6!important}
+#gameWrap #summonCinematic .mc2>b,#gameWrap #summonCinematic .mc7>b{background:linear-gradient(145deg,#ca80ff,#7e37cc 65%,#43136c)!important;border-color:#edc8ff!important}
+#gameWrap #summonCinematic .mc4>i,#gameWrap #summonCinematic .mc9>i{background:linear-gradient(145deg,#fff6bc,#ffe05c 54%,#d57c20)!important;border-color:#fffbdc!important}
+#gameWrap #summonCinematic .mc4>b,#gameWrap #summonCinematic .mc9>b{background:linear-gradient(145deg,#ffc143,#dd7920 65%,#7c3408)!important;border-color:#ffe39a!important}
+#gameWrap #summonCinematic .mc5>i,#gameWrap #summonCinematic .mc10>i{background:linear-gradient(145deg,#eadbff,#c46dff 54%,#7433c7)!important;border-color:#f4e6ff!important}
+#gameWrap #summonCinematic .mc5>b,#gameWrap #summonCinematic .mc10>b{background:linear-gradient(145deg,#8f6bff,#5936b9 65%,#2d175f)!important;border-color:#cbbaff!important}
+
+#gameWrap #summonCinematic .mc1{left:7%;top:18%;--r:-12deg}
+#gameWrap #summonCinematic .mc2{left:23%;top:7%;--r:8deg}
+#gameWrap #summonCinematic .mc3{left:43%;top:15%;--r:-4deg}
+#gameWrap #summonCinematic .mc4{right:16%;top:10%;--r:13deg}
+#gameWrap #summonCinematic .mc5{left:15%;top:46%;--r:8deg}
+#gameWrap #summonCinematic .mc6{left:36%;top:42%;--r:-11deg}
+#gameWrap #summonCinematic .mc7{right:25%;top:36%;--r:10deg}
+#gameWrap #summonCinematic .mc8{right:5%;top:47%;--r:-9deg}
+#gameWrap #summonCinematic .mc9{left:8%;bottom:4%;--r:7deg}
+#gameWrap #summonCinematic .mc10{right:15%;bottom:2%;--r:-8deg}
+
+/* Red lower control deck matching the lobby cabinet. */
+#gameWrap #summonCinematic .cinemaCrankAssembly{
+  position:absolute!important;left:8%!important;bottom:12px!important;width:168px!important;height:96px!important;
+  transform:none!important;border:5px solid #52202b!important;background:linear-gradient(180deg,#a9383d,#67242f)!important;
+  box-shadow:inset 0 0 0 4px #cf4c43,inset 0 -8px #431724!important;z-index:12!important;
+}
+#gameWrap #summonCinematic .cinemaCrankWheel{
+  width:66px!important;height:66px!important;border:10px solid #a8bbc5!important;background:#174160!important;box-shadow:inset 0 0 0 7px #07111b!important;
+}
+#gameWrap #summonCinematic .cinemaCrankWheel i{
+  right:auto!important;left:50%!important;top:50%!important;width:50px!important;height:10px!important;
+  transform:translate(-50%,-50%) rotate(45deg)!important;background:#cbd8dd!important;border:3px solid #536773!important;
+}
+#gameWrap #summonCinematic .cinemaCrankAssembly span{
+  position:absolute;left:0;right:0;bottom:4px;text-align:center;color:#6de5ff!important;font-size:7px!important;letter-spacing:.08em!important;
+}
+#gameWrap #summonCinematic .cinemaDropTube{
+  position:absolute!important;right:8%!important;left:auto!important;bottom:12px!important;top:auto!important;
+  width:128px!important;height:96px!important;transform:none!important;border:5px solid #52202b!important;
+  background:linear-gradient(180deg,#a9383d,#67242f)!important;box-shadow:inset 0 0 0 4px #cf4c43!important;z-index:12!important;
+}
+#gameWrap #summonCinematic .cinemaDropTube strong{
+  position:absolute;left:50%;top:7px;transform:translateX(-50%);white-space:nowrap;
+  padding:3px 5px;border:2px solid #657882;background:#dce5e9;color:#13212b;font-size:5.5px;letter-spacing:.06em;
+}
+#gameWrap #summonCinematic .cinemaDropTube::after{
+  content:"";position:absolute;left:50%;bottom:10px;width:58px;height:42px;transform:translateX(-50%);
+  border:5px solid #7d8e98;background:#071019;box-shadow:inset 0 0 0 4px #172b37;
+}
+#gameWrap #summonCinematic .cinemaDropTube>i,
+#gameWrap #summonCinematic .cinemaDropTube>b{display:none!important}
+
+/* The chosen capsule uses exactly the same shell language, simply enlarged. */
+#gameWrap #summonCinematic .cinemaCore{
+  width:132px!important;height:132px!important;filter:drop-shadow(0 0 17px #58dfff66)!important;
+}
+#gameWrap #summonCinematic .cinemaCapTop,
+#gameWrap #summonCinematic .cinemaCapBottom{
+  left:3px!important;width:126px!important;height:65px!important;
+}
+#gameWrap #summonCinematic .cinemaCapBelt128{height:18px!important}
+#gameWrap #summonCinematic .cinemaCapSigil128{width:33px!important;height:33px!important;font-size:18px!important}
+#gameWrap #summonCinematic .cinemaCapShine128{left:25px!important;top:15px!important;width:39px!important;height:16px!important}
+
+/* Rack capsules are round too; they no longer read as square data chips. */
+#gameWrap #summonCinematic .rackCapsule{
+  width:33px!important;height:33px!important;border-radius:50%!important;overflow:visible!important;
+}
+#gameWrap #summonCinematic .rackCapsule i,
+#gameWrap #summonCinematic .rackCapsule b{
+  left:2px!important;width:29px!important;height:16px!important;border:2px solid!important;box-sizing:border-box!important;
+}
+#gameWrap #summonCinematic .rackCapsule i{top:1px!important;border-radius:17px 17px 4px 4px!important}
+#gameWrap #summonCinematic .rackCapsule b{bottom:1px!important;border-radius:4px 4px 17px 17px!important}
+#gameWrap #summonCinematic .rackCapsule em{font-size:6px!important;text-shadow:1px 1px 0 #000}
+
+/* Once a capsule is chosen, the cabinet stays visible in the background instead of becoming another scene. */
+#gameWrap #summonCinematic.phase-drop .summonSceneBody,
+#gameWrap #summonCinematic.phase-omen .summonSceneBody,
+#gameWrap #summonCinematic.phase-upgrade .summonSceneBody,
+#gameWrap #summonCinematic.phase-blackout .summonSceneBody,
+#gameWrap #summonCinematic.phase-legend .summonSceneBody,
+#gameWrap #summonCinematic.phase-lock .summonSceneBody,
+#gameWrap #summonCinematic.phase-prime .summonSceneBody,
+#gameWrap #summonCinematic.phase-break .summonSceneBody{
+  filter:none!important;
+}
+#gameWrap #summonCinematic.phase-drop .cinemaGlobe,
+#gameWrap #summonCinematic.phase-omen .cinemaGlobe,
+#gameWrap #summonCinematic.phase-upgrade .cinemaGlobe,
+#gameWrap #summonCinematic.phase-blackout .cinemaGlobe,
+#gameWrap #summonCinematic.phase-legend .cinemaGlobe,
+#gameWrap #summonCinematic.phase-lock .cinemaGlobe,
+#gameWrap #summonCinematic.phase-prime .cinemaGlobe,
+#gameWrap #summonCinematic.phase-break .cinemaGlobe{
+  opacity:.22!important;filter:brightness(.55)!important;
+}
+#gameWrap #summonCinematic.phase-drop .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-omen .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-upgrade .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-blackout .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-legend .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-lock .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-prime .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-break .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-drop .cinemaDropTube,
+#gameWrap #summonCinematic.phase-omen .cinemaDropTube,
+#gameWrap #summonCinematic.phase-upgrade .cinemaDropTube,
+#gameWrap #summonCinematic.phase-blackout .cinemaDropTube,
+#gameWrap #summonCinematic.phase-legend .cinemaDropTube,
+#gameWrap #summonCinematic.phase-lock .cinemaDropTube,
+#gameWrap #summonCinematic.phase-prime .cinemaDropTube,
+#gameWrap #summonCinematic.phase-break .cinemaDropTube{
+  opacity:.34!important;filter:brightness(.65)!important;
+}
+
+/* Mobile: one compact cabinet, no vertical webpage scroll, same visual hierarchy as the pre-pull screen. */
+@media(max-width:620px){
+  #gameWrap #summonCinematic{
+    width:100vw!important;height:100dvh!important;padding:max(5px,env(safe-area-inset-top)) 5px max(5px,env(safe-area-inset-bottom))!important;
+  }
+  #gameWrap #summonCinematic .cinemaStage{padding:30px 0 46px!important}
+  #gameWrap #summonCinematic .summonMachineScene.summonArcade130{
+    width:97vw!important;height:min(690px,88dvh)!important;
+    grid-template-rows:56px 34px minmax(0,1fr) auto auto!important;border-width:4px!important;
+  }
+  #gameWrap .cinemaMarquee130{grid-template-columns:1fr!important;padding:5px 8px!important}
+  #gameWrap .cinemaMarquee130 span,#gameWrap .cinemaMarquee130 em{display:none!important}
+  #gameWrap .cinemaMarquee130 b{font-size:21px!important}
+  #gameWrap #summonCinematic .summonSceneHeader span{font-size:8px!important}
+  #gameWrap #summonCinematic .summonSceneBody{
+    margin:5px 6px 0!important;border-radius:34px 34px 7px 7px!important;
+  }
+  #gameWrap #summonCinematic .cinemaGlobe{
+    width:88%!important;height:205px!important;top:8px!important;transform:translateX(-50%) scale(.9)!important;transform-origin:top center!important;
+  }
+  #gameWrap #summonCinematic .cinemaMiniCap{transform:scale(.78) rotate(var(--r,0deg))!important}
+  #gameWrap #summonCinematic .cinemaCrankAssembly{left:5%!important;bottom:8px!important;width:118px!important;height:78px!important}
+  #gameWrap #summonCinematic .cinemaCrankWheel{width:52px!important;height:52px!important}
+  #gameWrap #summonCinematic .cinemaDropTube{right:5%!important;bottom:8px!important;width:94px!important;height:78px!important}
+  #gameWrap #summonCinematic .cinemaDropTube::after{width:45px!important;height:33px!important}
+  #gameWrap #summonCinematic.phase-drop .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-omen .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-upgrade .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-blackout .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-legend .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-lock .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-prime .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-break .cinemaCoreWrap{
+    left:50%!important;right:auto!important;top:47%!important;
+    transform:translate(-50%,-50%) scale(.92)!important;
+  }
+  #gameWrap #summonCinematic.phase-lock .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.02)!important}
+  #gameWrap #summonCinematic.phase-prime .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.08)!important}
+  #gameWrap #summonCinematic.phase-break .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.14)!important}
+  #gameWrap #summonCinematic .cinemaReadout{width:calc(100% - 12px)!important;padding:7px 9px!important;box-sizing:border-box!important}
+  #gameWrap #summonCinematic .cinemaRack{padding:4px 6px!important;gap:4px!important}
+  #gameWrap #summonCinematic .rackCapsule{width:24px!important;height:24px!important}
+  #gameWrap #summonCinematic .rackCapsule i,#gameWrap #summonCinematic .rackCapsule b{width:20px!important;height:12px!important}
+  #gameWrap #summonCinematic .cinemaWarningBand{top:1%!important}
+}
+@media(max-width:390px){
+  #gameWrap #summonCinematic .summonMachineScene.summonArcade130{height:90dvh!important}
+  #gameWrap #summonCinematic .cinemaMiniCap{transform:scale(.68) rotate(var(--r,0deg))!important}
+  #gameWrap #summonCinematic .cinemaGlobe{height:185px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #summonCinematic .cinemaMiniCap,
+  #gameWrap #summonCinematic .miniSigil130{animation-duration:.001ms!important;animation-iteration-count:1!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -3075,21 +3366,26 @@
           <div id="cinemaOmen" class="cinemaOmen"><span>?</span><b id="cinemaOmenText">SIGNAL UNKNOWN</b></div>
           <div class="cinemaWarningBand"><i></i><b id="cinemaAlert">CAPSULE PROCESSOR ONLINE</b><i></i></div>
           <div class="cinemaStage" id="cinemaTapTarget">
-            <div class="summonMachineScene">
-              <div class="summonSceneHeader"><span>BREAK CAPSULE PROCESSOR</span><b id="cinemaStepLabel">POWER ROUTE</b></div>
+            <div class="summonMachineScene summonArcade130">
+              <div class="cinemaMarquee130"><span>★ BREAK SURVIVORS</span><b>CAPSULE BREAK</b><em>TURN • DROP • CRACK</em></div>
+              <div class="summonSceneHeader"><span>SURVIVOR CAPSULE</span><b id="cinemaStepLabel">POWER ROUTE</b></div>
               <div class="summonSceneBody">
                 <div class="cinemaGlobe">
                   <div class="cinemaGlobeGrid"></div>
-                  <div class="cinemaMiniCap mc1"><i></i><b></b></div>
-                  <div class="cinemaMiniCap mc2"><i></i><b></b></div>
-                  <div class="cinemaMiniCap mc3"><i></i><b></b></div>
-                  <div class="cinemaMiniCap mc4"><i></i><b></b></div>
-                  <div class="cinemaMiniCap mc5"><i></i><b></b></div>
-                  <div class="cinemaMiniCap mc6"><i></i><b></b></div>
+                  <div class="cinemaMiniCap mc1"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">◆</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc2"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">★</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc3"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">✦</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc4"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">☾</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc5"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">◇</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc6"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">✚</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc7"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">♛</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc8"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">★</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc9"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">✦</span><u class="miniShine130"></u></div>
+                  <div class="cinemaMiniCap mc10"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">◆</span><u class="miniShine130"></u></div>
                   <div class="cinemaRotor"><i></i><i></i><i></i></div>
                 </div>
-                <div class="cinemaCrankAssembly"><div class="cinemaCrankWheel"><i></i></div><span>CORE CRANK</span></div>
-                <div class="cinemaDropTube"><i></i><b></b></div>
+                <div class="cinemaCrankAssembly"><div class="cinemaCrankWheel"><i></i></div><span>◀ TURN CORE ▶</span></div>
+                <div class="cinemaDropTube"><strong>CAPSULE OUT</strong><i></i><b></b></div>
                 <div class="cinemaCoreWrap">
                   <div class="cinemaTapRing"></div>
                   <div class="cinemaCore">
@@ -8948,7 +9244,7 @@ function closeSummonOverlays(){
   clearSummonTimers();
   const c=document.getElementById('summonCinematic');
   const r=document.getElementById('singleReveal');
-  c.className='';r.className='';capsuleOpenStage=0;setHomeGachaMachineState('', '');
+  c.className='';r.className='';capsuleOpenStage=0;document.body.classList.remove('summonActive130');setHomeGachaMachineState('', '');
 }
 function doGacha(count){
   if(gachaBusy)return;unlockAudio();const cost=count===10?900:100;if(save.gems<cost){alert('Gems が足りません');return}
@@ -9051,7 +9347,7 @@ function startGachaCharge(){
   const cine=document.getElementById('summonCinematic'),rarity=highestRarity(pendingGachaResults),cls=rarity.toLowerCase();
   const pityResult=pendingGachaResults.find(r=>r.pityHit),guaranteed=pendingGachaResults.find(r=>r.tenGuarantee);
   buildCinemaRack();buildRevealProgressStrip();buildCinemaGemStream();setCinemaOmen('hidden','SIGNAL UNKNOWN');setCapsuleRarityVisual(rarity);
-  capsuleOpenStage=0;summonPhase='charging';
+  capsuleOpenStage=0;summonPhase='charging';document.body.classList.add('summonActive130');
 
   setHomeGachaMachineState('arming',rarity);playGachaSfx('coin');
   summonLater(()=>{setHomeGachaMachineState('cranking',rarity);playGachaSfx('crank')},320);
@@ -9160,7 +9456,7 @@ function openSummonCapsule(){
   try{navigator.vibrate?.(rarity==='Legendary'?[95,25,140,30,170]:rarity==='Epic'?[60,20,85]:[35,15,45])}catch(_){}
   const openDelay=lastPullCount===10?(rarity==='Legendary'?1300:950):(rarity==='Legendary'?1700:rarity==='Epic'?1250:rarity==='Rare'?1050:900);
   summonLater(()=>{
-    cine.className='';
+    cine.className='';document.body.classList.remove('summonActive130');
     setHomeGachaMachineState('settle',rarity);summonLater(()=>setHomeGachaMachineState('', ''),650);
     revealIndex=0;showCurrentReveal();
   },openDelay);
@@ -9241,7 +9537,7 @@ function showResultsImmediately(){
   clearSummonTimers();
   document.getElementById('summonCinematic').className='';
   document.getElementById('singleReveal').className='';
-  capsuleOpenStage=0;
+  capsuleOpenStage=0;document.body.classList.remove('summonActive130');
   showGachaSummary();
 }
 function restartLastSummon(){
