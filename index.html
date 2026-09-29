@@ -2530,6 +2530,190 @@
   #gameWrap .cinemaLegendHalo128,#gameWrap .cinemaCore,#gameWrap .cinemaCapSigil128{animation-duration:.001ms!important;animation-iteration-count:1!important}
 }
 </style>
+<style id="stage129SummonRitual">
+/* Stage 12.9 — SUMMON RITUAL: focus the pull screen on the capsule, not diagnostics */
+#gameWrap #summonCinematic{
+  backdrop-filter:blur(2px) saturate(1.15);
+  background:#02060acc!important;
+}
+#gameWrap #summonCinematic .cinemaBackdrop{
+  opacity:.78!important;
+  background:
+    radial-gradient(circle at 50% 48%,#12476199 0,#071622d9 38%,#02060af2 75%),
+    linear-gradient(90deg,#38dfff0d 1px,transparent 1px),
+    linear-gradient(#38dfff09 1px,transparent 1px)!important;
+  background-size:auto,32px 32px,32px 32px!important;
+}
+#gameWrap #summonCinematic .summonMachineScene{
+  width:min(760px,94vw)!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#gameWrap #summonCinematic .summonSceneHeader{
+  height:28px!important;border:0!important;background:transparent!important;
+  justify-content:center!important;
+}
+#gameWrap #summonCinematic .summonSceneHeader span{display:none!important}
+#gameWrap #summonCinematic .summonSceneHeader b{
+  padding:5px 10px;border:1px solid #31566c;background:#06121bcc;color:#76e9ff!important;
+  font-size:7px!important;letter-spacing:.15em!important;
+}
+#gameWrap #summonCinematic .summonSceneBody{
+  height:390px!important;background:transparent!important;overflow:visible!important;
+}
+#gameWrap #summonCinematic .cinemaReadout{
+  width:min(480px,86vw);margin:0 auto;padding:9px 14px!important;
+  border:2px solid #24485e;background:#06121be8!important;box-shadow:4px 4px 0 #000;
+}
+#gameWrap #summonCinematic .cinemaReadout .cinemaLabel{
+  font-size:6px!important;color:#55788d!important;letter-spacing:.18em!important;
+}
+#gameWrap #summonCinematic .cinemaTapText{font-size:14px!important;color:#f0fbff!important}
+#gameWrap #summonCinematic .cinemaHint{font-size:8px!important;color:#8da7b8!important}
+#gameWrap #summonCinematic .cinemaProgress{border:0!important;background:transparent!important;color:#ffe06b!important;margin-top:3px!important}
+#gameWrap #summonCinematic .cinemaWarningBand{top:4%!important;opacity:.72!important}
+#gameWrap #summonCinematic .cinemaWarningBand b{font-size:6px!important}
+#gameWrap #summonCinematic .cinemaOmen{top:10%!important}
+
+/* Machine activity exists in the opening beats, but recedes as soon as a capsule is chosen. */
+#gameWrap #summonCinematic.phase-insert .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-crank .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-mix .cinemaCoreWrap{opacity:.28}
+#gameWrap #summonCinematic.phase-drop .cinemaGlobe,
+#gameWrap #summonCinematic.phase-omen .cinemaGlobe,
+#gameWrap #summonCinematic.phase-upgrade .cinemaGlobe,
+#gameWrap #summonCinematic.phase-blackout .cinemaGlobe,
+#gameWrap #summonCinematic.phase-legend .cinemaGlobe,
+#gameWrap #summonCinematic.phase-lock .cinemaGlobe,
+#gameWrap #summonCinematic.phase-prime .cinemaGlobe,
+#gameWrap #summonCinematic.phase-break .cinemaGlobe,
+#gameWrap #summonCinematic.phase-drop .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-omen .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-upgrade .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-blackout .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-legend .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-lock .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-prime .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-break .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-drop .cinemaDropTube,
+#gameWrap #summonCinematic.phase-omen .cinemaDropTube,
+#gameWrap #summonCinematic.phase-upgrade .cinemaDropTube,
+#gameWrap #summonCinematic.phase-blackout .cinemaDropTube,
+#gameWrap #summonCinematic.phase-legend .cinemaDropTube,
+#gameWrap #summonCinematic.phase-lock .cinemaDropTube,
+#gameWrap #summonCinematic.phase-prime .cinemaDropTube,
+#gameWrap #summonCinematic.phase-break .cinemaDropTube{
+  opacity:.08!important;filter:brightness(.45)!important;transition:opacity .35s ease;
+}
+#gameWrap #summonCinematic.phase-drop .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-omen .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-upgrade .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-blackout .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-legend .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-lock .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-prime .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-break .cinemaCoreWrap{
+  left:50%!important;right:auto!important;top:50%!important;width:260px!important;height:260px!important;
+  transform:translate(-50%,-50%) scale(1.22)!important;z-index:8!important;
+}
+#gameWrap #summonCinematic.phase-lock .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.38)!important}
+#gameWrap #summonCinematic.phase-prime .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.5)!important}
+#gameWrap #summonCinematic.phase-break .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.58)!important}
+#gameWrap #summonCinematic.phase-lock .cinemaPedestal,
+#gameWrap #summonCinematic.phase-prime .cinemaPedestal,
+#gameWrap #summonCinematic.phase-break .cinemaPedestal{opacity:.28!important}
+
+/* First tap: the shell does not open yet. It acquires cracks and the emblem becomes unstable. */
+#gameWrap #summonCinematic.shell-primed .cinemaCracks128{opacity:.72!important;animation:primeCrack129 .32s steps(3,end) both}
+#gameWrap #summonCinematic.shell-primed .cinemaCore{animation:primeShake129 .16s steps(2,end) 4!important}
+#gameWrap #summonCinematic.shell-primed .cinemaCapSigil128{animation:primeSigil129 .48s steps(3,end) infinite!important}
+#gameWrap #summonCinematic.shell-primed .cinemaTapRing{
+  border-color:#fff19a!important;box-shadow:0 0 22px #ffd84f88!important;
+}
+#gameWrap #summonCinematic.shell-primed .cinemaTapText{color:#ffe774!important}
+@keyframes primeCrack129{0%{clip-path:circle(0 at 50% 50%)}100%{clip-path:circle(100% at 50% 50%)}}
+@keyframes primeShake129{0%{transform:translate(-3px,1px) rotate(-1deg)}100%{transform:translate(3px,-1px) rotate(1deg)}}
+@keyframes primeSigil129{50%{transform:translate(-50%,-50%) scale(1.2);filter:brightness(2.4)}}
+
+/* No answer text before the shell breaks: color and power are the clue. */
+#gameWrap #summonCinematic.phase-omen .cinemaOmen b,
+#gameWrap #summonCinematic.phase-upgrade .cinemaOmen b,
+#gameWrap #summonCinematic.phase-legend .cinemaOmen b{font-size:7px!important}
+#gameWrap #summonCinematic.phase-blackout .summonMachineScene{opacity:.22}
+#gameWrap #summonCinematic.phase-blackout .cinemaOmen{opacity:1!important}
+#gameWrap #summonCinematic.phase-legend .cinemaCoreWrap{animation:goldReturn129 .58s steps(6,end) both}
+@keyframes goldReturn129{0%{filter:brightness(0);transform:translate(-50%,-50%) scale(.82)}45%{filter:brightness(3);transform:translate(-50%,-50%) scale(1.48)}100%{filter:none;transform:translate(-50%,-50%) scale(1.3)}}
+
+/* 10 pull rack feels like physical capsules queued under the machine. */
+#gameWrap #summonCinematic.multi .cinemaRack{
+  min-height:52px!important;gap:8px!important;background:#050e16e8!important;border-color:#23475d!important;
+}
+#gameWrap #summonCinematic.multi .rackCapsule{transform:scale(1.08)}
+
+/* Character materializes from a silhouette after the capsule opens. */
+#gameWrap #singleReveal .revealSilhouette129{
+  position:absolute;left:50%;top:40%;z-index:1;transform:translate(-50%,-50%) scale(1.3);
+  font-size:98px;filter:grayscale(1) brightness(0);opacity:0;pointer-events:none;
+  text-shadow:0 0 30px var(--revealColor,#5ee5ff);
+}
+#gameWrap #singleReveal.active .revealSilhouette129{
+  animation:silhouette129 .72s steps(6,end) both;
+}
+#gameWrap #singleReveal.active .revealIcon{
+  animation:materialize129 .7s steps(7,end) .28s both!important;
+}
+#gameWrap #singleReveal.active.legendary .revealSilhouette129{animation-duration:1s}
+#gameWrap #singleReveal.active.legendary .revealIcon{animation-delay:.45s!important;animation-duration:.85s!important}
+@keyframes silhouette129{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.55);filter:grayscale(1) brightness(0)}
+  30%,72%{opacity:.95;transform:translate(-50%,-50%) scale(1.3);filter:grayscale(1) brightness(.08)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.48);filter:grayscale(1) brightness(1.8)}
+}
+@keyframes materialize129{
+  0%{opacity:0;transform:scale(.35);filter:brightness(3) saturate(0)}
+  52%{opacity:1;transform:scale(1.18);filter:brightness(2) saturate(.4)}
+  100%{transform:scale(1);filter:none}
+}
+
+/* Fast low-rarity cards in 10x: readable, but never stall the pull. */
+#gameWrap #singleReveal.fast129 .revealPanel{transform:scale(.88)}
+#gameWrap #singleReveal.fast129 .revealPassive,
+#gameWrap #singleReveal.fast129 .revealWeapon,
+#gameWrap #singleReveal.fast129 .revealDupeProgress{opacity:.55}
+#gameWrap #singleReveal.fast129 .revealTap{color:#65dfff!important;animation:fastNext129 .35s steps(2,end) infinite}
+@keyframes fastNext129{50%{opacity:.38}}
+
+/* NEW is treated as a jackpot independent of rarity. */
+#gameWrap .revealPanel.revealNewChar .revealNew{
+  transform:scale(1.08);box-shadow:0 0 14px #7fffb155;
+}
+#gameWrap .revealPanel.revealNewChar .revealName{color:#eafff2!important;text-shadow:0 0 9px #67ff9a55}
+
+@media(max-width:620px){
+  #gameWrap #summonCinematic .summonSceneBody{height:340px!important}
+  #gameWrap #summonCinematic.phase-drop .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-omen .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-upgrade .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-blackout .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-legend .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-lock .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-prime .cinemaCoreWrap,
+  #gameWrap #summonCinematic.phase-break .cinemaCoreWrap{
+    top:46%!important;transform:translate(-50%,-50%) scale(.94)!important;
+  }
+  #gameWrap #summonCinematic.phase-lock .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.05)!important}
+  #gameWrap #summonCinematic.phase-prime .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.13)!important}
+  #gameWrap #summonCinematic.phase-break .cinemaCoreWrap{transform:translate(-50%,-50%) scale(1.2)!important}
+  #gameWrap #singleReveal .revealSilhouette129{font-size:72px;top:37%}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #summonCinematic.shell-primed .cinemaCore,
+  #gameWrap #summonCinematic.shell-primed .cinemaCapSigil128,
+  #gameWrap #singleReveal .revealSilhouette129,
+  #gameWrap #singleReveal .revealIcon{animation-duration:.001ms!important;animation-iteration-count:1!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -2941,6 +3125,7 @@
             <div id="revealCounter" class="revealCounter"></div>
             <div style="position:relative;z-index:2">
               <div id="revealNew" class="revealNew"></div>
+              <div id="revealSilhouette129" class="revealSilhouette129"></div>
               <div id="revealIcon" class="revealIcon"></div>
               <div id="revealRarity" class="revealRarity"></div>
               <div id="revealName" class="revealName"></div>
@@ -8736,8 +8921,9 @@ let gachaBusy=false;
 let summonTimers=[];
 let pendingGachaResults=[];
 let revealIndex=0;
-let summonPhase='idle'; // idle, charging, ready, opening, reveal, summary
+let summonPhase='idle'; // idle, charging, ready, primed, opening, reveal, summary
 let lastPullCount=1;
+let capsuleOpenStage=0;
 
 function clearSummonTimers(){
   summonTimers.forEach(t=>clearTimeout(t));summonTimers=[];
@@ -8753,16 +8939,16 @@ function setSummonButtons(disabled){
   document.getElementById('pull10').disabled=disabled;
 }
 function rarityHint(rarity){
-  if(rarity==='Legendary')return ['GOLDEN SIGNAL DETECTED','強烈なエネルギーを感じる…'];
-  if(rarity==='Epic')return ['POWERFUL SIGNAL','紫色の光があふれている…'];
-  if(rarity==='Rare')return ['ENHANCED SIGNAL','青い光が強くなっている…'];
-  return ['SUMMON READY','カプセルをタップして開封'];
+  if(rarity==='Legendary')return ['UNKNOWN SIGNAL','金色の光が内部から漏れている…'];
+  if(rarity==='Epic')return ['SIGNAL SURGE','紫色の光が強く脈動している…'];
+  if(rarity==='Rare')return ['SIGNAL BOOST','青い光が強くなっている…'];
+  return ['CAPSULE READY','カプセルをタップして開封'];
 }
 function closeSummonOverlays(){
   clearSummonTimers();
   const c=document.getElementById('summonCinematic');
   const r=document.getElementById('singleReveal');
-  c.className='';r.className='';setHomeGachaMachineState('', '');
+  c.className='';r.className='';capsuleOpenStage=0;setHomeGachaMachineState('', '');
 }
 function doGacha(count){
   if(gachaBusy)return;unlockAudio();const cost=count===10?900:100;if(save.gems<cost){alert('Gems が足りません');return}
@@ -8865,7 +9051,7 @@ function startGachaCharge(){
   const cine=document.getElementById('summonCinematic'),rarity=highestRarity(pendingGachaResults),cls=rarity.toLowerCase();
   const pityResult=pendingGachaResults.find(r=>r.pityHit),guaranteed=pendingGachaResults.find(r=>r.tenGuarantee);
   buildCinemaRack();buildRevealProgressStrip();buildCinemaGemStream();setCinemaOmen('hidden','SIGNAL UNKNOWN');setCapsuleRarityVisual(rarity);
-  summonPhase='charging';
+  capsuleOpenStage=0;summonPhase='charging';
 
   setHomeGachaMachineState('arming',rarity);playGachaSfx('coin');
   summonLater(()=>{setHomeGachaMachineState('cranking',rarity);playGachaSfx('crank')},320);
@@ -8903,8 +9089,8 @@ function startGachaCharge(){
   summonLater(()=>{
     const omenBase=rarity==='Common'?'common':'rare';
     cine.className='active charging phase-omen '+omenBase+(lastPullCount===10?' multi':'');
-    setCinemaText('SIGNAL CHECK','READING COLOR...','カプセルの発光色を解析しています',rarity==='Common'?'WHITE SIGNAL':rarity==='Rare'?'BLUE SIGNAL':'BLUE SIGNAL...?');
-    setCinemaOmen(omenBase,rarity==='Common'?'STANDARD SIGNAL':rarity==='Rare'?'RARE SIGNAL':'SIGNAL RISING...');
+    setCinemaText('SIGNAL CHECK','READING COLOR...','カプセルの発光色を解析しています',rarity==='Common'?'STABLE':rarity==='Rare'?'SIGNAL BOOST':'SIGNAL RISING...?');
+    setCinemaOmen(omenBase,rarity==='Common'?'STABLE SIGNAL':rarity==='Rare'?'SIGNAL BOOST':'SIGNAL RISING...');
     const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='COLOR SENSOR // ACTIVE';
     if(rarity==='Rare')playGachaSfx('rare');
   },3150);
@@ -8912,9 +9098,9 @@ function startGachaCharge(){
   if(rarity==='Epic'||rarity==='Legendary'){
     summonLater(()=>{
       cine.className='active charging phase-upgrade epic'+(lastPullCount===10?' multi':'');
-      setCinemaText('SIGNAL UPGRADE','COLOR SHIFT!','青い光が紫へ変化した','EPIC SIGNAL');
-      setCinemaOmen('epic','EPIC SIGNAL');
-      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SIGNAL UPGRADE // PURPLE';
+      setCinemaText('SIGNAL SHIFT','COLOR SHIFT!','青い光が紫へ変化した','ENERGY RISING');
+      setCinemaOmen('epic','SIGNAL SURGE');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SIGNAL SHIFT // PURPLE';
       playGachaSfx('upgrade');try{navigator.vibrate?.([28,20,46])}catch(_){}
     },3650);
   }
@@ -8929,9 +9115,9 @@ function startGachaCharge(){
     },4200);
     summonLater(()=>{
       cine.className='active charging phase-legend legendary'+(lastPullCount===10?' multi':'');
-      setCinemaText('LIMIT BREAK','GOLDEN SIGNAL!!','カプセルが金色へ変化した','LEGENDARY');
-      setCinemaOmen('legendary','LEGENDARY SIGNAL');
-      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='!!! LEGENDARY SIGNAL BREAK !!!';
+      setCinemaText('SYSTEM REBOOT','GOLDEN SIGNAL!!','停止した筐体が金色で再起動した','LIMIT BREAK');
+      setCinemaOmen('legendary','UNKNOWN GOLD SIGNAL');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='!!! SIGNAL OVERFLOW !!!';
       playGachaSfx('legendaryPrelude');try{navigator.vibrate?.([45,25,65,25,100])}catch(_){}
     },4580);
   }
@@ -8941,31 +9127,46 @@ function startGachaCharge(){
     const [title,hint]=rarityHint(rarity);
     cine.className='active ready phase-lock '+cls+(lastPullCount===10?' multi':'');
     summonPhase='ready';
-    setCinemaText('CAPSULE LOCK','TAP TO CRACK',hint,title);
-    setCinemaOmen(cls,rarity.toUpperCase()+' CAPSULE');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=rarity==='Legendary'?'GOLD CAPSULE // TAP TO BREAK':'CAPSULE READY // TAP TO BREAK';
+    setCinemaText('CAPSULE READY',lastPullCount===1?'TAP CAPSULE':'TAP TO OPEN 10',hint,title);
+    setCinemaOmen(cls,rarity==='Legendary'?'GOLD CAPSULE':rarity==='Epic'?'PURPLE CAPSULE':rarity==='Rare'?'BLUE CAPSULE':'CAPSULE READY');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=lastPullCount===1?'CAPSULE READY // FIRST TAP':'10 CAPSULES READY // TAP TO OPEN';
   },readyDelay);
 }
 function openSummonCapsule(){
-  if(summonPhase!=='ready')return;
+  if(summonPhase!=='ready'&&summonPhase!=='primed')return;
   unlockAudio();
   const cine=document.getElementById('summonCinematic'),rarity=highestRarity(pendingGachaResults),cls=rarity.toLowerCase();
-  summonPhase='opening';
-  cine.className='active opening phase-break '+cls+(lastPullCount===10?' multi':'');
-  setCinemaText('CRACK CAPSULE','BREAK!','カプセルを開封中','SURVIVOR DATA RELEASE');
-  setCinemaOmen('burst',rarity.toUpperCase()+' BREAK');
-  const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=rarity==='Legendary'?'GOLD CORE // BURST':'CORE SHELL // BREAK';
-  cine.classList.add('shell-cracking');
+
+  // Single pull uses a deliberate two-tap ritual: first tap damages the shell, second breaks it.
+  if(lastPullCount===1&&summonPhase==='ready'&&capsuleOpenStage===0){
+    capsuleOpenStage=1;summonPhase='primed';
+    cine.className='active ready phase-prime shell-primed '+cls;
+    setCinemaText('CRACK 1 / 2','TAP AGAIN TO BREAK','紋章が点灯し、カプセルにヒビが入った','CORE UNSTABLE');
+    setCinemaOmen('burst','SHELL FRACTURE');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SHELL FRACTURE // ONE MORE TAP';
+    playGachaSfx('crack');
+    try{navigator.vibrate?.([28,20,40])}catch(_){}
+    return;
+  }
+
+  capsuleOpenStage=2;summonPhase='opening';
+  cine.className='active opening phase-break shell-cracking '+cls+(lastPullCount===10?' multi':'');
+  setCinemaText(lastPullCount===10?'10 CAPSULE BREAK':'CRACK 2 / 2','BREAK!','カプセルシェルを完全開放','SURVIVOR DATA RELEASE');
+  setCinemaOmen('burst','DATA BURST');
+  const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=lastPullCount===10?'10 CAPSULES // OPEN':'CORE SHELL // BREAK';
   playGachaSfx('crack');
-  summonLater(()=>{cine.classList.add('shell-open');spawnCinemaPixels(rarity)},260);
-  summonLater(()=>playGachaSfx(rarity==='Legendary'?'legendary':rarity.toLowerCase()),420);
+  summonLater(()=>{cine.classList.add('shell-open');spawnCinemaPixels(rarity)},lastPullCount===10?180:260);
+  summonLater(()=>playGachaSfx(rarity==='Legendary'?'legendary':rarity.toLowerCase()),lastPullCount===10?300:420);
   try{navigator.vibrate?.(rarity==='Legendary'?[95,25,140,30,170]:rarity==='Epic'?[60,20,85]:[35,15,45])}catch(_){}
-  const openDelay=rarity==='Legendary'?1700:rarity==='Epic'?1250:rarity==='Rare'?1050:900;
+  const openDelay=lastPullCount===10?(rarity==='Legendary'?1300:950):(rarity==='Legendary'?1700:rarity==='Epic'?1250:rarity==='Rare'?1050:900);
   summonLater(()=>{
     cine.className='';
     setHomeGachaMachineState('settle',rarity);summonLater(()=>setHomeGachaMachineState('', ''),650);
     revealIndex=0;showCurrentReveal();
   },openDelay);
+}
+function shouldFastTenReveal(r){
+  return lastPullCount===10&&rarityOrder[r.c.rarity]<rarityOrder.Epic;
 }
 function showCurrentReveal(){
   const r=pendingGachaResults[revealIndex];
@@ -8973,16 +9174,18 @@ function showCurrentReveal(){
   summonPhase='reveal';
   const overlay=document.getElementById('singleReveal');
   const panel=document.getElementById('revealPanel');
-  panel.className='revealPanel '+r.c.rarity.toLowerCase()+' revealBurst'+(r.isNew?' revealNewChar':'')+(r.starUp?' revealRankUp':'');
+  const fast=shouldFastTenReveal(r);
+  panel.className='revealPanel '+r.c.rarity.toLowerCase()+' revealBurst'+(r.isNew?' revealNewChar':'')+(r.starUp?' revealRankUp':'')+(fast?' fastReveal129':'');
   panel.style.setProperty('--revealColor',r.c.color);
-  overlay.className='active '+r.c.rarity.toLowerCase();
+  overlay.className='active '+r.c.rarity.toLowerCase()+(fast?' fast129':'');
   markRackReveal(revealIndex,r);updateRevealProgressStrip(revealIndex,r);
   const burst=document.getElementById('revealSignalBurst'),burstLabel=document.getElementById('revealBurstRarity');
   if(burst){burst.className='revealSignalBurst show '+r.c.rarity.toLowerCase();burst.style.setProperty('--burstColor',rarityColors[r.c.rarity]);}
   if(burstLabel)burstLabel.textContent=r.c.rarity.toUpperCase();
 
   document.getElementById('revealCounter').textContent=`${revealIndex+1} / ${pendingGachaResults.length}`;
-  document.getElementById('revealNew').textContent=r.isNew?'NEW CHARACTER':'DUPLICATE';
+  document.getElementById('revealNew').textContent=r.isNew?'NEW SURVIVOR':'DUPLICATE';
+  const silhouette=document.getElementById('revealSilhouette129');if(silhouette)silhouette.textContent=r.c.icon;
   document.getElementById('revealIcon').textContent=r.c.icon;
   const rr=document.getElementById('revealRarity');
   rr.textContent=r.c.rarity.toUpperCase();rr.style.color=rarityColors[r.c.rarity];
@@ -8992,26 +9195,33 @@ function showCurrentReveal(){
   document.getElementById('revealStars').textContent='★'.repeat(r.star)+'☆'.repeat(5-r.star);
   const nextTarget=nextStarDupeTarget(r.dupesAfter),dp=document.getElementById('revealDupeProgress'),gb=document.getElementById('revealGuarantee');
   if(dp)dp.textContent=r.isNew?'NEW SURVIVOR ACQUIRED':nextTarget?('STAR PROGRESS  '+r.dupesAfter+' / '+nextTarget+' DUPES'):'★ RANK MAX';
-  if(gb){gb.textContent=r.pityHit?'HARD PITY // LEGENDARY GUARANTEE':r.tenGuarantee?'10-PULL // EPIC+ GUARANTEE':r.starUp?'★ RANK UP':'';gb.className='revealGuarantee'+(r.pityHit?' pity':r.tenGuarantee?' guaranteed':r.starUp?' rankup':'')}
-  document.getElementById('revealTap').textContent=
-    revealIndex===pendingGachaResults.length-1?'TAP TO SEE RESULTS':'TAP FOR NEXT CHARACTER';
+  if(gb){gb.textContent=r.pityHit?'HARD PITY // GUARANTEE':r.tenGuarantee?'10-PULL // GUARANTEE':r.starUp?'★ RANK UP':'';gb.className='revealGuarantee'+(r.pityHit?' pity':r.tenGuarantee?' guaranteed':r.starUp?' rankup':'')}
+  document.getElementById('revealTap').textContent=fast?'AUTO NEXT':revealIndex===pendingGachaResults.length-1?'TAP TO SEE RESULTS':'TAP FOR NEXT CHARACTER';
 
   if(r.isNew)playGachaSfx('new');else playGachaSfx('card');
   if(r.c.rarity==='Legendary'){
     summonLater(()=>playGachaSfx('legendary'),110);
     try{navigator.vibrate?.([55,30,85])}catch(_){}
+  }else if(r.c.rarity==='Epic'){
+    try{navigator.vibrate?.([30,20,45])}catch(_){}
+  }
+
+  // 10-pull keeps momentum: Common/Rare advance automatically; Epic/Legendary wait for the player.
+  if(fast){
+    const idx=revealIndex;
+    summonLater(()=>{if(summonPhase==='reveal'&&revealIndex===idx)nextReveal(true)},620);
   }
 }
-function nextReveal(){
+function nextReveal(auto=false){
   if(summonPhase!=='reveal')return;
-  unlockAudio();
+  if(!auto)unlockAudio();
   document.getElementById('singleReveal').className='';
   const rb=document.getElementById('revealSignalBurst');if(rb)rb.className='revealSignalBurst';
   revealIndex++;
   if(revealIndex>=pendingGachaResults.length){
     showGachaSummary();
   }else{
-    summonLater(showCurrentReveal,180);
+    summonLater(showCurrentReveal,auto?90:180);
   }
 }
 function makeSummaryCard(r){
@@ -9031,6 +9241,7 @@ function showResultsImmediately(){
   clearSummonTimers();
   document.getElementById('summonCinematic').className='';
   document.getElementById('singleReveal').className='';
+  capsuleOpenStage=0;
   showGachaSummary();
 }
 function restartLastSummon(){
