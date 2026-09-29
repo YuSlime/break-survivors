@@ -1937,6 +1937,409 @@
 @media(max-width:620px){#gameWrap .gachaMachineScene{min-height:335px!important;padding:45px 4px 8px!important}.gachaBackSign{height:42px!important;left:7px!important;right:7px!important;top:6px!important}.gachaBackSign span,.gachaBackSign em{display:none}.gachaBackSign b{font-size:13px!important}.megaCapsuleMachine{transform:scale(.72)!important;width:600px!important}.revealProgressStrip{top:3%!important;gap:2px!important;padding:4px!important}.revealProgressCap{width:18px!important;height:18px!important;font-size:5px!important}.cinemaOmen{top:9%!important;min-width:170px!important}.cinemaOmen span{font-size:14px!important}}
 @media(prefers-reduced-motion:reduce){#gameWrap .megaCapsuleMachine *,#gameWrap #summonCinematic *,#gameWrap #singleReveal *{animation-duration:.001ms!important;animation-iteration-count:1!important}}
 </style>
+<style id="stage127ReferenceArcade">
+/* Stage 12.7 — reference-driven pixel arcade cabinet */
+#gameWrap .pixelGacha{
+  padding:10px 12px 28px!important;
+  background:
+    radial-gradient(circle at 50% -20%,#183b58 0,#07111c 42%,#03070d 88%)!important;
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace!important;
+}
+#gameWrap .pixelGacha>.gachaStars{opacity:.08!important}
+#gameWrap .arcade127{
+  position:relative;z-index:3;max-width:1360px;margin:0 auto;
+  border:4px solid #14283a;background:#050a10;
+  box-shadow:inset 0 0 0 3px #061421,0 0 0 2px #020407,0 18px 55px #000c;
+  overflow:hidden;
+}
+#gameWrap .arcade127::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:20;opacity:.17;
+  background:repeating-linear-gradient(180deg,transparent 0 3px,#ffffff0b 3px 4px);
+}
+#gameWrap .arcade127::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:21;
+  box-shadow:inset 0 0 70px #000b;
+}
+#gameWrap .arcadeMarquee127{
+  position:relative;z-index:3;height:82px;display:grid;grid-template-columns:180px 1fr 190px;gap:8px;align-items:stretch;
+  padding:7px;border-bottom:4px solid #10304a;
+  background:linear-gradient(180deg,#11122f,#071727);
+}
+#gameWrap .arcadeMarquee127::before,
+#gameWrap .arcadeMarquee127::after{
+  content:"";position:absolute;left:190px;right:200px;height:4px;background:repeating-linear-gradient(90deg,#ff4ac7 0 18px,#ff9e2f 18px 36px,#48dcff 36px 54px);
+}
+#gameWrap .arcadeMarquee127::before{top:3px}
+#gameWrap .arcadeMarquee127::after{bottom:3px}
+#gameWrap .arcadeMascot127,
+#gameWrap .arcadeCredit127{
+  position:relative;display:flex;align-items:center;justify-content:center;gap:9px;
+  border:3px solid #254a65;background:#081521;
+  box-shadow:inset 0 0 0 2px #030a10;
+}
+#gameWrap .mascotFace127{
+  width:38px;height:38px;display:grid;place-items:center;border:3px solid #1f9fdf;
+  color:#59dcff;font-size:22px;font-weight:1000;background:#06111a;
+}
+#gameWrap .arcadeMascot127 b{
+  font-size:7px;line-height:1.35;color:#63dfff;letter-spacing:.1em;
+}
+#gameWrap .arcadeBrand127{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;justify-content:center;gap:17px;
+  padding:0 24px;text-align:center;border:3px solid #2a5470;background:linear-gradient(180deg,#0c2540,#071523);
+  box-shadow:inset 0 0 0 2px #06101b;
+}
+#gameWrap .arcadeBrand127 span{font-size:11px;color:#56e0ff;font-weight:1000;letter-spacing:.07em}
+#gameWrap .arcadeBrand127 strong{
+  font-size:clamp(25px,3vw,42px);line-height:1;color:#ffe15c;letter-spacing:.035em;
+  text-shadow:3px 3px 0 #b82f48,6px 6px 0 #351229;
+}
+#gameWrap .arcadeBrand127 em{font-size:7px;font-style:normal;font-weight:1000;color:#ffb938;letter-spacing:.12em}
+#gameWrap .arcadeCredit127{flex-direction:column;gap:2px;padding-right:42px}
+#gameWrap .arcadeCredit127>span{font-size:7px;color:#ffcb54;font-weight:1000;letter-spacing:.1em}
+#gameWrap .arcadeCredit127>b{font-size:13px;color:#fff0a2}
+#gameWrap .arcadeClose127{
+  position:absolute!important;right:6px!important;top:6px!important;width:31px!important;height:31px!important;
+  border-radius:0!important;font-size:16px!important;
+}
+
+#gameWrap .arcadeCabinet127{
+  position:relative;z-index:2;display:grid;grid-template-columns:205px minmax(470px,1fr) 300px;gap:9px;
+  padding:10px;background:
+    linear-gradient(90deg,#0c2032 0 2px,transparent 2px) 0 0/42px 42px,
+    linear-gradient(#0c2032 0 2px,transparent 2px) 0 0/42px 42px,
+    #050c13;
+}
+#gameWrap .arcadeMenu127{
+  display:flex;flex-direction:column;border:4px solid #1d4761;background:#07131f;
+  box-shadow:inset 0 0 0 3px #030a10;
+}
+#gameWrap .arcadeMenuHead127{
+  min-height:88px;display:grid;place-items:center;text-align:center;padding:10px;
+  border-bottom:3px solid #173a52;color:#5be0ff;font-size:11px;font-weight:1000;letter-spacing:.12em;
+  background:linear-gradient(135deg,#0c2740,#06131e);
+}
+#gameWrap .arcadeMenuHead127 b{font-size:17px;color:#effbff}
+#gameWrap .arcadeMenuItem127{
+  height:65px;margin:0;border:0;border-bottom:2px solid #172e42;border-radius:0!important;
+  display:grid;grid-template-columns:42px 1fr 20px;gap:8px;align-items:center;padding:0 12px;
+  color:#72879b;background:#08121d;font:1000 8px ui-monospace,"Cascadia Mono",Consolas,monospace;text-align:left;
+}
+#gameWrap .arcadeMenuItem127 i{font-style:normal;font-size:18px;color:#647c91}
+#gameWrap .arcadeMenuItem127 b{font-size:18px;text-align:center;color:#345268}
+#gameWrap .arcadeMenuItem127.active{
+  color:#f2fcff;background:linear-gradient(90deg,#0d4562,#092337);outline:3px solid #38d9ff;outline-offset:-3px;
+  box-shadow:inset 5px 0 #68f0ff,0 0 14px #28c9ff55;
+}
+#gameWrap .arcadeMenuItem127.active i,#gameWrap .arcadeMenuItem127.active b{color:#78efff}
+#gameWrap .arcadeSideDeco127{
+  margin-top:auto;display:grid;grid-template-columns:1fr auto;gap:7px;padding:12px;
+  border-top:3px solid #173a52;color:#59768a;font-size:6px;font-weight:1000;letter-spacing:.1em;
+}
+#gameWrap .arcadeSideDeco127 b{color:#6cff9c}
+
+#gameWrap .arcadeCenter127{
+  min-width:0;display:flex;flex-direction:column;align-items:center;
+}
+#gameWrap .capsuleHeader127{
+  width:min(640px,96%);height:42px;display:flex;align-items:center;justify-content:center;gap:20px;
+  border:4px solid #2d6685;background:linear-gradient(180deg,#102f49,#071828);color:#f3fbff;
+  font-size:15px;font-weight:1000;letter-spacing:.08em;box-shadow:inset 0 0 0 2px #06111b,0 4px 0 #020609;
+}
+#gameWrap .capsuleHeader127 span{color:#5de4ff}
+#gameWrap .arcadeCenter127 .megaCapsuleMachine{
+  width:min(690px,100%)!important;margin-top:6px!important;filter:drop-shadow(0 15px 17px #000a)!important;
+}
+#gameWrap .arcadeMachineShell127{width:100%;position:relative}
+#gameWrap .arcadeDomeTop127{
+  width:78%;height:27px;margin:0 auto -3px;display:flex;align-items:center;justify-content:center;gap:14px;
+  border:4px solid #3c7491;background:#0d273a;color:#6de9ff;font-size:7px;font-weight:1000;letter-spacing:.12em;
+}
+#gameWrap .arcadeDomeTop127 i{width:34px;height:6px;background:#51e4ff;box-shadow:0 0 10px #51e4ff}
+#gameWrap .arcadeDome127{
+  position:relative;width:78%;height:282px;margin:0 auto;border:7px solid #4d829e;
+  border-radius:56px 56px 8px 8px!important;overflow:hidden;
+  background:
+    linear-gradient(90deg,#59ddff13 1px,transparent 1px),
+    linear-gradient(#59ddff10 1px,transparent 1px),
+    linear-gradient(180deg,#12394f 0 72%,#0b2635 72%);
+  background-size:24px 24px,24px 24px,auto;
+  box-shadow:inset 0 0 0 8px #071a26,inset 0 -32px #0b1e2b,0 0 24px #36cfff26;
+}
+#gameWrap .arcadeGlass127{
+  position:absolute;inset:0;z-index:10;pointer-events:none;
+  background:linear-gradient(108deg,#ffffff2f 0 8%,transparent 8% 63%,#ffffff14 63% 70%,transparent 70%);
+}
+#gameWrap .arcadeDomeLogo127{
+  position:absolute;left:50%;top:37%;z-index:1;transform:translate(-50%,-50%);
+  width:74px;height:74px;display:grid;place-items:center;border:5px solid #2e7495;color:#39c9f3;
+  font-size:42px;opacity:.52;
+}
+#gameWrap .arcadeDome127 .megaSpinner{
+  opacity:.45!important;width:86px!important;height:86px!important;border-width:7px!important;
+}
+#gameWrap .arcadeDome127 .gashaCapsule{
+  width:58px!important;height:50px!important;z-index:3!important;filter:drop-shadow(3px 4px 0 #051019)!important;
+}
+#gameWrap .arcadeDome127 .gashaCapsule i,
+#gameWrap .arcadeDome127 .gashaCapsule b{
+  width:58px!important;height:27px!important;border-width:4px!important;
+}
+#gameWrap .arcadeDome127 .gashaCapsule i{
+  border-radius:16px 16px 3px 3px!important;background:#62dcff!important;border-color:#c9f8ff!important;
+}
+#gameWrap .arcadeDome127 .gashaCapsule b{
+  border-radius:3px 3px 16px 16px!important;background:#8758f5!important;border-color:#c1a9ff!important;
+}
+#gameWrap .arcadeDome127 .h1{left:9%;top:17%;--rot:-12deg}
+#gameWrap .arcadeDome127 .h2{left:27%;top:7%;--rot:8deg}
+#gameWrap .arcadeDome127 .h3{left:46%;top:15%;--rot:-4deg}
+#gameWrap .arcadeDome127 .h4{right:17%;top:11%;--rot:13deg}
+#gameWrap .arcadeDome127 .h5{left:16%;top:40%;--rot:8deg}
+#gameWrap .arcadeDome127 .h6{left:38%;top:38%;--rot:-11deg}
+#gameWrap .arcadeDome127 .h7{right:26%;top:34%;--rot:10deg}
+#gameWrap .arcadeDome127 .h8{right:7%;top:43%;--rot:-9deg}
+#gameWrap .arcadeDome127 .h9{left:8%;bottom:9%;--rot:7deg}
+#gameWrap .arcadeDome127 .h10{left:31%;bottom:5%;--rot:-8deg}
+#gameWrap .arcadeDome127 .h11{left:53%;bottom:9%;--rot:12deg}
+#gameWrap .arcadeDome127 .h12{right:10%;bottom:7%;--rot:-5deg}
+#gameWrap .arcadeDome127 .h13{left:59%;top:55%;--rot:5deg}
+#gameWrap .arcadeDome127 .h14{left:4%;top:59%;--rot:-7deg}
+#gameWrap .arcadeDome127 .h2 i,#gameWrap .arcadeDome127 .h8 i,#gameWrap .arcadeDome127 .h13 i{background:#ff67b4!important;border-color:#ffd4e9!important}
+#gameWrap .arcadeDome127 .h2 b,#gameWrap .arcadeDome127 .h8 b,#gameWrap .arcadeDome127 .h13 b{background:#7841c9!important;border-color:#c298ff!important}
+#gameWrap .arcadeDome127 .h4 i,#gameWrap .arcadeDome127 .h11 i{background:#ffe25e!important;border-color:#fff6ad!important}
+#gameWrap .arcadeDome127 .h4 b,#gameWrap .arcadeDome127 .h11 b{background:#e9872d!important;border-color:#ffc36f!important}
+
+#gameWrap .arcadeMachineBase127{
+  position:relative;width:94%;min-height:130px;margin:-5px auto 0;padding:14px;
+  display:grid;grid-template-columns:1fr 154px 128px;gap:10px;align-items:stretch;
+  border:7px solid #5a2631;background:linear-gradient(180deg,#a9363a,#67242f);
+  box-shadow:inset 0 0 0 5px #cf4c43,inset 0 -12px #481827,0 8px 0 #020609;
+}
+#gameWrap .arcadeGenPanel127,
+#gameWrap .arcadeTurn127,
+#gameWrap .arcadeChute127{
+  border:4px solid #4b1d29;background:#0c1c28;box-shadow:inset 0 0 0 3px #071019;
+}
+#gameWrap .arcadeGenPanel127{
+  padding:17px 14px;display:flex;flex-direction:column;justify-content:center;
+}
+#gameWrap .arcadeGenPanel127 span{font-size:11px;font-weight:1000;color:#5be6ff}
+#gameWrap .arcadeGenPanel127 b{margin-top:7px;font-size:7px;color:#b6c5d1}
+#gameWrap .arcadeGenPanel127 div{height:10px;margin-top:10px;border:2px solid #2d5d74;background:#051018;padding:1px}
+#gameWrap .arcadeGenPanel127 div i{display:block;width:36%;height:100%;background:#56e8ff}
+#gameWrap .arcadeTurn127{position:relative;display:grid;place-items:center;padding-bottom:19px;background:#102a3b}
+#gameWrap .arcadeTurn127 .megaCrankWheel{
+  width:82px!important;height:82px!important;border:12px solid #a5bac4!important;background:#174162!important;
+  box-shadow:inset 0 0 0 8px #07111b,0 0 0 4px #263a47!important;
+}
+#gameWrap .arcadeTurn127 .megaCrankWheel b{
+  width:68px!important;height:13px!important;background:#c8d6dd!important;border:3px solid #536773!important;box-sizing:border-box;
+}
+#gameWrap .arcadeTurn127 .megaCrankArm{display:none!important}
+#gameWrap .arcadeTurn127>span{
+  position:absolute;bottom:5px;font-size:8px;font-weight:1000;color:#67e4ff;letter-spacing:.1em;
+}
+#gameWrap .arcadeChute127{
+  padding:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#132532;
+}
+#gameWrap .arcadeChuteLabel127{
+  padding:3px 6px;margin-bottom:5px;background:#d5dbe0;color:#17212a;border:3px solid #5c6971;
+  font-size:7px;font-weight:1000;line-height:1;text-align:center;
+}
+#gameWrap .arcadeChute127 .megaChuteDoor{
+  position:relative;width:78px!important;height:58px!important;border:5px solid #82929b!important;background:#162b36!important;padding:8px!important;
+}
+#gameWrap .arcadeChute127 .megaChuteDoor::after{
+  content:"";position:absolute;left:50%;bottom:5px;width:31px;height:22px;transform:translateX(-50%);
+  border-radius:50%;background:linear-gradient(180deg,#66ddff 0 50%,#8058ef 50%);border:3px solid #c7efff;
+  opacity:.85;
+}
+#gameWrap .arcadeChute127>span{margin-top:5px;font-size:6px;font-weight:1000;color:#d8e2e8}
+#gameWrap .arcadeMachineFooter127{
+  width:90%;height:25px;margin:4px auto 0;padding:0 10px;display:flex;align-items:center;justify-content:space-between;
+  border:3px solid #1d4761;background:#06131d;color:#4d7287;font-size:5.5px;font-weight:1000;letter-spacing:.08em;
+}
+#gameWrap .arcadeMachineFooter127 b{color:#ffe259}
+
+#gameWrap .arcadeStatus127{
+  max-width:none!important;margin:0!important;display:flex!important;flex-direction:column!important;gap:8px!important;
+}
+#gameWrap .arcadePanel127{
+  border:4px solid #25506d!important;background:#071521!important;border-radius:0!important;
+  box-shadow:inset 0 0 0 3px #030a10,4px 4px 0 #020609!important;padding:12px!important;
+}
+#gameWrap .arcadePanelTitle127{
+  display:block;font-size:8px;font-weight:1000;color:#6adfff;letter-spacing:.1em;
+}
+#gameWrap .machinePanel127>b{
+  display:block;margin-top:9px;font-size:18px;color:#66f39b;letter-spacing:.03em;
+}
+#gameWrap .machinePanel127>em{
+  display:block;margin-top:5px;font-size:7px;font-style:normal;color:#8ba3b4;
+}
+#gameWrap .machineSegments127{display:flex;gap:5px;margin-top:12px}
+#gameWrap .machineSegments127 i{width:23%;height:8px;background:#1f4258}
+#gameWrap .machineSegments127 i:nth-child(-n+3){background:#54e4ff;box-shadow:0 0 7px #54e4ff55}
+#gameWrap .arcadePanelTop127{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin-bottom:8px;color:#6addff;font-size:8px;font-weight:1000;letter-spacing:.08em;
+}
+#gameWrap .arcadePanelTop127 b{font-size:11px;color:#f3fbff}
+#gameWrap .arcadeStatus127 .gachaPityBar{
+  height:12px!important;border:3px solid #315269!important;background:#030a10!important;border-radius:0!important;
+}
+#gameWrap .arcadeStatus127 .gachaPityBar i{
+  background:repeating-linear-gradient(90deg,#4fdfff 0 16px,#277ba7 16px 32px)!important;
+  box-shadow:none!important;
+}
+#gameWrap .arcadeStatus127 .gachaStatusFoot{
+  margin-top:7px!important;font-size:6px!important;color:#7990a1!important;
+}
+#gameWrap .arcadeStatus127 .gachaRoster{
+  grid-template-columns:repeat(3,1fr)!important;gap:5px!important;
+}
+#gameWrap .arcadeStatus127 .gachaRosterUnit{
+  height:51px!important;border:2px solid #294e67!important;border-radius:0!important;background:#07131e!important;
+}
+#gameWrap .arcadeStatus127 .gachaRosterUnit i{font-size:18px!important}
+#gameWrap .arcadeStatus127 .gachaRosterUnit b{font-size:5.5px!important}
+#gameWrap .arcadeRarityStrip127{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;
+  border:4px solid #25506d;background:#071521;box-shadow:inset 0 0 0 3px #030a10,4px 4px 0 #020609;
+}
+#gameWrap .arcadeRarityStrip127 span{
+  min-width:0;padding:5px 2px;text-align:center;border:1px solid currentColor;background:#071018;
+  font-size:5.5px;font-weight:1000;line-height:1.35;
+}
+#gameWrap .arcadeRarityStrip127 i{
+  display:block;width:21px;height:21px;margin:0 auto 3px;border-radius:50%;
+  background:linear-gradient(180deg,#8cecff 0 49%,#7456e5 49%);border:2px solid currentColor;
+}
+#gameWrap .arcadeRarityStrip127 .common{color:#afbac4}
+#gameWrap .arcadeRarityStrip127 .rare{color:#59c9ff}
+#gameWrap .arcadeRarityStrip127 .epic{color:#d177ff}
+#gameWrap .arcadeRarityStrip127 .legendary{color:#ffe15c}
+#gameWrap .arcadeRarityStrip127 .rare i{background:linear-gradient(180deg,#70d9ff 0 49%,#287dbd 49%)}
+#gameWrap .arcadeRarityStrip127 .epic i{background:linear-gradient(180deg,#ff67b5 0 49%,#8341ca 49%)}
+#gameWrap .arcadeRarityStrip127 .legendary i{background:linear-gradient(180deg,#ffe36b 0 49%,#e4872d 49%)}
+
+#gameWrap .arcadeControlDeck127{
+  position:relative;z-index:3;display:grid;grid-template-columns:165px minmax(500px,1fr) 165px;gap:9px;
+  padding:9px 12px 13px;border-top:5px solid #3b1730;
+  background:linear-gradient(180deg,#8d2e49,#40152b);
+  box-shadow:inset 0 6px #c74357;
+}
+#gameWrap .arcadeCreditPlate127,
+#gameWrap .arcadeLuck127{
+  min-height:78px;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  border:4px solid #2b2031;background:#09121d;box-shadow:inset 0 0 0 3px #03070c;
+}
+#gameWrap .arcadeCreditPlate127 span{font-size:8px;color:#ffd661;font-weight:1000}
+#gameWrap .arcadeCreditPlate127 b{margin-top:6px;font-size:7px;color:#7bff9e}
+#gameWrap .arcadeLuck127 span{font-size:6px;color:#67dfff}.arcadeLuck127 b{font-size:10px;color:#effaff}.arcadeLuck127 i{margin-top:4px;color:#5ae0ff;font-style:normal;font-size:18px}
+#gameWrap .arcadeSummonControls127{
+  max-width:none!important;margin:0!important;display:grid!important;grid-template-columns:1fr 1.12fr!important;gap:10px!important;
+}
+#gameWrap .arcadeSummon127{
+  position:relative!important;min-height:78px!important;padding:8px 16px 19px 65px!important;text-align:left!important;
+  border-width:5px!important;box-shadow:inset 0 0 0 4px #071019,5px 5px 0 #120817!important;
+  overflow:hidden!important;
+}
+#gameWrap .arcadeSummon127 span{
+  display:block;font-size:18px;font-weight:1000;letter-spacing:.035em;white-space:nowrap;
+}
+#gameWrap .arcadeSummon127 span small{font-size:11px}
+#gameWrap .arcadeSummon127>em{
+  position:absolute;left:66px;right:10px;bottom:5px!important;transform:none!important;
+  font-size:6px!important;font-style:normal!important;letter-spacing:.08em!important;
+}
+#gameWrap .arcadeSummon127.single{
+  color:#dffaff!important;background:linear-gradient(180deg,#125a7d,#0d344d)!important;border-color:#42dcff!important;
+}
+#gameWrap .arcadeSummon127.ten{
+  color:#fff0ad!important;background:linear-gradient(180deg,#7a4e0d,#432607)!important;border-color:#ffc842!important;
+}
+#gameWrap .buttonCapsule127{
+  position:absolute;left:18px;top:50%;width:36px;height:36px;transform:translateY(-50%);border-radius:50%;
+  background:linear-gradient(180deg,#73e4ff 0 48%,#7453df 48%);border:4px solid #d3f6ff;box-shadow:0 0 10px #5fe1ff77;
+}
+#gameWrap .arcadeSummon127.ten .buttonCapsule127{
+  background:linear-gradient(180deg,#ffe064 0 48%,#d77c25 48%);border-color:#fff2ad;box-shadow:0 0 11px #ffc73c77;
+}
+#gameWrap .arcadeSummon127:not(:disabled):hover{filter:brightness(1.14)}
+#gameWrap .arcadeSummon127:not(:disabled):active{
+  transform:translate(4px,4px)!important;box-shadow:inset 0 0 0 4px #071019,1px 1px 0 #120817!important;
+}
+#gameWrap .arcadeMeta127{
+  position:relative;z-index:3;max-width:none!important;margin:0!important;padding:6px 14px!important;
+  border-top:2px solid #17283a!important;background:#050a10!important;color:#577487!important;
+  font-size:6px!important;letter-spacing:.06em!important;
+}
+
+/* machine motion mapped to the new physical parts */
+#gameWrap .megaCapsuleMachine.arming .arcadeGenPanel127 div i{width:100%;box-shadow:0 0 12px #56e8ff}
+#gameWrap .megaCapsuleMachine.arming .arcadeGenPanel127 span{color:#fff27d}
+#gameWrap .megaCapsuleMachine.cranking .arcadeTurn127 .megaCrankWheel{animation:arcade127Crank .44s steps(8,end) infinite!important}
+#gameWrap .megaCapsuleMachine.cranking .megaSpinner{animation:arcade127Spinner .34s steps(8,end) infinite!important}
+#gameWrap .megaCapsuleMachine.cranking .arcadeDome127 .gashaCapsule{animation:arcade127Mix .38s steps(4,end) infinite!important}
+#gameWrap .megaCapsuleMachine.dropping .arcadeChute127 .megaChuteDoor{animation:arcade127Chute .52s steps(4,end)!important}
+#gameWrap .megaCapsuleMachine.legendary.cranking .arcadeDome127{
+  box-shadow:inset 0 0 0 8px #402b09,inset 0 -32px #2b1905,0 0 26px #ffc83e88!important;
+}
+@keyframes arcade127Crank{to{transform:rotate(360deg)}}
+@keyframes arcade127Spinner{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes arcade127Mix{0%{transform:translate(0,0) rotate(var(--rot))}25%{transform:translate(11px,-8px) rotate(23deg)}50%{transform:translate(-10px,7px) rotate(-20deg)}75%{transform:translate(7px,10px) rotate(15deg)}100%{transform:translate(0,0) rotate(var(--rot))}}
+@keyframes arcade127Chute{50%{transform:translateY(7px);filter:brightness(1.6)}}
+
+/* preserve results underneath the cabinet */
+#gameWrap #gachaSummaryBanner,#gameWrap #gachaResults,#gameWrap #gachaSummaryActions{position:relative;z-index:3}
+
+@media(max-width:1050px){
+  #gameWrap .arcadeCabinet127{grid-template-columns:160px minmax(420px,1fr) 250px}
+  #gameWrap .arcadeMarquee127{grid-template-columns:135px 1fr 150px}
+  #gameWrap .arcadeBrand127 span{display:none}
+  #gameWrap .arcadeMenuItem127{height:58px;grid-template-columns:32px 1fr 16px}
+  #gameWrap .arcadeMachineBase127{grid-template-columns:1fr 135px 112px}
+}
+@media(max-width:820px){
+  #gameWrap .arcade127{border-width:2px}
+  #gameWrap .arcadeMarquee127{height:62px;grid-template-columns:1fr 92px;padding:5px}
+  #gameWrap .arcadeMascot127{display:none}
+  #gameWrap .arcadeBrand127{grid-template-columns:1fr;padding:0 10px}
+  #gameWrap .arcadeBrand127 strong{font-size:24px}
+  #gameWrap .arcadeBrand127 em,#gameWrap .arcadeBrand127 span{display:none}
+  #gameWrap .arcadeCredit127>span{display:none}
+  #gameWrap .arcadeCabinet127{grid-template-columns:1fr;padding:7px}
+  #gameWrap .arcadeMenu127{display:none}
+  #gameWrap .arcadeStatus127{display:grid!important;grid-template-columns:1fr 1fr!important}
+  #gameWrap .arcadeStatus127 .collectionBlock{grid-column:1/-1}
+  #gameWrap .arcadeRarityStrip127{grid-column:1/-1}
+  #gameWrap .arcadeControlDeck127{grid-template-columns:1fr;padding:8px}
+  #gameWrap .arcadeCreditPlate127,#gameWrap .arcadeLuck127{display:none}
+  #gameWrap .arcadeSummonControls127{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:560px){
+  #gameWrap .pixelGacha{padding:5px 5px 20px!important}
+  #gameWrap .capsuleHeader127{height:34px;font-size:11px}
+  #gameWrap .arcadeDome127{width:92%;height:220px;border-radius:38px 38px 6px 6px!important}
+  #gameWrap .arcadeDomeTop127{width:92%}
+  #gameWrap .arcadeDome127 .gashaCapsule{transform:scale(.82)}
+  #gameWrap .arcadeMachineBase127{width:100%;padding:7px;grid-template-columns:1fr 104px 86px;gap:5px;border-width:5px}
+  #gameWrap .arcadeGenPanel127{padding:7px}
+  #gameWrap .arcadeGenPanel127 span{font-size:8px}
+  #gameWrap .arcadeTurn127 .megaCrankWheel{width:64px!important;height:64px!important}
+  #gameWrap .arcadeChuteLabel127{font-size:5px}
+  #gameWrap .arcadeMachineFooter127{width:98%}
+  #gameWrap .arcadeStatus127{grid-template-columns:1fr!important}
+  #gameWrap .arcadeStatus127 .collectionBlock,#gameWrap .arcadeRarityStrip127{grid-column:auto}
+  #gameWrap .arcadeSummonControls127{grid-template-columns:1fr!important}
+  #gameWrap .arcadeSummon127{min-height:68px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap .arcade127 *,#gameWrap .megaCapsuleMachine *{animation-duration:.001ms!important;animation-iteration-count:1!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -2122,120 +2525,170 @@
     <div id="gacha">
       <div class="gachaScreen pixelGacha">
         <div class="gachaStars"></div><div class="gachaScanlines"></div>
-        <div class="gachaTop">
-          <div>
-            <div class="gachaEyebrow" data-i18n="gacha.terminal">SUMMON TERMINAL</div>
-            <div class="pixelGachaTitle" data-i18n="gacha.title">CHARACTER GACHA</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <div class="gachaCurrency">💎 <span id="gachaGemText">0</span></div>
-            <button id="closeGacha" class="gachaClose">×</button>
-          </div>
-        </div>
-
-        <div class="gachaHero gachaArcadeStage">
-          <section class="gachaMachineScene">
-            <div class="gachaBackSign">
-              <span>BREAK SURVIVORS</span>
-              <b>CAPSULE BREAK</b>
+        <div class="arcade127">
+          <header class="arcadeMarquee127">
+            <div class="arcadeMascot127">
+              <span class="mascotFace127">⌁</span>
+              <b>GOOD LUCK,<br>SURVIVOR!</b>
+            </div>
+            <div class="arcadeBrand127">
+              <span>★ BREAK SURVIVORS</span>
+              <strong>CAPSULE BREAK</strong>
               <em>TURN • DROP • CRACK</em>
             </div>
-            <div class="gachaSceneGlow"></div>
-            <div class="gachaSceneFloor"></div>
-
-            <div id="gachaMachine" class="gashaponMachine megaCapsuleMachine">
-              <div class="megaMachineTop">
-                <span>BS-99</span><b>SURVIVOR CAPSULE</b><i>READY</i>
-              </div>
-
-              <div class="megaDome">
-                <div class="megaDomeGlass"></div>
-                <div class="megaSpinner"><i></i><i></i><i></i></div>
-                <div class="gashaCapsule h1"><i></i><b></b></div>
-                <div class="gashaCapsule h2"><i></i><b></b></div>
-                <div class="gashaCapsule h3"><i></i><b></b></div>
-                <div class="gashaCapsule h4"><i></i><b></b></div>
-                <div class="gashaCapsule h5"><i></i><b></b></div>
-                <div class="gashaCapsule h6"><i></i><b></b></div>
-                <div class="gashaCapsule h7"><i></i><b></b></div>
-                <div class="gashaCapsule h8"><i></i><b></b></div>
-                <div class="gashaCapsule h9"><i></i><b></b></div>
-                <div class="gashaCapsule h10"><i></i><b></b></div>
-                <div class="gashaCapsule h11"><i></i><b></b></div>
-              </div>
-
-              <div class="megaConsole">
-                <div class="megaGemSlot">
-                  <div class="gemSlotLight"></div>
-                  <b>◆ GEM IN</b>
-                  <span>100 / 900</span>
-                </div>
-
-                <div class="megaCrank">
-                  <div class="megaCrankWheel"><i></i><b></b></div>
-                  <div class="megaCrankArm"><i></i></div>
-                  <span>TURN CORE</span>
-                </div>
-
-                <div class="megaScreen">
-                  <span>MACHINE STATUS</span>
-                  <b id="homeMachineStatus">CAPSULE READY</b>
-                  <em id="homeMachineSub">SELECT 1× OR 10× SUMMON</em>
-                  <div class="screenBars"><i></i><i></i><i></i><i></i></div>
-                </div>
-
-                <div class="megaChute">
-                  <div class="megaChuteDoor"><i></i><b></b></div>
-                  <span>CAPSULE OUT</span>
-                </div>
-              </div>
-
-              <div class="megaMachineBase">
-                <span>CORE LINK // ONLINE</span><b>◆</b><span>DISPENSER // ARMED</span>
-              </div>
+            <div class="arcadeCredit127">
+              <span>INSERT GEM</span>
+              <b>💎 <span id="gachaGemText">0</span></b>
+              <button id="closeGacha" class="gachaClose arcadeClose127">×</button>
             </div>
-          </section>
+          </header>
 
-          <aside class="gachaMachineSide">
-            <div class="sidePixelCard">
-              <span class="sideKicker">HOW TO PULL</span>
-              <div class="sideStep"><b>01</b><span>GEMS投入</span></div>
-              <div class="sideStep"><b>02</b><span>ハンドル回転</span></div>
-              <div class="sideStep"><b>03</b><span>カプセル排出</span></div>
-              <div class="sideStep"><b>04</b><span>タップで開封</span></div>
-            </div>
-            <div class="sidePixelCard sideRates">
-              <span class="sideKicker">CAPSULE COLOR</span>
-              <div class="sideRate common"><i></i><span>COMMON</span><b>45%</b></div>
-              <div class="sideRate rare"><i></i><span>RARE</span><b>30%</b></div>
-              <div class="sideRate epic"><i></i><span>EPIC</span><b>18%</b></div>
-              <div class="sideRate legendary"><i></i><span>LEGENDARY</span><b>7%</b></div>
-            </div>
-            <div class="sideGuarantee"><b>10×</b><span>EPIC+<br>GUARANTEE</span></div>
-          </aside>
-        </div>
+          <div class="arcadeCabinet127">
+            <aside class="arcadeMenu127">
+              <div class="arcadeMenuHead127">BREAK<br><b>SURVIVORS</b></div>
+              <button class="arcadeMenuItem127 active"><i>♟</i><span>SURVIVORS</span><b>›</b></button>
+              <button class="arcadeMenuItem127"><i>⌁</i><span>WEAPONS</span><b>›</b></button>
+              <button class="arcadeMenuItem127"><i>◇</i><span>MODULES</span><b>›</b></button>
+              <button class="arcadeMenuItem127"><i>▣</i><span>RESOURCES</span><b>›</b></button>
+              <div class="arcadeSideDeco127">
+                <span>CORE LINK</span><b>ONLINE</b>
+                <span>DISPENSER</span><b>ARMED</b>
+              </div>
+            </aside>
 
-        <div class="gachaControls">
-          <button id="pull1" class="summonBtn primary">1 SUMMON<br><span class="small">100 Gems</span></button>
-          <button id="pull10" class="summonBtn gold">10 SUMMONS<br><span class="small">900 Gems</span><em class="tenGuarantee">EPIC+ GUARANTEE</em></button>
-        </div>
+            <main class="arcadeCenter127">
+              <div class="capsuleHeader127">
+                <span>◀</span><b>SURVIVOR CAPSULE</b><span>▶</span>
+              </div>
 
-        <div id="gachaStatusPanel" class="gachaStatusPanel">
-          <div class="gachaStatusBlock pityBlock">
-            <div class="gachaStatusHead"><span>LEGENDARY SIGNAL</span><b id="gachaPityCount">0 / 40</b></div>
-            <div class="gachaPityBar"><i id="gachaPityFill"></i></div>
-            <div class="gachaStatusFoot"><span id="gachaLegendChance">NEXT 7.0%</span><span id="gachaPityText">SOFT PITY 25 // HARD PITY 40</span></div>
+              <div id="gachaMachine" class="gashaponMachine megaCapsuleMachine">
+                <div class="arcadeMachineShell127">
+                  <div class="arcadeDomeTop127">
+                    <i></i><i></i><b>CAPSULE MIXER</b><i></i><i></i>
+                  </div>
+
+                  <div class="arcadeDome127">
+                    <div class="arcadeGlass127"></div>
+                    <div class="arcadeDomeLogo127">✦</div>
+                    <div class="megaSpinner"><i></i><i></i><i></i></div>
+
+                    <div class="gashaCapsule h1"><i></i><b></b></div>
+                    <div class="gashaCapsule h2"><i></i><b></b></div>
+                    <div class="gashaCapsule h3"><i></i><b></b></div>
+                    <div class="gashaCapsule h4"><i></i><b></b></div>
+                    <div class="gashaCapsule h5"><i></i><b></b></div>
+                    <div class="gashaCapsule h6"><i></i><b></b></div>
+                    <div class="gashaCapsule h7"><i></i><b></b></div>
+                    <div class="gashaCapsule h8"><i></i><b></b></div>
+                    <div class="gashaCapsule h9"><i></i><b></b></div>
+                    <div class="gashaCapsule h10"><i></i><b></b></div>
+                    <div class="gashaCapsule h11"><i></i><b></b></div>
+                    <div class="gashaCapsule h12"><i></i><b></b></div>
+                    <div class="gashaCapsule h13"><i></i><b></b></div>
+                    <div class="gashaCapsule h14"><i></i><b></b></div>
+                  </div>
+
+                  <div class="arcadeMachineBase127">
+                    <div class="arcadeGenPanel127">
+                      <span>◆ GEN III</span>
+                      <b>GEM LINK</b>
+                      <div><i></i></div>
+                    </div>
+
+                    <div class="arcadeTurn127">
+                      <div class="megaCrankWheel"><i></i><b></b></div>
+                      <div class="megaCrankArm"><i></i></div>
+                      <span>◀ TURN ▶</span>
+                    </div>
+
+                    <div class="arcadeChute127">
+                      <div class="arcadeChuteLabel127">SURVIVOR<br>CAPSULE</div>
+                      <div class="megaChuteDoor"><i></i><b></b><em></em></div>
+                      <span>CAPSULE OUT</span>
+                    </div>
+                  </div>
+
+                  <div class="arcadeMachineFooter127">
+                    <span>CORE LINK // ONLINE</span>
+                    <b>★ BS-99 ★</b>
+                    <span>DISPENSER // ARMED</span>
+                  </div>
+                </div>
+              </div>
+            </main>
+
+            <aside id="gachaStatusPanel" class="arcadeStatus127 gachaStatusPanel">
+              <div class="arcadePanel127 machinePanel127">
+                <span class="arcadePanelTitle127">MACHINE STATUS</span>
+                <b id="homeMachineStatus">CAPSULE READY</b>
+                <em id="homeMachineSub">SELECT A MODE TO SUMMON</em>
+                <div class="machineSegments127"><i></i><i></i><i></i><i></i></div>
+              </div>
+
+              <div class="arcadePanel127 pityBlock">
+                <div class="arcadePanelTop127">
+                  <span>LEGENDARY PITY</span>
+                  <b id="gachaPityCount">0 / 40</b>
+                </div>
+                <div class="gachaPityBar"><i id="gachaPityFill"></i></div>
+                <div class="gachaStatusFoot">
+                  <span id="gachaLegendChance">NEXT 7.0%</span>
+                  <span id="gachaPityText">SOFT PITY 25 // HARD PITY 40</span>
+                </div>
+              </div>
+
+              <div class="arcadePanel127 collectionBlock">
+                <div class="arcadePanelTop127">
+                  <span>POSSIBLE SURVIVORS</span>
+                  <b id="gachaCollectionCount">1 / 6</b>
+                </div>
+                <div id="gachaRoster" class="gachaRoster"></div>
+                <div class="gachaStatusFoot">
+                  <span id="gachaTotalPulls">TOTAL 0</span>
+                  <span id="gachaLegendTotal">LEGENDARY 0</span>
+                </div>
+              </div>
+
+              <div class="arcadeRarityStrip127">
+                <span class="common"><i></i>COMMON<br><b>45%</b></span>
+                <span class="rare"><i></i>RARE<br><b>30%</b></span>
+                <span class="epic"><i></i>EPIC<br><b>18%</b></span>
+                <span class="legendary"><i></i>LEGEND<br><b>7%</b></span>
+              </div>
+            </aside>
           </div>
-          <div class="gachaStatusBlock collectionBlock">
-            <div class="gachaStatusHead"><span>COLLECTION</span><b id="gachaCollectionCount">1 / 6</b></div>
-            <div id="gachaRoster" class="gachaRoster"></div>
-            <div class="gachaStatusFoot"><span id="gachaTotalPulls">TOTAL 0</span><span id="gachaLegendTotal">LEGENDARY 0</span></div>
-          </div>
-        </div>
 
-        <div class="gachaMeta">
-          <span>Base: Common 45% / Rare 30% / Epic 18% / Legendary 7%</span>
-          <span>10連は最低1体 Epic以上保証 / Legendary 40回天井</span>
+          <footer class="arcadeControlDeck127">
+            <div class="arcadeCreditPlate127">
+              <span>● 1 CREDIT</span>
+              <b>READY</b>
+            </div>
+
+            <div class="gachaControls arcadeSummonControls127">
+              <button id="pull1" class="summonBtn primary arcadeSummon127 single">
+                <i class="buttonCapsule127"></i>
+                <span><small>×1</small> SUMMON ×1</span>
+                <em>100 GEMS</em>
+              </button>
+
+              <button id="pull10" class="summonBtn gold arcadeSummon127 ten">
+                <i class="buttonCapsule127"></i>
+                <span><small>×10</small> SUMMON ×10</span>
+                <em class="tenGuarantee">900 GEMS // EPIC+ GUARANTEE</em>
+              </button>
+            </div>
+
+            <div class="arcadeLuck127">
+              <span>GOOD LUCK,</span>
+              <b>SURVIVOR!</b>
+              <i>⌁</i>
+            </div>
+          </footer>
+
+          <div class="gachaMeta arcadeMeta127">
+            <span>CAPSULE SYSTEM // Common 45% / Rare 30% / Epic 18% / Legendary 7%</span>
+            <span>10 SUMMON → EPIC+ GUARANTEE // LEGENDARY HARD PITY 40</span>
+          </div>
         </div>
 
         <div id="gachaSummaryBanner" class="gachaSummaryBanner"></div>
