@@ -5793,6 +5793,525 @@ body.summonActive130 #joystickZone{
   }
 }
 </style>
+<style id="stage140PremiumGachaRebuild">
+/* Stage 14.0 — PREMIUM GACHA REBUILD
+   A full structural rebuild: quiet luxury, orbital hardware, disciplined hierarchy. */
+
+#gameWrap #gacha{
+  background:
+    radial-gradient(circle at 50% 22%,#133041 0 9%,transparent 31%),
+    radial-gradient(circle at 50% 72%,#071c28 0 8%,transparent 28%),
+    linear-gradient(180deg,#03070b,#050a0e 55%,#020407)!important;
+  color:#effaff;
+  image-rendering:auto!important;
+}
+#gameWrap #gacha::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(90deg,#84ecff05 1px,transparent 1px),
+    linear-gradient(#84ecff04 1px,transparent 1px);
+  background-size:64px 64px!important;
+  opacity:.5!important;
+  mask-image:radial-gradient(circle at 50% 35%,#000,transparent 78%);
+}
+#gameWrap #gacha .gachaStars,
+#gameWrap #gacha .gachaScanlines{display:none!important}
+#gameWrap #gacha .pixelGacha{
+  min-height:100%;box-sizing:border-box;overflow:auto!important;
+  padding:clamp(14px,2.2vw,30px)!important;
+  font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+
+/* The experience is one floating object, not a dashboard. */
+#gameWrap #gacha .premiumGacha140{
+  position:relative;z-index:2;
+  width:min(1240px,100%);margin:0 auto;
+  border:1px solid #1f333e;border-radius:30px;overflow:hidden;
+  background:
+    linear-gradient(180deg,#0a1218f2,#050a0ef7);
+  box-shadow:
+    0 50px 130px #000d,
+    inset 0 0 0 1px #ffffff05;
+}
+#gameWrap #gacha .premiumGacha140::before{
+  content:"";position:absolute;left:8%;right:8%;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,#8eefff66,transparent);
+}
+
+/* Header */
+#gameWrap #gacha .premiumTop140{
+  min-height:130px;padding:28px 30px;
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:30px;align-items:center;
+  border-bottom:1px solid #182b35;
+  background:linear-gradient(180deg,#0d1820,#081117);
+}
+#gameWrap #gacha .premiumBrand140 span{
+  display:block;color:#69dff7;font-size:7px;font-weight:800;letter-spacing:.24em;
+}
+#gameWrap #gacha .premiumBrand140 h1{
+  margin:8px 0 0;
+  font-size:clamp(32px,5.4vw,66px);line-height:.9;letter-spacing:-.055em;font-weight:760;
+  color:#f1fbfd;
+}
+#gameWrap #gacha .premiumBrand140 p{
+  max-width:620px;margin:12px 0 0;color:#6f8792;font-size:10px;line-height:1.65;
+}
+#gameWrap #gacha .premiumBalance140{
+  min-width:220px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;
+}
+#gameWrap #gacha .premiumBalance140>div{
+  padding:12px 15px;border:1px solid #223945;border-radius:15px;
+  background:#071017;
+}
+#gameWrap #gacha .premiumBalance140 span{
+  display:block;color:#5f7b88;font-size:6px;font-weight:800;letter-spacing:.18em;
+}
+#gameWrap #gacha .premiumBalance140 b{
+  display:block;margin-top:4px;color:#f2fbfd;font-size:17px;font-variant-numeric:tabular-nums;
+}
+#gameWrap #gacha .premiumBalance140 b>span{display:inline;color:inherit;font-size:inherit;letter-spacing:0}
+#gameWrap #gacha .premiumClose140{
+  width:48px;height:48px;border-radius:50%;
+  border:1px solid #2c4653;background:#0b151b;color:#849ba6;font-size:23px;
+  transition:transform .18s ease,border-color .18s ease,color .18s ease,background .18s ease;
+}
+#gameWrap #gacha .premiumClose140:hover{
+  transform:rotate(7deg);border-color:#62dff6;color:#fff;background:#10232c;
+}
+
+/* Body */
+#gameWrap #gacha .premiumBody140{
+  display:grid;grid-template-columns:minmax(0,1fr) 300px;
+  min-height:610px;
+}
+#gameWrap #gacha .premiumMachine140{
+  min-width:0;padding:24px 28px 28px;
+  border-right:1px solid #172b34;
+  background:
+    radial-gradient(circle at 50% 39%,#10364a 0 9%,transparent 38%),
+    linear-gradient(180deg,#071219,#050b10);
+}
+#gameWrap #gacha .premiumMachineTop140{
+  height:36px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  color:#587580;font-size:6px;font-weight:850;letter-spacing:.18em;
+}
+#gameWrap #gacha .premiumLive140{
+  display:flex;align-items:center;gap:8px;color:#8ea4ad;letter-spacing:.08em;
+}
+#gameWrap #gacha .premiumLive140 i{
+  width:6px;height:6px;border-radius:50%;background:#63f2ae;box-shadow:0 0 12px #63f2ae88;
+}
+#gameWrap #gacha .premiumLive140 b{font-weight:850;color:#a8bbc3}
+
+/* Orbital machine */
+#gameWrap #gacha #gachaMachine{
+  position:relative;width:min(720px,96%);height:480px;margin:2px auto 0;
+  filter:none!important;
+}
+#gameWrap #gacha .vaultAura140{
+  position:absolute;left:50%;top:46%;width:520px;height:330px;transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,#53ddff16,transparent 65%);
+  filter:blur(8px);
+}
+#gameWrap #gacha .vaultHalo140{
+  position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);
+  border-radius:50%;pointer-events:none;
+}
+#gameWrap #gacha .haloOuter140{
+  width:530px;height:390px;border:1px solid #396173;
+  box-shadow:inset 0 0 35px #50ddff0a,0 0 22px #000;
+}
+#gameWrap #gacha .haloOuter140::before,
+#gameWrap #gacha .haloOuter140::after{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  border-radius:50%;
+}
+#gameWrap #gacha .haloOuter140::before{
+  width:546px;height:406px;border:7px solid transparent;
+  border-left-color:#1a303b;border-right-color:#1a303b;
+}
+#gameWrap #gacha .haloOuter140::after{
+  width:506px;height:370px;border:1px dashed #68e4ff22;
+}
+#gameWrap #gacha .haloMid140{
+  width:470px;height:348px;border:2px solid #254856;
+  animation:vaultRingFloat140 9s linear infinite;
+}
+#gameWrap #gacha .haloInner140{
+  width:430px;height:316px;border:1px solid #77e8ff25;
+  animation:vaultRingFloat140 13s linear infinite reverse;
+}
+@keyframes vaultRingFloat140{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+#gameWrap #gacha .vaultChamber140{
+  position:absolute;left:50%;top:43%;width:420px;height:310px;transform:translate(-50%,-50%);
+  overflow:hidden;border-radius:50%;
+  border:7px solid #324e5a;
+  background:
+    radial-gradient(circle at 50% 45%,#164b63 0 7%,#0c2a3a 29%,#06131b 70%);
+  box-shadow:
+    inset 0 0 0 4px #061017,
+    inset 0 0 0 9px #1e3946,
+    inset 0 0 65px #57e2ff18,
+    0 0 0 1px #60778255,
+    0 28px 50px #0009;
+}
+#gameWrap #gacha .vaultGlass140{
+  position:absolute;inset:0;z-index:12;pointer-events:none;
+  background:
+    linear-gradient(116deg,#ffffff16 0 7%,transparent 7% 68%,#ffffff08 68% 74%,transparent 74%),
+    radial-gradient(circle at 50% 50%,transparent 0 52%,#0007 92%);
+}
+#gameWrap #gacha .vaultGlass140::after{
+  content:"";position:absolute;left:17%;top:10%;width:17%;height:56%;border-radius:50%;
+  transform:rotate(17deg);background:linear-gradient(90deg,#ffffff13,transparent);
+}
+
+#gameWrap #gacha .vaultCore140{
+  position:absolute;left:50%;top:50%;z-index:2;width:100px;height:100px;transform:translate(-50%,-50%);
+  border:1px solid #29546a;border-radius:50%;
+  background:radial-gradient(circle,#dbfbff 0 3%,#6ee8ff 4% 10%,#17485c 11% 30%,#07161f 31% 100%);
+  box-shadow:0 0 35px #5bdfff22,inset 0 0 22px #55e0ff18;
+  animation:vaultCoreBreath140 3s ease-in-out infinite;
+}
+#gameWrap #gacha .vaultCore140::before,
+#gameWrap #gacha .vaultCore140::after{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;
+}
+#gameWrap #gacha .vaultCore140::before{width:130px;height:58px;border:1px solid #59dfff3d}
+#gameWrap #gacha .vaultCore140::after{width:58px;height:130px;border:1px solid #59dfff25}
+#gameWrap #gacha .vaultCore140 span{
+  position:absolute;inset:0;display:grid;place-items:center;color:#eaffff;font-size:20px;text-shadow:0 0 12px #67e5ff;
+}
+#gameWrap #gacha .vaultCore140 i,
+#gameWrap #gacha .vaultCore140 b,
+#gameWrap #gacha .vaultCore140 em{display:none}
+@keyframes vaultCoreBreath140{50%{filter:brightness(1.35);transform:translate(-50%,-50%) scale(1.035)}}
+
+/* Capsules: translucent physical objects in a gravity field */
+#gameWrap #gacha .vaultChamber140 .gashaCapsule{
+  position:absolute;width:54px;height:50px;z-index:5;
+  filter:drop-shadow(0 7px 7px #0008) drop-shadow(0 0 4px #4edfff33);
+  animation:vaultCapsuleDrift140 var(--drift,5.8s) ease-in-out infinite alternate;
+}
+#gameWrap #gacha .vaultChamber140 .gashaCapsule>i,
+#gameWrap #gacha .vaultChamber140 .gashaCapsule>b{
+  position:absolute;left:2px;width:50px;height:25px;box-sizing:border-box;border:2px solid #b9efff;
+}
+#gameWrap #gacha .vaultChamber140 .gashaCapsule>i{
+  top:0;border-radius:28px 28px 5px 5px;background:linear-gradient(145deg,#e8fbff,#59cde7 60%,#27708d);
+}
+#gameWrap #gacha .vaultChamber140 .gashaCapsule>b{
+  bottom:0;border-radius:5px 5px 28px 28px;background:linear-gradient(145deg,#9e7dff,#5d43bd 66%,#2e1c69);border-color:#dfd2ff;
+}
+#gameWrap #gacha .vaultChamber140 .capBelt128{
+  position:absolute;left:0;right:0;top:50%;height:8px;transform:translateY(-50%);z-index:4;
+  background:#1d3d4c;border-top:1px solid #9af1ff;border-bottom:1px solid #071319;
+}
+#gameWrap #gacha .vaultChamber140 .capSigil128{
+  position:absolute;left:50%;top:50%;z-index:7;width:18px;height:18px;transform:translate(-50%,-50%);
+  display:grid;place-items:center;border-radius:50%;border:1px solid #d5f8ff;background:#07151d;color:#dffbff;font-size:8px;
+}
+#gameWrap #gacha .vaultChamber140 .capShine128{
+  position:absolute;left:10px;top:7px;z-index:8;width:15px;height:5px;border-radius:99px;background:#ffffff88;transform:rotate(-15deg);
+}
+#gameWrap #gacha .vaultChamber140 .h1{left:12%;top:18%;--drift:5.1s}
+#gameWrap #gacha .vaultChamber140 .h2{left:35%;top:10%;--drift:6.2s}
+#gameWrap #gacha .vaultChamber140 .h3{right:18%;top:19%;--drift:5.7s}
+#gameWrap #gacha .vaultChamber140 .h4{left:18%;top:47%;--drift:6.7s}
+#gameWrap #gacha .vaultChamber140 .h5{right:19%;top:47%;--drift:5.4s}
+#gameWrap #gacha .vaultChamber140 .h6{left:34%;bottom:9%;--drift:6.1s}
+#gameWrap #gacha .vaultChamber140 .h7{right:34%;bottom:10%;--drift:5.8s}
+#gameWrap #gacha .vaultChamber140 .h8{left:7%;bottom:18%;--drift:6.5s}
+#gameWrap #gacha .vaultChamber140 .h9{right:7%;bottom:18%;--drift:5.3s}
+#gameWrap #gacha .vaultChamber140 .h2>i,
+#gameWrap #gacha .vaultChamber140 .h5>i{background:linear-gradient(145deg,#ffd8eb,#ff7db7 62%,#b24372);border-color:#ffe9f3}
+#gameWrap #gacha .vaultChamber140 .h3>i,
+#gameWrap #gacha .vaultChamber140 .h8>i{background:linear-gradient(145deg,#f2dcff,#b36aff 62%,#642d9d);border-color:#f5eaff}
+#gameWrap #gacha .vaultChamber140 .h7>i{background:linear-gradient(145deg,#fffbd5,#ffe06c 62%,#b66e18);border-color:#fff5ad}
+#gameWrap #gacha .vaultChamber140 .h7>b{background:linear-gradient(145deg,#ffd561,#d57b1d 66%,#6d3407);border-color:#ffe8a1}
+@keyframes vaultCapsuleDrift140{
+  0%{translate:-2px 5px;rotate:-2deg}
+  50%{translate:4px -3px;rotate:2deg}
+  100%{translate:-1px -8px;rotate:-1deg}
+}
+
+/* Machine base: one line, no boxy console */
+#gameWrap #gacha .vaultBase140{
+  position:absolute;left:50%;bottom:18px;width:min(620px,94%);height:82px;transform:translateX(-50%);
+  display:grid;grid-template-columns:120px 1fr 120px;gap:12px;align-items:center;
+}
+#gameWrap #gacha .vaultBaseNode140{
+  height:70px;border:1px solid #213b47;border-radius:18px;
+  background:linear-gradient(180deg,#0d1d25,#071117);
+  display:grid;place-items:center;align-content:center;gap:5px;
+  box-shadow:inset 0 0 0 1px #ffffff04;
+}
+#gameWrap #gacha .vaultBaseNode140>span{
+  color:#607f8b;font-size:5px;font-weight:850;letter-spacing:.16em;
+}
+#gameWrap #gacha .ignition140>div{
+  position:relative;width:34px;height:34px;border:4px solid #4b6774;border-radius:50%;background:#09151c;
+  box-shadow:inset 0 0 0 4px #071017;
+}
+#gameWrap #gacha .ignition140>div::before{
+  content:"";position:absolute;left:50%;top:50%;width:17px;height:17px;transform:translate(-50%,-50%);
+  border-radius:50%;background:#48dff9;box-shadow:0 0 12px #48dff966;
+}
+#gameWrap #gacha .ignition140 i,
+#gameWrap #gacha .ignition140 b,
+#gameWrap #gacha .ignition140 em{display:none}
+#gameWrap #gacha .output140>div{
+  position:relative;width:50px;height:31px;border:4px solid #4a626d;border-radius:20px;background:#020405;
+  box-shadow:inset 0 0 0 3px #0b171d;
+}
+#gameWrap #gacha .output140>div::after{
+  content:"";position:absolute;left:9px;right:9px;top:50%;height:2px;transform:translateY(-50%);background:#41545c;
+}
+#gameWrap #gacha .output140 i,#gameWrap #gacha .output140 b{display:none}
+#gameWrap #gacha .vaultSpine140{
+  position:relative;height:48px;border-top:1px solid #1d3946;border-bottom:1px solid #1d3946;
+}
+#gameWrap #gacha .vaultSpine140::before{
+  content:"";position:absolute;left:16px;right:16px;top:17px;height:7px;border:1px solid #214957;
+  background:repeating-linear-gradient(90deg,#52dff5 0 13px,#0b2630 13px 24px);
+  animation:vaultSpine140 2s linear infinite;
+}
+#gameWrap #gacha .vaultSpine140 span{
+  position:absolute;left:0;right:0;bottom:3px;text-align:center;color:#456672;font-size:4.5px;font-weight:800;letter-spacing:.16em;
+}
+#gameWrap #gacha .vaultSpine140 i,
+#gameWrap #gacha .vaultSpine140 b,
+#gameWrap #gacha .vaultSpine140 em,
+#gameWrap #gacha .vaultSpine140 u{display:none}
+@keyframes vaultSpine140{to{background-position:24px 0}}
+
+/* active states */
+#gameWrap #gacha #gachaMachine.arming .vaultCore140{box-shadow:0 0 48px #5be5ff44,inset 0 0 24px #62e8ff2b}
+#gameWrap #gacha #gachaMachine.cranking .haloMid140{animation-duration:1.2s!important}
+#gameWrap #gacha #gachaMachine.cranking .haloInner140{animation-duration:.9s!important}
+#gameWrap #gacha #gachaMachine.cranking .vaultChamber140 .gashaCapsule{animation-duration:.55s!important}
+#gameWrap #gacha #gachaMachine.cranking .ignition140>div{animation:ignitionSpin140 .7s linear infinite}
+#gameWrap #gacha #gachaMachine.dropping .output140>div{border-color:#79dff2;box-shadow:0 0 16px #4adfff33,inset 0 0 0 3px #0b171d}
+#gameWrap #gacha #gachaMachine.legendary .vaultAura140{background:radial-gradient(circle,#ffc83b1f,transparent 65%)}
+#gameWrap #gacha #gachaMachine.legendary .vaultCore140{border-color:#94742c;box-shadow:0 0 42px #ffc83b33}
+#gameWrap #gacha #gachaMachine.legendary .haloOuter140{border-color:#755f2a}
+@keyframes ignitionSpin140{to{transform:rotate(360deg)}}
+
+/* status foot */
+#gameWrap #gacha .premiumMachineFoot140{
+  height:44px;display:flex;align-items:center;justify-content:center;gap:12px;
+  margin-top:-8px;color:#607985;text-align:center;
+}
+#gameWrap #gacha .premiumMachineFoot140>span{font-size:5px;font-weight:850;letter-spacing:.16em;color:#466774}
+#gameWrap #gacha .premiumMachineFoot140>b{font-size:7px;font-weight:700;color:#829ba5}
+
+/* Intel panel */
+#gameWrap #gacha .premiumIntel140{
+  padding:24px 20px;display:flex;flex-direction:column;gap:18px;
+  background:linear-gradient(180deg,#081219,#050a0e);
+}
+#gameWrap #gacha .premiumIntelHead140{
+  display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #1d313b;
+}
+#gameWrap #gacha .premiumIntelHead140 span{
+  color:#668591;font-size:6px;font-weight:850;letter-spacing:.16em;
+}
+#gameWrap #gacha .premiumIntelHead140 b{
+  padding:4px 7px;border:1px solid #214456;border-radius:99px;color:#68dff7;font-size:5px;letter-spacing:.1em;
+}
+#gameWrap #gacha .premiumPity140,
+#gameWrap #gacha .premiumCollection140{
+  padding-bottom:16px;border-bottom:1px solid #172b34;
+}
+#gameWrap #gacha .premiumSectionTop140{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+#gameWrap #gacha .premiumSectionTop140 span{
+  color:#698692;font-size:6px;font-weight:850;letter-spacing:.12em;
+}
+#gameWrap #gacha .premiumSectionTop140 b{
+  color:#edf9fb;font-size:13px;font-variant-numeric:tabular-nums;
+}
+#gameWrap #gacha .premiumPity140 .gachaPityBar{
+  height:4px;margin-top:13px;border:0!important;border-radius:99px;background:#272009!important;overflow:hidden;
+}
+#gameWrap #gacha .premiumPity140 .gachaPityBar i{
+  display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#936b1c,#ffd466,#fff0b0)!important;
+  box-shadow:0 0 12px #ffd25d55;
+}
+#gameWrap #gacha .premiumMeta140{
+  margin-top:8px;display:flex;justify-content:space-between;gap:6px;color:#526e7a;font-size:5px;font-weight:750;
+}
+#gameWrap #gacha .gachaRoster{
+  display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:5px!important;margin-top:10px!important;
+}
+#gameWrap #gacha .gachaRosterUnit{
+  min-width:0;height:42px!important;padding:3px!important;
+  border:1px solid #1f3742!important;border-radius:8px!important;background:#071017!important;
+}
+#gameWrap #gacha .gachaRosterUnit i{font-size:14px!important}
+#gameWrap #gacha .gachaRosterUnit b{font-size:5px!important;color:#8ea3ac!important}
+#gameWrap #gacha .gachaRosterUnit.locked{opacity:.22!important;filter:grayscale(1)}
+#gameWrap #gacha .gachaRosterUnit.owned{border-color:#365a68!important;background:#0a1820!important}
+
+#gameWrap #gacha .premiumRates140{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+}
+#gameWrap #gacha .premiumRates140>span{
+  min-height:48px;padding:8px;border:1px solid #1c323c;border-radius:10px;background:#071017;
+  display:grid;grid-template-columns:8px 1fr auto;grid-template-areas:"dot name rate";gap:6px;align-items:center;
+}
+#gameWrap #gacha .premiumRates140 i{
+  grid-area:dot;width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;
+}
+#gameWrap #gacha .premiumRates140 b{grid-area:name;font-size:5px;letter-spacing:.08em}
+#gameWrap #gacha .premiumRates140 em{grid-area:rate;font-size:10px;font-style:normal;font-weight:800}
+#gameWrap #gacha .premiumRates140 .common{color:#9ca9af}
+#gameWrap #gacha .premiumRates140 .rare{color:#65cfff}
+#gameWrap #gacha .premiumRates140 .epic{color:#c77cff}
+#gameWrap #gacha .premiumRates140 .legendary{color:#ffd96c}
+
+#gameWrap #gacha .premiumIntelNote140{
+  margin-top:auto;padding:12px;border:1px solid #4a421f;border-radius:12px;background:#121109;
+  display:grid;grid-template-columns:46px 1fr;gap:10px;align-items:center;
+}
+#gameWrap #gacha .premiumIntelNote140>i{
+  display:grid;place-items:center;width:46px;height:46px;border-radius:50%;
+  border:1px solid #816e29;background:#201b0a;color:#ffdd75;font-style:normal;font-size:13px;font-weight:850;
+}
+#gameWrap #gacha .premiumIntelNote140 span b{display:block;color:#e9d58e;font-size:6px;letter-spacing:.08em}
+#gameWrap #gacha .premiumIntelNote140 span small{display:block;margin-top:4px;color:#706949;font-size:5.5px;line-height:1.45}
+
+/* Actions */
+#gameWrap #gacha .premiumActions140{
+  min-height:118px;padding:18px 28px;
+  display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;align-items:center;
+  border-top:1px solid #192e38;background:#060c11;
+}
+#gameWrap #gacha .premiumActionIntro140 span{
+  display:block;color:#55cce4;font-size:5.5px;font-weight:850;letter-spacing:.17em;
+}
+#gameWrap #gacha .premiumActionIntro140 b{
+  display:block;margin-top:5px;color:#d9e8ed;font-size:12px;font-weight:650;
+}
+#gameWrap #gacha .premiumActionButtons140{
+  display:grid!important;grid-template-columns:1fr 1.08fr!important;gap:10px!important;
+  width:100%!important;margin:0!important;
+}
+#gameWrap #gacha .premiumSummon140{
+  min-height:74px;padding:12px 16px!important;text-align:left!important;
+  border:1px solid #2c5667!important;border-radius:15px!important;
+  background:linear-gradient(180deg,#102b37,#0a1921)!important;
+  box-shadow:inset 0 1px #ffffff0a,0 10px 25px #0005!important;
+  transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s ease,filter .18s ease!important;
+}
+#gameWrap #gacha .premiumSummon140.ten{
+  border-color:#776326!important;background:linear-gradient(180deg,#27220f,#131108)!important;
+}
+#gameWrap #gacha .premiumSummon140:hover{transform:translateY(-2px);border-color:#66def4!important;filter:brightness(1.07)}
+#gameWrap #gacha .premiumSummon140.ten:hover{border-color:#ffd76a!important}
+#gameWrap #gacha .premiumSummon140:active{transform:translateY(1px) scale(.994)}
+#gameWrap #gacha .premiumSummon140 span{
+  display:block;color:#eff9fb;font-size:15px;font-weight:760;letter-spacing:-.01em;
+}
+#gameWrap #gacha .premiumSummon140 span small{
+  display:inline-flex;align-items:center;justify-content:center;width:26px;height:20px;margin-right:7px;
+  border:1px solid #3f7488;border-radius:99px;color:#6fdef4;font-size:7px;
+}
+#gameWrap #gacha .premiumSummon140.ten span small{border-color:#8c762b;color:#ffdd77}
+#gameWrap #gacha .premiumSummon140 em{
+  display:block;margin-top:6px;color:#6e8994;font-size:6px;font-style:normal;font-weight:750;letter-spacing:.08em;
+}
+#gameWrap #gacha .premiumSummon140.ten em{color:#a89459}
+#gameWrap #gacha .premiumSummon140:disabled{opacity:.36;filter:saturate(.4);transform:none}
+
+/* accessibility */
+#gameWrap #gacha button:focus-visible{outline:2px solid #74e5ff!important;outline-offset:3px}
+
+/* entrance */
+#gameWrap #gacha .premiumGacha140{animation:premiumEnter140 .58s cubic-bezier(.16,.82,.22,1) both}
+#gameWrap #gacha .premiumMachine140{animation:premiumMachineEnter140 .62s cubic-bezier(.16,.82,.22,1) .04s both}
+#gameWrap #gacha .premiumIntel140{animation:premiumIntelEnter140 .62s cubic-bezier(.16,.82,.22,1) .08s both}
+@keyframes premiumEnter140{0%{opacity:0;transform:translateY(16px) scale(.99)}100%{opacity:1;transform:none}}
+@keyframes premiumMachineEnter140{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:none}}
+@keyframes premiumIntelEnter140{0%{opacity:0;transform:translateX(14px)}100%{opacity:1;transform:none}}
+
+/* responsive */
+@media(max-width:940px){
+  #gameWrap #gacha .premiumBody140{grid-template-columns:1fr}
+  #gameWrap #gacha .premiumMachine140{border-right:0;border-bottom:1px solid #172b34}
+  #gameWrap #gacha .premiumIntel140{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  #gameWrap #gacha .premiumIntelHead140{grid-column:1/-1}
+  #gameWrap #gacha .premiumIntelNote140{margin-top:0}
+  #gameWrap #gacha .premiumRates140{align-content:start}
+}
+@media(max-width:620px){
+  #gameWrap #gacha .pixelGacha{
+    padding:max(6px,env(safe-area-inset-top)) max(6px,env(safe-area-inset-right))
+      max(14px,env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))!important;
+  }
+  #gameWrap #gacha .premiumGacha140{border-radius:16px}
+  #gameWrap #gacha .premiumTop140{
+    min-height:100px;padding:16px 14px;grid-template-columns:1fr auto;gap:8px;
+  }
+  #gameWrap #gacha .premiumBrand140 h1{font-size:27px}
+  #gameWrap #gacha .premiumBrand140 p{display:none}
+  #gameWrap #gacha .premiumBrand140 span{font-size:5px}
+  #gameWrap #gacha .premiumBalance140{min-width:118px;grid-template-columns:1fr auto;gap:6px}
+  #gameWrap #gacha .premiumBalance140>div{padding:8px}
+  #gameWrap #gacha .premiumBalance140>div>span{display:none}
+  #gameWrap #gacha .premiumBalance140 b{font-size:10px}
+  #gameWrap #gacha .premiumClose140{width:44px;height:44px}
+
+  #gameWrap #gacha .premiumMachine140{padding:12px 5px 15px}
+  #gameWrap #gacha .premiumMachineTop140{padding:0 7px}
+  #gameWrap #gacha #gachaMachine{width:100%;height:380px}
+  #gameWrap #gacha .vaultHalo140{top:42%}
+  #gameWrap #gacha .haloOuter140{width:360px;height:276px}
+  #gameWrap #gacha .haloOuter140::before{width:372px;height:288px}
+  #gameWrap #gacha .haloOuter140::after{width:345px;height:262px}
+  #gameWrap #gacha .haloMid140{width:330px;height:250px}
+  #gameWrap #gacha .haloInner140{width:305px;height:226px}
+  #gameWrap #gacha .vaultChamber140{top:42%;width:300px;height:220px;border-width:5px}
+  #gameWrap #gacha .vaultChamber140 .gashaCapsule{transform:scale(.72)}
+  #gameWrap #gacha .vaultCore140{width:70px;height:70px}
+  #gameWrap #gacha .vaultBase140{bottom:5px;grid-template-columns:82px 1fr 82px;gap:5px}
+  #gameWrap #gacha .vaultBaseNode140{height:58px;border-radius:13px}
+  #gameWrap #gacha .vaultSpine140{height:42px}
+
+  #gameWrap #gacha .premiumIntel140{padding:14px 12px;grid-template-columns:1fr;gap:12px}
+  #gameWrap #gacha .premiumIntelHead140{grid-column:auto}
+  #gameWrap #gacha .premiumRates140{grid-template-columns:1fr 1fr}
+  #gameWrap #gacha .premiumIntelNote140{grid-template-columns:40px 1fr}
+  #gameWrap #gacha .premiumIntelNote140>i{width:40px;height:40px}
+
+  #gameWrap #gacha .premiumActions140{
+    padding:14px 12px;grid-template-columns:1fr;gap:10px;
+  }
+  #gameWrap #gacha .premiumActionIntro140{display:none}
+  #gameWrap #gacha .premiumActionButtons140{grid-template-columns:1fr!important}
+  #gameWrap #gacha .premiumSummon140{min-height:64px}
+}
+@media(max-height:760px) and (min-width:621px){
+  #gameWrap #gacha .premiumTop140{min-height:96px;padding-top:18px;padding-bottom:18px}
+  #gameWrap #gacha .premiumBrand140 h1{font-size:42px}
+  #gameWrap #gacha .premiumBody140{min-height:510px}
+  #gameWrap #gacha #gachaMachine{height:400px}
+  #gameWrap #gacha .vaultChamber140{width:360px;height:266px}
+  #gameWrap #gacha .haloOuter140{width:455px;height:338px}
+  #gameWrap #gacha .haloMid140{width:410px;height:305px}
+  #gameWrap #gacha .haloInner140{width:380px;height:282px}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #gacha .premiumGacha140,#gameWrap #gacha .premiumMachine140,#gameWrap #gacha .premiumIntel140,
+  #gameWrap #gacha .haloMid140,#gameWrap #gacha .haloInner140,#gameWrap #gacha .vaultCore140,
+  #gameWrap #gacha .vaultChamber140 .gashaCapsule,#gameWrap #gacha .vaultSpine140::before{
+    animation:none!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -5978,170 +6497,123 @@ body.summonActive130 #joystickZone{
     <div id="gacha">
       <div class="gachaScreen pixelGacha">
         <div class="gachaStars"></div><div class="gachaScanlines"></div>
-        <div class="arcade127">
-          <header class="arcadeMarquee127">
-            <div class="arcadeMascot127">
-              <span class="mascotFace127">⌁</span>
-              <b>GOOD LUCK,<br>SURVIVOR!</b>
+        <div class="premiumGacha140">
+          <header class="premiumTop140">
+            <div class="premiumBrand140">
+              <span>BREAK SURVIVORS // SUMMON SYSTEM</span>
+              <h1>SURVIVOR CORE FORGE</h1>
+              <p>Encrypted survivor cores are stabilized, selected and released from the orbital chamber.</p>
             </div>
-            <div class="arcadeBrand127">
-              <span>★ BREAK SURVIVORS</span>
-              <strong>SURVIVOR CORE FORGE</strong>
-              <em>IGNITE • SELECT • FORGE</em>
-            </div>
-            <div class="arcadeCredit127">
-              <span>INSERT GEM</span>
-              <b>💎 <span id="gachaGemText">0</span></b>
-              <button id="closeGacha" class="gachaClose arcadeClose127">×</button>
+            <div class="premiumBalance140">
+              <div><span>GEM BALANCE</span><b>◆ <span id="gachaGemText">0</span></b></div>
+              <button id="closeGacha" class="premiumClose140" aria-label="Close gacha">×</button>
             </div>
           </header>
 
-          <div class="arcadeCabinet127">
-            <aside class="arcadeMenu127">
-              <div class="arcadeMenuHead127">BREAK<br><b>SURVIVORS</b></div>
-              <button class="arcadeMenuItem127 active"><i>♟</i><span>SURVIVORS</span><b>›</b></button>
-              <button class="arcadeMenuItem127"><i>⌁</i><span>WEAPONS</span><b>›</b></button>
-              <button class="arcadeMenuItem127"><i>◇</i><span>MODULES</span><b>›</b></button>
-              <button class="arcadeMenuItem127"><i>▣</i><span>RESOURCES</span><b>›</b></button>
-              <div class="arcadeSideDeco127">
-                <span>CORE LINK</span><b>ONLINE</b>
-                <span>DISPENSER</span><b>ARMED</b>
-              </div>
-            </aside>
-
-            <main class="arcadeCenter127">
-              <div class="capsuleHeader127">
-                <span>CORE SYSTEM</span><b>SURVIVOR CHAMBER</b><span>ONLINE</span>
+          <section class="premiumBody140">
+            <main class="premiumMachine140">
+              <div class="premiumMachineTop140">
+                <span>01 // ORBITAL CORE CHAMBER</span>
+                <div class="premiumLive140"><i></i><b id="homeMachineStatus">CORE FORGE READY</b></div>
               </div>
 
-              <div id="gachaMachine" class="gashaponMachine megaCapsuleMachine">
-                <div class="arcadeMachineShell127">
-                  <div class="arcadeDomeTop127">
-                    <i></i><i></i><b>CORE CHAMBER</b><i></i><i></i>
+              <div id="gachaMachine" class="gashaponMachine megaCapsuleMachine premiumVault140">
+                <div class="vaultAura140"></div>
+                <div class="vaultHalo140 haloOuter140"></div>
+                <div class="vaultHalo140 haloMid140"></div>
+                <div class="vaultHalo140 haloInner140"></div>
+
+                <div class="vaultChamber140">
+                  <div class="vaultGlass140"></div>
+                  <div class="vaultCore140">
+                    <i></i><b></b><em></em>
+                    <span>◆</span>
                   </div>
 
-                  <div class="arcadeDome127">
-                    <div class="arcadeGlass127"></div>
-                    <div class="arcadeDomeLogo127">✦</div>
-                    <div class="megaSpinner"><i></i><i></i><i></i></div>
-
-                    <div class="gashaCapsule h1"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">◆</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h2"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">★</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h3"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">✦</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h4"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">☾</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h5"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">◇</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h6"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">✚</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h7"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">♛</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h8"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">◆</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h9"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">★</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h10"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">✦</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h11"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">☾</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h12"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">◇</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h13"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">✚</span><u class="capShine128"></u></div>
-                    <div class="gashaCapsule h14"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">♛</span><u class="capShine128"></u></div>
-                  </div>
-
-                  <div class="arcadeMachineBase127">
-                    <div class="arcadeGenPanel127">
-                      <span>◆ FORGE HEART</span>
-                      <b>CORE ONLINE</b>
-                      <div><i></i></div>
-                    </div>
-
-                    <div class="arcadeTurn127">
-                      <div class="megaCrankWheel"><i></i><b></b></div>
-                      <div class="megaCrankArm"><i></i></div>
-                      <span>CORE IGNITION</span>
-                    </div>
-
-                    <div class="arcadeChute127">
-                      <div class="arcadeChuteLabel127">OUTPUT<br>CHAMBER</div>
-                      <div class="megaChuteDoor"><i></i><b></b><em></em></div>
-                      <span>OUTPUT READY</span>
-                    </div>
-                  </div>
-
-                  <div class="arcadeMachineFooter127">
-                    <span>CORE LINK // ONLINE</span>
-                    <b>★ BS-99 ★</b>
-                    <span>DISPENSER // ARMED</span>
-                  </div>
+                  <div class="gashaCapsule h1"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">◆</span><u class="capShine128"></u></div>
+                  <div class="gashaCapsule h2"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">★</span><u class="capShine128"></u></div>
+                  <div class="gashaCapsule h3"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">✦</span><u class="capShine128"></u></div>
+                  <div class="gashaCapsule h4"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">☾</span><u class="capShine128"></u></div>
+                  <div class="gashaCapsule h5"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">◇</span><u class="capShine128"></u></div>
+                  <div class="gashaCapsule h6"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">✚</span><u class="capShine128"></u></div>
+                  <div class="gashaCapsule h7"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">♛</span><u class="capShine128"></u></div>
+                  <div class="gashaCapsule h8"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">◆</span><u class="capShine128"></u></div>
+                  <div class="gashaCapsule h9"><i></i><b></b><em class="capBelt128"></em><span class="capSigil128">★</span><u class="capShine128"></u></div>
                 </div>
+
+                <div class="vaultBase140">
+                  <div class="vaultBaseNode140 ignition140"><span>IGNITION</span><div><i></i><b></b><em></em></div></div>
+                  <div class="vaultSpine140"><i></i><b></b><em></em><u></u><span>CORE TRANSFER</span></div>
+                  <div class="vaultBaseNode140 output140"><span>OUTPUT</span><div><i></i><b></b></div></div>
+                </div>
+              </div>
+
+              <div class="premiumMachineFoot140">
+                <span>FORGE STATUS</span>
+                <b id="homeMachineSub">Select a summon mode to initialize the chamber.</b>
               </div>
             </main>
 
-            <aside id="gachaStatusPanel" class="arcadeStatus127 gachaStatusPanel">
-              <div class="arcadePanel127 machinePanel127">
-                <span class="arcadePanelTitle127">MACHINE STATUS</span>
-                <b id="homeMachineStatus">CAPSULE READY</b>
-                <em id="homeMachineSub">SELECT A MODE TO SUMMON</em>
-                <div class="machineSegments127"><i></i><i></i><i></i><i></i></div>
+            <aside id="gachaStatusPanel" class="premiumIntel140">
+              <div class="premiumIntelHead140">
+                <span>SUMMON INTELLIGENCE</span>
+                <b>LIVE DATA</b>
               </div>
 
-              <div class="arcadePanel127 pityBlock">
-                <div class="arcadePanelTop127">
+              <section class="premiumPity140 pityBlock">
+                <div class="premiumSectionTop140">
                   <span>LEGENDARY PITY</span>
                   <b id="gachaPityCount">0 / 40</b>
                 </div>
                 <div class="gachaPityBar"><i id="gachaPityFill"></i></div>
-                <div class="gachaStatusFoot">
+                <div class="premiumMeta140">
                   <span id="gachaLegendChance">NEXT 7.0%</span>
-                  <span id="gachaPityText">SOFT PITY 25 // HARD PITY 40</span>
+                  <span id="gachaPityText">SOFT 25 // HARD 40</span>
                 </div>
-              </div>
+              </section>
 
-              <div class="arcadePanel127 collectionBlock">
-                <div class="arcadePanelTop127">
-                  <span>POSSIBLE SURVIVORS</span>
+              <section class="premiumCollection140 collectionBlock">
+                <div class="premiumSectionTop140">
+                  <span>COLLECTION</span>
                   <b id="gachaCollectionCount">1 / 6</b>
                 </div>
                 <div id="gachaRoster" class="gachaRoster"></div>
-                <div class="gachaStatusFoot">
+                <div class="premiumMeta140">
                   <span id="gachaTotalPulls">TOTAL 0</span>
                   <span id="gachaLegendTotal">LEGENDARY 0</span>
                 </div>
-              </div>
+              </section>
 
-              <div class="arcadeRarityStrip127">
-                <span class="common"><i></i>COMMON<br><b>45%</b></span>
-                <span class="rare"><i></i>RARE<br><b>30%</b></span>
-                <span class="epic"><i></i>EPIC<br><b>18%</b></span>
-                <span class="legendary"><i></i>LEGEND<br><b>7%</b></span>
+              <section class="premiumRates140">
+                <span class="common"><i></i><b>COMMON</b><em>45%</em></span>
+                <span class="rare"><i></i><b>RARE</b><em>30%</em></span>
+                <span class="epic"><i></i><b>EPIC</b><em>18%</em></span>
+                <span class="legendary"><i></i><b>LEGEND</b><em>7%</em></span>
+              </section>
+
+              <div class="premiumIntelNote140">
+                <i>10×</i>
+                <span><b>EPIC+ GUARANTEED</b><small>Every ten-core release includes at least one Epic-class signal.</small></span>
               </div>
             </aside>
-          </div>
+          </section>
 
-          <footer class="arcadeControlDeck127">
-            <div class="arcadeCreditPlate127">
-              <span>● 1 CREDIT</span>
-              <b>READY</b>
+          <footer class="premiumActions140">
+            <div class="premiumActionIntro140">
+              <span>INITIALIZE FORGE</span>
+              <b>Choose your release protocol.</b>
             </div>
-
-            <div class="gachaControls arcadeSummonControls127">
-              <button id="pull1" class="summonBtn primary arcadeSummon127 single">
-                <i class="buttonCapsule127"></i>
-                <span><small>×1</small> SUMMON ×1</span>
+            <div class="gachaControls premiumActionButtons140">
+              <button id="pull1" class="summonBtn premiumSummon140 single">
+                <span><small>01</small> SINGLE RELEASE</span>
                 <em>100 GEMS</em>
               </button>
-
-              <button id="pull10" class="summonBtn gold arcadeSummon127 ten">
-                <i class="buttonCapsule127"></i>
-                <span><small>×10</small> SUMMON ×10</span>
-                <em class="tenGuarantee">900 GEMS // EPIC+ GUARANTEE</em>
+              <button id="pull10" class="summonBtn premiumSummon140 ten">
+                <span><small>10</small> TEN-CORE RELEASE</span>
+                <em>900 GEMS // EPIC+ GUARANTEE</em>
               </button>
             </div>
-
-            <div class="arcadeLuck127">
-              <span>GOOD LUCK,</span>
-              <b>SURVIVOR!</b>
-              <i>⌁</i>
-            </div>
           </footer>
-
-          <div class="gachaMeta arcadeMeta127">
-            <span>CAPSULE SYSTEM // Common 45% / Rare 30% / Epic 18% / Legendary 7%</span>
-            <span>10 SUMMON → EPIC+ GUARANTEE // LEGENDARY HARD PITY 40</span>
-          </div>
         </div>
 
         <div id="gachaSummaryBanner" class="gachaSummaryBanner"></div>
@@ -12129,7 +12601,7 @@ function doGacha(count){
 }
 function setHomeGachaMachineState(state='',rarity=''){
   const m=document.getElementById('gachaMachine');if(!m)return;
-  m.className='gashaponMachine megaCapsuleMachine'+(state?' '+state:'')+(rarity?' '+rarity.toLowerCase():'');
+  m.className='gashaponMachine megaCapsuleMachine premiumVault140'+(state?' '+state:'')+(rarity?' '+rarity.toLowerCase():'');
   const a=document.getElementById('homeMachineStatus'),b=document.getElementById('homeMachineSub');
   const map={
     arming:['GEMS ACCEPTED','POWERING DISPENSER...'],
