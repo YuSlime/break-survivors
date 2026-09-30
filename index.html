@@ -8103,6 +8103,137 @@ body.summonActive130 #joystickZone{
   #gameWrap #gacha .orbitalCrystal150{translate:0 0!important}
 }
 </style>
+<style id="stage158OrbitalHierarchyQA">
+/* Stage 15.8 — hierarchy / readability / luxury restraint */
+#gameWrap #gacha .orbitalGacha150{
+  --micro:7px;--small:9px;--body:11px;
+}
+#gameWrap #gacha .orbitalStageHead150,
+#gameWrap #gacha .orbitalNavTitle150 span,
+#gameWrap #gacha .orbitalNavGhost150,
+#gameWrap #gacha .storyKicker150,
+#gameWrap #gacha .orbitalIntel150 summary,
+#gameWrap #gacha .transferTop150,
+#gameWrap #gacha .consoleMeta150,
+#gameWrap #gacha .orbitalMachineState150{
+  font-size:var(--micro)!important;
+}
+#gameWrap #gacha .orbitalNavTitle150 b{
+  font-size:12px!important;line-height:1.45!important;
+}
+#gameWrap #gacha .orbitalStory150>p,
+#gameWrap #gacha .orbitalStory150 blockquote{
+  font-size:8px!important;line-height:1.7!important;
+}
+#gameWrap #gacha .orbitalStory150 h2{
+  font-size:32px!important;line-height:.94!important;
+}
+#gameWrap #gacha .orbitalStory150 h2 strong{
+  font-size:49px!important;
+}
+#gameWrap #gacha .orbitalIntel150 summary{
+  color:#718e99!important;font-weight:800!important;
+}
+#gameWrap #gacha .intelLine150{
+  font-size:6px!important;line-height:1.45!important;
+}
+#gameWrap #gacha .orbitalRates150 span{
+  font-size:6px!important;min-height:30px;
+}
+#gameWrap #gacha .orbitalRates150 em{font-size:8px!important}
+#gameWrap #gacha .consoleMeta150{line-height:1.65!important}
+#gameWrap #gacha .hardwarePod150>span{
+  font-size:11px!important;letter-spacing:.07em!important;
+}
+#gameWrap #gacha .hardwarePod150>b{
+  font-size:6px!important;
+}
+#gameWrap #gacha .orbitalSummon150 span b{
+  font-size:15px!important;letter-spacing:.02em!important;
+}
+#gameWrap #gacha .orbitalSummon150 em{
+  font-size:7px!important;
+}
+
+/* Give the hero stage more breathing room on common desktop sizes. */
+@media(min-width:1200px){
+  #gameWrap #gacha .orbitalLayout150{
+    grid-template-columns:180px minmax(0,1fr) 280px!important;
+  }
+  #gameWrap #gacha .orbitalStory150{padding-left:26px!important;padding-right:26px!important}
+  #gameWrap #gacha .orbitalNav150{padding-left:28px!important}
+}
+
+/* Right rail becomes quieter; the artwork, not the metadata, leads. */
+#gameWrap #gacha .orbitalStory150{
+  background:
+    linear-gradient(180deg,#03090d73,#020609d4)!important;
+}
+#gameWrap #gacha .orbitalStory150 .orbitalIntel150{
+  opacity:.82;transition:opacity .2s ease,border-color .2s ease;
+}
+#gameWrap #gacha .orbitalStory150 .orbitalIntel150[open],
+#gameWrap #gacha .orbitalStory150 .orbitalIntel150:hover{
+  opacity:1;
+}
+#gameWrap #gacha .storyVisual150{
+  box-shadow:inset 0 0 28px #0009,0 10px 24px #0004;
+}
+#gameWrap #gacha .storyMoon150{
+  background:radial-gradient(circle at 34% 30%,#fff 0 8%,#dbe9ff 28%,#7c81c8 72%)!important;
+  box-shadow:0 0 18px #9c8cff66!important;
+}
+
+/* Premium CTA gets a clearer press/read hierarchy. */
+#gameWrap #gacha .orbitalSummon150{
+  min-height:84px!important;
+}
+#gameWrap #gacha .orbitalSummon150 span{
+  position:relative;z-index:2;
+}
+#gameWrap #gacha .orbitalSummon150 em{
+  position:relative;z-index:2;
+}
+#gameWrap #gacha .orbitalSummon150.single{
+  background:
+    radial-gradient(circle at 18% 50%,#36cce824 0,transparent 34%),
+    linear-gradient(180deg,#0e2b36,#07161e)!important;
+}
+#gameWrap #gacha .orbitalSummon150.ten{
+  background:
+    radial-gradient(circle at 18% 50%,#ffc03a1d 0,transparent 35%),
+    linear-gradient(180deg,#2b2410,#141108)!important;
+}
+#gameWrap #gacha .orbitalSummon150.ten span b{
+  color:#fff4c2!important;
+}
+
+/* Central object remains visually dominant. */
+#gameWrap #gacha .orbitalRig150{
+  filter:drop-shadow(0 24px 28px #0008);
+}
+#gameWrap #gacha .orbitalStage150::before{
+  content:"";position:absolute;left:50%;top:48%;width:min(720px,90%);height:480px;
+  transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,#4ee0ff08 0,transparent 68%);
+  z-index:0;
+}
+
+/* Keep compact layouts readable instead of microscopic. */
+@media(max-width:980px){
+  #gameWrap #gacha .orbitalGacha150{--micro:8px}
+  #gameWrap #gacha .orbitalIntel150 summary{font-size:8px!important}
+  #gameWrap #gacha .intelLine150{font-size:7px!important}
+}
+@media(max-width:620px){
+  #gameWrap #gacha .orbitalStory150{display:block!important}
+  #gameWrap #gacha .orbitalIntel150{margin-bottom:6px}
+  #gameWrap #gacha .orbitalSummon150{min-height:72px!important}
+  #gameWrap #gacha .orbitalSummon150 span b{font-size:14px!important}
+  #gameWrap #gacha .orbitalSummon150 em{font-size:7px!important}
+  #gameWrap #gacha .consoleMeta150{font-size:7px!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
