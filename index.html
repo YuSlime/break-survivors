@@ -3005,6 +3005,218 @@ body.summonActive130 #joystickZone{
   #gameWrap #summonCinematic .miniSigil130{animation-duration:.001ms!important;animation-iteration-count:1!important}
 }
 </style>
+<style id="stage131RoyalLegendary">
+/* Stage 13.1 — ROYAL LEGENDARY CAPSULE */
+#gameWrap #summonCinematic.legendary .cinemaCore{
+  isolation:isolate;
+  filter:drop-shadow(0 0 12px #ffcf38) drop-shadow(0 0 30px #ff9f1f88)!important;
+}
+#gameWrap #summonCinematic.legendary .cinemaCapTop{
+  background:
+    radial-gradient(circle at 38% 22%,#fffef0 0 10%,transparent 11%),
+    linear-gradient(145deg,#fffbd4 0 12%,#ffe86b 13% 43%,#ffb32e 44% 73%,#d96b14 74%)!important;
+  border-color:#fff9b8!important;
+  box-shadow:inset 15px 7px #ffffff88,inset -13px -10px #aa4c0a77,0 0 12px #ffd447!important;
+}
+#gameWrap #summonCinematic.legendary .cinemaCapBottom{
+  background:
+    radial-gradient(circle at 66% 74%,#ffca6177 0 12%,transparent 13%),
+    linear-gradient(145deg,#ffd45a,#ef921f 56%,#a64708 100%)!important;
+  border-color:#ffe8a0!important;
+  box-shadow:inset 13px 4px #fff0a044,inset -13px -10px #6e270499,0 0 12px #ffb82f!important;
+}
+#gameWrap #summonCinematic.legendary .cinemaCapBelt128{
+  height:20px!important;
+  background:
+    linear-gradient(180deg,#fff3a0 0 17%,#d99220 18% 31%,#1ba4d8 32% 42%,#0e527d 43% 56%,#f6b230 57% 72%,#7b3e08 73%)!important;
+  border-top-color:#fffbd1!important;border-bottom-color:#5d2a04!important;
+  box-shadow:0 0 14px #ffd13f, inset 0 2px #ffffff99!important;
+}
+#gameWrap #summonCinematic.legendary .cinemaCapBelt128::before,
+#gameWrap #summonCinematic.legendary .cinemaCapBelt128::after{
+  content:"";position:absolute;top:50%;width:23px;height:27px;transform:translateY(-50%);
+  background:linear-gradient(145deg,#ffe877,#bd6913);border:3px solid #fff2a3;box-sizing:border-box;
+}
+#gameWrap #summonCinematic.legendary .cinemaCapBelt128::before{left:-15px;clip-path:polygon(100% 0,100% 100%,0 78%,18% 50%,0 22%)}
+#gameWrap #summonCinematic.legendary .cinemaCapBelt128::after{right:-15px;clip-path:polygon(0 0,100% 22%,82% 50%,100% 78%,0 100%)}
+#gameWrap #summonCinematic.legendary .cinemaCapSigil128{
+  width:38px!important;height:38px!important;font-size:20px!important;
+  color:#fff7ba!important;border:4px solid #fff2a2!important;
+  background:radial-gradient(circle,#ffb92c,#9d4b04 72%)!important;
+  box-shadow:0 0 0 4px #733203,0 0 22px #ffd13d,0 0 42px #ff9f1f88!important;
+}
+#gameWrap #summonCinematic.legendary .cinemaCapGlow{
+  width:68px!important;height:68px!important;opacity:.9!important;
+  background:#fff3a0!important;
+  box-shadow:0 0 0 10px #ffb42e99,0 0 32px #ffe26e,0 0 65px #ff9c1f88!important;
+  animation:royalCoreBreath131 1s ease-in-out infinite!important;
+}
+@keyframes royalCoreBreath131{50%{transform:translate(-50%,-50%) scale(1.18);filter:brightness(1.7)}}
+
+/* Crown */
+#gameWrap .cinemaLegendCrown131{
+  position:absolute;left:50%;top:-42px;z-index:18;width:72px;height:45px;transform:translateX(-50%);
+  opacity:0;filter:drop-shadow(0 0 9px #ffd240);pointer-events:none;
+}
+#gameWrap .cinemaLegendCrown131::before{
+  content:"";position:absolute;left:8px;right:8px;bottom:3px;height:12px;
+  background:linear-gradient(180deg,#fff39a,#d98316);border:3px solid #fff0a0;box-sizing:border-box;
+}
+#gameWrap .cinemaLegendCrown131 i,#gameWrap .cinemaLegendCrown131 b,#gameWrap .cinemaLegendCrown131 em{
+  position:absolute;bottom:13px;width:22px;height:30px;background:linear-gradient(145deg,#fff4a8,#ffb627 65%,#a74c08);
+  border:3px solid #fff0a2;box-sizing:border-box;clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+#gameWrap .cinemaLegendCrown131 i{left:4px;transform:rotate(-13deg)}
+#gameWrap .cinemaLegendCrown131 b{left:25px;height:38px}
+#gameWrap .cinemaLegendCrown131 em{right:4px;transform:rotate(13deg)}
+#gameWrap #summonCinematic.legendary .cinemaLegendCrown131{opacity:1;animation:royalCrownFloat131 1.6s ease-in-out infinite}
+@keyframes royalCrownFloat131{50%{transform:translateX(-50%) translateY(-5px);filter:drop-shadow(0 0 16px #ffe05d)}}
+
+/* Multi-layer orbital halo */
+#gameWrap .cinemaLegendOrbit131{
+  position:absolute;left:50%;top:50%;z-index:2;width:184px;height:184px;transform:translate(-50%,-50%);
+  border:3px solid #ffd43d;border-radius:50%;opacity:0;pointer-events:none;
+}
+#gameWrap .cinemaLegendOrbit131::before,#gameWrap .cinemaLegendOrbit131::after{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;
+}
+#gameWrap .cinemaLegendOrbit131::before{width:210px;height:118px;border:4px solid #ffcf3e;transform:translate(-50%,-50%) rotate(-17deg)}
+#gameWrap .cinemaLegendOrbit131::after{width:120px;height:210px;border:2px dashed #fff29b;transform:translate(-50%,-50%) rotate(24deg)}
+#gameWrap .cinemaLegendOrbit131 i{
+  position:absolute;width:8px;height:8px;background:#fff4a6;box-shadow:0 0 10px #ffd43d;
+}
+#gameWrap .cinemaLegendOrbit131 i:nth-child(1){left:3px;top:50%}
+#gameWrap .cinemaLegendOrbit131 i:nth-child(2){right:3px;top:50%}
+#gameWrap .cinemaLegendOrbit131 i:nth-child(3){left:50%;top:3px}
+#gameWrap .cinemaLegendOrbit131 i:nth-child(4){left:50%;bottom:3px}
+#gameWrap #summonCinematic.legendary .cinemaLegendOrbit131{opacity:.85}
+#gameWrap #summonCinematic.legendary .orbitA{animation:royalOrbitA131 3.8s linear infinite}
+#gameWrap #summonCinematic.legendary .orbitB{width:222px;height:222px;border-style:dashed;opacity:.48;animation:royalOrbitB131 5.4s linear infinite reverse}
+@keyframes royalOrbitA131{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes royalOrbitB131{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* Target / lock-on UI */
+#gameWrap .cinemaLegendLock131{
+  position:absolute;left:50%;top:50%;z-index:17;width:198px;height:198px;transform:translate(-50%,-50%);
+  border:2px solid #ffe26d;border-radius:50%;opacity:0;pointer-events:none;
+}
+#gameWrap .cinemaLegendLock131::before,#gameWrap .cinemaLegendLock131::after{
+  content:"";position:absolute;background:#fff1a0;box-shadow:0 0 10px #ffd23f;
+}
+#gameWrap .cinemaLegendLock131::before{left:-24px;right:-24px;top:50%;height:2px}
+#gameWrap .cinemaLegendLock131::after{top:-24px;bottom:-24px;left:50%;width:2px}
+#gameWrap .cinemaLegendLock131 i{
+  position:absolute;width:24px;height:24px;border-color:#ffe06b;border-style:solid;
+}
+#gameWrap .cinemaLegendLock131 i:nth-child(1){left:-2px;top:-2px;border-width:4px 0 0 4px}
+#gameWrap .cinemaLegendLock131 i:nth-child(2){right:-2px;bottom:-2px;border-width:0 4px 4px 0}
+#gameWrap .cinemaLegendLock131 b{
+  position:absolute;left:50%;top:-34px;width:10px;height:10px;transform:translateX(-50%) rotate(45deg);
+  background:#fff4a1;box-shadow:0 0 12px #ffd13c;
+}
+#gameWrap .cinemaLegendLock131 em{
+  position:absolute;left:50%;bottom:-32px;transform:translateX(-50%);font-style:normal;
+  color:#ffe275;font:1000 7px ui-monospace,"Cascadia Mono",Consolas,monospace;letter-spacing:.1em;
+}
+#gameWrap #summonCinematic.phase-legend-focus .cinemaLegendLock131,
+#gameWrap #summonCinematic.phase-lock.legendary .cinemaLegendLock131,
+#gameWrap #summonCinematic.legend-fracture131 .cinemaLegendLock131{
+  opacity:.9;animation:royalLock131 .85s steps(4,end) infinite;
+}
+@keyframes royalLock131{50%{transform:translate(-50%,-50%) scale(.91);filter:brightness(1.7)}}
+
+/* Vertical core beam */
+#gameWrap .cinemaLegendBeam131{
+  position:absolute;left:50%;top:50%;z-index:1;width:8px;height:310px;transform:translate(-50%,-50%);
+  background:linear-gradient(180deg,transparent,#fff6b0 20%,#ffd441 50%,#fff6b0 80%,transparent);
+  box-shadow:0 0 15px #ffe161,0 0 38px #ffb323;opacity:0;pointer-events:none;
+}
+#gameWrap #summonCinematic.phase-legend-awaken .cinemaLegendBeam131,
+#gameWrap #summonCinematic.phase-legend-focus .cinemaLegendBeam131,
+#gameWrap #summonCinematic.phase-lock.legendary .cinemaLegendBeam131,
+#gameWrap #summonCinematic.legend-fracture131 .cinemaLegendBeam131{
+  opacity:.75;animation:royalBeam131 .72s steps(3,end) infinite;
+}
+@keyframes royalBeam131{50%{width:18px;filter:brightness(2)}}
+
+/* Floating particles */
+#gameWrap .cinemaLegendParticles131{
+  position:absolute;inset:-55px;z-index:13;pointer-events:none;opacity:0;
+}
+#gameWrap .cinemaLegendParticles131 i{
+  position:absolute;width:7px;height:7px;background:#fff29c;box-shadow:0 0 11px #ffd036;
+  animation:royalParticle131 1.8s ease-in-out infinite;
+}
+#gameWrap .cinemaLegendParticles131 i:nth-child(1){left:12%;top:18%;animation-delay:-.2s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(2){left:76%;top:8%;animation-delay:-.7s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(3){left:91%;top:34%;animation-delay:-1.1s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(4){left:86%;top:77%;animation-delay:-.4s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(5){left:61%;top:91%;animation-delay:-1.4s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(6){left:28%;top:88%;animation-delay:-.9s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(7){left:5%;top:66%;animation-delay:-1.6s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(8){left:2%;top:39%;animation-delay:-.5s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(9){left:31%;top:3%;animation-delay:-1.2s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(10){left:70%;top:28%;animation-delay:-1.8s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(11){left:18%;top:52%;animation-delay:-.1s}
+#gameWrap .cinemaLegendParticles131 i:nth-child(12){left:73%;top:62%;animation-delay:-1s}
+#gameWrap #summonCinematic.legendary .cinemaLegendParticles131{opacity:1}
+@keyframes royalParticle131{0%,100%{transform:translateY(9px) scale(.65);opacity:.3}50%{transform:translateY(-12px) scale(1.25);opacity:1}}
+
+/* Golden cracks are brighter and branch farther than the normal shell crack. */
+#gameWrap #summonCinematic.legend-fracture131 .cinemaCracks128{opacity:1!important}
+#gameWrap #summonCinematic.legend-fracture131 .cinemaCracks128 i{
+  width:5px!important;background:#fff6a8!important;box-shadow:0 0 8px #fff,0 0 19px #ffc62e!important;
+  animation:royalCrackGrow131 .48s steps(5,end) both!important;
+}
+#gameWrap #summonCinematic.legend-fracture131 .cinemaCracks128 i:nth-child(1){height:62px!important}
+#gameWrap #summonCinematic.legend-fracture131 .cinemaCracks128 i:nth-child(2){height:55px!important}
+#gameWrap #summonCinematic.legend-fracture131 .cinemaCracks128 i:nth-child(3){height:58px!important}
+#gameWrap #summonCinematic.legend-fracture131 .cinemaCracks128 i:nth-child(4){height:64px!important}
+@keyframes royalCrackGrow131{0%{transform-origin:top;scale:1 .05;opacity:.1}100%{scale:1 1;opacity:1}}
+
+/* Final gold burst */
+#gameWrap .cinemaGoldBurst131{
+  position:absolute;left:50%;top:50%;z-index:30;width:20px;height:20px;transform:translate(-50%,-50%);
+  border-radius:50%;pointer-events:none;opacity:0;
+}
+#gameWrap #summonCinematic.gold-burst131 .cinemaGoldBurst131{
+  animation:goldBurst131 1.15s cubic-bezier(.15,.8,.2,1) both;
+}
+#gameWrap #summonCinematic.gold-burst131 .cinemaGoldBurst131::before{
+  content:"";position:absolute;left:50%;top:50%;width:440px;height:440px;transform:translate(-50%,-50%);
+  background:repeating-conic-gradient(from 0deg,#fff6a4 0 4deg,transparent 4deg 12deg,#ffc52f 12deg 15deg,transparent 15deg 24deg);
+  mask-image:radial-gradient(circle,transparent 0 12%,#000 28%,transparent 70%);
+}
+#gameWrap #summonCinematic.gold-burst131 .cinemaGoldBurst131::after{
+  content:"";position:absolute;left:50%;top:50%;width:120px;height:120px;transform:translate(-50%,-50%);
+  border-radius:50%;background:#fffbd0;box-shadow:0 0 35px #fff4a3,0 0 90px #ffc52d,0 0 160px #ff8d14;
+}
+@keyframes goldBurst131{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}
+  18%{opacity:1}
+  62%{opacity:1;transform:translate(-50%,-50%) scale(1.35)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(2.3)}
+}
+#gameWrap #summonCinematic.gold-burst131 .cinemaLegendCrown131{animation:royalCrownLaunch131 .8s ease-out forwards!important}
+@keyframes royalCrownLaunch131{to{transform:translateX(-50%) translateY(-85px) scale(1.35);opacity:0}}
+#gameWrap #summonCinematic.gold-burst131 .cinemaLegendOrbit131{animation-duration:.38s!important;filter:brightness(2)}
+#gameWrap #summonCinematic.gold-burst131 .cinemaLegendBeam131{width:34px!important;opacity:1!important;filter:brightness(3)}
+
+/* Mobile tuning */
+@media(max-width:620px){
+  #gameWrap .cinemaLegendCrown131{top:-34px!important;transform:translateX(-50%) scale(.8)!important}
+  #gameWrap .cinemaLegendOrbit131{transform:translate(-50%,-50%) scale(.78)!important}
+  #gameWrap .cinemaLegendLock131{transform:translate(-50%,-50%) scale(.8)!important}
+  #gameWrap .cinemaLegendBeam131{height:250px!important}
+  #gameWrap .cinemaLegendParticles131{inset:-38px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap .cinemaLegendCrown131,#gameWrap .cinemaLegendOrbit131,#gameWrap .cinemaLegendLock131,
+  #gameWrap .cinemaLegendBeam131,#gameWrap .cinemaLegendParticles131 i,#gameWrap .cinemaGoldBurst131{
+    animation-duration:.001ms!important;animation-iteration-count:1!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -3397,7 +3609,17 @@ body.summonActive130 #joystickZone{
                     <b class="cinemaCapGlow"></b>
                     <div class="cinemaCracks128"><i></i><i></i><i></i><i></i></div>
                     <div class="cinemaLegendHalo128"><i></i><i></i><i></i><i></i></div>
+                    <div class="cinemaLegendCrown131"><i></i><b></b><em></em></div>
+                    <div class="cinemaLegendOrbit131 orbitA"><i></i><i></i><i></i><i></i></div>
+                    <div class="cinemaLegendOrbit131 orbitB"><i></i><i></i><i></i><i></i></div>
+                    <div class="cinemaLegendLock131"><i></i><i></i><b></b><em></em></div>
+                    <div class="cinemaLegendBeam131"></div>
+                    <div class="cinemaLegendParticles131">
+                      <i></i><i></i><i></i><i></i><i></i><i></i>
+                      <i></i><i></i><i></i><i></i><i></i><i></i>
+                    </div>
                   </div>
+                  <div class="cinemaGoldBurst131"></div>
                   <div class="cinemaPedestal"></div>
                 </div>
               </div>
@@ -6866,6 +7088,14 @@ function playGachaSfx(kind){
     oscTone(118,.34,'sine',.036,62);noiseBurst(.22,.020,'bandpass',880,.10);
   }else if(kind==='crack'){
     noiseBurst(.16,.040,'highpass',2200);oscTone(180,.18,'square',.030,520,.02);
+  }else if(kind==='royalLock'){
+    [392,523,659,784].forEach((f,i)=>oscTone(f,.28,'triangle',.018,f*1.5,i*.055));
+    metallicPing(1760,.022,.16);
+    oscTone(110,.30,'sine',.028,72,.03);
+  }else if(kind==='royalBurst'){
+    [523,659,784,1047,1319,1568].forEach((f,i)=>oscTone(f,.62,'sine',.040,null,i*.045));
+    oscTone(73,.72,'sine',.065,45);
+    noiseBurst(.46,.055,'highpass',2800,.04);
   }
 }
 
@@ -9410,15 +9640,22 @@ function startGachaCharge(){
       playGachaSfx('fakeout');try{navigator.vibrate?.([70])}catch(_){}
     },4200);
     summonLater(()=>{
-      cine.className='active charging phase-legend legendary'+(lastPullCount===10?' multi':'');
-      setCinemaText('SYSTEM REBOOT','GOLDEN SIGNAL!!','停止した筐体が金色で再起動した','LIMIT BREAK');
+      cine.className='active charging phase-legend phase-legend-awaken legendary'+(lastPullCount===10?' multi':'');
+      setCinemaText('SYSTEM REBOOT','GOLDEN SIGNAL!!','停止した筐体が金色で再起動した','ROYAL CORE ONLINE');
       setCinemaOmen('legendary','UNKNOWN GOLD SIGNAL');
       const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='!!! SIGNAL OVERFLOW !!!';
       playGachaSfx('legendaryPrelude');try{navigator.vibrate?.([45,25,65,25,100])}catch(_){}
     },4580);
+    summonLater(()=>{
+      cine.className='active charging phase-legend phase-legend-focus legendary'+(lastPullCount===10?' multi':'');
+      setCinemaText('ROYAL LOCK','CORE ALIGNMENT...','王冠紋章とハローが中心へ収束している','SEAL // 100%');
+      setCinemaOmen('legendary','ROYAL CORE LOCK');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ROYAL SEAL // LOCKED';
+      playGachaSfx('royalLock');try{navigator.vibrate?.([28,18,36,18,52])}catch(_){}
+    },5050);
   }
 
-  const readyDelay=rarity==='Legendary'?5350:rarity==='Epic'?4300:rarity==='Rare'?3750:3550;
+  const readyDelay=rarity==='Legendary'?5580:rarity==='Epic'?4300:rarity==='Rare'?3750:3550;
   summonLater(()=>{
     const [title,hint]=rarityHint(rarity);
     cine.className='active ready phase-lock '+cls+(lastPullCount===10?' multi':'');
@@ -9436,25 +9673,33 @@ function openSummonCapsule(){
   // Single pull uses a deliberate two-tap ritual: first tap damages the shell, second breaks it.
   if(lastPullCount===1&&summonPhase==='ready'&&capsuleOpenStage===0){
     capsuleOpenStage=1;summonPhase='primed';
-    cine.className='active ready phase-prime shell-primed '+cls;
-    setCinemaText('CRACK 1 / 2','TAP AGAIN TO BREAK','紋章が点灯し、カプセルにヒビが入った','CORE UNSTABLE');
-    setCinemaOmen('burst','SHELL FRACTURE');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SHELL FRACTURE // ONE MORE TAP';
-    playGachaSfx('crack');
-    try{navigator.vibrate?.([28,20,40])}catch(_){}
+    cine.className='active ready phase-prime shell-primed '+cls+(rarity==='Legendary'?' legend-fracture131':'');
+    if(rarity==='Legendary'){
+      setCinemaText('ROYAL SEAL 1 / 2','TAP AGAIN TO BREAK','金の亀裂が王冠紋章から広がっている','SEAL FRACTURE');
+      setCinemaOmen('burst','ROYAL SEAL FRACTURE');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ROYAL SEAL // FRACTURED';
+      playGachaSfx('royalLock');summonLater(()=>playGachaSfx('crack'),120);
+      try{navigator.vibrate?.([34,18,50,18,70])}catch(_){}
+    }else{
+      setCinemaText('CRACK 1 / 2','TAP AGAIN TO BREAK','紋章が点灯し、カプセルにヒビが入った','CORE UNSTABLE');
+      setCinemaOmen('burst','SHELL FRACTURE');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SHELL FRACTURE // ONE MORE TAP';
+      playGachaSfx('crack');
+      try{navigator.vibrate?.([28,20,40])}catch(_){}
+    }
     return;
   }
 
   capsuleOpenStage=2;summonPhase='opening';
-  cine.className='active opening phase-break shell-cracking '+cls+(lastPullCount===10?' multi':'');
-  setCinemaText(lastPullCount===10?'10 CAPSULE BREAK':'CRACK 2 / 2','BREAK!','カプセルシェルを完全開放','SURVIVOR DATA RELEASE');
-  setCinemaOmen('burst','DATA BURST');
-  const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=lastPullCount===10?'10 CAPSULES // OPEN':'CORE SHELL // BREAK';
-  playGachaSfx('crack');
-  summonLater(()=>{cine.classList.add('shell-open');spawnCinemaPixels(rarity)},lastPullCount===10?180:260);
-  summonLater(()=>playGachaSfx(rarity==='Legendary'?'legendary':rarity.toLowerCase()),lastPullCount===10?300:420);
-  try{navigator.vibrate?.(rarity==='Legendary'?[95,25,140,30,170]:rarity==='Epic'?[60,20,85]:[35,15,45])}catch(_){}
-  const openDelay=lastPullCount===10?(rarity==='Legendary'?1300:950):(rarity==='Legendary'?1700:rarity==='Epic'?1250:rarity==='Rare'?1050:900);
+  cine.className='active opening phase-break shell-cracking '+cls+(rarity==='Legendary'?' legend-burst131':'')+(lastPullCount===10?' multi':'');
+  setCinemaText(lastPullCount===10?'10 CAPSULE BREAK':rarity==='Legendary'?'ROYAL BREAK 2 / 2':'CRACK 2 / 2','BREAK!','カプセルシェルを完全開放',rarity==='Legendary'?'GOLD CORE RELEASE':'SURVIVOR DATA RELEASE');
+  setCinemaOmen('burst',rarity==='Legendary'?'ROYAL CORE BURST':'DATA BURST');
+  const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=rarity==='Legendary'?'ROYAL CORE // RELEASE':lastPullCount===10?'10 CAPSULES // OPEN':'CORE SHELL // BREAK';
+  playGachaSfx(rarity==='Legendary'?'royalBurst':'crack');
+  summonLater(()=>{cine.classList.add('shell-open');if(rarity==='Legendary')cine.classList.add('gold-burst131');spawnCinemaPixels(rarity)},lastPullCount===10?180:260);
+  summonLater(()=>{if(rarity!=='Legendary')playGachaSfx(rarity.toLowerCase());else playGachaSfx('legendary')},lastPullCount===10?360:520);
+  try{navigator.vibrate?.(rarity==='Legendary'?[100,20,145,25,190,30,220]:rarity==='Epic'?[60,20,85]:[35,15,45])}catch(_){}
+  const openDelay=lastPullCount===10?(rarity==='Legendary'?1750:950):(rarity==='Legendary'?2150:rarity==='Epic'?1250:rarity==='Rare'?1050:900);
   summonLater(()=>{
     cine.className='';document.body.classList.remove('summonActive130');
     setHomeGachaMachineState('settle',rarity);summonLater(()=>setHomeGachaMachineState('', ''),650);
