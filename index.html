@@ -7606,6 +7606,74 @@ body.summonActive130 #joystickZone{
   #gameWrap #gacha .orbitalCrystal150{animation:none!important}
 }
 </style>
+<style id="stage152OrbitalMotionLanguage">
+/* Stage 15.2 — purposeful motion language */
+#gameWrap #gacha .hardwareCore150 i,
+#gameWrap #gacha .transferRail150 i,
+#gameWrap #gacha .outputMouth150{
+  transition:background .25s ease,box-shadow .25s ease,border-color .25s ease,opacity .25s ease,filter .25s ease;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.arming) .hardwareCore150{
+  border-color:#73e5fa!important;box-shadow:inset 0 0 0 3px #07151b,0 0 19px #4fe2ff4a!important;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.arming) .hardwareCore150 i{
+  background:#dffcff!important;box-shadow:0 0 10px #fff,0 0 24px #51e0ff!important;
+  animation:ignitionPulse152 .55s ease-in-out infinite alternate;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.cranking) .ceilingRing150.r3,
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.cranking) .rigInner150{
+  box-shadow:0 0 18px #4cdfff34,inset 0 0 28px #52dfff12!important;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.cranking) .transferRail150 i{
+  animation:transferWake152 .8s steps(10,end) infinite;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.dropping) .outputMouth150{
+  border-color:#8aefff!important;box-shadow:inset 0 0 12px #000,0 0 18px #59e2ff4a!important;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.dropping) .outputMouth150 i{
+  background:#8ceeff!important;box-shadow:0 0 9px #75e9ff;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.settle) .hardwarePod150{
+  opacity:.82;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .hardwareCore150 i,
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .transferRail150 i:nth-child(-n+7){
+  background:#ffd76a!important;box-shadow:0 0 10px #ffc63766!important;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .outputMouth150{
+  border-color:#a98532!important;box-shadow:inset 0 0 12px #000,0 0 17px #ffc63b3d!important;
+}
+@keyframes ignitionPulse152{to{filter:brightness(1.55);transform:scale(1.08)}}
+@keyframes transferWake152{
+  0%,100%{filter:brightness(.7)}
+  50%{filter:brightness(1.45)}
+}
+
+/* premium idle = slow, nearly still */
+#gameWrap #gacha #gachaMachine.orbitalMachine150:not(.cranking) .energyOrbit150{animation-duration:24s!important}
+#gameWrap #gacha #gachaMachine.orbitalMachine150:not(.cranking) .corePod150{animation-duration:7s!important}
+
+/* selected core emphasis is local, never a full-screen wash */
+#gameWrap #gacha #gachaMachine.orbitalMachine150.legendary .legendaryPod150{
+  filter:drop-shadow(0 12px 12px #000a) drop-shadow(0 0 16px #ffc83b55)!important;
+}
+#gameWrap #gacha #gachaMachine.orbitalMachine150.legendary .orbitalLightColumn150{
+  background:linear-gradient(180deg,transparent,#fff2a4aa 25%,#ffc84d66 66%,transparent)!important;
+  box-shadow:0 0 12px #ffe69c,0 0 34px #ffc83b44!important;
+}
+
+/* status typography stays calm while hardware reacts */
+#gameWrap #gacha .orbitalMachineState150 b{
+  transition:color .2s ease,text-shadow .2s ease;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.cranking) .orbitalMachineState150 b{color:#c8f5ff}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .orbitalMachineState150 b{color:#ffe39a;text-shadow:0 0 9px #ffc83b44}
+
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #gacha .hardwareCore150 i,
+  #gameWrap #gacha .transferRail150 i{animation:none!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -13948,11 +14016,11 @@ function setHomeGachaMachineState(state='',rarity=''){
   m.className='gashaponMachine megaCapsuleMachine premiumVault140 orbitalMachine150'+(state?' '+state:'')+(rarity?' '+rarity.toLowerCase():'');
   const a=document.getElementById('homeMachineStatus'),b=document.getElementById('homeMachineSub');
   const map={
-    arming:['FORGE PRIMED','ENERGY ROUTING TO CHAMBER'],
-    cranking:['ORBITAL MIX','CORE FIELD IN MOTION'],
-    dropping:['OUTPUT SEQUENCE','RELEASE GATE OPENING'],
-    settle:['CORE DELIVERED','READY TO DECRYPT'],
-    idle:['CORE FORGE READY','CHOOSE A RELEASE PROTOCOL']
+    arming:['IGNITION PRIMED','RESONANCE ARRAY CHARGING'],
+    cranking:['ORBIT ACCELERATION','SURVIVOR CORES IN MOTION'],
+    dropping:['OUTPUT SEQUENCE','SELECTED CORE IN TRANSFER'],
+    settle:['CORE DELIVERED','DECRYPTION READY'],
+    idle:['CORE SYSTEM ONLINE','CHOOSE A RELEASE PROTOCOL']
   },v=map[state]||map.idle;
   if(a)a.textContent=v[0];if(b)b.textContent=v[1];
 }
@@ -14044,51 +14112,51 @@ function startGachaCharge(){
   summonLater(()=>{
     cine.className='active charging phase-insert '+cls+multi;
     const initial=pityResult?'MAX PITY ROUTE':guaranteed?'10-PULL EPIC+ ROUTE':lastPullCount===10?'TEN CAPSULE REQUEST':'SINGLE CAPSULE REQUEST';
-    setCinemaText('GEM INSERT','POWERING MACHINE...','Gemsを投入中',initial);
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='GEMS ACCEPTED // MOTOR START';
+    setCinemaText('CORE INPUT','RESONANCE ARRAY ONLINE','召喚エネルギーを装置へ接続',initial);
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ENERGY LINK // ACCEPTED';
     playGachaSfx('charge');
   },520);
 
   summonLater(()=>{
     cine.className='active charging phase-crank '+cls+multi;
-    setCinemaText('TURN CORE','CRANKING...','ハンドルを回してカプセルをシャッフル','MECHANICAL LOCK // RELEASED');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CRANK SHAFT // 100%';
+    setCinemaText('IGNITION','ORBIT ACCELERATION','軌道リングを起動しています','RESONANCE DRIVE // ONLINE');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ORBITAL DRIVE // SYNCHRONIZED';
     setHomeGachaMachineState('cranking',rarity);playGachaSfx('crank');
   },1080);
 
   summonLater(()=>{
     cine.className='active charging phase-mix '+cls+multi;
-    setCinemaText('CAPSULE MIX','RUMBLING...','ドラム内でカプセルが激しく混ざっています',lastPullCount===10?'10 CAPSULES // MIXING':'CAPSULE LOTTERY // RUNNING');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='DRUM SPEED // MAX';
+    setCinemaText('ORBITAL FIELD','CORE RESONANCE','複数のSURVIVOR COREを共鳴させています',lastPullCount===10?'10 CORE PROTOCOL // ACTIVE':'CORE SELECTION // ACTIVE');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='RESONANCE FIELD // STABLE';
   },1680);
 
   // The machine deliberately stops before choosing. This pause makes the selection readable.
   summonLater(()=>{
     cine.className='active charging phase-stop134 '+cls+multi;
-    setCinemaText('DRUM STOP','...','ドラムが停止した','SELECTION WINDOW');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='DRUM BRAKE // LOCK';
+    setCinemaText('ORBIT LOCK','...','軌道が静止した','SELECTION WINDOW');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ORBITAL ARRAY // LOCKED';
     playGachaSfx('drumStop');try{navigator.vibrate?.([18])}catch(_){}
   },2500);
 
   summonLater(()=>{
     cine.className='active charging phase-select134 '+cls+multi;
-    setCinemaText('CAPSULE SELECT','TARGET ACQUIRED','1個のカプセルが選ばれた','MAGNETIC PICKUP');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CAPSULE INDEX // ACQUIRED';
+    setCinemaText('CORE SELECT','SIGNAL ACQUIRED','1つのSURVIVOR COREが共鳴した','RESONANCE LOCK');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SURVIVOR SIGNAL // ACQUIRED';
     playGachaSfx('capsuleSelect');try{navigator.vibrate?.([12,20,18])}catch(_){}
   },2860);
 
   // Selected capsule leaves the globe and follows a visible transport path.
   summonLater(()=>{
     cine.className='active charging phase-route134 '+cls+multi;
-    setCinemaText('INTERNAL ROUTE','TRANSFERRING...','選ばれたカプセルを排出路へ搬送中','MAG-RAIL // 1 → 2 → 3');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='TRANSFER RAIL // ACTIVE';
+    setCinemaText('CORE TRANSFER','TRANSFERRING...','選択されたCOREを出力室へ搬送中','PICKUP → SCAN → RESONATE → OUTPUT');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CORE TRANSFER // ACTIVE';
     playGachaSfx('transport');
   },3270);
 
   summonLater(()=>{
     cine.className='active charging phase-gate134 '+cls+multi;
-    setCinemaText('OUTPUT GATE','UNLOCKING...','排出口のロックを解除しています','GATE // OPEN');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='OUTPUT LOCK // RELEASED';
+    setCinemaText('OUTPUT CHAMBER','EXTRACTION READY','出力室の封印を解除しています','OUTPUT // OPEN');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='OUTPUT CHAMBER // RELEASED';
     playGachaSfx('gate');
   },3750);
 
