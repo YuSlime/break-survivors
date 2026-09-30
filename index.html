@@ -8381,6 +8381,61 @@ body.summonActive130 #joystickZone{
   #gameWrap #singleReveal .premiumRevealVisual142::after{animation:none!important}
 }
 </style>
+<style id="stage160OrbitalAdaptivePerformance">
+/* Stage 16.0 — adaptive performance without degrading composition */
+body.performanceMode #gameWrap #gacha .orbitalDebris150{display:none!important}
+body.performanceMode #gameWrap #gacha .energyOrbit150,
+body.performanceMode #gameWrap #gacha .orbitalVector156 .ov156,
+body.performanceMode #gameWrap #gacha .corePod150,
+body.performanceMode #gameWrap #gacha .orbitalCrystal150{
+  animation:none!important;
+}
+body.performanceMode #gameWrap #gacha .corePod150>i{
+  backdrop-filter:none!important;
+}
+body.performanceMode #gameWrap #gacha .orbitalFacility150,
+body.performanceMode #gameWrap #gacha .orbitalCeiling150,
+body.performanceMode #gameWrap #gacha .orbitalRig150,
+body.performanceMode #gameWrap #gacha .orbitalPlinth150,
+body.performanceMode #gameWrap #gacha .orbitalCrystal150{
+  translate:0 0!important;transition:none!important;will-change:auto!important;
+}
+body.performanceMode #gameWrap #gacha .orbitalRig150{
+  filter:none!important;
+}
+body.performanceMode #gameWrap #gacha .corePod150{
+  filter:drop-shadow(0 7px 7px #0008)!important;
+}
+body.performanceMode #gameWrap #gacha .orbitalCrystal150{
+  filter:drop-shadow(0 13px 18px #000a)!important;
+}
+body.performanceMode #gameWrap #gacha .orbitalStage150::before{
+  opacity:.55;
+}
+body.performanceMode #gameWrap #summonCinematic .survivorForge135 .cinemaGlobe{
+  animation:none!important;
+}
+body.performanceMode #gameWrap #summonCinematic .cinemaPixelShard:nth-of-type(even){
+  display:none!important;
+}
+
+/* The static composition remains polished even when motion is removed. */
+body.performanceMode #gameWrap #gacha .rigOuter150{
+  box-shadow:inset 0 0 0 2px #566269,inset 0 0 0 8px #0a1013,0 0 0 2px #020405,0 20px 35px #000b!important;
+}
+body.performanceMode #gameWrap #gacha .orbitalSummon150::after{
+  display:none!important;
+}
+
+/* Better forced-colors semantics for the progress meter. */
+@media(forced-colors:active){
+  #gameWrap #gacha .pityRing150{
+    background:Canvas!important;border:2px solid Highlight!important;
+  }
+  #gameWrap #gacha .pityRing150::before{background:Canvas!important}
+  #gameWrap #gacha .pityRing150 b,#gameWrap #gacha .pityRing150 span{color:CanvasText!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -14714,7 +14769,7 @@ function registerGachaRarity(rarity){
 function updateGachaStatus(){
   const owned=characterDefs.filter(c=>save.characters[c.id]?.owned).length,misses=Math.max(0,save.gachaPity?.legendary||0),chance=gachaLegendaryChance();
   const pc=document.getElementById('gachaPityCount'),pf=document.getElementById('gachaPityFill'),lc=document.getElementById('gachaLegendChance');
-  if(pc)pc.textContent=Math.min(40,misses)+' / 40';if(pf)pf.style.width=(Math.min(40,misses)/40*100).toFixed(1)+'%';const pr=document.getElementById('pityRing150');if(pr)pr.style.setProperty('--pity',(Math.min(40,misses)/40*360).toFixed(1)+'deg');if(lc)lc.textContent=chance>=100?'NEXT GUARANTEED':'NEXT '+chance.toFixed(1)+'%';
+  if(pc)pc.textContent=Math.min(40,misses)+' / 40';if(pf)pf.style.width=(Math.min(40,misses)/40*100).toFixed(1)+'%';const pr=document.getElementById('pityRing150');if(pr){pr.style.setProperty('--pity',(Math.min(40,misses)/40*360).toFixed(1)+'deg');pr.setAttribute('role','progressbar');pr.setAttribute('aria-label','Legendary pity resonance');pr.setAttribute('aria-valuemin','0');pr.setAttribute('aria-valuemax','40');pr.setAttribute('aria-valuenow',String(Math.min(40,misses)));}if(lc)lc.textContent=chance>=100?'NEXT GUARANTEED':'NEXT '+chance.toFixed(1)+'%';
   const pt=document.getElementById('gachaPityText');if(pt)pt.textContent=misses>=39?'HARD PITY READY':misses>=25?'SOFT PITY ACTIVE':'SOFT PITY 25 // HARD PITY 40';
   const cc=document.getElementById('gachaCollectionCount');if(cc)cc.textContent=owned+' / '+characterDefs.length;
   const tp=document.getElementById('gachaTotalPulls');if(tp)tp.textContent='TOTAL '+(save.gachaPity.totalPulls||0).toLocaleString();const lt=document.getElementById('gachaLegendTotal');if(lt)lt.textContent='LEGENDARY '+(save.gachaPity.legendaryCount||0).toLocaleString();
@@ -14850,7 +14905,7 @@ function updateRevealProgressStrip(index,r){
 function buildCinemaGemStream(){
   const host=document.getElementById('cinemaGemStream');if(!host)return;
   host.innerHTML='';
-  const count=lastPullCount===10?14:7;
+  const count=performanceMode?(lastPullCount===10?8:4):(lastPullCount===10?14:7);
   for(let i=0;i<count;i++){
     const g=document.createElement('i');g.textContent='◆';g.style.setProperty('--gx',((i%5)-2)*28+'px');g.style.setProperty('--gd',(i*48)+'ms');host.appendChild(g);
   }
@@ -14862,7 +14917,7 @@ function setCinemaOmen(mode,text=''){
 function spawnCinemaPixels(rarity){
   const cine=document.getElementById('summonCinematic');if(!cine)return;
   cine.querySelectorAll('.cinemaPixelShard').forEach(x=>x.remove());
-  const color=rarityColors[rarity]||'#8feaff',count=rarity==='Legendary'?34:rarity==='Epic'?26:18;
+  const color=rarityColors[rarity]||'#8feaff',baseCount=rarity==='Legendary'?34:rarity==='Epic'?26:18,count=performanceMode?Math.max(10,Math.floor(baseCount*.48)):baseCount;
   for(let i=0;i<count;i++){
     const p=document.createElement('i');p.className='cinemaPixelShard';p.style.setProperty('--px',((i%9)-4)*34+'px');p.style.setProperty('--py',(-70-Math.floor(i/9)*42-(i%3)*13)+'px');p.style.setProperty('--pc',color);p.style.setProperty('--pd',(i%6)*24+'ms');cine.appendChild(p);
   }
@@ -15337,6 +15392,7 @@ const performanceBtn=document.getElementById('togglePerformance');
 function syncPerformanceButton(){
   performanceBtn.textContent='Performance Mode: '+(performanceMode?'ON':'OFF');
   performanceBtn.classList.toggle('active',performanceMode);
+  document.body.classList.toggle('performanceMode',performanceMode);
 }
 performanceBtn.onclick=()=>{
   performanceMode=!performanceMode;
