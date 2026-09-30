@@ -8040,6 +8040,69 @@ body.summonActive130 #joystickZone{
   #gameWrap #gacha .orbitalVector156 .ov156{animation:none!important}
 }
 </style>
+<style id="stage157OrbitalFinalCraftQA">
+/* Stage 15.7 — final craft / performance / accessibility QA */
+#gameWrap #gacha{color-scheme:dark}
+#gameWrap #gacha .orbitalStage150{
+  --orbPxCrystal:0px;--orbPyCrystal:0px;
+}
+#gameWrap #gacha .orbitalCrystal150{
+  translate:var(--orbPxCrystal) var(--orbPyCrystal)!important;
+}
+#gameWrap #gacha #gachaMachine.orbitalMachine150{
+  contain:layout paint!important;
+}
+#gameWrap #gacha .orbitalRig150,
+#gameWrap #gacha .orbitalFacility150,
+#gameWrap #gacha .orbitalCeiling150,
+#gameWrap #gacha .orbitalPlinth150{
+  backface-visibility:hidden;
+}
+
+/* Keep GPU hints scoped to devices that actually use spatial interaction. */
+#gameWrap #gacha .orbitalRig150,
+#gameWrap #gacha .orbitalFacility150,
+#gameWrap #gacha .orbitalCeiling150,
+#gameWrap #gacha .orbitalPlinth150{will-change:auto}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  #gameWrap #gacha .orbitalRig150,
+  #gameWrap #gacha .orbitalFacility150,
+  #gameWrap #gacha .orbitalCeiling150,
+  #gameWrap #gacha .orbitalPlinth150{will-change:translate}
+}
+
+/* Stronger contrast mode without changing the normal art direction. */
+@media(prefers-contrast:more){
+  #gameWrap #gacha .orbitalNavGhost150,
+  #gameWrap #gacha .consoleMeta150,
+  #gameWrap #gacha .orbitalStory150>p,
+  #gameWrap #gacha .orbitalStory150 blockquote{color:#8da8b2!important;opacity:1!important}
+  #gameWrap #gacha .orbitalIntel150,
+  #gameWrap #gacha .orbitalSummon150,
+  #gameWrap #gacha .hardwarePod150{border-color:#607b86!important}
+}
+
+/* Touch targets never depend on hover. */
+@media(pointer:coarse){
+  #gameWrap #gacha .orbitalSummon150,
+  #gameWrap #gacha .orbitalClose150,
+  #gameWrap #gacha .orbitalIntel150 summary{touch-action:manipulation}
+}
+
+/* Remove invalid/legacy transform assumptions from the new stage. */
+#gameWrap #gacha .orbitalCrystal150{
+  transform:translate(-50%,-50%)!important;
+}
+@media(max-width:620px){
+  #gameWrap #gacha .orbitalCrystal150{
+    transform:translate(-50%,-50%)!important;
+    translate:0 0!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #gacha .orbitalCrystal150{translate:0 0!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -8249,7 +8312,7 @@ body.summonActive130 #joystickZone{
             <main class="orbitalStage150">
               <div class="orbitalStageHead150">
                 <span>01 // ORBITAL CORE CHAMBER</span>
-                <div><i></i><b id="homeMachineStatus">CORE SYSTEM ONLINE</b></div>
+                <div><i></i><b id="homeMachineStatus" aria-live="polite">CORE SYSTEM ONLINE</b></div>
               </div>
 
               <div id="gachaMachine" class="gashaponMachine megaCapsuleMachine premiumVault140 orbitalMachine150">
@@ -8355,7 +8418,7 @@ body.summonActive130 #joystickZone{
 
               <div class="orbitalMachineState150">
                 <span>FORGE STATUS</span>
-                <b id="homeMachineSub">CHOOSE A RELEASE PROTOCOL</b>
+                <b id="homeMachineSub" aria-live="polite">CHOOSE A RELEASE PROTOCOL</b>
               </div>
             </main>
 
@@ -14457,6 +14520,8 @@ function initOrbitalGachaParallax(){
     stage.style.setProperty('--orbPyFar',(ny*-4).toFixed(2)+'px');
     stage.style.setProperty('--orbPxNear',(nx*7).toFixed(2)+'px');
     stage.style.setProperty('--orbPyNear',(ny*5).toFixed(2)+'px');
+    stage.style.setProperty('--orbPxCrystal',(nx*2.5).toFixed(2)+'px');
+    stage.style.setProperty('--orbPyCrystal',(ny*1.8).toFixed(2)+'px');
   };
   stage.addEventListener('pointermove',e=>{lastEvent=e;if(!frame)frame=requestAnimationFrame(render)},{passive:true});
   stage.addEventListener('pointerleave',()=>{
@@ -14464,6 +14529,7 @@ function initOrbitalGachaParallax(){
     stage.style.setProperty('--orbPx','0px');stage.style.setProperty('--orbPy','0px');
     stage.style.setProperty('--orbPxFar','0px');stage.style.setProperty('--orbPyFar','0px');
     stage.style.setProperty('--orbPxNear','0px');stage.style.setProperty('--orbPyNear','0px');
+    stage.style.setProperty('--orbPxCrystal','0px');stage.style.setProperty('--orbPyCrystal','0px');
   },{passive:true});
 }
 setTimeout(initOrbitalGachaParallax,0);
