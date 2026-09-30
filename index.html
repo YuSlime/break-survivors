@@ -7987,6 +7987,59 @@ body.summonActive130 #joystickZone{
   }
 }
 </style>
+<style id="stage156OrbitalVectorCraft">
+/* Stage 15.6 — high-fidelity vector craft */
+#gameWrap #gacha .orbitalVector156{
+  position:absolute;inset:0;z-index:4;width:100%;height:100%;overflow:visible;pointer-events:none;
+}
+#gameWrap #gacha .orbitalVector156 .e1{stroke-dasharray:1 0}
+#gameWrap #gacha .orbitalVector156 .e2{stroke-dasharray:4 7}
+#gameWrap #gacha .orbitalVector156 .e3{stroke-dasharray:2 6}
+#gameWrap #gacha .orbitalVector156 .ov156{
+  transform-box:fill-box;transform-origin:center;
+}
+#gameWrap #gacha .orbitalVector156 .e1{animation:vectorOrbitA156 23s linear infinite}
+#gameWrap #gacha .orbitalVector156 .e2{animation:vectorOrbitB156 31s linear infinite reverse}
+#gameWrap #gacha .orbitalVector156 .e3{animation:vectorOrbitC156 27s linear infinite}
+@keyframes vectorOrbitA156{to{stroke-dashoffset:-210}}
+@keyframes vectorOrbitB156{to{stroke-dashoffset:170}}
+@keyframes vectorOrbitC156{to{stroke-dashoffset:-140}}
+
+#gameWrap #gacha .crystalVector156{
+  position:absolute;inset:0;width:100%;height:100%;overflow:visible;
+  filter:drop-shadow(0 0 8px #9fefff55);
+}
+#gameWrap #gacha .orbitalCrystal150 .crystalShard150,
+#gameWrap #gacha .orbitalCrystal150 .crystalCore150{
+  display:none!important;
+}
+#gameWrap #gacha .orbitalCrystal150{
+  width:104px!important;height:166px!important;
+  filter:drop-shadow(0 16px 22px #000b) drop-shadow(0 0 18px #61ddff4a)!important;
+}
+#gameWrap #gacha #gachaMachine.legendary .crystalVector156{
+  filter:sepia(.18) saturate(1.3) hue-rotate(-24deg) drop-shadow(0 0 12px #ffc83b66);
+}
+#gameWrap #gacha #gachaMachine.legendary .orbitalVector156 .e1,
+#gameWrap #gacha #gachaMachine.legendary .orbitalVector156 .e3{
+  stroke:#ffd767!important;stroke-opacity:.55!important;
+}
+#gameWrap #gacha #gachaMachine.cranking .orbitalVector156 .e1{animation-duration:4.8s}
+#gameWrap #gacha #gachaMachine.cranking .orbitalVector156 .e2{animation-duration:6.2s}
+#gameWrap #gacha #gachaMachine.cranking .orbitalVector156 .e3{animation-duration:5.4s}
+
+/* Legacy CSS energy ellipses become supporting depth only. */
+#gameWrap #gacha .energyOrbit150{opacity:.28!important}
+#gameWrap #gacha .orbitC150{opacity:.16!important}
+
+@media(max-width:620px){
+  #gameWrap #gacha .orbitalCrystal150{width:74px!important;height:118px!important}
+  #gameWrap #gacha .orbitalVector156{opacity:.82}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #gacha .orbitalVector156 .ov156{animation:none!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -8211,6 +8264,29 @@ body.summonActive130 #joystickZone{
                 </div>
 
                 <div class="orbitalRig150">
+                  <svg class="orbitalVector156" viewBox="0 0 610 410" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="orbitLine156" x1="0" x2="1">
+                        <stop offset="0" stop-color="#4be2ff" stop-opacity="0"/>
+                        <stop offset=".26" stop-color="#85ecff" stop-opacity=".75"/>
+                        <stop offset=".58" stop-color="#9f83ff" stop-opacity=".85"/>
+                        <stop offset="1" stop-color="#4be2ff" stop-opacity="0"/>
+                      </linearGradient>
+                      <radialGradient id="orbitGlow156">
+                        <stop offset="0" stop-color="#bff9ff" stop-opacity=".7"/>
+                        <stop offset=".35" stop-color="#5ee5ff" stop-opacity=".18"/>
+                        <stop offset="1" stop-color="#5ee5ff" stop-opacity="0"/>
+                      </radialGradient>
+                    </defs>
+                    <ellipse class="ov156 e1" cx="305" cy="205" rx="238" ry="86" fill="none" stroke="url(#orbitLine156)" stroke-width="1.4"/>
+                    <ellipse class="ov156 e2" cx="305" cy="205" rx="153" ry="169" fill="none" stroke="#66e7ff" stroke-opacity=".25" stroke-width="1" transform="rotate(17 305 205)"/>
+                    <ellipse class="ov156 e3" cx="305" cy="205" rx="204" ry="122" fill="none" stroke="#7d71ff" stroke-opacity=".34" stroke-width="1" transform="rotate(-9 305 205)"/>
+                    <circle cx="305" cy="205" r="104" fill="url(#orbitGlow156)" opacity=".22"/>
+                    <g fill="#c8f8ff">
+                      <circle cx="74" cy="205" r="2.2"/><circle cx="536" cy="205" r="2.2"/>
+                      <circle cx="305" cy="43" r="2"/><circle cx="305" cy="367" r="2"/>
+                    </g>
+                  </svg>
                   <div class="rigOuter150"></div>
                   <div class="rigInner150"></div>
                   <div class="rigArc150 arcL150"></div>
@@ -8223,6 +8299,36 @@ body.summonActive130 #joystickZone{
                   <div class="energyOrbit150 orbitC150"></div>
 
                   <div class="orbitalCrystal150">
+                    <svg class="crystalVector156" viewBox="0 0 120 190" aria-hidden="true">
+                      <defs>
+                        <linearGradient id="crystalA156" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0" stop-color="#e8fdff"/>
+                          <stop offset=".23" stop-color="#78dcff"/>
+                          <stop offset=".5" stop-color="#dffcff"/>
+                          <stop offset=".72" stop-color="#4394df"/>
+                          <stop offset="1" stop-color="#254c9c"/>
+                        </linearGradient>
+                        <linearGradient id="crystalB156" x1="1" y1="0" x2="0" y2="1">
+                          <stop offset="0" stop-color="#ffffff"/>
+                          <stop offset=".28" stop-color="#7ceaff"/>
+                          <stop offset=".68" stop-color="#4a67d8"/>
+                          <stop offset="1" stop-color="#1c326b"/>
+                        </linearGradient>
+                        <radialGradient id="crystalCore156">
+                          <stop offset="0" stop-color="#ffffff"/>
+                          <stop offset=".22" stop-color="#b9f8ff"/>
+                          <stop offset=".55" stop-color="#59dfff"/>
+                          <stop offset="1" stop-color="#59dfff" stop-opacity="0"/>
+                        </radialGradient>
+                      </defs>
+                      <polygon points="60,4 111,76 78,182 60,166 42,182 9,76" fill="url(#crystalA156)" stroke="#e7fcff" stroke-width="1.2"/>
+                      <polygon points="60,4 60,166 9,76" fill="#4fc9ff" opacity=".34"/>
+                      <polygon points="60,4 111,76 60,166" fill="url(#crystalB156)" opacity=".72"/>
+                      <polygon points="9,76 60,58 111,76 60,166" fill="none" stroke="#dffcff" stroke-opacity=".48"/>
+                      <polygon points="60,58 77,96 60,133 43,96" fill="#f7ffff" stroke="#c9faff" stroke-width="1"/>
+                      <circle cx="60" cy="96" r="38" fill="url(#crystalCore156)" opacity=".46"/>
+                      <path d="M60 5 L60 166 M10 76 L110 76 M43 96 L77 96" stroke="#ffffff" stroke-opacity=".36" stroke-width=".8"/>
+                    </svg>
                     <div class="crystalShard150 main150"></div>
                     <div class="crystalShard150 left150"></div>
                     <div class="crystalShard150 right150"></div>
