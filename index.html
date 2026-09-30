@@ -6659,6 +6659,254 @@ body.summonActive130 #joystickZone{
   #gameWrap #summonCinematic .survivorForge135 .cinemaGlobe{animation:none!important}
 }
 </style>
+<style id="stage142PremiumReveal">
+/* Stage 14.2 — PREMIUM REVEAL
+   Final summon reveal is presented like a collectible unveiling, not a generic result card. */
+
+#gameWrap #singleReveal{
+  background:
+    radial-gradient(circle at 34% 46%,#123b4f 0 8%,transparent 31%),
+    radial-gradient(circle at 72% 55%,#071d29 0 5%,transparent 27%),
+    linear-gradient(180deg,#020609f7,#03070afb)!important;
+}
+#gameWrap #singleReveal .revealPixelField{display:none!important}
+#gameWrap #singleReveal .revealSignalBurst{
+  top:7%!important;z-index:50!important;
+}
+#gameWrap #singleReveal .revealProgressStrip{
+  top:auto!important;bottom:5%!important;
+  border:0!important;border-radius:99px!important;
+  background:#071017cc!important;box-shadow:0 10px 30px #0007!important;
+}
+
+#gameWrap #singleReveal .revealPanel{
+  width:min(900px,92vw)!important;
+  min-height:540px!important;
+  padding:0!important;
+  border:1px solid #203946!important;
+  border-radius:24px!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(105deg,#0b171f 0 49.8%,#071017 50%)!important;
+  box-shadow:
+    0 44px 120px #000e,
+    inset 0 0 0 1px #ffffff04!important;
+}
+#gameWrap #singleReveal .revealPanel::before{
+  content:"";position:absolute;left:8%;right:8%;top:0;height:1px;inset:auto 8% auto 8%!important;
+  background:linear-gradient(90deg,transparent,var(--revealColor,#69e5ff),transparent)!important;
+  opacity:.45!important;animation:none!important;
+}
+#gameWrap #singleReveal .revealPanel::after{
+  display:none!important;
+}
+#gameWrap #singleReveal .revealCounter{
+  top:18px!important;right:20px!important;z-index:20!important;
+  color:#607d89!important;font-size:6px!important;letter-spacing:.15em!important;
+}
+
+#gameWrap #singleReveal .premiumReveal142{
+  position:relative;z-index:4;
+  width:100%;min-height:540px;
+  display:grid;grid-template-columns:1.03fr .97fr;
+}
+#gameWrap #singleReveal .premiumRevealVisual142{
+  position:relative;min-width:0;padding:34px 26px 28px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-right:1px solid #1b313b;
+  background:
+    radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--revealColor,#62dfff) 15%,transparent) 0,transparent 36%),
+    linear-gradient(180deg,#0d1b23,#081117);
+}
+#gameWrap #singleReveal .premiumRevealVisual142::before{
+  content:"";position:absolute;left:50%;top:49%;width:310px;height:310px;transform:translate(-50%,-50%);
+  border-radius:50%;border:1px solid color-mix(in srgb,var(--revealColor,#62dfff) 22%,transparent);
+  box-shadow:inset 0 0 45px color-mix(in srgb,var(--revealColor,#62dfff) 8%,transparent);
+}
+#gameWrap #singleReveal .premiumRevealVisual142::after{
+  content:"";position:absolute;left:50%;top:49%;width:252px;height:252px;transform:translate(-50%,-50%);
+  border-radius:50%;border:1px dashed color-mix(in srgb,var(--revealColor,#62dfff) 20%,transparent);
+  animation:premiumRevealOrbit142 14s linear infinite;
+}
+@keyframes premiumRevealOrbit142{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+#gameWrap #singleReveal .premiumRevealTag142{
+  position:absolute;left:22px;top:20px;color:#527381;
+  font-size:5.5px;font-weight:850;letter-spacing:.18em;
+}
+#gameWrap #singleReveal .revealNew{
+  position:absolute!important;right:20px!important;top:18px!important;
+  min-height:0!important;padding:5px 9px!important;
+  border:1px solid #d6f7fb!important;border-radius:99px!important;
+  background:#e8fbfd!important;color:#071017!important;
+  box-shadow:none!important;font-size:6px!important;letter-spacing:.12em!important;
+}
+#gameWrap #singleReveal .revealNew:empty{display:none!important}
+
+#gameWrap #singleReveal .premiumRevealObject142{
+  position:relative;z-index:5;width:300px;height:300px;
+  display:grid;place-items:center;
+}
+#gameWrap #singleReveal .premiumRevealObject142::before{
+  content:"";position:absolute;left:50%;bottom:18px;width:170px;height:26px;transform:translateX(-50%);
+  border-radius:50%;background:#0008;filter:blur(7px);
+}
+#gameWrap #singleReveal .revealSilhouette129{
+  position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;
+}
+#gameWrap #singleReveal .revealIcon{
+  position:relative!important;z-index:8!important;
+  margin:0!important;font-size:132px!important;line-height:1!important;
+  filter:drop-shadow(0 22px 34px #000c)!important;
+}
+#gameWrap #singleReveal .revealRarity{
+  position:relative;z-index:8;
+  margin:8px 0 0!important;padding:6px 10px;
+  border:1px solid color-mix(in srgb,var(--revealColor,#62dfff) 40%,#22343d);
+  border-radius:99px;
+  background:#061017b8;
+  color:var(--revealColor,#8ddfff)!important;
+  font-size:6.5px!important;letter-spacing:.25em!important;
+}
+
+/* data side */
+#gameWrap #singleReveal .premiumRevealData142{
+  min-width:0;padding:62px 42px 34px;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;
+  background:
+    linear-gradient(180deg,#081218,#050b10);
+}
+#gameWrap #singleReveal .premiumRevealEyebrow142{
+  color:#527481;font-size:5.5px;font-weight:850;letter-spacing:.2em;
+}
+#gameWrap #singleReveal .revealName{
+  margin:12px 0 0!important;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  font-size:clamp(38px,5vw,64px)!important;
+  line-height:.9!important;letter-spacing:-.055em!important;
+  color:#effafd!important;text-align:left!important;text-shadow:none!important;
+}
+#gameWrap #singleReveal .premiumRevealRule142{
+  width:100%;height:1px;margin:20px 0 16px;
+  background:linear-gradient(90deg,#355766,transparent);
+}
+#gameWrap #singleReveal .revealWeapon{
+  margin:0!important;color:#c6d8de!important;font-size:11px!important;text-align:left!important;
+}
+#gameWrap #singleReveal .revealPassive{
+  max-width:420px!important;margin:9px 0 0!important;
+  color:#708b96!important;font-size:9px!important;line-height:1.65!important;text-align:left!important;
+}
+#gameWrap #singleReveal .revealStars{
+  margin-top:18px!important;color:#ffd96d!important;font-size:17px!important;letter-spacing:4px!important;text-align:left!important;
+}
+#gameWrap #singleReveal .revealDupeProgress{
+  margin:16px 0 0!important;width:auto!important;max-width:100%!important;
+  padding:6px 9px!important;border:1px solid #243d48!important;border-radius:7px!important;
+  background:#061017!important;color:#8199a4!important;font-size:6.5px!important;
+}
+#gameWrap #singleReveal .revealGuarantee{
+  min-height:16px!important;margin-top:8px!important;font-size:6.5px!important;text-align:left!important;
+}
+#gameWrap #singleReveal .revealTap{
+  margin-top:auto!important;padding-top:30px!important;
+  color:#6b8792!important;font-size:6.5px!important;letter-spacing:.18em!important;text-align:left!important;
+  animation:premiumTapBreath142 1.6s ease-in-out infinite!important;
+}
+@keyframes premiumTapBreath142{50%{opacity:.42}}
+
+/* rarity material treatment */
+#gameWrap #singleReveal .revealPanel.common{--revealColor:#a7b2b8;border-color:#35454d!important}
+#gameWrap #singleReveal .revealPanel.rare{--revealColor:#63cfff;border-color:#315d72!important}
+#gameWrap #singleReveal .revealPanel.epic{--revealColor:#c77cff;border-color:#624879!important}
+#gameWrap #singleReveal .revealPanel.legendary{
+  --revealColor:#ffd96b;
+  border-color:#745f28!important;
+  background:linear-gradient(105deg,#17150c 0 49.8%,#0b0d0a 50%)!important;
+  box-shadow:0 44px 120px #000e,0 0 46px #ffc83b1c,inset 0 0 0 1px #3f3518!important;
+}
+#gameWrap #singleReveal .revealPanel.legendary .premiumRevealVisual142{
+  background:
+    radial-gradient(circle at 50% 46%,#d49b281e 0,transparent 38%),
+    linear-gradient(180deg,#17160e,#0c0e0b)!important;
+}
+#gameWrap #singleReveal .revealPanel.legendary .premiumRevealData142{
+  background:linear-gradient(180deg,#11110b,#080a08)!important;
+}
+#gameWrap #singleReveal .revealPanel.legendary .premiumRevealRule142{
+  background:linear-gradient(90deg,#806925,transparent);
+}
+
+/* entrance choreography */
+#gameWrap #singleReveal.active .premiumRevealVisual142{
+  animation:premiumRevealLeft142 .58s cubic-bezier(.16,.82,.22,1) both;
+}
+#gameWrap #singleReveal.active .premiumRevealData142{
+  animation:premiumRevealRight142 .66s cubic-bezier(.16,.82,.22,1) .05s both;
+}
+#gameWrap #singleReveal.active .revealIcon{
+  animation:premiumRevealIcon142 .76s cubic-bezier(.16,.9,.2,1) .08s both!important;
+}
+@keyframes premiumRevealLeft142{0%{opacity:0;transform:translateX(-18px)}100%{opacity:1;transform:none}}
+@keyframes premiumRevealRight142{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:none}}
+@keyframes premiumRevealIcon142{
+  0%{opacity:0;transform:translateY(18px) scale(.64);filter:brightness(2.2) blur(2px)}
+  62%{opacity:1;transform:translateY(-3px) scale(1.05);filter:brightness(1.12) blur(0)}
+  100%{opacity:1;transform:none;filter:drop-shadow(0 22px 34px #000c)}
+}
+
+/* summary actions become quiet, high-end utilities */
+#gameWrap #gachaSummaryActions{
+  width:min(680px,calc(100% - 20px))!important;margin:14px auto 0!important;gap:8px!important;
+}
+#gameWrap #gachaSummaryActions .summonBtn{
+  min-height:52px!important;border:1px solid #284957!important;border-radius:12px!important;
+  background:linear-gradient(180deg,#0e222c,#08151c)!important;
+  color:#dcecf0!important;box-shadow:0 10px 24px #0005!important;
+}
+#gameWrap #gachaSummaryActions .summonBtn.gold{
+  border-color:#6d5c29!important;background:linear-gradient(180deg,#231f0f,#121007)!important;
+}
+
+/* mobile reveal */
+@media(max-width:700px){
+  #gameWrap #singleReveal .revealPanel{
+    width:94vw!important;min-height:650px!important;border-radius:16px!important;
+    background:linear-gradient(180deg,#0b171f 0 52%,#071017 52%)!important;
+  }
+  #gameWrap #singleReveal .premiumReveal142{
+    min-height:650px;grid-template-columns:1fr;grid-template-rows:330px 1fr;
+  }
+  #gameWrap #singleReveal .premiumRevealVisual142{
+    padding:24px 16px 16px;border-right:0;border-bottom:1px solid #1b313b;
+  }
+  #gameWrap #singleReveal .premiumRevealVisual142::before{width:230px;height:230px}
+  #gameWrap #singleReveal .premiumRevealVisual142::after{width:196px;height:196px}
+  #gameWrap #singleReveal .premiumRevealObject142{width:220px;height:220px}
+  #gameWrap #singleReveal .revealIcon{font-size:96px!important}
+  #gameWrap #singleReveal .premiumRevealData142{padding:28px 22px 24px}
+  #gameWrap #singleReveal .revealName{font-size:38px!important}
+  #gameWrap #singleReveal .revealTap{padding-top:20px!important}
+}
+@media(max-height:720px) and (min-width:701px){
+  #gameWrap #singleReveal .revealPanel{min-height:460px!important}
+  #gameWrap #singleReveal .premiumReveal142{min-height:460px}
+  #gameWrap #singleReveal .premiumRevealObject142{width:240px;height:240px}
+  #gameWrap #singleReveal .premiumRevealVisual142::before{width:250px;height:250px}
+  #gameWrap #singleReveal .premiumRevealVisual142::after{width:210px;height:210px}
+  #gameWrap #singleReveal .revealIcon{font-size:104px!important}
+  #gameWrap #singleReveal .premiumRevealData142{padding-top:48px;padding-bottom:24px}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #singleReveal.active .premiumRevealVisual142,
+  #gameWrap #singleReveal.active .premiumRevealData142,
+  #gameWrap #singleReveal.active .revealIcon,
+  #gameWrap #singleReveal .premiumRevealVisual142::after,
+  #gameWrap #singleReveal .revealTap{
+    animation:none!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -7083,18 +7331,27 @@ body.summonActive130 #joystickZone{
           <div id="revealProgressStrip" class="revealProgressStrip"></div>
           <div id="revealPanel" class="revealPanel">
             <div id="revealCounter" class="revealCounter"></div>
-            <div style="position:relative;z-index:2">
-              <div id="revealNew" class="revealNew"></div>
-              <div id="revealSilhouette129" class="revealSilhouette129"></div>
-              <div id="revealIcon" class="revealIcon"></div>
-              <div id="revealRarity" class="revealRarity"></div>
-              <div id="revealName" class="revealName"></div>
-              <div id="revealWeapon" class="revealWeapon"></div>
-              <div id="revealPassive" class="revealPassive"></div>
-              <div id="revealStars" class="revealStars"></div>
-              <div id="revealDupeProgress" class="revealDupeProgress"></div>
-              <div id="revealGuarantee" class="revealGuarantee"></div>
-              <div id="revealTap" class="revealTap" data-i18n="gacha.tapContinue">TAP TO CONTINUE</div>
+            <div class="premiumReveal142">
+              <section class="premiumRevealVisual142">
+                <div class="premiumRevealTag142">SURVIVOR CORE // DECRYPTED</div>
+                <div id="revealNew" class="revealNew"></div>
+                <div class="premiumRevealObject142">
+                  <div id="revealSilhouette129" class="revealSilhouette129"></div>
+                  <div id="revealIcon" class="revealIcon"></div>
+                </div>
+                <div id="revealRarity" class="revealRarity"></div>
+              </section>
+              <section class="premiumRevealData142">
+                <div class="premiumRevealEyebrow142">IDENTITY CONFIRMED</div>
+                <div id="revealName" class="revealName"></div>
+                <div class="premiumRevealRule142"></div>
+                <div id="revealWeapon" class="revealWeapon"></div>
+                <div id="revealPassive" class="revealPassive"></div>
+                <div id="revealStars" class="revealStars"></div>
+                <div id="revealDupeProgress" class="revealDupeProgress"></div>
+                <div id="revealGuarantee" class="revealGuarantee"></div>
+                <div id="revealTap" class="revealTap" data-i18n="gacha.tapContinue">TAP TO CONTINUE</div>
+              </section>
             </div>
           </div>
         </div>
@@ -12951,11 +13208,11 @@ function setHomeGachaMachineState(state='',rarity=''){
   m.className='gashaponMachine megaCapsuleMachine premiumVault140'+(state?' '+state:'')+(rarity?' '+rarity.toLowerCase():'');
   const a=document.getElementById('homeMachineStatus'),b=document.getElementById('homeMachineSub');
   const map={
-    arming:['GEMS ACCEPTED','POWERING DISPENSER...'],
-    cranking:['TURNING CORE','CAPSULES SHUFFLING...'],
-    dropping:['CAPSULE RELEASE','DROP GATE OPEN'],
-    settle:['CAPSULE DISPENSED','CHECK RESULT'],
-    idle:['CAPSULE READY','SELECT 1× OR 10× SUMMON']
+    arming:['FORGE PRIMED','ENERGY ROUTING TO CHAMBER'],
+    cranking:['ORBITAL MIX','CORE FIELD IN MOTION'],
+    dropping:['OUTPUT SEQUENCE','RELEASE GATE OPENING'],
+    settle:['CORE DELIVERED','READY TO DECRYPT'],
+    idle:['CORE FORGE READY','CHOOSE A RELEASE PROTOCOL']
   },v=map[state]||map.idle;
   if(a)a.textContent=v[0];if(b)b.textContent=v[1];
 }
