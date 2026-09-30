@@ -7428,6 +7428,184 @@ body.summonActive130 #joystickZone{
   #gameWrap #gacha .energyOrbit150,#gameWrap #gacha .corePod150,#gameWrap #gacha .orbitalDebris150 i{animation:none!important}
 }
 </style>
+<style id="stage151OrbitalIsolationMaterial">
+/* Stage 15.1 — isolation + material pass */
+#gameWrap #gacha #gachaMachine.orbitalMachine150{
+  width:100%!important;height:550px!important;margin:0!important;
+  transform:none!important;filter:none!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;
+}
+#gameWrap #gacha #gachaMachine.orbitalMachine150 *{
+  box-sizing:border-box;
+}
+#gameWrap #gacha .orbitalSummon150{
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  font-weight:650!important;letter-spacing:0!important;
+  border-radius:26px!important;
+}
+#gameWrap #gacha .orbitalSummon150:not(:disabled):active{
+  transform:translateY(2px) scale(.994)!important;
+  box-shadow:inset 0 0 0 2px #0b1e27,0 0 0 1px #0a1115,0 4px 10px #0009!important;
+}
+
+/* segmented aerospace metal instead of flat circles */
+#gameWrap #gacha .rigOuter150{
+  background:
+    repeating-conic-gradient(from -4deg,#243137 0 5deg,#11191d 5deg 9deg,#445157 9deg 11deg,#11191d 11deg 19deg);
+  padding:14px;
+  border-color:#11191d!important;
+  box-shadow:inset 0 0 0 2px #566269,inset 0 0 0 8px #0a1013,0 0 0 2px #020405,0 26px 48px #000d!important;
+}
+#gameWrap #gacha .rigOuter150::before{
+  inset:12px!important;border:1px solid #7a8b9238!important;
+  box-shadow:inset 0 0 22px #0008;
+}
+#gameWrap #gacha .rigOuter150::after{
+  content:"";position:absolute;inset:22px;border-radius:50%;
+  border:2px solid #1f3e4b;
+  box-shadow:inset 0 0 0 1px #6fe5ff12,0 0 20px #49dfff0b;
+}
+#gameWrap #gacha .rigInner150{
+  background:radial-gradient(circle at 50% 50%,#0a1b24 0 58%,#061017 59%);
+  border-color:#5c778333!important;
+}
+#gameWrap #gacha .rigArc150{
+  background:linear-gradient(90deg,#11191d,#28353a 48%,#121a1e);
+  box-shadow:inset 0 0 0 2px #39464b,0 8px 18px #0009;
+}
+
+/* physical joints */
+#gameWrap #gacha .rigNode150{
+  border-radius:4px!important;
+  background:linear-gradient(180deg,#435057,#11191d)!important;
+  border-color:#66747a!important;
+}
+#gameWrap #gacha .rigNode150::after{
+  content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;transform:translate(-50%,-50%);
+  border-radius:50%;background:#91a4aa;box-shadow:0 0 0 2px #11191d;
+}
+
+/* glass pods: real translucent shells */
+#gameWrap #gacha .corePod150{
+  isolation:isolate;overflow:visible!important;border-radius:50%!important;background:transparent!important;
+}
+#gameWrap #gacha .corePod150>i,
+#gameWrap #gacha .corePod150>b{
+  overflow:hidden!important;
+  box-shadow:inset 8px 4px #ffffff20,inset -8px -7px #0610186b!important;
+}
+#gameWrap #gacha .corePod150>i::after,
+#gameWrap #gacha .corePod150>b::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(112deg,#ffffff38 0 8%,transparent 9% 70%,#ffffff10 71% 76%,transparent 77%);
+}
+#gameWrap #gacha .corePod150>em{
+  background:linear-gradient(180deg,#28343a,#090f12 55%,#1f2b30)!important;
+  border-top-color:#879ba4!important;
+  box-shadow:0 0 0 1px #020405,0 0 10px #000c;
+}
+#gameWrap #gacha .corePod150>span{
+  background:radial-gradient(circle,#172932,#05090c 72%)!important;
+  border-color:#9edcea!important;
+}
+#gameWrap #gacha .corePod150.legendaryPod150>em{
+  background:linear-gradient(180deg,#7d5a1c,#1b1305 55%,#6d4711)!important;border-top-color:#ffe69a!important;
+}
+
+/* crystal facets and controlled highlight */
+#gameWrap #gacha .crystalShard150.main150::after{
+  content:"";position:absolute;left:47%;top:0;width:2px;height:100%;background:linear-gradient(180deg,#fff,transparent 75%);opacity:.52;
+}
+#gameWrap #gacha .orbitalCrystal150{
+  animation:crystalHover151 4.8s ease-in-out infinite;
+}
+@keyframes crystalHover151{50%{translate:0 -4px;filter:drop-shadow(0 17px 23px #000a) drop-shadow(0 0 29px #67e4ff66)}}
+
+/* ceiling looks suspended above viewport */
+#gameWrap #gacha .ceilingRing150.r1{
+  background:repeating-conic-gradient(from 2deg,#202a2f 0 6deg,#555f63 6deg 8deg,#12191c 8deg 17deg);
+  box-shadow:inset 0 -6px 0 #0a0f11,inset 0 5px 0 #66727755,0 23px 55px #000d!important;
+}
+#gameWrap #gacha .ceilingRing150.r2{
+  background:repeating-conic-gradient(#131a1d 0 12deg,#645842 12deg 14deg,#182126 14deg 24deg);
+}
+
+/* refined energy hierarchy */
+#gameWrap #gacha .orbitalLightColumn150{
+  width:4px!important;opacity:.48!important;
+  box-shadow:0 0 12px #71e7ff,0 0 32px #41cfff44!important;
+}
+#gameWrap #gacha .energyOrbit150{opacity:.72}
+#gameWrap #gacha .orbitC150{opacity:.44}
+
+/* console surfaces */
+#gameWrap #gacha .hardwarePod150{
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 50% 4%,#ffffff12 0 7%,transparent 8%),
+    linear-gradient(180deg,#19282e,#0b1215 58%,#05090b)!important;
+  border-color:#39484e!important;
+  box-shadow:inset 0 1px #ffffff18,inset 0 -8px #020405,0 13px 26px #000a!important;
+}
+#gameWrap #gacha .hardwarePod150::after{
+  content:"";position:absolute;left:8%;right:8%;bottom:4px;height:8px;border-radius:50%;border-top:1px solid #5d6b7044;
+}
+#gameWrap #gacha .hardwareCore150{
+  background:radial-gradient(circle,#132e39,#05090c 70%)!important;
+  border-color:#66787f!important;
+  box-shadow:inset 0 0 0 3px #07151b,0 0 14px #46dfff1f!important;
+}
+#gameWrap #gacha .outputMouth150{
+  border-color:#65747a!important;background:radial-gradient(ellipse,#010203 0 55%,#0c171c 56%)!important;
+  box-shadow:inset 0 0 11px #000,0 0 0 2px #111a1e!important;
+}
+#gameWrap #gacha .transferRail150{
+  border-color:#314c57!important;
+  box-shadow:inset 0 0 0 1px #020405,0 6px 16px #0006;
+}
+
+/* premium summon controls with glass and metal edges */
+#gameWrap #gacha .orbitalSummon150{
+  position:relative;overflow:hidden;
+  border-width:1px!important;
+  box-shadow:inset 0 1px #ffffff18,inset 0 -5px #02080b,0 0 0 2px #071017,0 13px 28px #0009!important;
+}
+#gameWrap #gacha .orbitalSummon150::before{
+  content:"";position:absolute;left:3%;right:3%;top:3px;height:28%;
+  border-radius:22px 22px 50% 50%;background:linear-gradient(180deg,#ffffff12,transparent);pointer-events:none;
+}
+#gameWrap #gacha .orbitalSummon150::after{
+  content:"";position:absolute;left:-35%;top:-70%;width:32%;height:240%;transform:rotate(18deg);
+  background:linear-gradient(90deg,transparent,#ffffff12,transparent);transition:left .65s cubic-bezier(.2,.7,.2,1);pointer-events:none;
+}
+@media(hover:hover) and (pointer:fine){
+  #gameWrap #gacha .orbitalSummon150:hover::after{left:115%}
+  #gameWrap #gacha .orbitalSummon150:hover{transform:translateY(-2px)!important;filter:brightness(1.06)}
+}
+
+/* details feel like quiet editorial controls */
+#gameWrap #gacha .orbitalIntel150[open]{
+  background:#071017;border-radius:8px;padding:0 7px;margin:0 -7px;
+}
+#gameWrap #gacha .orbitalIntel150[open] summary{color:#91abb5}
+#gameWrap #gacha .orbitalIntel150 summary:focus-visible,
+#gameWrap #gacha .orbitalSummon150:focus-visible,
+#gameWrap #gacha .orbitalClose150:focus-visible{
+  outline:2px solid #73e6ff!important;outline-offset:3px!important;
+}
+
+/* strong overrides for legacy reduced-size machine rules */
+@media(min-width:621px){
+  #gameWrap #gacha #gachaMachine.orbitalMachine150{transform:none!important;width:100%!important}
+}
+@media(max-width:620px){
+  #gameWrap #gacha #gachaMachine.orbitalMachine150{height:390px!important;transform:none!important;width:100%!important}
+  #gameWrap #gacha .orbitalCrystal150{animation-duration:5.5s}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #gacha .orbitalCrystal150{animation:none!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
