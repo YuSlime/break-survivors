@@ -7806,6 +7806,122 @@ body.summonActive130 #joystickZone{
   #gameWrap #gacha .orbitalIntel150{forced-color-adjust:auto}
 }
 </style>
+<style id="stage154OrbitalCinematicContinuity">
+/* Stage 15.4 — home-to-cinematic continuity */
+#gameWrap #summonCinematic .summonMachineScene.survivorForge135{
+  background:
+    radial-gradient(circle at 50% 42%,#0e2c3a 0 9%,transparent 35%),
+    linear-gradient(180deg,#081218,#050b10)!important;
+  border-radius:24px!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130 b{
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-weight:400!important;letter-spacing:.055em!important;
+  color:#ecf8fb!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .summonSceneBody{
+  overflow:hidden!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .summonSceneBody::after{
+  content:"";position:absolute;left:50%;top:-130px;width:620px;height:220px;transform:translateX(-50%);
+  border-radius:50%;
+  border:18px solid #202a2e;
+  box-shadow:
+    inset 0 -5px 0 #060b0d,
+    inset 0 5px 0 #68737855,
+    0 22px 50px #000c,
+    0 0 0 2px #0a1114;
+  background:repeating-conic-gradient(from 0deg,#1e282c 0 7deg,#555f63 7deg 9deg,#11181b 9deg 18deg);
+  z-index:2;pointer-events:none;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobe{
+  top:30px!important;
+  width:540px!important;height:355px!important;
+  max-width:62%!important;
+  border:11px solid #182329!important;
+  background:
+    radial-gradient(circle at 50% 47%,#15485f 0 7%,#0b2938 30%,#06131b 71%)!important;
+  box-shadow:
+    inset 0 0 0 2px #5a6870,
+    inset 0 0 0 9px #091116,
+    inset 0 0 68px #5ae0ff18,
+    0 0 0 2px #020405,
+    0 24px 46px #000b!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobe::before{
+  inset:16px!important;border:1px dashed #6fe7ff2d!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobe::after{
+  content:"ORBITAL RESONANCE ARRAY"!important;
+  border-radius:99px!important;
+  background:#061017dc!important;
+  border-color:#2a4f5e!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaRotor{
+  width:112px!important;height:112px!important;
+  border:1px solid #3e6575!important;
+  opacity:.22!important;
+  box-shadow:0 0 0 17px #07141b4d,0 0 25px #58e1ff15!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaRotor::after{
+  content:"";position:absolute;left:50%;top:50%;width:150px;height:56px;transform:translate(-50%,-50%);
+  border-radius:50%;border:1px solid #64e1ff2c;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaMiniCap{
+  border-radius:50%!important;
+  filter:drop-shadow(0 8px 8px #0009) drop-shadow(0 0 4px #4edfff26)!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaCoreWrap{
+  top:47%!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaPedestal{
+  border-radius:50%!important;
+  background:linear-gradient(180deg,#1b2b31,#060b0e)!important;
+  border-color:#405159!important;
+  box-shadow:inset 0 4px #5e6b7044,0 10px 22px #0008!important;
+}
+
+/* cinematic hardware matches home hardware silhouette */
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic .survivorForge135 .cinemaDropTube{
+  border-radius:50% 50% 16px 16px!important;
+  background:linear-gradient(180deg,#16252b,#071016 72%)!important;
+  border-color:#39484e!important;
+  box-shadow:inset 0 1px #ffffff13,inset 0 -7px #020405,0 12px 25px #0009!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .forgeHeart135{
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#111f25,#061017)!important;
+  border-color:#2f454f!important;
+}
+
+/* local phase lighting */
+#gameWrap #summonCinematic.phase-crank .survivorForge135 .cinemaGlobe{
+  box-shadow:inset 0 0 0 2px #5a6870,inset 0 0 0 9px #091116,inset 0 0 82px #5ae0ff2c,0 0 0 2px #020405,0 24px 46px #000b!important;
+}
+#gameWrap #summonCinematic.phase-select134 .survivorForge135 .cinemaGlobe{
+  filter:brightness(.68)!important;
+}
+#gameWrap #summonCinematic.phase-route134 .survivorForge135 .forgeSpine135{
+  opacity:1!important;
+}
+#gameWrap #summonCinematic.phase-goldleak134 .survivorForge135 .summonSceneBody::after,
+#gameWrap #summonCinematic.phase-heavy-drop134 .survivorForge135 .summonSceneBody::after,
+#gameWrap #summonCinematic.phase-legend .survivorForge135 .summonSceneBody::after{
+  border-color:#51421e!important;
+  box-shadow:inset 0 -5px 0 #130d03,inset 0 5px 0 #9c7c3455,0 22px 50px #000c,0 0 24px #ffc73b22!important;
+}
+
+/* mobile cinematic ceiling remains visible but restrained */
+@media(max-width:620px){
+  #gameWrap #summonCinematic .survivorForge135 .summonSceneBody::after{
+    top:-72px;width:390px;height:135px;border-width:11px;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaGlobe{
+    top:15px!important;width:90%!important;max-width:90%!important;height:245px!important;border-width:7px!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -8162,8 +8278,8 @@ body.summonActive130 #joystickZone{
           <div class="cinemaWarningBand"><i></i><b id="cinemaAlert">CORE FORGE ONLINE</b><i></i></div>
           <div class="cinemaStage" id="cinemaTapTarget">
             <div class="summonMachineScene summonArcade130 survivorForge135">
-              <div class="cinemaMarquee130"><span>BREAK SURVIVORS</span><b>SURVIVOR CORE FORGE</b><em>IGNITE • SELECT • FORGE</em></div>
-              <div class="summonSceneHeader"><span>CORE CHAMBER // ACTIVE FORGE</span><b id="cinemaStepLabel">SYSTEM READY</b></div>
+              <div class="cinemaMarquee130"><span>BREAK SURVIVORS</span><b>ORBITAL CORE SUMMON</b><em>RESONATE • SELECT • RELEASE</em></div>
+              <div class="summonSceneHeader"><span>ORBITAL CHAMBER // RESONANCE ARRAY</span><b id="cinemaStepLabel">SYSTEM READY</b></div>
               <div class="summonSceneBody">
                 <div class="forgeArchitecture135">
                   <div class="forgePipe135 pipeL135"><i></i><b></b><em></em></div>
@@ -8255,7 +8371,7 @@ body.summonActive130 #joystickZone{
               </div>
               <div id="cinemaRack" class="cinemaRack"></div>
               <div class="cinemaReadout">
-                <div class="cinemaLabel">CORE FORGE STATUS</div>
+                <div class="cinemaLabel">ORBITAL SUMMON STATUS</div>
                 <div id="cinemaTapText" class="cinemaTapText" data-i18n="gacha.charging">CHARGING...</div>
                 <div id="cinemaHint" class="cinemaHint" data-i18n="gacha.energy">エネルギーを集めています</div>
                 <div id="cinemaProgress" class="cinemaProgress"></div>
