@@ -3444,6 +3444,315 @@ body.summonActive130 #joystickZone{
   }
 }
 </style>
+<style id="stage133SummonCore">
+/* Stage 13.3 — SUMMON CORE
+   Remove the box-like internal cube. The capsule now contains living summon energy. */
+
+/* Kill the old square-core visual completely, including legacy selectors. */
+#gameWrap #summonCinematic .cinemaCapGlow{display:none!important}
+
+/* Core container */
+#gameWrap .summonCore133{
+  --core:#dff7ff;
+  --core2:#75dfff;
+  --coreDark:#236e9c;
+  position:absolute;left:50%;top:50%;z-index:6;
+  width:78px;height:78px;transform:translate(-50%,-50%);
+  border-radius:50%;pointer-events:none;isolation:isolate;
+}
+#gameWrap .summonCoreAura133{
+  position:absolute;left:50%;top:50%;width:72px;height:72px;transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,
+    #ffffffd9 0 7%,
+    color-mix(in srgb,var(--core) 82%,white) 8% 20%,
+    color-mix(in srgb,var(--core2) 46%,transparent) 21% 43%,
+    transparent 70%);
+  filter:blur(.2px);opacity:.78;
+  animation:coreAuraBreath133 1.55s ease-in-out infinite;
+}
+#gameWrap .summonCoreOrb133{
+  position:absolute;left:50%;top:50%;z-index:5;width:34px;height:34px;
+  transform:translate(-50%,-50%);border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 28%,#fff 0 10%,transparent 11%),
+    radial-gradient(circle,var(--core) 0 28%,var(--core2) 29% 62%,var(--coreDark) 63% 100%);
+  border:3px solid color-mix(in srgb,var(--core) 75%,white);
+  box-shadow:
+    inset 5px 4px #ffffff55,
+    inset -6px -5px #00000024,
+    0 0 9px var(--core),
+    0 0 24px color-mix(in srgb,var(--core2) 68%,transparent);
+  animation:coreOrbPulse133 1.15s ease-in-out infinite;
+}
+#gameWrap .summonCoreGlyph133{
+  position:absolute;left:50%;top:50%;z-index:8;transform:translate(-50%,-50%);
+  display:grid;place-items:center;width:26px;height:26px;border-radius:50%;
+  color:#fff;font-size:14px;font-weight:1000;text-shadow:0 0 7px var(--core);
+  opacity:.86;animation:coreGlyphBreath133 1.15s steps(3,end) infinite;
+}
+
+/* Energy rings: circular and thin, never square. */
+#gameWrap .summonCoreRing133{
+  position:absolute;left:50%;top:50%;z-index:3;border-radius:50%;
+  border:2px solid color-mix(in srgb,var(--core) 80%,transparent);
+  transform:translate(-50%,-50%);opacity:.55;
+  box-shadow:0 0 7px color-mix(in srgb,var(--core2) 55%,transparent);
+}
+#gameWrap .ringOne133{width:52px;height:52px;border-style:solid;animation:coreRingSpinA133 3.8s linear infinite}
+#gameWrap .ringTwo133{width:66px;height:42px;border-style:dashed;animation:coreRingSpinB133 4.7s linear infinite reverse}
+#gameWrap .ringThree133{width:42px;height:66px;border-style:dotted;opacity:.32;animation:coreRingSpinC133 5.4s linear infinite}
+
+/* Floating energy motes live inside the capsule. */
+#gameWrap .summonCoreParticles133{
+  position:absolute;inset:-9px;z-index:4;opacity:.68;pointer-events:none;
+}
+#gameWrap .summonCoreParticles133 i{
+  position:absolute;width:4px;height:4px;border-radius:1px;
+  background:var(--core);box-shadow:0 0 5px var(--core2);
+  animation:coreMoteFloat133 2.1s ease-in-out infinite;
+}
+#gameWrap .summonCoreParticles133 i:nth-child(1){left:7%;top:24%;animation-delay:-.2s}
+#gameWrap .summonCoreParticles133 i:nth-child(2){left:25%;top:5%;animation-delay:-.8s}
+#gameWrap .summonCoreParticles133 i:nth-child(3){left:51%;top:11%;animation-delay:-1.3s}
+#gameWrap .summonCoreParticles133 i:nth-child(4){right:13%;top:24%;animation-delay:-.5s}
+#gameWrap .summonCoreParticles133 i:nth-child(5){right:3%;top:51%;animation-delay:-1.6s}
+#gameWrap .summonCoreParticles133 i:nth-child(6){right:16%;bottom:14%;animation-delay:-.9s}
+#gameWrap .summonCoreParticles133 i:nth-child(7){left:52%;bottom:5%;animation-delay:-1.8s}
+#gameWrap .summonCoreParticles133 i:nth-child(8){left:25%;bottom:12%;animation-delay:-.4s}
+#gameWrap .summonCoreParticles133 i:nth-child(9){left:4%;bottom:33%;animation-delay:-1.1s}
+#gameWrap .summonCoreParticles133 i:nth-child(10){left:20%;top:44%;animation-delay:-1.5s}
+#gameWrap .summonCoreParticles133 i:nth-child(11){right:23%;top:43%;animation-delay:-.7s}
+#gameWrap .summonCoreParticles133 i:nth-child(12){left:47%;bottom:28%;animation-delay:-1.9s}
+
+@keyframes coreAuraBreath133{
+  0%,100%{transform:translate(-50%,-50%) scale(.92);opacity:.52}
+  50%{transform:translate(-50%,-50%) scale(1.08);opacity:.9}
+}
+@keyframes coreOrbPulse133{
+  0%,100%{transform:translate(-50%,-50%) scale(.96);filter:brightness(.95)}
+  50%{transform:translate(-50%,-50%) scale(1.08);filter:brightness(1.34)}
+}
+@keyframes coreGlyphBreath133{50%{filter:brightness(1.9);transform:translate(-50%,-50%) scale(1.12)}}
+@keyframes coreRingSpinA133{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes coreRingSpinB133{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes coreRingSpinC133{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes coreMoteFloat133{
+  0%,100%{transform:translate(0,5px) scale(.65);opacity:.25}
+  50%{transform:translate(0,-6px) scale(1.2);opacity:1}
+}
+
+/* Rarity identities */
+#gameWrap #summonCinematic.common .summonCore133{
+  --core:#eaf2f8;--core2:#a9bccd;--coreDark:#607181;
+}
+#gameWrap #summonCinematic.common .ringTwo133,
+#gameWrap #summonCinematic.common .ringThree133{display:none}
+#gameWrap #summonCinematic.common .summonCoreParticles133{opacity:.35}
+
+#gameWrap #summonCinematic.rare .summonCore133{
+  --core:#dff9ff;--core2:#43c8ff;--coreDark:#1769c3;
+}
+#gameWrap #summonCinematic.rare .ringThree133{display:none}
+#gameWrap #summonCinematic.rare .summonCoreParticles133{opacity:.7}
+
+#gameWrap #summonCinematic.epic .summonCore133{
+  --core:#ffe6ff;--core2:#d45cff;--coreDark:#6922c4;
+}
+#gameWrap #summonCinematic.epic .summonCoreAura133{opacity:.9}
+#gameWrap #summonCinematic.epic .summonCoreParticles133{opacity:.9}
+#gameWrap #summonCinematic.epic .summonCoreParticles133 i{width:5px;height:5px}
+
+#gameWrap #summonCinematic.legendary .summonCore133{
+  --core:#fffbd3;--core2:#ffd342;--coreDark:#d36e10;
+  width:88px;height:88px;
+}
+#gameWrap #summonCinematic.legendary .summonCoreAura133{
+  width:88px;height:88px;
+  background:radial-gradient(circle,
+    #fff 0 8%,
+    #fff8bb 9% 19%,
+    #ffd84b99 20% 41%,
+    #ff9b1f45 42% 62%,
+    transparent 72%);
+  animation-duration:.95s;
+}
+#gameWrap #summonCinematic.legendary .summonCoreOrb133{
+  width:39px;height:39px;border-color:#fff5a5;
+  box-shadow:inset 5px 4px #fff9d988,inset -6px -5px #7e2d0833,0 0 12px #fff4a2,0 0 34px #ffc62e;
+}
+#gameWrap #summonCinematic.legendary .summonCoreGlyph133{
+  width:31px;height:31px;font-size:18px;color:#fff8b5;text-shadow:0 0 9px #ffd032;
+}
+#gameWrap #summonCinematic.legendary .ringOne133{width:62px;height:62px;border-color:#fff1a0}
+#gameWrap #summonCinematic.legendary .ringTwo133{width:78px;height:50px;border-color:#ffd245}
+#gameWrap #summonCinematic.legendary .ringThree133{width:50px;height:78px;border-color:#ffae28;opacity:.72}
+#gameWrap #summonCinematic.legendary .summonCoreParticles133{inset:-15px;opacity:1}
+#gameWrap #summonCinematic.legendary .summonCoreParticles133 i{
+  width:5px;height:5px;background:#fff4a0;box-shadow:0 0 8px #ffc62f;
+}
+
+/* First tap: energy compresses instead of a cube flashing. */
+#gameWrap #summonCinematic.shell-primed .summonCoreAura133{
+  animation:coreCompressAura133 .58s steps(6,end) both!important;
+}
+#gameWrap #summonCinematic.shell-primed .summonCoreOrb133{
+  animation:coreCompressOrb133 .58s steps(6,end) both!important;
+}
+#gameWrap #summonCinematic.shell-primed .summonCoreGlyph133{
+  animation:coreCompressGlyph133 .58s steps(6,end) both!important;
+}
+#gameWrap #summonCinematic.shell-primed .ringOne133{
+  animation:coreCompressRingA133 .58s steps(6,end) both!important;
+}
+#gameWrap #summonCinematic.shell-primed .ringTwo133{
+  animation:coreCompressRingB133 .58s steps(6,end) both!important;
+}
+#gameWrap #summonCinematic.shell-primed .ringThree133{
+  animation:coreCompressRingC133 .58s steps(6,end) both!important;
+}
+#gameWrap #summonCinematic.shell-primed .summonCoreParticles133 i{
+  animation:coreParticleIn133 .52s steps(5,end) both!important;
+}
+@keyframes coreCompressAura133{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:.8}
+  68%{transform:translate(-50%,-50%) scale(.58);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(.7);opacity:1;filter:brightness(1.8)}
+}
+@keyframes coreCompressOrb133{
+  0%{transform:translate(-50%,-50%) scale(1)}
+  70%{transform:translate(-50%,-50%) scale(.67);filter:brightness(1.8)}
+  100%{transform:translate(-50%,-50%) scale(.78);filter:brightness(2.25)}
+}
+@keyframes coreCompressGlyph133{
+  0%{transform:translate(-50%,-50%) scale(1)}
+  100%{transform:translate(-50%,-50%) scale(.84);filter:brightness(2.4)}
+}
+@keyframes coreCompressRingA133{
+  to{width:42px;height:42px;transform:translate(-50%,-50%) rotate(210deg);opacity:1}
+}
+@keyframes coreCompressRingB133{
+  to{width:48px;height:31px;transform:translate(-50%,-50%) rotate(-240deg);opacity:1}
+}
+@keyframes coreCompressRingC133{
+  to{width:31px;height:48px;transform:translate(-50%,-50%) rotate(280deg);opacity:.9}
+}
+@keyframes coreParticleIn133{
+  to{left:50%;top:50%;right:auto;bottom:auto;transform:translate(-50%,-50%) scale(.35);opacity:0}
+}
+
+/* Second tap: the energy core becomes white-hot, then dissolves into the character reveal. */
+#gameWrap #summonCinematic.shell-open .summonCore133{
+  animation:coreReleaseContainer133 .78s steps(7,end) both;
+}
+#gameWrap #summonCinematic.shell-open .summonCoreAura133{
+  animation:coreReleaseAura133 .72s steps(7,end) both!important;
+}
+#gameWrap #summonCinematic.shell-open .summonCoreOrb133{
+  animation:coreReleaseOrb133 .72s steps(7,end) both!important;
+}
+#gameWrap #summonCinematic.shell-open .summonCoreGlyph133{
+  animation:coreReleaseGlyph133 .62s steps(6,end) both!important;
+}
+#gameWrap #summonCinematic.shell-open .summonCoreRing133{
+  animation:coreReleaseRing133 .7s steps(7,end) both!important;
+}
+#gameWrap #summonCinematic.shell-open .summonCoreParticles133{
+  animation:coreReleaseMotes133 .74s steps(7,end) both;
+}
+@keyframes coreReleaseContainer133{
+  0%{filter:brightness(1)}
+  44%{filter:brightness(3)}
+  100%{filter:brightness(1.4)}
+}
+@keyframes coreReleaseAura133{
+  0%{transform:translate(-50%,-50%) scale(.72);opacity:1}
+  56%{transform:translate(-50%,-50%) scale(2.1);opacity:1;filter:brightness(3)}
+  100%{transform:translate(-50%,-50%) scale(3.2);opacity:0}
+}
+@keyframes coreReleaseOrb133{
+  0%{transform:translate(-50%,-50%) scale(.78);opacity:1}
+  46%{transform:translate(-50%,-50%) scale(1.28);opacity:1;filter:brightness(4)}
+  100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}
+}
+@keyframes coreReleaseGlyph133{
+  0%{transform:translate(-50%,-50%) scale(.9);opacity:1}
+  58%{transform:translate(-50%,-50%) scale(1.8);opacity:1;filter:brightness(4)}
+  100%{transform:translate(-50%,-50%) scale(3);opacity:0}
+}
+@keyframes coreReleaseRing133{
+  0%{opacity:1}
+  100%{width:118px;height:118px;transform:translate(-50%,-50%) rotate(300deg);opacity:0}
+}
+@keyframes coreReleaseMotes133{
+  0%{opacity:1;transform:scale(.7)}
+  100%{opacity:0;transform:scale(2.1) rotate(12deg)}
+}
+
+/* Prevent old pseudo-elements from reading like a cube inside the shell. */
+#gameWrap #summonCinematic .cinemaCore::before,
+#gameWrap #summonCinematic .cinemaCore::after{
+  content:none!important;display:none!important;
+}
+
+/* The capsule glass itself becomes clearer so the energy is visibly 'inside', not pasted on top. */
+#gameWrap #summonCinematic .cinemaCapTop,
+#gameWrap #summonCinematic .cinemaCapBottom{
+  z-index:7!important;
+}
+#gameWrap #summonCinematic .summonCore133{z-index:6!important}
+#gameWrap #summonCinematic .cinemaCapBelt128,
+#gameWrap #summonCinematic .cinemaCapSigil128,
+#gameWrap #summonCinematic .cinemaCapShine128{
+  z-index:10!important;
+}
+#gameWrap #summonCinematic .cinemaCapTop{
+  background:
+    radial-gradient(circle at 35% 25%,#ffffff9c 0 8%,transparent 9%),
+    linear-gradient(145deg,#ecfbffb8 0 13%,#63dfffcf 14% 54%,#257fc5d0 55%)!important;
+}
+#gameWrap #summonCinematic .cinemaCapBottom{
+  background:linear-gradient(145deg,#a07cffdc,#6b42d7de 65%,#361675e6)!important;
+}
+/* Preserve rarity-specific shell identities after making the glass more translucent. */
+#gameWrap #summonCinematic.common .cinemaCapTop{
+  background:linear-gradient(145deg,#ffffffe8 0 17%,#dbe5eee0 18% 57%,#8997a8e0 58%)!important;
+}
+#gameWrap #summonCinematic.common .cinemaCapBottom{
+  background:linear-gradient(145deg,#aab6c5e3,#667486e5 68%,#303b49ed)!important;
+}
+#gameWrap #summonCinematic.rare .cinemaCapTop{
+  background:linear-gradient(145deg,#e9fbffe5 0 14%,#5dd8ffe0 15% 56%,#1564d2e5 57%)!important;
+}
+#gameWrap #summonCinematic.rare .cinemaCapBottom{
+  background:linear-gradient(145deg,#528fffe5,#2e55d7e8 65%,#14236dee)!important;
+}
+#gameWrap #summonCinematic.epic .cinemaCapTop{
+  background:linear-gradient(145deg,#ffe2fbe5 0 14%,#ff70c8e3 15% 48%,#9d2de2e6 49%)!important;
+}
+#gameWrap #summonCinematic.epic .cinemaCapBottom{
+  background:linear-gradient(145deg,#be65ffe5,#7131d2e9 65%,#35105ff0)!important;
+}
+#gameWrap #summonCinematic.legendary .cinemaCapTop{
+  background:
+    radial-gradient(circle at 38% 22%,#fffef0f2 0 9%,transparent 10%),
+    linear-gradient(145deg,#fffbd4e3 0 12%,#ffe86be0 13% 43%,#ffb32ee3 44% 73%,#d96b14e9 74%)!important;
+}
+#gameWrap #summonCinematic.legendary .cinemaCapBottom{
+  background:linear-gradient(145deg,#ffd45ae5,#ef921fe8 56%,#a64708ef 100%)!important;
+}
+
+/* Mobile keeps the core readable without filling the capsule. */
+@media(max-width:620px){
+  #gameWrap .summonCore133{transform:translate(-50%,-50%) scale(.84)}
+  #gameWrap #summonCinematic.legendary .summonCore133{transform:translate(-50%,-50%) scale(.9)}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap .summonCore133 *,#gameWrap .summonCoreParticles133 i{
+    animation-duration:.001ms!important;animation-iteration-count:1!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -3833,7 +4142,18 @@ body.summonActive130 #joystickZone{
                     <em class="cinemaCapBelt128"></em>
                     <span class="cinemaCapSigil128">◆</span>
                     <u class="cinemaCapShine128"></u>
-                    <b class="cinemaCapGlow"></b>
+                    <div class="summonCore133">
+                      <div class="summonCoreAura133"></div>
+                      <div class="summonCoreRing133 ringOne133"></div>
+                      <div class="summonCoreRing133 ringTwo133"></div>
+                      <div class="summonCoreRing133 ringThree133"></div>
+                      <div class="summonCoreOrb133"></div>
+                      <span class="summonCoreGlyph133">◆</span>
+                      <div class="summonCoreParticles133">
+                        <i></i><i></i><i></i><i></i><i></i><i></i>
+                        <i></i><i></i><i></i><i></i><i></i><i></i>
+                      </div>
+                    </div>
                     <div class="cinemaCracks128"><i></i><i></i><i></i><i></i></div>
                     <div class="cinemaLegendHalo128"><i></i><i></i><i></i><i></i></div>
                     <div class="cinemaLegendCrown131"><i></i><b></b><em></em></div>
@@ -9800,10 +10120,14 @@ function spawnCinemaPixels(rarity){
   }
 }
 function setCapsuleRarityVisual(rarity){
-  const cine=document.getElementById('summonCinematic'),sigil=cine?.querySelector('.cinemaCapSigil128');
+  const cine=document.getElementById('summonCinematic'),
+        sigil=cine?.querySelector('.cinemaCapSigil128'),
+        coreGlyph=cine?.querySelector('.summonCoreGlyph133');
   const map={Common:'◉',Rare:'★',Epic:'✦',Legendary:'♛'};
   if(cine)cine.dataset.capsuleRarity=(rarity||'Common').toLowerCase();
-  if(sigil)sigil.textContent=map[rarity]||'◆';
+  const glyph=map[rarity]||'◆';
+  if(sigil)sigil.textContent=glyph;
+  if(coreGlyph)coreGlyph.textContent=glyph;
 }
 function setCinemaText(step,tap,hint,progress){
   const a=document.getElementById('cinemaStepLabel'),b=document.getElementById('cinemaTapText'),c=document.getElementById('cinemaHint'),d=document.getElementById('cinemaProgress');
