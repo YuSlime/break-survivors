@@ -5417,6 +5417,251 @@ body.summonActive130 #joystickZone{
   }
 }
 </style>
+<style id="stage138GachaQualityPass">
+/* Stage 13.8 — GACHA QUALITY PASS II
+   Motion, accessibility, result continuity, mobile behavior. */
+
+/* Remove legacy pixel raster treatment from the premium gacha surface. */
+#gameWrap #gacha{image-rendering:auto!important}
+#gameWrap #gacha .pixelGacha{
+  overflow-y:auto!important;overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:#284b5a #071017;
+}
+#gameWrap #gacha .pixelGacha::-webkit-scrollbar{width:8px}
+#gameWrap #gacha .pixelGacha::-webkit-scrollbar-track{background:#071017}
+#gameWrap #gacha .pixelGacha::-webkit-scrollbar-thumb{background:#284b5a;border-radius:999px}
+
+/* Clear, restrained interaction feedback */
+#gameWrap #gacha button,
+#gameWrap #gachaSummaryActions button{
+  -webkit-tap-highlight-color:transparent;
+}
+#gameWrap #gacha button:focus-visible,
+#gameWrap #gachaSummaryActions button:focus-visible{
+  outline:2px solid #75e8ff!important;
+  outline-offset:3px!important;
+}
+#gameWrap #gacha .arcadeSummon127:active{
+  transform:translateY(1px) scale(.992)!important;
+  transition-duration:.06s!important;
+}
+#gameWrap #gacha .arcadeSummon127:disabled{
+  opacity:.38!important;filter:saturate(.45)!important;
+  transform:none!important;cursor:not-allowed!important;
+}
+#gameWrap #gacha .arcadeSummon127:disabled::before{display:none!important}
+
+/* Chamber depth: subtle refraction ring rather than more glow. */
+#gameWrap #gacha .arcadeDome127::after{
+  content:"";
+  position:absolute;inset:24px;z-index:9;pointer-events:none;
+  border-radius:50%;
+  border:1px solid #a8f3ff12;
+  box-shadow:inset 18px 0 34px #73e8ff08,inset -18px 0 34px #0005;
+}
+#gameWrap #gacha .arcadeGlass127::after{
+  content:"";
+  position:absolute;left:18%;top:8%;width:22%;height:62%;
+  border-radius:50%;
+  background:linear-gradient(90deg,#ffffff10,transparent);
+  transform:rotate(15deg);filter:blur(.2px);opacity:.55;
+}
+
+/* Machine module labels use the same quiet hierarchy. */
+#gameWrap #gacha .arcadeTurn127::before,
+#gameWrap #gacha .arcadeGenPanel127::before,
+#gameWrap #gacha .arcadeChute127::before{
+  position:absolute;top:7px;left:0;right:0;
+  color:#567986;font:800 4.6px ui-monospace,"Cascadia Mono",Consolas,monospace;
+  letter-spacing:.13em;text-align:center;
+}
+#gameWrap #gacha .arcadeTurn127::before{content:"IGNITION"}
+#gameWrap #gacha .arcadeGenPanel127::before{content:"FORGE HEART"}
+#gameWrap #gacha .arcadeChute127::before{content:"OUTPUT"}
+#gameWrap #gacha .arcadeTurn127,
+#gameWrap #gacha .arcadeGenPanel127,
+#gameWrap #gacha .arcadeChute127{position:relative!important;padding-top:12px!important}
+
+/* Status panel hierarchy: numbers > labels > metadata */
+#gameWrap #gacha .arcadePanelTop127 b{
+  color:#e9f8fc!important;font-size:12px!important;
+  font-variant-numeric:tabular-nums;
+}
+#gameWrap #gacha .gachaStatusFoot{
+  display:flex!important;justify-content:space-between!important;gap:6px!important;
+  color:#5f7c89!important;font-size:5px!important;
+}
+#gameWrap #gacha .gachaStatusFoot span:last-child{text-align:right}
+#gameWrap #gacha .gachaRosterUnit{
+  transition:border-color .18s ease,background .18s ease,opacity .18s ease!important;
+}
+#gameWrap #gacha .gachaRosterUnit.owned{
+  border-color:#355a6d!important;background:#0a1820!important;
+}
+
+/* Pull cards: better internal alignment and emphasis */
+#gameWrap #gacha .arcadeSummon127{
+  display:grid!important;
+  grid-template-columns:44px 1fr!important;
+  grid-template-rows:1fr auto!important;
+  grid-template-areas:"cap label" "cap cost"!important;
+  align-items:center!important;
+  padding:10px 16px!important;text-align:left!important;
+}
+#gameWrap #gacha .arcadeSummon127 .buttonCapsule127{grid-area:cap!important;justify-self:center!important}
+#gameWrap #gacha .arcadeSummon127 span{
+  grid-area:label!important;align-self:end!important;margin:0!important;
+}
+#gameWrap #gacha .arcadeSummon127 em{
+  grid-area:cost!important;align-self:start!important;margin-top:4px!important;
+}
+#gameWrap #gacha .arcadeSummon127 small{
+  color:#65dff8!important;font-size:8px!important;margin-right:4px!important;
+}
+#gameWrap #gacha .arcadeSummon127.ten small{color:#ffd765!important}
+
+/* Summary banner belongs to the same visual system. */
+#gameWrap #gachaSummaryBanner{
+  width:min(720px,calc(100% - 20px))!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#0b1820,#071017)!important;
+  box-shadow:0 16px 40px #0008!important;
+}
+#gameWrap #gachaSummaryBanner.show{
+  padding:13px 16px!important;
+  border:1px solid #294754!important;
+}
+#gameWrap #gachaSummaryBanner span{
+  color:#607f8d!important;font-size:5.5px!important;letter-spacing:.18em!important;
+}
+#gameWrap #gachaSummaryBanner b{
+  font-family:ui-sans-serif,system-ui,sans-serif!important;
+  margin-top:5px!important;font-size:22px!important;letter-spacing:-.02em!important;
+}
+#gameWrap #gachaSummaryBanner em{font-size:7px!important;color:#8aa3ae!important}
+#gameWrap #gachaSummaryBanner.legendary{
+  border-color:#7d672b!important;box-shadow:0 16px 40px #0008,0 0 28px #ffc83b1c!important;
+}
+
+/* Result grid continuity */
+#gameWrap #gachaResults{
+  width:min(980px,calc(100% - 20px));margin:0 auto;
+}
+#gameWrap #gachaResults .resultCard{
+  border:1px solid #273f4b!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,#0b171e,#071017)!important;
+  box-shadow:0 10px 24px #0005!important;
+}
+#gameWrap #gachaResults .resultCard::before{
+  height:2px!important;opacity:.72!important;
+}
+#gameWrap #gachaResults .resultCard.legendaryCard{
+  border-color:#746126!important;
+  box-shadow:0 10px 24px #0006,0 0 22px #ffc83b17!important;
+}
+#gameWrap #gachaResults .resultCard.newCharacter{
+  outline:1px solid #7bdff04d!important;
+  outline-offset:2px!important;
+}
+
+/* Reveal motion: replace remaining stepped legacy motion with controlled easing. */
+#gameWrap #singleReveal.active .revealPanel{
+  animation:awardRevealPanel138 .62s cubic-bezier(.16,.82,.22,1) both!important;
+}
+#gameWrap #singleReveal.active .revealPanel.revealBurst .revealIcon,
+#gameWrap #singleReveal.active .revealPanel.legendary.revealBurst .revealIcon{
+  animation:awardRevealIcon138 .72s cubic-bezier(.16,.9,.2,1) both!important;
+}
+#gameWrap #singleReveal.active .revealPanel.legendary{
+  animation:awardRevealPanel138 .7s cubic-bezier(.16,.82,.22,1) both!important;
+}
+@keyframes awardRevealPanel138{
+  0%{opacity:0;transform:translateY(24px) scale(.94);filter:brightness(.8)}
+  68%{opacity:1;transform:translateY(-2px) scale(1.008);filter:brightness(1.06)}
+  100%{opacity:1;transform:none;filter:none}
+}
+@keyframes awardRevealIcon138{
+  0%{opacity:0;transform:translateY(18px) scale(.58);filter:brightness(2.4) blur(2px)}
+  62%{opacity:1;transform:translateY(-3px) scale(1.06);filter:brightness(1.18) blur(0)}
+  100%{opacity:1;transform:none;filter:brightness(1)}
+}
+#gameWrap #singleReveal .revealPanel.revealBurst::after{
+  border-color:color-mix(in srgb,var(--revealColor,#5ee5ff) 62%,transparent)!important;
+  animation:awardBorderBreath138 .9s ease-out both!important;
+}
+@keyframes awardBorderBreath138{
+  0%{opacity:0;transform:scale(.97)}
+  32%{opacity:.75}
+  100%{opacity:.12;transform:scale(1.015)}
+}
+
+/* Do not endlessly pulse legendary cards; one entrance is more premium. */
+#gameWrap #gachaResults .resultCard.legendaryCard{
+  animation:revealCard .42s cubic-bezier(.2,.8,.2,1) both!important;
+}
+#gameWrap #singleReveal.active .revealPanel.legendary{
+  box-shadow:0 0 42px #ffc83b20,0 30px 100px #000e,inset 0 0 0 1px #3c3118!important;
+}
+
+/* Cinematic: active module guides the eye; inactive modules step back. */
+#gameWrap #summonCinematic.phase-crank .survivorForge135 .forgeHeart135,
+#gameWrap #summonCinematic.phase-crank .survivorForge135 .cinemaDropTube{opacity:.54!important}
+#gameWrap #summonCinematic.phase-route134 .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-route134 .survivorForge135 .cinemaDropTube{opacity:.52!important}
+#gameWrap #summonCinematic.phase-gate134 .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-gate134 .survivorForge135 .forgeHeart135{opacity:.5!important}
+#gameWrap #summonCinematic.phase-settle134 .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic.phase-settle134 .survivorForge135 .forgeSpine135{opacity:.48!important}
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic .survivorForge135 .forgeHeart135,
+#gameWrap #summonCinematic .survivorForge135 .cinemaDropTube,
+#gameWrap #summonCinematic .survivorForge135 .forgeSpine135{
+  transition:opacity .22s ease,border-color .22s ease,box-shadow .22s ease!important;
+}
+
+/* Tap target cursor only when meaningful */
+#gameWrap #summonCinematic.ready #cinemaTapTarget,
+#gameWrap #summonCinematic.opening #cinemaTapTarget{cursor:pointer}
+
+/* Touch + safe-area */
+@media(max-width:620px){
+  #gameWrap #gacha .pixelGacha{
+    padding:
+      max(6px,env(safe-area-inset-top))
+      max(6px,env(safe-area-inset-right))
+      max(16px,env(safe-area-inset-bottom))
+      max(6px,env(safe-area-inset-left))!important;
+  }
+  #gameWrap #gacha .arcadeClose127{
+    width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+  }
+  #gameWrap #gacha .arcadeSummon127{
+    min-height:64px!important;grid-template-columns:40px 1fr!important;padding:9px 12px!important;
+  }
+  #gameWrap #gacha .arcadeSummon127 span{font-size:14px!important}
+  #gameWrap #gacha .arcadeMeta127{display:none!important}
+  #gameWrap #gachaSummaryBanner{width:calc(100% - 12px)!important}
+  #gameWrap #gachaResults{width:calc(100% - 12px)!important}
+}
+@media(max-width:390px){
+  #gameWrap #gacha .arcadeBrand127 strong{font-size:21px!important}
+  #gameWrap #gacha .arcadeCredit127{min-width:108px!important}
+  #gameWrap #gacha .arcadeDome127{height:224px!important}
+  #gameWrap #gacha .arcadeDome127 .gashaCapsule{transform:scale(.72)!important}
+  #gameWrap #gacha .arcadeMachineBase127{grid-template-columns:1fr .78fr 1fr!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #singleReveal.active .revealPanel,
+  #gameWrap #singleReveal.active .revealPanel .revealIcon,
+  #gameWrap #singleReveal .revealPanel.revealBurst::after{
+    animation:none!important;
+  }
+  #gameWrap #gacha .arcadeSummon127{transition:none!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
