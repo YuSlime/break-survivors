@@ -4376,6 +4376,397 @@ body.summonActive130 #joystickZone{
   #gameWrap .forgeScanner135::after{animation-duration:.001ms!important;animation-iteration-count:1!important}
 }
 </style>
+<style id="stage136ForgeUiCleanup">
+/* Stage 13.6 — FORGE UI CLEANUP
+   High-specificity cleanup layer. One hierarchy, one palette, no legacy red arcade bleed-through. */
+
+/* Overall cabinet */
+#gameWrap #summonCinematic .summonMachineScene.survivorForge135{
+  width:min(940px,96vw)!important;
+  height:min(720px,86dvh)!important;
+  grid-template-rows:70px 38px minmax(0,1fr) 40px 92px!important;
+  border:3px solid #2d4656!important;
+  border-radius:18px!important;
+  clip-path:none!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,#111d25,#0a1218 62%,#070d12)!important;
+  box-shadow:inset 0 0 0 3px #081016,inset 0 0 0 7px #172a35,0 18px 48px #000b!important;
+}
+
+/* Clean header */
+#gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130{
+  grid-template-columns:140px 1fr 140px!important;
+  min-height:70px!important;
+  padding:8px 18px!important;
+  border:0!important;
+  border-bottom:2px solid #29495c!important;
+  background:linear-gradient(180deg,#132531,#09151d)!important;
+  box-shadow:inset 0 -3px #050b10!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130::before,
+#gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130::after{
+  content:""!important;height:1px!important;
+  background:linear-gradient(90deg,transparent,#46dfff99,transparent)!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130 span,
+#gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130 em{
+  color:#6f9fb2!important;font-size:6.5px!important;letter-spacing:.16em!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130 b{
+  color:#d9f8ff!important;
+  font-size:clamp(24px,3.4vw,34px)!important;
+  letter-spacing:.06em!important;
+  text-shadow:0 0 10px #4bdfff55!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .summonSceneHeader{
+  min-height:38px!important;height:38px!important;padding:0 14px!important;
+  border:0!important;border-bottom:1px solid #254252!important;
+  background:#08131a!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .summonSceneHeader span{font-size:7.5px!important;color:#b7d8e5!important}
+#gameWrap #summonCinematic .survivorForge135 .summonSceneHeader b{font-size:6px!important;color:#65dff9!important}
+
+/* Main bay */
+#gameWrap #summonCinematic .survivorForge135 .summonSceneBody{
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 50% 34%,#103247 0 15%,transparent 39%),
+    linear-gradient(90deg,#43dfff08 1px,transparent 1px),
+    linear-gradient(#43dfff06 1px,transparent 1px),
+    linear-gradient(180deg,#091821 0 69%,#071017 69%)!important;
+  background-size:auto,28px 28px,28px 28px,auto!important;
+  box-shadow:inset 0 0 0 1px #203744,inset 0 -1px #24404f!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .summonSceneBody::before{
+  content:""!important;inset:0!important;z-index:30!important;
+  background:linear-gradient(110deg,#ffffff0c 0 8%,transparent 8% 72%,#ffffff07 72% 77%,transparent 77%)!important;
+}
+
+/* Remove the two tower/pipes that cluttered the chamber. */
+#gameWrap #summonCinematic .survivorForge135 .forgePipe135{display:none!important}
+
+/* Main chamber — only dominant object in upper field */
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobe{
+  left:50%!important;top:16px!important;
+  width:470px!important;height:300px!important;
+  max-width:58%!important;
+  transform:translateX(-50%)!important;
+  z-index:6!important;
+  overflow:hidden!important;
+  border:8px solid #395564!important;
+  border-radius:50%!important;
+  clip-path:none!important;
+  background:
+    radial-gradient(circle at 50% 48%,#124b68 0 8%,#0b2a3d 33%,#06141e 72%)!important;
+  box-shadow:
+    inset 0 0 0 4px #071016,
+    inset 0 0 0 8px #264654,
+    inset 0 0 48px #37ddff1f,
+    0 0 0 3px #081016,
+    0 0 22px #3bdfff22!important;
+  filter:none!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobe::before{
+  content:""!important;
+  position:absolute!important;inset:10px!important;
+  width:auto!important;height:auto!important;left:10px!important;top:10px!important;
+  transform:none!important;
+  border:2px dashed #52dcff33!important;
+  border-radius:50%!important;
+  background:none!important;
+  opacity:1!important;z-index:1!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobe::after{
+  content:"CORE CHAMBER"!important;
+  top:10px!important;z-index:18!important;
+  padding:3px 9px!important;
+  border:1px solid #315365!important;
+  background:#06131bd9!important;
+  color:#71def7!important;
+  font-size:5.8px!important;
+  letter-spacing:.14em!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobeGrid{
+  inset:14px!important;border-radius:50%!important;
+  background:
+    radial-gradient(circle,#6be8ff12 0 2px,transparent 3px),
+    linear-gradient(90deg,#65e5ff08 1px,transparent 1px),
+    linear-gradient(#65e5ff08 1px,transparent 1px)!important;
+  background-size:34px 34px,26px 26px,26px 26px!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaRotor{
+  width:96px!important;height:96px!important;z-index:2!important;
+  border:5px solid #285165!important;border-radius:50%!important;
+  background:radial-gradient(circle,#174a61,#07151f 68%)!important;
+  opacity:.42!important;
+  box-shadow:0 0 0 4px #061018,0 0 14px #44dfff2b!important;
+}
+
+/* Capsules: slightly smaller, more breathing room */
+#gameWrap #summonCinematic .survivorForge135 .cinemaMiniCap{
+  width:54px!important;height:50px!important;z-index:8!important;
+  filter:drop-shadow(2px 3px 0 #02070a) drop-shadow(0 0 4px #3bdfff38)!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaMiniCap>i,
+#gameWrap #summonCinematic .survivorForge135 .cinemaMiniCap>b{
+  left:2px!important;width:50px!important;height:25px!important;border-width:3px!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .miniBelt130{height:8px!important}
+#gameWrap #summonCinematic .survivorForge135 .miniSigil130{width:17px!important;height:17px!important;font-size:8px!important}
+#gameWrap #summonCinematic .survivorForge135 .miniShine130{width:14px!important;height:5px!important;left:10px!important;top:7px!important}
+
+/* Re-space the chamber contents */
+#gameWrap #summonCinematic .survivorForge135 .mc1{left:10%!important;top:22%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc2{left:27%!important;top:12%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc3{left:45%!important;top:22%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc4{right:18%!important;top:16%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc5{left:17%!important;top:49%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc6{left:37%!important;top:45%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc7{right:25%!important;top:43%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc8{right:8%!important;top:53%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc9{left:26%!important;bottom:7%!important}
+#gameWrap #summonCinematic .survivorForge135 .mc10{right:22%!important;bottom:8%!important}
+
+/* Bottom modules: three clean blocks, same height and visual weight */
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic .survivorForge135 .cinemaDropTube,
+#gameWrap #summonCinematic .survivorForge135 .forgeHeart135{
+  bottom:18px!important;height:116px!important;
+  border:2px solid #2b4656!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#10212b,#081218)!important;
+  box-shadow:inset 0 0 0 2px #061017,0 8px 18px #0007!important;
+}
+
+/* Ignition */
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankAssembly{
+  left:22px!important;right:auto!important;top:auto!important;
+  width:176px!important;z-index:14!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankAssembly::before{
+  content:"CORE IGNITION"!important;top:8px!important;
+  color:#6eddf7!important;font-size:5.5px!important;letter-spacing:.12em!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankWheel{
+  width:82px!important;height:82px!important;
+  border:8px solid #4a6776!important;border-radius:50%!important;
+  background:radial-gradient(circle,#4be1ff 0 7%,#12384a 8% 25%,#07131a 26% 100%)!important;
+  box-shadow:inset 0 0 0 5px #061018,0 0 0 3px #203945,0 0 12px #3ddfff33!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankWheel::before{
+  inset:10px!important;border-width:4px!important;border-color:#43dfff88!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankWheel::after{
+  width:18px!important;height:18px!important;border-width:3px!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaCrankWheel i{
+  width:58px!important;height:6px!important;border-width:1px!important;background:#6f8b97!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .ignitionHub135{
+  width:54px!important;height:54px!important;
+}
+
+/* Forge Heart */
+#gameWrap #summonCinematic .survivorForge135 .forgeHeart135{
+  left:50%!important;right:auto!important;top:auto!important;
+  width:124px!important;transform:translateX(-50%)!important;z-index:15!important;
+  display:grid!important;place-items:center!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .forgeHeart135>span{
+  top:8px!important;font-size:5px!important;color:#6eddf7!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .forgeHeart135>div{
+  width:42px!important;height:42px!important;border-width:4px!important;
+}
+
+/* Output */
+#gameWrap #summonCinematic .survivorForge135 .cinemaDropTube{
+  right:22px!important;left:auto!important;top:auto!important;
+  width:176px!important;z-index:14!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaDropTube strong{
+  top:8px!important;font-size:5.5px!important;color:#6eddf7!important;
+  padding:0!important;border:0!important;background:transparent!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaDropTube::after{
+  width:78px!important;height:60px!important;bottom:12px!important;
+  border:7px solid #4d6876!important;border-radius:50%!important;
+  background:radial-gradient(circle,#010304 0 44%,#0b1b23 45% 65%,#061017 66%)!important;
+  box-shadow:inset 0 0 14px #000,0 0 0 3px #071017!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .gateDoor134{
+  width:68px!important;height:48px!important;bottom:19px!important;
+  border:4px solid #59717c!important;border-radius:50%!important;
+  background:linear-gradient(180deg,#22343d,#05090d)!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .gateStatus134{
+  top:28px!important;left:24px!important;right:24px!important;
+}
+
+/* Transfer spine: one quiet line behind the modules */
+#gameWrap #summonCinematic .survivorForge135 .forgeSpine135{
+  left:190px!important;right:190px!important;bottom:8px!important;
+  height:34px!important;z-index:9!important;
+  border:1px solid #254352!important;border-radius:8px!important;
+  background:#061017!important;
+  box-shadow:inset 0 0 0 1px #0b202a!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .spineRail135{
+  left:18px!important;right:18px!important;top:8px!important;height:8px!important;
+  border:1px solid #275064!important;
+  background:repeating-linear-gradient(90deg,#46ddfa 0 11px,#0c2632 11px 20px)!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .spineStep135{
+  bottom:2px!important;font-size:4.4px!important;color:#5d7c8a!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .spineStep135 i{color:#61dff7!important}
+
+/* Scanner is integrated into the spine, not a tall separate tower */
+#gameWrap #summonCinematic .survivorForge135 .forgeScanner135{
+  left:67%!important;right:auto!important;bottom:12px!important;
+  width:32px!important;height:34px!important;z-index:12!important;
+  border:2px solid #335465!important;border-radius:7px!important;
+  background:#08131a!important;
+  box-shadow:inset 0 0 0 1px #061017!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .forgeScanner135 span{display:none!important}
+#gameWrap #summonCinematic .survivorForge135 .forgeScanner135 i,
+#gameWrap #summonCinematic .survivorForge135 .forgeScanner135 b{
+  left:5px!important;right:5px!important;height:2px!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .forgeScanner135 i{top:10px!important}
+#gameWrap #summonCinematic .survivorForge135 .forgeScanner135 b{bottom:10px!important}
+
+/* Chosen capsule appears cleanly in the center when ejected */
+#gameWrap #summonCinematic .survivorForge135 .cinemaCoreWrap{
+  left:50%!important;right:auto!important;top:45%!important;
+  width:220px!important;height:205px!important;
+  transform:translate(-50%,-50%)!important;
+  z-index:22!important;
+}
+
+/* Compact queue */
+#gameWrap #summonCinematic .survivorForge135 .cinemaRack{
+  min-height:40px!important;height:40px!important;
+  padding:4px 10px!important;gap:5px!important;
+  border:0!important;border-top:1px solid #203b4a!important;border-bottom:1px solid #203b4a!important;
+  background:#061017!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .rackCapsule{
+  width:24px!important;height:24px!important;opacity:.28!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .rackCapsule i,
+#gameWrap #summonCinematic .survivorForge135 .rackCapsule b{
+  width:20px!important;height:12px!important;border-width:1px!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .rackCapsule.revealed{opacity:1!important}
+
+/* Full-width status bar: removes the giant empty left/right panels */
+#gameWrap #summonCinematic .survivorForge135 .cinemaReadout{
+  width:100%!important;max-width:none!important;margin:0!important;
+  padding:8px 14px 10px!important;box-sizing:border-box!important;
+  border:0!important;background:#071018!important;
+  box-shadow:none!important;
+  text-align:center!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaReadout .cinemaLabel{
+  font-size:5px!important;color:#4f7b8e!important;letter-spacing:.16em!important;
+}
+#gameWrap #summonCinematic .survivorForge135 .cinemaTapText{font-size:12px!important;margin-top:2px!important}
+#gameWrap #summonCinematic .survivorForge135 .cinemaHint{font-size:7px!important;margin-top:2px!important}
+#gameWrap #summonCinematic .survivorForge135 .cinemaProgress{font-size:6px!important;margin-top:3px!important}
+
+/* Floating alert is hidden in normal operation. It only returns for abnormal routes. */
+#gameWrap #summonCinematic .cinemaWarningBand{opacity:0!important;pointer-events:none!important}
+#gameWrap #summonCinematic.phase-jam134 .cinemaWarningBand,
+#gameWrap #summonCinematic.phase-delivery-blackout134 .cinemaWarningBand,
+#gameWrap #summonCinematic.phase-goldleak134 .cinemaWarningBand,
+#gameWrap #summonCinematic.phase-legend .cinemaWarningBand{
+  opacity:.8!important;
+}
+
+/* Phase emphasis: dim what is not active */
+#gameWrap #summonCinematic.phase-crank .survivorForge135 .cinemaCrankAssembly{
+  border-color:#4e9db8!important;box-shadow:inset 0 0 0 2px #061017,0 0 14px #45dfff33!important;
+}
+#gameWrap #summonCinematic.phase-route134 .survivorForge135 .forgeSpine135{
+  border-color:#3b7c96!important;box-shadow:0 0 12px #42dfff20!important;
+}
+#gameWrap #summonCinematic.phase-gate134 .survivorForge135 .cinemaDropTube{
+  border-color:#4e869e!important;box-shadow:inset 0 0 0 2px #061017,0 0 14px #42dfff2c!important;
+}
+
+/* Legendary takeover remains readable and controlled */
+#gameWrap #summonCinematic.legendary.phase-goldleak134 .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic.legendary.phase-heavy-drop134 .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic.legendary.phase-legend .survivorForge135 .cinemaCrankAssembly,
+#gameWrap #summonCinematic.legendary.phase-goldleak134 .survivorForge135 .forgeHeart135,
+#gameWrap #summonCinematic.legendary.phase-heavy-drop134 .survivorForge135 .forgeHeart135,
+#gameWrap #summonCinematic.legendary.phase-legend .survivorForge135 .forgeHeart135,
+#gameWrap #summonCinematic.legendary.phase-goldleak134 .survivorForge135 .cinemaDropTube,
+#gameWrap #summonCinematic.legendary.phase-heavy-drop134 .survivorForge135 .cinemaDropTube,
+#gameWrap #summonCinematic.legendary.phase-legend .survivorForge135 .cinemaDropTube{
+  border-color:#8f6a26!important;
+  box-shadow:inset 0 0 0 2px #160f04,0 0 14px #ffc5362d!important;
+}
+#gameWrap #summonCinematic.legendary.phase-goldleak134 .survivorForge135 .forgeSpine135,
+#gameWrap #summonCinematic.legendary.phase-heavy-drop134 .survivorForge135 .forgeSpine135,
+#gameWrap #summonCinematic.legendary.phase-legend .survivorForge135 .forgeSpine135{
+  border-color:#8d6724!important;
+}
+
+/* Mobile hierarchy */
+@media(max-width:620px){
+  #gameWrap #summonCinematic .summonMachineScene.survivorForge135{
+    width:98vw!important;height:min(710px,90dvh)!important;
+    grid-template-rows:56px 32px minmax(0,1fr) 34px 82px!important;
+    border-radius:12px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130{
+    grid-template-columns:1fr!important;min-height:56px!important;padding:4px 8px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130 span,
+  #gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130 em{display:none!important}
+  #gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130 b{font-size:20px!important}
+
+  #gameWrap #summonCinematic .survivorForge135 .cinemaGlobe{
+    top:8px!important;width:88%!important;max-width:88%!important;height:230px!important;border-width:6px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaMiniCap{transform:scale(.78) rotate(var(--r,0deg))!important}
+
+  #gameWrap #summonCinematic .survivorForge135 .cinemaCrankAssembly{
+    left:8px!important;bottom:10px!important;width:29%!important;height:96px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaCrankWheel{width:62px!important;height:62px!important}
+  #gameWrap #summonCinematic .survivorForge135 .forgeHeart135{
+    bottom:10px!important;width:25%!important;height:96px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .forgeHeart135>div{width:34px!important;height:34px!important}
+  #gameWrap #summonCinematic .survivorForge135 .cinemaDropTube{
+    right:8px!important;bottom:10px!important;width:29%!important;height:96px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaDropTube::after{width:58px!important;height:44px!important;border-width:5px!important}
+  #gameWrap #summonCinematic .survivorForge135 .gateDoor134{width:51px!important;height:36px!important}
+
+  #gameWrap #summonCinematic .survivorForge135 .forgeSpine135{
+    left:30%!important;right:30%!important;bottom:5px!important;height:28px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .spineStep135{display:none!important}
+  #gameWrap #summonCinematic .survivorForge135 .forgeScanner135{
+    left:67%!important;bottom:8px!important;width:26px!important;height:28px!important;
+  }
+
+  #gameWrap #summonCinematic .survivorForge135 .cinemaCoreWrap{
+    top:43%!important;transform:translate(-50%,-50%) scale(.86)!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaRack{height:34px!important;min-height:34px!important}
+  #gameWrap #summonCinematic .survivorForge135 .rackCapsule{width:20px!important;height:20px!important}
+  #gameWrap #summonCinematic .survivorForge135 .cinemaReadout{padding:6px 8px!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
