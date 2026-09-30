@@ -3217,6 +3217,233 @@ body.summonActive130 #joystickZone{
   }
 }
 </style>
+<style id="stage132SquareSeal">
+/* Stage 13.2 — SQUARE SEAL
+   Replace the flat yellow rectangle with a focused pixel lock / seal-break ritual. */
+#gameWrap .cinemaSquareSeal132{
+  position:absolute;left:50%;top:50%;z-index:24;width:270px;height:270px;
+  transform:translate(-50%,-50%);pointer-events:none;opacity:0;
+}
+#gameWrap .squareFrame132{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  border:2px solid #ffe46d;box-sizing:border-box;opacity:0;
+  filter:drop-shadow(0 0 5px #ffc52d);
+}
+#gameWrap .frameOuter132{width:242px;height:242px}
+#gameWrap .frameMid132{width:202px;height:202px;border-color:#fff2a3}
+#gameWrap .frameInner132{width:164px;height:164px;border-color:#ffbd2e}
+#gameWrap .squareFrame132>i{
+  position:absolute;width:30px;height:30px;border-color:#fff3a1;border-style:solid;
+  filter:drop-shadow(0 0 6px #ffd23d);
+}
+#gameWrap .squareFrame132>i:nth-child(1){left:-4px;top:-4px;border-width:5px 0 0 5px}
+#gameWrap .squareFrame132>i:nth-child(2){right:-4px;top:-4px;border-width:5px 5px 0 0}
+#gameWrap .squareFrame132>i:nth-child(3){left:-4px;bottom:-4px;border-width:0 0 5px 5px}
+#gameWrap .squareFrame132>i:nth-child(4){right:-4px;bottom:-4px;border-width:0 5px 5px 0}
+
+#gameWrap .squareCross132{
+  position:absolute;inset:0;opacity:0;
+}
+#gameWrap .squareCross132>i,#gameWrap .squareCross132>b{
+  position:absolute;left:50%;top:50%;background:#fff0a0;box-shadow:0 0 8px #ffc52e;
+  transform:translate(-50%,-50%);
+}
+#gameWrap .squareCross132>i{width:220px;height:2px}
+#gameWrap .squareCross132>b{width:2px;height:220px}
+
+#gameWrap .squareScan132{
+  position:absolute;left:25px;right:25px;top:50%;height:4px;opacity:0;
+  background:linear-gradient(90deg,transparent,#fff8c5 18%,#ffd13d 50%,#fff8c5 82%,transparent);
+  box-shadow:0 0 10px #ffd13d;
+}
+
+#gameWrap .squarePixels132{position:absolute;inset:0;opacity:0}
+#gameWrap .squarePixels132 i{
+  position:absolute;width:7px;height:7px;background:#fff2a0;box-shadow:0 0 7px #ffc932;
+}
+#gameWrap .squarePixels132 i:nth-child(1){left:10%;top:15%}
+#gameWrap .squarePixels132 i:nth-child(2){left:24%;top:5%}
+#gameWrap .squarePixels132 i:nth-child(3){left:45%;top:10%}
+#gameWrap .squarePixels132 i:nth-child(4){right:24%;top:7%}
+#gameWrap .squarePixels132 i:nth-child(5){right:8%;top:22%}
+#gameWrap .squarePixels132 i:nth-child(6){right:4%;top:46%}
+#gameWrap .squarePixels132 i:nth-child(7){right:11%;bottom:19%}
+#gameWrap .squarePixels132 i:nth-child(8){right:27%;bottom:5%}
+#gameWrap .squarePixels132 i:nth-child(9){left:48%;bottom:8%}
+#gameWrap .squarePixels132 i:nth-child(10){left:28%;bottom:4%}
+#gameWrap .squarePixels132 i:nth-child(11){left:8%;bottom:18%}
+#gameWrap .squarePixels132 i:nth-child(12){left:3%;top:53%}
+#gameWrap .squarePixels132 i:nth-child(13){left:17%;top:36%}
+#gameWrap .squarePixels132 i:nth-child(14){right:18%;top:37%}
+#gameWrap .squarePixels132 i:nth-child(15){left:32%;bottom:29%}
+#gameWrap .squarePixels132 i:nth-child(16){right:32%;bottom:29%}
+
+/* First tap — corner brackets enter, three frames lock down, scan line passes once. */
+#gameWrap #summonCinematic.legend-square132 .cinemaSquareSeal132{opacity:1}
+#gameWrap #summonCinematic.legend-square132 .frameOuter132{
+  animation:squareOuterLock132 .52s steps(6,end) both;
+}
+#gameWrap #summonCinematic.legend-square132 .frameMid132{
+  animation:squareMidLock132 .56s steps(6,end) .07s both;
+}
+#gameWrap #summonCinematic.legend-square132 .frameInner132{
+  animation:squareInnerLock132 .60s steps(6,end) .13s both;
+}
+#gameWrap #summonCinematic.legend-square132 .squareCross132{
+  animation:squareCrossIn132 .28s steps(3,end) .34s both;
+}
+#gameWrap #summonCinematic.legend-square132 .squareScan132{
+  animation:squareScan132 .68s steps(7,end) .28s both;
+}
+#gameWrap #summonCinematic.legend-square132 .squarePixels132{
+  animation:squarePixelsWake132 .65s steps(5,end) .22s both;
+}
+@keyframes squareOuterLock132{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(1.55) rotate(6deg)}
+  70%{opacity:1;transform:translate(-50%,-50%) scale(.97) rotate(0)}
+  100%{opacity:.72;transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes squareMidLock132{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(1.4) rotate(-5deg)}
+  78%{opacity:1;transform:translate(-50%,-50%) scale(.96)}
+  100%{opacity:.8;transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes squareInnerLock132{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(1.28)}
+  75%{opacity:1;transform:translate(-50%,-50%) scale(.93)}
+  100%{opacity:.92;transform:translate(-50%,-50%) scale(1)}
+}
+@keyframes squareCrossIn132{0%{opacity:0}100%{opacity:.38}}
+@keyframes squareScan132{
+  0%{opacity:0;top:20%}
+  18%{opacity:1}
+  82%{opacity:1}
+  100%{opacity:0;top:80%}
+}
+@keyframes squarePixelsWake132{
+  0%{opacity:0;transform:scale(.75)}
+  45%{opacity:1}
+  100%{opacity:.72;transform:scale(1)}
+}
+
+/* Keep the surrounding cabinet dark enough that the capsule remains the visual focus. */
+#gameWrap #summonCinematic.legend-square132 .summonSceneBody{
+  background:
+    radial-gradient(circle at 50% 50%,#5d471528 0 22%,transparent 45%),
+    linear-gradient(90deg,#5ce5ff0b 1px,transparent 1px),
+    linear-gradient(#5ce5ff08 1px,transparent 1px),
+    linear-gradient(180deg,#0c2737 0 72%,#081b27 72%)!important;
+  filter:brightness(.78)!important;
+}
+#gameWrap #summonCinematic.legend-square132 .cinemaCoreWrap{filter:brightness(1.28)!important}
+
+/* Second tap — square seal collapses inward, then breaks into pixel fragments. */
+#gameWrap #summonCinematic.legend-square-burst132 .cinemaSquareSeal132{opacity:1}
+#gameWrap #summonCinematic.legend-square-burst132 .frameOuter132{
+  opacity:.85;animation:squareBreakOuter132 .62s steps(6,end) both;
+}
+#gameWrap #summonCinematic.legend-square-burst132 .frameMid132{
+  opacity:.9;animation:squareBreakMid132 .58s steps(6,end) .03s both;
+}
+#gameWrap #summonCinematic.legend-square-burst132 .frameInner132{
+  opacity:1;animation:squareBreakInner132 .52s steps(6,end) .06s both;
+}
+#gameWrap #summonCinematic.legend-square-burst132 .squareCross132{
+  opacity:.5;animation:squareCrossBreak132 .48s steps(5,end) both;
+}
+#gameWrap #summonCinematic.legend-square-burst132 .squarePixels132{
+  opacity:1;animation:squarePixelBurst132 .72s steps(7,end) both;
+}
+@keyframes squareBreakOuter132{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:.85}
+  35%{transform:translate(-50%,-50%) scale(.72);opacity:1}
+  62%{transform:translate(-50%,-50%) scale(.52);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1.55);opacity:0}
+}
+@keyframes squareBreakMid132{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:.9}
+  44%{transform:translate(-50%,-50%) scale(.61);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1.38);opacity:0}
+}
+@keyframes squareBreakInner132{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:1}
+  55%{transform:translate(-50%,-50%) scale(.46);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1.24);opacity:0}
+}
+@keyframes squareCrossBreak132{
+  0%{transform:scale(1);opacity:.45}
+  50%{transform:scale(.45);opacity:1}
+  100%{transform:scale(1.6);opacity:0}
+}
+@keyframes squarePixelBurst132{
+  0%{opacity:1;transform:scale(.8)}
+  38%{opacity:1;transform:scale(.52)}
+  100%{opacity:0;transform:scale(1.75) rotate(9deg)}
+}
+
+/* Replace the old giant yellow wash with a tight central white-gold pop. */
+#gameWrap #summonCinematic.gold-burst131 .cinemaGoldBurst131{
+  width:16px!important;height:16px!important;
+  animation:goldBurstTight132 .86s cubic-bezier(.15,.8,.2,1) both!important;
+}
+#gameWrap #summonCinematic.gold-burst131 .cinemaGoldBurst131::before{
+  width:260px!important;height:260px!important;
+  background:
+    repeating-conic-gradient(from 0deg,#fff8bf 0 3deg,transparent 3deg 13deg,#ffc52f 13deg 15deg,transparent 15deg 25deg)!important;
+  mask-image:radial-gradient(circle,transparent 0 15%,#000 30%,transparent 68%)!important;
+  opacity:.9!important;
+}
+#gameWrap #summonCinematic.gold-burst131 .cinemaGoldBurst131::after{
+  width:58px!important;height:58px!important;
+  background:#fffdf0!important;
+  box-shadow:0 0 18px #fff6bc,0 0 48px #ffd13e,0 0 92px #ff9c1f88!important;
+}
+@keyframes goldBurstTight132{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.18)}
+  14%{opacity:1}
+  58%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(1.72)}
+}
+
+/* During the actual burst, do not allow the whole glass chamber to blow out to yellow. */
+#gameWrap #summonCinematic.gold-burst131 .summonSceneBody{
+  background:
+    radial-gradient(circle at 50% 50%,#6a4b1626 0 18%,transparent 43%),
+    linear-gradient(90deg,#5ce5ff0a 1px,transparent 1px),
+    linear-gradient(#5ce5ff07 1px,transparent 1px),
+    linear-gradient(180deg,#0b2231 0 72%,#071923 72%)!important;
+  filter:brightness(.82)!important;
+}
+#gameWrap #summonCinematic.gold-burst131 .cinemaBackdrop{
+  background:
+    radial-gradient(circle at 50% 48%,#7a57162f 0 18%,transparent 42%),
+    #05090e!important;
+}
+
+/* Gold cracks sync with the square lock instead of being lost inside the wash. */
+#gameWrap #summonCinematic.legend-square132 .cinemaCracks128 i{
+  box-shadow:0 0 7px #fff,0 0 14px #ffc62e!important;
+}
+#gameWrap #summonCinematic.legend-square-burst132 .cinemaCracks128 i{
+  animation-duration:.34s!important;filter:brightness(1.8);
+}
+
+/* Mobile: keep the seal around the capsule and away from the UI cards. */
+@media(max-width:620px){
+  #gameWrap .cinemaSquareSeal132{width:220px;height:220px!important}
+  #gameWrap .frameOuter132{width:206px!important;height:206px!important}
+  #gameWrap .frameMid132{width:174px!important;height:174px!important}
+  #gameWrap .frameInner132{width:142px!important;height:142px!important}
+  #gameWrap .squareCross132>i{width:190px!important}
+  #gameWrap .squareCross132>b{height:190px!important}
+  #gameWrap #summonCinematic.gold-burst131 .cinemaGoldBurst131::before{width:215px!important;height:215px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap .cinemaSquareSeal132 *,#gameWrap .cinemaGoldBurst131{
+    animation-duration:.001ms!important;animation-iteration-count:1!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -3617,6 +3844,17 @@ body.summonActive130 #joystickZone{
                     <div class="cinemaLegendParticles131">
                       <i></i><i></i><i></i><i></i><i></i><i></i>
                       <i></i><i></i><i></i><i></i><i></i><i></i>
+                    </div>
+                  </div>
+                  <div class="cinemaSquareSeal132">
+                    <div class="squareFrame132 frameOuter132"><i></i><i></i><i></i><i></i></div>
+                    <div class="squareFrame132 frameMid132"><i></i><i></i><i></i><i></i></div>
+                    <div class="squareFrame132 frameInner132"><i></i><i></i><i></i><i></i></div>
+                    <div class="squareCross132"><i></i><b></b></div>
+                    <div class="squareScan132"></div>
+                    <div class="squarePixels132">
+                      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
                     </div>
                   </div>
                   <div class="cinemaGoldBurst131"></div>
@@ -7096,6 +7334,9 @@ function playGachaSfx(kind){
     [523,659,784,1047,1319,1568].forEach((f,i)=>oscTone(f,.62,'sine',.040,null,i*.045));
     oscTone(73,.72,'sine',.065,45);
     noiseBurst(.46,.055,'highpass',2800,.04);
+  }else if(kind==='squareSeal'){
+    [880,1047,1319].forEach((f,i)=>oscTone(f,.10,'square',.013,null,i*.055));
+    metallicPing(1760,.014,.11);
   }
 }
 
@@ -9673,12 +9914,12 @@ function openSummonCapsule(){
   // Single pull uses a deliberate two-tap ritual: first tap damages the shell, second breaks it.
   if(lastPullCount===1&&summonPhase==='ready'&&capsuleOpenStage===0){
     capsuleOpenStage=1;summonPhase='primed';
-    cine.className='active ready phase-prime shell-primed '+cls+(rarity==='Legendary'?' legend-fracture131':'');
+    cine.className='active ready phase-prime shell-primed '+cls+(rarity==='Legendary'?' legend-fracture131 legend-square132':'');
     if(rarity==='Legendary'){
       setCinemaText('ROYAL SEAL 1 / 2','TAP AGAIN TO BREAK','金の亀裂が王冠紋章から広がっている','SEAL FRACTURE');
       setCinemaOmen('burst','ROYAL SEAL FRACTURE');
       const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ROYAL SEAL // FRACTURED';
-      playGachaSfx('royalLock');summonLater(()=>playGachaSfx('crack'),120);
+      playGachaSfx('squareSeal');summonLater(()=>playGachaSfx('royalLock'),110);summonLater(()=>playGachaSfx('crack'),220);
       try{navigator.vibrate?.([34,18,50,18,70])}catch(_){}
     }else{
       setCinemaText('CRACK 1 / 2','TAP AGAIN TO BREAK','紋章が点灯し、カプセルにヒビが入った','CORE UNSTABLE');
@@ -9691,7 +9932,7 @@ function openSummonCapsule(){
   }
 
   capsuleOpenStage=2;summonPhase='opening';
-  cine.className='active opening phase-break shell-cracking '+cls+(rarity==='Legendary'?' legend-burst131':'')+(lastPullCount===10?' multi':'');
+  cine.className='active opening phase-break shell-cracking '+cls+(rarity==='Legendary'?' legend-burst131 legend-square-burst132':'')+(lastPullCount===10?' multi':'');
   setCinemaText(lastPullCount===10?'10 CAPSULE BREAK':rarity==='Legendary'?'ROYAL BREAK 2 / 2':'CRACK 2 / 2','BREAK!','カプセルシェルを完全開放',rarity==='Legendary'?'GOLD CORE RELEASE':'SURVIVOR DATA RELEASE');
   setCinemaOmen('burst',rarity==='Legendary'?'ROYAL CORE BURST':'DATA BURST');
   const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=rarity==='Legendary'?'ROYAL CORE // RELEASE':lastPullCount===10?'10 CAPSULES // OPEN':'CORE SHELL // BREAK';
