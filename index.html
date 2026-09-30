@@ -3753,6 +3753,305 @@ body.summonActive130 #joystickZone{
   }
 }
 </style>
+<style id="stage134CapsuleDelivery">
+/* Stage 13.4 — CAPSULE DELIVERY
+   A capsule is physically selected, routed through the machine, gated, ejected and settled. */
+#gameWrap .cinemaDeliveryPath134{
+  position:absolute;inset:0;z-index:14;pointer-events:none;overflow:hidden;
+}
+#gameWrap .deliveryCap134{
+  --dc1:#dff8ff;--dc2:#65dfff;--dc3:#7551dc;
+  position:absolute;left:50%;top:32%;width:48px;height:46px;
+  transform:translate(-50%,-50%) scale(.72);opacity:0;
+  filter:drop-shadow(2px 3px 0 #02070b) drop-shadow(0 0 6px #63dfff66);
+}
+#gameWrap .deliveryCap134>i,#gameWrap .deliveryCap134>b{
+  position:absolute;left:1px;width:46px;height:23px;border:3px solid;box-sizing:border-box;
+}
+#gameWrap .deliveryCap134>i{
+  top:0;border-radius:25px 25px 5px 5px;
+  border-color:var(--dc1);background:linear-gradient(145deg,#fff 0 10%,var(--dc2) 11% 64%,#2877a8);
+}
+#gameWrap .deliveryCap134>b{
+  bottom:0;border-radius:5px 5px 25px 25px;
+  border-color:#d8c7ff;background:linear-gradient(145deg,#a77dff,var(--dc3) 66%,#342064);
+}
+#gameWrap .deliveryCap134>em{
+  position:absolute;left:0;right:0;top:50%;z-index:4;height:8px;transform:translateY(-50%);
+  border-top:2px solid #eafcff;border-bottom:2px solid #173c54;background:#315d72;
+}
+#gameWrap .deliveryCap134>span{
+  position:absolute;left:50%;top:50%;z-index:6;width:16px;height:16px;transform:translate(-50%,-50%);
+  display:grid;place-items:center;border:2px solid #e7fbff;border-radius:50%;background:#071722;color:#fff;font-size:8px;font-weight:1000;
+}
+#gameWrap #summonCinematic.common .deliveryCap134{--dc2:#d8e2ec;--dc3:#748291}
+#gameWrap #summonCinematic.rare .deliveryCap134{--dc2:#55d5ff;--dc3:#315bd4}
+#gameWrap #summonCinematic.epic .deliveryCap134{--dc2:#ff78cd;--dc3:#7535d1}
+#gameWrap #summonCinematic.legendary .deliveryCap134{--dc1:#fffbd2;--dc2:#ffe05a;--dc3:#dc781d;filter:drop-shadow(2px 3px 0 #150900) drop-shadow(0 0 10px #ffd13d)}
+#gameWrap #summonCinematic.legendary .deliveryCap134>b{border-color:#ffe5a2;background:linear-gradient(145deg,#ffc94e,#e7851d 65%,#8b3906)}
+#gameWrap #summonCinematic.legendary .deliveryCap134>em{border-color:#fff1a2;background:linear-gradient(180deg,#ffe56a,#8b4808)}
+#gameWrap #summonCinematic.legendary .deliveryCap134>span{border-color:#fff1a1;background:#552600;color:#fff6b3}
+
+/* Three rail lamps show the capsule traveling through the cabinet. */
+#gameWrap .routeLamp134{
+  position:absolute;width:10px;height:10px;border:2px solid #244a60;background:#07131d;box-sizing:border-box;opacity:.35;
+}
+#gameWrap .lamp1{left:57%;top:35%}.lamp2{left:68%;top:47%}.lamp3{right:13%;top:57%}
+#gameWrap #summonCinematic.phase-route134 .routeLamp134{
+  animation:routeLampOn134 .48s steps(2,end) both;
+}
+#gameWrap #summonCinematic.phase-route134 .lamp2{animation-delay:.16s}
+#gameWrap #summonCinematic.phase-route134 .lamp3{animation-delay:.32s}
+@keyframes routeLampOn134{100%{opacity:1;background:#6ee6ff;border-color:#d8fbff;box-shadow:0 0 10px #55dfff}}
+
+/* Stop and selection: the whole globe brakes, one capsule gets picked. */
+#gameWrap #summonCinematic.phase-stop134 .cinemaRotor{animation:drumBrake134 .34s steps(4,end) both!important}
+#gameWrap #summonCinematic.phase-stop134 .cinemaMiniCap{animation:miniBrake134 .34s steps(4,end) both!important}
+#gameWrap #summonCinematic.phase-stop134 .cinemaGlobe{filter:brightness(.76)!important}
+@keyframes drumBrake134{0%{transform:translate(-50%,-50%) rotate(140deg)}100%{transform:translate(-50%,-50%) rotate(180deg)}}
+@keyframes miniBrake134{0%{translate:3px -2px}100%{translate:0 0}}
+
+#gameWrap #summonCinematic.phase-select134 .cinemaGlobe{filter:brightness(.48)!important}
+#gameWrap #summonCinematic.phase-select134 .cinemaMiniCap{opacity:.34!important}
+#gameWrap #summonCinematic.phase-select134 .mc7{
+  opacity:1!important;animation:selectedCapsuleJump134 .42s cubic-bezier(.2,.8,.3,1) both!important;
+  filter:drop-shadow(0 0 10px #fff8b0)!important;
+}
+#gameWrap #summonCinematic.phase-select134 .cinemaRotor{opacity:.18!important}
+@keyframes selectedCapsuleJump134{
+  0%{translate:0 0;scale:1}
+  48%{translate:0 -18px;scale:1.12}
+  100%{translate:0 -8px;scale:1.05}
+}
+
+/* The selected capsule physically leaves the globe and rides the internal mag-rail. */
+#gameWrap #summonCinematic.phase-route134 .cinemaMiniCap{opacity:.2!important}
+#gameWrap #summonCinematic.phase-route134 .mc7{opacity:0!important}
+#gameWrap #summonCinematic.phase-route134 .deliveryCap134{
+  opacity:1;animation:deliveryRoute134 .72s cubic-bezier(.3,.1,.25,1) both;
+}
+@keyframes deliveryRoute134{
+  0%{left:66%;top:33%;transform:translate(-50%,-50%) scale(.75) rotate(-12deg)}
+  22%{left:59%;top:28%;transform:translate(-50%,-50%) scale(.82) rotate(8deg)}
+  48%{left:67%;top:42%;transform:translate(-50%,-50%) scale(.88) rotate(33deg)}
+  75%{left:77%;top:49%;transform:translate(-50%,-50%) scale(.92) rotate(64deg)}
+  100%{left:84%;top:58%;transform:translate(-50%,-50%) scale(.82) rotate(90deg)}
+}
+
+/* Gate mechanics */
+#gameWrap .gateStatus134{
+  position:absolute;left:8px;right:8px;top:27px;height:12px;display:flex;justify-content:space-between;z-index:6;
+}
+#gameWrap .gateStatus134 i,#gameWrap .gateStatus134 b{
+  width:9px;height:9px;border:2px solid #253d49;background:#531b1b;box-sizing:border-box;
+}
+#gameWrap .gateDoor134{
+  position:absolute;left:50%;bottom:9px;z-index:5;width:58px;height:37px;transform:translateX(-50%);
+  border:5px solid #7d8e98;background:linear-gradient(180deg,#243844,#091118);box-shadow:inset 0 0 0 3px #13252f;
+}
+#gameWrap .gateDoor134::before{
+  content:"";position:absolute;left:7px;right:7px;top:50%;height:4px;transform:translateY(-50%);background:#5e7079;
+}
+#gameWrap .tubeGlow134{
+  position:absolute;left:50%;top:28px;bottom:45px;width:22px;transform:translateX(-50%);
+  background:linear-gradient(180deg,transparent,#62dfff22,transparent);opacity:0;
+}
+#gameWrap #summonCinematic.phase-gate134 .gateStatus134 i{
+  background:#ff9a3d;border-color:#ffd68a;box-shadow:0 0 6px #ff9a3d;
+}
+#gameWrap #summonCinematic.phase-gate134 .gateStatus134 b{
+  background:#55ef9e;border-color:#c9ffe1;box-shadow:0 0 7px #55ef9e;
+}
+#gameWrap #summonCinematic.phase-gate134 .gateDoor134{animation:gateUnlock134 .48s steps(5,end) both}
+#gameWrap #summonCinematic.phase-gate134 .tubeGlow134{opacity:1;animation:tubePulse134 .38s steps(3,end) infinite}
+@keyframes gateUnlock134{
+  0%{transform:translateX(-50%) translateY(0)}
+  55%{transform:translateX(-50%) translateY(5px)}
+  100%{transform:translateX(-50%) translateY(17px)}
+}
+@keyframes tubePulse134{50%{filter:brightness(2);opacity:.9}}
+
+/* Main capsule is hidden until it actually exits the machine. */
+#gameWrap #summonCinematic.phase-insert .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-crank .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-mix .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-stop134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-select134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-route134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-gate134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-jam134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-delivery-blackout134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-goldleak134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-epic-pressure134 .cinemaCoreWrap{
+  opacity:0!important;pointer-events:none!important;
+}
+
+/* Ejection + two physical bounces. */
+#gameWrap #summonCinematic.phase-eject134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-heavy-drop134 .cinemaCoreWrap,
+#gameWrap #summonCinematic.phase-settle134 .cinemaCoreWrap{
+  opacity:1!important;
+}
+#gameWrap #summonCinematic.phase-eject134 .cinemaCore{
+  animation:capsuleEjectBounce134 .78s cubic-bezier(.22,.75,.25,1) both!important;
+}
+@keyframes capsuleEjectBounce134{
+  0%{transform:translate(92px,-96px) rotate(74deg) scale(.62);opacity:0}
+  22%{opacity:1}
+  49%{transform:translate(16px,22px) rotate(18deg) scale(1)}
+  65%{transform:translate(-8px,-18px) rotate(-10deg) scale(1)}
+  82%{transform:translate(4px,6px) rotate(4deg) scale(1)}
+  100%{transform:translate(0,0) rotate(0) scale(1)}
+}
+#gameWrap #summonCinematic.phase-heavy-drop134 .cinemaCore{
+  animation:capsuleHeavyDrop134 .92s cubic-bezier(.18,.65,.2,1) both!important;
+}
+@keyframes capsuleHeavyDrop134{
+  0%{transform:translate(88px,-108px) rotate(48deg) scale(.7);opacity:0}
+  28%{opacity:1}
+  58%{transform:translate(8px,28px) rotate(11deg) scale(1.04)}
+  72%{transform:translate(-4px,-8px) rotate(-4deg) scale(1.01)}
+  87%{transform:translate(2px,4px) rotate(2deg)}
+  100%{transform:none}
+}
+#gameWrap #summonCinematic.phase-settle134 .cinemaCore{
+  animation:capsuleSettleWobble134 .62s ease-out both!important;
+}
+@keyframes capsuleSettleWobble134{
+  0%{transform:rotate(0)}
+  22%{transform:rotate(-5deg)}
+  48%{transform:rotate(3.5deg)}
+  72%{transform:rotate(-1.8deg)}
+  100%{transform:rotate(0)}
+}
+
+/* Shadow arrives before the capsule and compresses on impact. */
+#gameWrap .landingShadow134{
+  position:absolute;left:50%;bottom:22px;z-index:1;width:84px;height:18px;transform:translateX(-50%) scale(.28);
+  border-radius:50%;background:#0009;filter:blur(3px);opacity:0;
+}
+#gameWrap #summonCinematic.phase-eject134 .landingShadow134,
+#gameWrap #summonCinematic.phase-heavy-drop134 .landingShadow134{
+  animation:landingShadowIn134 .72s ease-in both;
+}
+#gameWrap #summonCinematic.phase-settle134 .landingShadow134{opacity:.65;transform:translateX(-50%) scale(1)}
+@keyframes landingShadowIn134{
+  0%{opacity:.15;transform:translateX(-50%) scale(.28)}
+  52%{opacity:.75;transform:translateX(-50%) scale(1.12,.7)}
+  69%{transform:translateX(-50%) scale(.74,1.05)}
+  100%{opacity:.65;transform:translateX(-50%) scale(1)}
+}
+
+/* Pixel dust only on landing, with rarity tint. */
+#gameWrap .landingImpact134{position:absolute;left:50%;bottom:26px;width:1px;height:1px;z-index:12;opacity:0}
+#gameWrap .landingImpact134 i{
+  position:absolute;width:6px;height:6px;background:#a9efff;box-shadow:0 0 5px #58dfff;
+}
+#gameWrap #summonCinematic.epic .landingImpact134 i{background:#ef9cff;box-shadow:0 0 7px #d75fff}
+#gameWrap #summonCinematic.legendary .landingImpact134 i{background:#fff1a0;box-shadow:0 0 8px #ffc832}
+#gameWrap #summonCinematic.phase-eject134 .landingImpact134,
+#gameWrap #summonCinematic.phase-heavy-drop134 .landingImpact134{
+  opacity:1;animation:impactFade134 .64s steps(6,end) .33s both;
+}
+#gameWrap .landingImpact134 i:nth-child(1){--ix:-54px;--iy:-18px}
+#gameWrap .landingImpact134 i:nth-child(2){--ix:-32px;--iy:-31px}
+#gameWrap .landingImpact134 i:nth-child(3){--ix:-13px;--iy:-22px}
+#gameWrap .landingImpact134 i:nth-child(4){--ix:16px;--iy:-28px}
+#gameWrap .landingImpact134 i:nth-child(5){--ix:36px;--iy:-18px}
+#gameWrap .landingImpact134 i:nth-child(6){--ix:54px;--iy:-9px}
+#gameWrap #summonCinematic.phase-eject134 .landingImpact134 i,
+#gameWrap #summonCinematic.phase-heavy-drop134 .landingImpact134 i{
+  animation:impactPixel134 .55s cubic-bezier(.2,.8,.3,1) .34s both;
+}
+@keyframes impactPixel134{
+  0%{transform:translate(0,0) scale(.4);opacity:0}
+  25%{opacity:1}
+  100%{transform:translate(var(--ix),var(--iy)) scale(.85);opacity:0}
+}
+@keyframes impactFade134{100%{opacity:0}}
+
+/* Epic pressure spike at the gate. */
+#gameWrap #summonCinematic.phase-epic-pressure134 .cinemaDropTube{
+  box-shadow:inset 0 0 24px #d75fff99,0 0 14px #b54aff55!important;
+  animation:epicGatePressure134 .14s steps(2,end) infinite;
+}
+#gameWrap #summonCinematic.phase-epic-pressure134 .gateDoor134{transform:translateX(-50%) translateY(9px);border-color:#d99cff}
+@keyframes epicGatePressure134{50%{translate:2px 0}}
+
+/* Legendary: jam -> dead cabinet -> gold leak -> heavy release. */
+#gameWrap #summonCinematic.phase-jam134 .cinemaDropTube{
+  animation:gateJamShake134 .11s steps(2,end) infinite!important;
+  box-shadow:inset 0 0 18px #ff7d2d55!important;
+}
+#gameWrap #summonCinematic.phase-jam134 .gateStatus134 i,
+#gameWrap #summonCinematic.phase-jam134 .gateStatus134 b{background:#ff3838;border-color:#ff9a9a;box-shadow:0 0 8px #ff3939}
+@keyframes gateJamShake134{50%{translate:3px 0}}
+#gameWrap #summonCinematic.phase-delivery-blackout134 .summonMachineScene{
+  filter:brightness(.18)!important;transition:filter .12s linear;
+}
+#gameWrap #summonCinematic.phase-delivery-blackout134 .cinemaWarningBand{opacity:.12!important}
+#gameWrap #summonCinematic.phase-goldleak134 .summonMachineScene{
+  filter:brightness(.42)!important;
+}
+#gameWrap #summonCinematic.phase-goldleak134 .cinemaDropTube{
+  box-shadow:inset 0 0 28px #ffd13d,0 0 26px #ffad2477!important;
+}
+#gameWrap #summonCinematic.phase-goldleak134 .tubeGlow134{
+  opacity:1!important;background:linear-gradient(180deg,transparent,#fff1a0,#ffc53299,transparent)!important;
+  animation:goldLeakPulse134 .24s steps(2,end) infinite!important;
+}
+#gameWrap #summonCinematic.phase-goldleak134 .gateDoor134{
+  border-color:#ffe89c!important;box-shadow:inset 0 0 14px #ffc42d,0 0 14px #ffc42d!important;
+}
+@keyframes goldLeakPulse134{50%{filter:brightness(2.5);width:34px}}
+
+/* 10-pull reads as a faster output queue without adding ten slow full animations. */
+#gameWrap #summonCinematic.multi.phase-route134 .routeLamp134{animation-duration:.28s}
+#gameWrap #summonCinematic.multi.phase-eject134 .cinemaDropTube::before,
+#gameWrap #summonCinematic.multi.phase-heavy-drop134 .cinemaDropTube::before{
+  content:"×10 QUEUE";position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);
+  color:#65e2ff;font:1000 6px ui-monospace,"Cascadia Mono",Consolas,monospace;white-space:nowrap;
+}
+#gameWrap #summonCinematic.multi.legendary.phase-heavy-drop134 .cinemaDropTube::before{color:#ffe16a}
+
+/* Mobile keeps the route obvious and the landing central. */
+@media(max-width:620px){
+  #gameWrap .deliveryCap134{width:42px;height:40px}
+  #gameWrap .deliveryCap134>i,#gameWrap .deliveryCap134>b{width:40px;height:21px}
+  #gameWrap #summonCinematic.phase-route134 .deliveryCap134{animation-name:deliveryRouteMobile134}
+  @keyframes deliveryRouteMobile134{
+    0%{left:63%;top:29%;transform:translate(-50%,-50%) scale(.68) rotate(-10deg)}
+    35%{left:66%;top:39%;transform:translate(-50%,-50%) scale(.75) rotate(25deg)}
+    70%{left:75%;top:48%;transform:translate(-50%,-50%) scale(.78) rotate(57deg)}
+    100%{left:83%;top:59%;transform:translate(-50%,-50%) scale(.7) rotate(90deg)}
+  }
+  #gameWrap .routeLamp134{transform:scale(.8)}
+  #gameWrap .lamp1{left:59%;top:35%}.lamp2{left:69%;top:46%}.lamp3{right:10%;top:57%}
+  #gameWrap #summonCinematic.phase-eject134 .cinemaCore{animation-name:capsuleEjectBounceMobile134!important}
+  #gameWrap #summonCinematic.phase-heavy-drop134 .cinemaCore{animation-name:capsuleHeavyDropMobile134!important}
+  @keyframes capsuleEjectBounceMobile134{
+    0%{transform:translate(72px,-78px) rotate(65deg) scale(.62);opacity:0}
+    25%{opacity:1}
+    51%{transform:translate(8px,18px) rotate(15deg) scale(1)}
+    68%{transform:translate(-6px,-13px) rotate(-8deg)}
+    84%{transform:translate(3px,5px) rotate(3deg)}
+    100%{transform:none}
+  }
+  @keyframes capsuleHeavyDropMobile134{
+    0%{transform:translate(68px,-91px) rotate(43deg) scale(.66);opacity:0}
+    30%{opacity:1}
+    60%{transform:translate(6px,23px) rotate(9deg) scale(1.03)}
+    75%{transform:translate(-3px,-7px) rotate(-3deg)}
+    100%{transform:none}
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap .deliveryCap134,#gameWrap .routeLamp134,#gameWrap .gateDoor134,#gameWrap .landingImpact134 *,
+  #gameWrap #summonCinematic.phase-eject134 .cinemaCore,#gameWrap #summonCinematic.phase-heavy-drop134 .cinemaCore{
+    animation-duration:.001ms!important;animation-iteration-count:1!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -4132,9 +4431,21 @@ body.summonActive130 #joystickZone{
                   <div class="cinemaMiniCap mc10"><i></i><b></b><em class="miniBelt130"></em><span class="miniSigil130">◆</span><u class="miniShine130"></u></div>
                   <div class="cinemaRotor"><i></i><i></i><i></i></div>
                 </div>
+                <div class="cinemaDeliveryPath134">
+                  <i class="routeLamp134 lamp1"></i><i class="routeLamp134 lamp2"></i><i class="routeLamp134 lamp3"></i>
+                  <div class="deliveryCap134"><i></i><b></b><em></em><span>◆</span></div>
+                </div>
                 <div class="cinemaCrankAssembly"><div class="cinemaCrankWheel"><i></i></div><span>◀ TURN CORE ▶</span></div>
-                <div class="cinemaDropTube"><strong>CAPSULE OUT</strong><i></i><b></b></div>
+                <div class="cinemaDropTube">
+                  <strong>CAPSULE OUT</strong>
+                  <div class="gateStatus134"><i></i><b></b></div>
+                  <div class="gateDoor134"></div>
+                  <div class="tubeGlow134"></div>
+                  <i></i><b></b>
+                </div>
                 <div class="cinemaCoreWrap">
+                  <div class="landingShadow134"></div>
+                  <div class="landingImpact134"><i></i><i></i><i></i><i></i><i></i><i></i></div>
                   <div class="cinemaTapRing"></div>
                   <div class="cinemaCore">
                     <i class="cinemaCapTop"></i>
@@ -7657,6 +7968,18 @@ function playGachaSfx(kind){
   }else if(kind==='squareSeal'){
     [880,1047,1319].forEach((f,i)=>oscTone(f,.10,'square',.013,null,i*.055));
     metallicPing(1760,.014,.11);
+  }else if(kind==='drumStop'){
+    oscTone(142,.12,'square',.020,92);noiseBurst(.08,.018,'lowpass',500,.035);
+  }else if(kind==='capsuleSelect'){
+    oscTone(620,.09,'triangle',.016,930);metallicPing(1280,.012,.06);
+  }else if(kind==='transport'){
+    [0,1,2].forEach(i=>{metallicPing(780+i*170,.010,.055+i*.05);oscTone(150+i*18,.05,'square',.008,null,.055+i*.05)});
+  }else if(kind==='gate'){
+    oscTone(205,.09,'square',.018,105);metallicPing(930,.016,.08);
+  }else if(kind==='jam'){
+    oscTone(92,.26,'sawtooth',.024,58);noiseBurst(.18,.020,'bandpass',620,.04);
+  }else if(kind==='heavyDrop'){
+    oscTone(112,.24,'square',.040,55);noiseBurst(.15,.032,'lowpass',430,.025);metallicPing(510,.014,.07);
   }
 }
 
@@ -10141,89 +10464,154 @@ function startGachaCharge(){
   document.getElementById('singleReveal').className='';
   const cine=document.getElementById('summonCinematic'),rarity=highestRarity(pendingGachaResults),cls=rarity.toLowerCase();
   const pityResult=pendingGachaResults.find(r=>r.pityHit),guaranteed=pendingGachaResults.find(r=>r.tenGuarantee);
+  const multi=lastPullCount===10?' multi':'';
   buildCinemaRack();buildRevealProgressStrip();buildCinemaGemStream();setCinemaOmen('hidden','SIGNAL UNKNOWN');setCapsuleRarityVisual(rarity);
+  const deliveryGlyph=cine?.querySelector('.deliveryCap134 span');if(deliveryGlyph)deliveryGlyph.textContent=rarity==='Legendary'?'♛':rarity==='Epic'?'✦':rarity==='Rare'?'★':'◉';
   capsuleOpenStage=0;summonPhase='charging';document.body.classList.add('summonActive130');
 
   setHomeGachaMachineState('arming',rarity);playGachaSfx('coin');
-  summonLater(()=>{setHomeGachaMachineState('cranking',rarity);playGachaSfx('crank')},320);
 
   summonLater(()=>{
-    cine.className='active charging phase-insert '+cls+(lastPullCount===10?' multi':'');
+    cine.className='active charging phase-insert '+cls+multi;
     const initial=pityResult?'MAX PITY ROUTE':guaranteed?'10-PULL EPIC+ ROUTE':lastPullCount===10?'TEN CAPSULE REQUEST':'SINGLE CAPSULE REQUEST';
     setCinemaText('GEM INSERT','POWERING MACHINE...','Gemsを投入中',initial);
     const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='GEMS ACCEPTED // MOTOR START';
     playGachaSfx('charge');
-  },650);
+  },520);
 
   summonLater(()=>{
-    cine.className='active charging phase-crank '+cls+(lastPullCount===10?' multi':'');
+    cine.className='active charging phase-crank '+cls+multi;
     setCinemaText('TURN CORE','CRANKING...','ハンドルを回してカプセルをシャッフル','MECHANICAL LOCK // RELEASED');
     const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CRANK SHAFT // 100%';
-    playGachaSfx('crank');
-  },1250);
+    setHomeGachaMachineState('cranking',rarity);playGachaSfx('crank');
+  },1080);
 
   summonLater(()=>{
-    cine.className='active charging phase-mix '+cls+(lastPullCount===10?' multi':'');
-    setCinemaText('CAPSULE MIX','RUMBLING...','ドラム内でカプセルが混ざっています',lastPullCount===10?'10 CAPSULES QUEUED':'CAPSULE SELECTING');
+    cine.className='active charging phase-mix '+cls+multi;
+    setCinemaText('CAPSULE MIX','RUMBLING...','ドラム内でカプセルが激しく混ざっています',lastPullCount===10?'10 CAPSULES // MIXING':'CAPSULE LOTTERY // RUNNING');
     const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='DRUM SPEED // MAX';
-  },1850);
+  },1680);
+
+  // The machine deliberately stops before choosing. This pause makes the selection readable.
+  summonLater(()=>{
+    cine.className='active charging phase-stop134 '+cls+multi;
+    setCinemaText('DRUM STOP','...','ドラムが停止した','SELECTION WINDOW');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='DRUM BRAKE // LOCK';
+    playGachaSfx('drumStop');try{navigator.vibrate?.([18])}catch(_){}
+  },2500);
 
   summonLater(()=>{
-    cine.className='active charging phase-drop '+cls+(lastPullCount===10?' multi':'');
-    setHomeGachaMachineState('dropping',rarity);
-    setCinemaText('CAPSULE DROP','DISPENSING...','排出口へカプセルが落下','CLACK // CLACK // DROP');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=lastPullCount===10?'10 CAPSULES // DISPENSING':'1 CAPSULE // DISPENSING';
-    primeCinemaRack();playGachaSfx('drop');
-    try{navigator.vibrate?.([22,35,30])}catch(_){}
-  },2550);
+    cine.className='active charging phase-select134 '+cls+multi;
+    setCinemaText('CAPSULE SELECT','TARGET ACQUIRED','1個のカプセルが選ばれた','MAGNETIC PICKUP');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CAPSULE INDEX // ACQUIRED';
+    playGachaSfx('capsuleSelect');try{navigator.vibrate?.([12,20,18])}catch(_){}
+  },2860);
+
+  // Selected capsule leaves the globe and follows a visible transport path.
+  summonLater(()=>{
+    cine.className='active charging phase-route134 '+cls+multi;
+    setCinemaText('INTERNAL ROUTE','TRANSFERRING...','選ばれたカプセルを排出路へ搬送中','MAG-RAIL // 1 → 2 → 3');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='TRANSFER RAIL // ACTIVE';
+    playGachaSfx('transport');
+  },3270);
 
   summonLater(()=>{
-    const omenBase=rarity==='Common'?'common':'rare';
-    cine.className='active charging phase-omen '+omenBase+(lastPullCount===10?' multi':'');
-    setCinemaText('SIGNAL CHECK','READING COLOR...','カプセルの発光色を解析しています',rarity==='Common'?'STABLE':rarity==='Rare'?'SIGNAL BOOST':'SIGNAL RISING...?');
-    setCinemaOmen(omenBase,rarity==='Common'?'STABLE SIGNAL':rarity==='Rare'?'SIGNAL BOOST':'SIGNAL RISING...');
-    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='COLOR SENSOR // ACTIVE';
-    if(rarity==='Rare')playGachaSfx('rare');
-  },3150);
-
-  if(rarity==='Epic'||rarity==='Legendary'){
-    summonLater(()=>{
-      cine.className='active charging phase-upgrade epic'+(lastPullCount===10?' multi':'');
-      setCinemaText('SIGNAL SHIFT','COLOR SHIFT!','青い光が紫へ変化した','ENERGY RISING');
-      setCinemaOmen('epic','SIGNAL SURGE');
-      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SIGNAL SHIFT // PURPLE';
-      playGachaSfx('upgrade');try{navigator.vibrate?.([28,20,46])}catch(_){}
-    },3650);
-  }
+    cine.className='active charging phase-gate134 '+cls+multi;
+    setCinemaText('OUTPUT GATE','UNLOCKING...','排出口のロックを解除しています','GATE // OPEN');
+    const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='OUTPUT LOCK // RELEASED';
+    playGachaSfx('gate');
+  },3750);
 
   if(rarity==='Legendary'){
+    // Legendary gets stuck at the gate: silence, blackout, gold leakage, then a heavy physical drop.
     summonLater(()=>{
-      cine.className='active charging phase-blackout epic'+(lastPullCount===10?' multi':'');
-      setCinemaText('SIGNAL LOST','...','信号が途切れた','???');
-      setCinemaOmen('blackout','SIGNAL LOST');
-      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ERROR // UNKNOWN SIGNAL';
-      playGachaSfx('fakeout');try{navigator.vibrate?.([70])}catch(_){}
-    },4200);
+      cine.className='active charging phase-jam134 legendary'+multi;
+      setCinemaText('OUTPUT JAM','...','排出口で何かが止まった','ERROR // MASS UNKNOWN');
+      setCinemaOmen('blackout','OUTPUT ERROR');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='GATE PRESSURE // ABNORMAL';
+      playGachaSfx('jam');try{navigator.vibrate?.([65])}catch(_){}
+    },4140);
     summonLater(()=>{
-      cine.className='active charging phase-legend phase-legend-awaken legendary'+(lastPullCount===10?' multi':'');
+      cine.className='active charging phase-delivery-blackout134 legendary'+multi;
+      setCinemaText('POWER LOST','...','筐体の電源が落ちた','NO SIGNAL');
+      setCinemaOmen('blackout','...');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='SYSTEM // OFFLINE';
+      playGachaSfx('fakeout');
+    },4550);
+    summonLater(()=>{
+      cine.className='active charging phase-goldleak134 legendary'+multi;
+      setCinemaText('???','PRESSURE RISING','排出口の奥から金色の光が漏れている','UNKNOWN CORE');
+      setCinemaOmen('legendary','GOLD LEAK');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='!!! CORE PRESSURE OVERFLOW !!!';
+      playGachaSfx('legendaryPrelude');try{navigator.vibrate?.([25,25,45])}catch(_){}
+    },4970);
+    summonLater(()=>{
+      cine.className='active charging phase-heavy-drop134 legendary'+multi;
+      setHomeGachaMachineState('dropping',rarity);
+      setCinemaText('HEAVY DROP','THUD!','重いカプセルが排出された','ROYAL MASS // CONFIRMED');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CAPSULE OUT // HEAVY';
+      primeCinemaRack();playGachaSfx('heavyDrop');try{navigator.vibrate?.([90,25,120])}catch(_){}
+    },5420);
+    summonLater(()=>{
+      cine.className='active charging phase-settle134 legendary'+multi;
+      setCinemaText('CAPSULE SETTLED','SIGNAL RISING...','カプセルが静止した','CORE WAKE');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='LANDING LOCK // STABLE';
+    },5900);
+    summonLater(()=>{
+      cine.className='active charging phase-legend phase-legend-awaken legendary'+multi;
       setCinemaText('SYSTEM REBOOT','GOLDEN SIGNAL!!','停止した筐体が金色で再起動した','ROYAL CORE ONLINE');
       setCinemaOmen('legendary','UNKNOWN GOLD SIGNAL');
       const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='!!! SIGNAL OVERFLOW !!!';
       playGachaSfx('legendaryPrelude');try{navigator.vibrate?.([45,25,65,25,100])}catch(_){}
-    },4580);
+    },6320);
     summonLater(()=>{
-      cine.className='active charging phase-legend phase-legend-focus legendary'+(lastPullCount===10?' multi':'');
+      cine.className='active charging phase-legend phase-legend-focus legendary'+multi;
       setCinemaText('ROYAL LOCK','CORE ALIGNMENT...','王冠紋章とハローが中心へ収束している','SEAL // 100%');
       setCinemaOmen('legendary','ROYAL CORE LOCK');
       const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='ROYAL SEAL // LOCKED';
       playGachaSfx('royalLock');try{navigator.vibrate?.([28,18,36,18,52])}catch(_){}
-    },5050);
+    },6770);
+  }else if(rarity==='Epic'){
+    // Epic hesitates at the gate, flashes purple, then ejects harder than normal.
+    summonLater(()=>{
+      cine.className='active charging phase-epic-pressure134 epic'+multi;
+      setCinemaText('GATE PRESSURE','HOLD...','排出口直前でカプセルが停止した','ENERGY SPIKE');
+      setCinemaOmen('epic','SIGNAL SURGE');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='PRESSURE // PURPLE';
+      playGachaSfx('upgrade');
+    },4130);
+    summonLater(()=>{
+      cine.className='active charging phase-eject134 epic'+multi;
+      setHomeGachaMachineState('dropping',rarity);
+      setCinemaText('CAPSULE DROP','EJECT!','紫の光とともに排出された','CLACK // DROP');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent='CAPSULE OUT // HIGH ENERGY';
+      primeCinemaRack();playGachaSfx('drop');try{navigator.vibrate?.([30,18,42])}catch(_){}
+    },4510);
+    summonLater(()=>{
+      cine.className='active charging phase-settle134 epic'+multi;
+      setCinemaText('CAPSULE SETTLED','SIGNAL CHECK','カプセルが静止した','EPIC ENERGY');
+      setCinemaOmen('epic','SIGNAL SURGE');
+    },4960);
+  }else{
+    summonLater(()=>{
+      cine.className='active charging phase-eject134 '+cls+multi;
+      setHomeGachaMachineState('dropping',rarity);
+      setCinemaText('CAPSULE DROP','DISPENSING...','排出口からカプセルが落下','CLACK // DROP');
+      const alert=document.getElementById('cinemaAlert');if(alert)alert.textContent=lastPullCount===10?'10 CAPSULE QUEUE // OUTPUT':'1 CAPSULE // OUTPUT';
+      primeCinemaRack();playGachaSfx('drop');try{navigator.vibrate?.([22,28,26])}catch(_){}
+    },4140);
+    summonLater(()=>{
+      cine.className='active charging phase-settle134 '+cls+multi;
+      setCinemaText('CAPSULE SETTLED','SIGNAL CHECK','カプセルが静止した',rarity==='Rare'?'BLUE SIGNAL':'STABLE SIGNAL');
+      setCinemaOmen(cls,rarity==='Rare'?'SIGNAL BOOST':'STABLE SIGNAL');
+      if(rarity==='Rare')playGachaSfx('rare');
+    },4580);
   }
 
-  const readyDelay=rarity==='Legendary'?5580:rarity==='Epic'?4300:rarity==='Rare'?3750:3550;
+  const readyDelay=rarity==='Legendary'?7250:rarity==='Epic'?5450:5000;
   summonLater(()=>{
     const [title,hint]=rarityHint(rarity);
-    cine.className='active ready phase-lock '+cls+(lastPullCount===10?' multi':'');
+    cine.className='active ready phase-lock '+cls+multi;
     summonPhase='ready';
     setCinemaText('CAPSULE READY',lastPullCount===1?'TAP CAPSULE':'TAP TO OPEN 10',hint,title);
     setCinemaOmen(cls,rarity==='Legendary'?'GOLD CAPSULE':rarity==='Epic'?'PURPLE CAPSULE':rarity==='Rare'?'BLUE CAPSULE':'CAPSULE READY');
