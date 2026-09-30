@@ -7674,6 +7674,138 @@ body.summonActive130 #joystickZone{
   #gameWrap #gacha .transferRail150 i{animation:none!important}
 }
 </style>
+<style id="stage153OrbitalResponsiveQA">
+/* Stage 15.3 — viewport / accessibility / density QA */
+
+/* viewport-resilient sizing */
+#gameWrap #gacha .orbitalStage150{
+  min-height:min(620px,calc(100dvh - 250px));
+}
+#gameWrap #gacha #gachaMachine.orbitalMachine150{
+  height:clamp(430px,62dvh,610px)!important;
+}
+#gameWrap #gacha .orbitalRig150{
+  width:min(610px,92%);height:min(410px,78%);
+}
+#gameWrap #gacha .rigOuter150{width:96%;height:94%}
+#gameWrap #gacha .rigInner150{width:85%;height:80%}
+
+/* preserve large visual hierarchy but stop side rails from overpowering */
+#gameWrap #gacha .orbitalNav150,
+#gameWrap #gacha .orbitalStory150{
+  font-synthesis:none;
+}
+#gameWrap #gacha .orbitalNavGhost150{opacity:.72}
+#gameWrap #gacha .storyKicker150,
+#gameWrap #gacha .orbitalStory150>p,
+#gameWrap #gacha .orbitalStory150 blockquote{color:#607e89!important}
+
+/* accessible tap targets */
+#gameWrap #gacha .orbitalClose150{
+  min-width:44px!important;min-height:44px!important;
+}
+#gameWrap #gacha .orbitalIntel150 summary{
+  min-height:44px!important;
+}
+#gameWrap #gacha .orbitalSummon150{
+  min-height:78px!important;
+}
+#gameWrap #gacha .orbitalSummon150:disabled{
+  opacity:.36!important;cursor:not-allowed!important;filter:saturate(.45)!important;transform:none!important;
+}
+
+/* readable metadata; no purely decorative microcopy below 10px on compact layouts */
+@media(max-width:1100px){
+  #gameWrap #gacha .orbitalLayout150{grid-template-columns:160px minmax(0,1fr) 225px}
+  #gameWrap #gacha .orbitalNav150{padding-left:20px;padding-right:16px}
+  #gameWrap #gacha .orbitalStory150{padding-left:18px;padding-right:18px}
+  #gameWrap #gacha .orbitalStory150 h2{font-size:25px}
+  #gameWrap #gacha .orbitalStory150 h2 strong{font-size:39px}
+}
+
+/* common laptop / browser-height target */
+@media(max-height:720px) and (min-width:981px){
+  #gameWrap #gacha .orbitalTop150{height:64px;padding-top:11px;padding-bottom:11px}
+  #gameWrap #gacha .orbitalLayout150{min-height:430px}
+  #gameWrap #gacha .orbitalStage150{min-height:430px}
+  #gameWrap #gacha #gachaMachine.orbitalMachine150{height:430px!important}
+  #gameWrap #gacha .orbitalCeiling150{top:-132px;transform:translateX(-50%) scale(.86)}
+  #gameWrap #gacha .orbitalRig150{top:49%;transform:translate(-50%,-50%) scale(.82)}
+  #gameWrap #gacha .orbitalPlinth150{transform:translateX(-50%) scale(.84);transform-origin:bottom center}
+  #gameWrap #gacha .orbitalNav150{padding-top:42px}
+  #gameWrap #gacha .orbitalStory150{padding-top:26px}
+  #gameWrap #gacha .storyKicker150{margin-top:18px}
+  #gameWrap #gacha .storyVisual150{height:84px}
+  #gameWrap #gacha .orbitalStory150 blockquote{margin-bottom:8px}
+  #gameWrap #gacha .hardwareRow150{min-height:82px}
+  #gameWrap #gacha .hardwarePod150{height:69px}
+  #gameWrap #gacha .actionRow150{margin-top:3px}
+  #gameWrap #gacha .pityRing150{width:76px;height:76px}
+  #gameWrap #gacha .orbitalSummon150{min-height:66px!important}
+}
+
+/* tablet uses center first, then intelligence without pretending to be desktop */
+@media(max-width:980px){
+  #gameWrap #gacha .orbitalStage150{min-height:500px}
+  #gameWrap #gacha #gachaMachine.orbitalMachine150{height:500px!important}
+  #gameWrap #gacha .orbitalStory150{
+    grid-template-columns:repeat(3,1fr)!important;
+    padding:12px 16px!important;
+  }
+  #gameWrap #gacha .orbitalStory150 .orbitalIntel150{min-width:0}
+  #gameWrap #gacha .storyVisual150{display:none!important}
+  #gameWrap #gacha .hardwareRow150{grid-template-columns:130px 1fr 130px}
+  #gameWrap #gacha .actionRow150{grid-template-columns:120px 1fr 150px}
+}
+
+/* phones */
+@media(max-width:620px){
+  #gameWrap #gacha .orbitalStage150{min-height:390px}
+  #gameWrap #gacha #gachaMachine.orbitalMachine150{height:390px!important}
+  #gameWrap #gacha .orbitalStageHead150 span{font-size:5px}
+  #gameWrap #gacha .orbitalStageHead150 b{font-size:5px}
+  #gameWrap #gacha .orbitalStory150{grid-template-columns:1fr!important;padding:6px 8px 10px!important}
+  #gameWrap #gacha .orbitalIntel150{padding:0 10px!important}
+  #gameWrap #gacha .orbitalIntel150 summary{font-size:6px!important}
+  #gameWrap #gacha .orbitalConsole150{
+    padding-left:max(8px,env(safe-area-inset-left))!important;
+    padding-right:max(8px,env(safe-area-inset-right))!important;
+    padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
+  }
+  #gameWrap #gacha .hardwareRow150{grid-template-columns:72px 1fr 72px}
+  #gameWrap #gacha .hardwareCore150{width:28px;height:28px;border-width:4px}
+  #gameWrap #gacha .hardwareCore150 i{width:12px;height:12px;margin:4px}
+  #gameWrap #gacha .outputMouth150{width:44px;height:24px;border-width:5px}
+  #gameWrap #gacha .transferRail150{height:18px}
+  #gameWrap #gacha .transferTop150 span{font-size:4.5px}
+  #gameWrap #gacha .pityRing150{width:72px;height:72px}
+  #gameWrap #gacha .pityRing150 b{font-size:10px}
+  #gameWrap #gacha .orbitalSummon150{min-height:68px!important;border-radius:20px!important}
+  #gameWrap #gacha .orbitalSummon150 span b{font-size:12px}
+  #gameWrap #gacha .orbitalSummon150 em{font-size:5.5px}
+  #gameWrap #gacha .consoleMeta150{font-size:5px}
+}
+
+/* narrow phones */
+@media(max-width:390px){
+  #gameWrap #gacha .orbitalTop150{padding-left:8px;padding-right:8px}
+  #gameWrap #gacha .orbitalAccount150{gap:5px}
+  #gameWrap #gacha .orbitalCurrency150{min-width:86px;padding:0 9px}
+  #gameWrap #gacha #gachaMachine.orbitalMachine150{height:350px!important}
+  #gameWrap #gacha .orbitalStage150{min-height:350px}
+  #gameWrap #gacha .orbitalRig150{transform:translate(-50%,-50%) scale(.9)}
+  #gameWrap #gacha .hardwareRow150{grid-template-columns:64px 1fr 64px}
+  #gameWrap #gacha .hardwarePod150>span{font-size:5.5px}
+  #gameWrap #gacha .actionRow150{gap:8px}
+}
+
+/* high contrast fallback */
+@media(forced-colors:active){
+  #gameWrap #gacha .orbitalSummon150,
+  #gameWrap #gacha .hardwarePod150,
+  #gameWrap #gacha .orbitalIntel150{forced-color-adjust:auto}
+}
+</style>
 </head>
 <body>
 <div id="app">
