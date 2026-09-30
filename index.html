@@ -5662,6 +5662,137 @@ body.summonActive130 #joystickZone{
   #gameWrap #gacha .arcadeSummon127{transition:none!important}
 }
 </style>
+<style id="stage139GachaFinalQA">
+/* Stage 13.9 — GACHA FINAL QA
+   Last pass: hierarchy, viewport resilience, entrance choreography, runtime restraint. */
+
+/* Redundant system meta is already represented in the side intelligence panel. */
+#gameWrap #gacha .arcadeMeta127{display:none!important}
+
+/* Elegant entrance: frame first, then content. */
+#gameWrap #gacha .arcade127{
+  animation:gachaFrameIn139 .52s cubic-bezier(.16,.82,.22,1) both;
+}
+#gameWrap #gacha .arcadeCenter127{
+  animation:gachaCenterIn139 .58s cubic-bezier(.16,.82,.22,1) .05s both;
+}
+#gameWrap #gacha .arcadeStatus127{
+  animation:gachaSideIn139 .58s cubic-bezier(.16,.82,.22,1) .09s both;
+}
+#gameWrap #gacha .arcadeControlDeck127{
+  animation:gachaDeckIn139 .5s cubic-bezier(.16,.82,.22,1) .12s both;
+}
+@keyframes gachaFrameIn139{
+  0%{opacity:0;transform:translateY(14px) scale(.985)}
+  100%{opacity:1;transform:none}
+}
+@keyframes gachaCenterIn139{
+  0%{opacity:0;transform:translateY(10px)}
+  100%{opacity:1;transform:none}
+}
+@keyframes gachaSideIn139{
+  0%{opacity:0;transform:translateX(12px)}
+  100%{opacity:1;transform:none}
+}
+@keyframes gachaDeckIn139{
+  0%{opacity:0;transform:translateY(10px)}
+  100%{opacity:1;transform:none}
+}
+
+/* Render isolation keeps the decorative chamber from invalidating the whole gacha surface. */
+#gameWrap #gacha .arcadeDome127,
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobe{
+  contain:layout paint!important;
+}
+#gameWrap #gacha .arcadeDome127 .gashaCapsule,
+#gameWrap #summonCinematic.phase-mix .survivorForge135 .cinemaMiniCap{
+  will-change:transform;
+}
+
+/* Quiet text system: secondary labels remain readable, not microscopic decoration. */
+#gameWrap #gacha .arcadePanelTitle127,
+#gameWrap #gacha .arcadePanelTop127 span,
+#gameWrap #gacha .arcadeDomeTop127 b,
+#gameWrap #gacha .arcadeTurn127::before,
+#gameWrap #gacha .arcadeGenPanel127::before,
+#gameWrap #gacha .arcadeChute127::before{
+  font-size:max(5.5px,.42rem)!important;
+}
+#gameWrap #gacha .gachaStatusFoot{font-size:max(5px,.38rem)!important}
+
+/* Low-height desktop/laptop support — preserve hierarchy without clipping. */
+@media(max-height:780px) and (min-width:621px){
+  #gameWrap #gacha .pixelGacha{padding-top:10px!important;padding-bottom:12px!important}
+  #gameWrap #gacha .arcadeMarquee127{min-height:76px!important;padding-top:12px!important;padding-bottom:10px!important}
+  #gameWrap #gacha .arcadeBrand127 strong{font-size:34px!important}
+  #gameWrap #gacha .arcadeCabinet127{min-height:470px!important}
+  #gameWrap #gacha .arcadeCenter127{padding-top:12px!important;padding-bottom:12px!important}
+  #gameWrap #gacha .arcadeDome127{height:258px!important;width:min(470px,84%)!important}
+  #gameWrap #gacha .arcadeMachineBase127{min-height:94px!important}
+  #gameWrap #gacha .arcadeTurn127,
+  #gameWrap #gacha .arcadeGenPanel127,
+  #gameWrap #gacha .arcadeChute127{height:76px!important}
+  #gameWrap #gacha .arcadeControlDeck127{min-height:92px!important;padding:10px 20px!important}
+  #gameWrap #gacha .arcadeSummon127{min-height:60px!important}
+
+  #gameWrap #summonCinematic .summonMachineScene.survivorForge135{
+    height:92dvh!important;
+    grid-template-rows:58px 32px minmax(0,1fr) 34px 76px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130{
+    min-height:58px!important;padding:5px 16px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaMarquee130 b{font-size:28px!important}
+  #gameWrap #summonCinematic .survivorForge135 .cinemaGlobe{
+    top:8px!important;height:245px!important;width:420px!important;max-width:54%!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaCrankAssembly,
+  #gameWrap #summonCinematic .survivorForge135 .forgeHeart135,
+  #gameWrap #summonCinematic .survivorForge135 .cinemaDropTube{
+    height:90px!important;bottom:10px!important;
+  }
+  #gameWrap #summonCinematic .survivorForge135 .cinemaCrankWheel{width:64px!important;height:64px!important}
+  #gameWrap #summonCinematic .survivorForge135 .forgeHeart135>div{width:32px!important;height:32px!important}
+  #gameWrap #summonCinematic .survivorForge135 .cinemaDropTube::after{width:60px!important;height:46px!important}
+  #gameWrap #summonCinematic .survivorForge135 .gateDoor134{width:54px!important;height:39px!important;bottom:15px!important}
+  #gameWrap #summonCinematic .survivorForge135 .forgeSpine135{height:28px!important;bottom:5px!important}
+  #gameWrap #summonCinematic .survivorForge135 .cinemaCoreWrap{top:43%!important;transform:translate(-50%,-50%) scale(.82)!important}
+  #gameWrap #summonCinematic .survivorForge135 .cinemaReadout{padding:5px 10px!important}
+}
+
+/* Very wide displays should not turn the UI into a tiny island. */
+@media(min-width:1800px) and (min-height:900px){
+  #gameWrap #gacha .arcade127{width:min(1320px,88vw)!important}
+  #gameWrap #gacha .arcadeCabinet127{grid-template-columns:minmax(0,1fr) 320px!important}
+  #gameWrap #gacha .arcadeDome127{width:590px!important;height:350px!important}
+  #gameWrap #summonCinematic .summonMachineScene.survivorForge135{width:min(1040px,86vw)!important}
+}
+
+/* Mobile entering should feel instant rather than animated while scrolling. */
+@media(max-width:620px){
+  #gameWrap #gacha .arcade127,
+  #gameWrap #gacha .arcadeCenter127,
+  #gameWrap #gacha .arcadeStatus127,
+  #gameWrap #gacha .arcadeControlDeck127{
+    animation-duration:.34s!important;
+    animation-delay:0s!important;
+  }
+}
+
+/* Motion preference + runtime restraint. */
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #gacha .arcade127,
+  #gameWrap #gacha .arcadeCenter127,
+  #gameWrap #gacha .arcadeStatus127,
+  #gameWrap #gacha .arcadeControlDeck127{
+    animation:none!important;
+  }
+  #gameWrap #gacha .arcadeDome127 .gashaCapsule,
+  #gameWrap #summonCinematic .survivorForge135 .cinemaMiniCap{
+    will-change:auto!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
