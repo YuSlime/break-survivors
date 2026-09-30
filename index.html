@@ -7922,6 +7922,71 @@ body.summonActive130 #joystickZone{
   }
 }
 </style>
+<style id="stage155OrbitalDepthInteraction">
+/* Stage 15.5 — restrained spatial interaction */
+#gameWrap #gacha .orbitalStage150{
+  --orbPx:0px;--orbPy:0px;--orbPxFar:0px;--orbPyFar:0px;--orbPxNear:0px;--orbPyNear:0px;
+  perspective:1100px;
+}
+#gameWrap #gacha .orbitalFacility150{
+  translate:var(--orbPxFar) var(--orbPyFar);
+  transition:translate .22s ease-out;
+}
+#gameWrap #gacha .orbitalCeiling150{
+  translate:var(--orbPx) var(--orbPyFar);
+  transition:translate .22s ease-out;
+}
+#gameWrap #gacha .orbitalRig150{
+  translate:var(--orbPx) var(--orbPy);
+  transition:translate .2s ease-out;
+}
+#gameWrap #gacha .orbitalPlinth150{
+  translate:var(--orbPxNear) var(--orbPyNear);
+  transition:translate .18s ease-out;
+}
+#gameWrap #gacha .orbitalCrystal150{
+  translate:calc(var(--orbPxNear) * .35) calc(var(--orbPyNear) * .35);
+}
+/* Browsers without typed calc multiplication simply ignore the crystal line; core remains centered. */
+
+/* cinematic-like depth on hover without scaling the whole UI */
+@media(hover:hover) and (pointer:fine){
+  #gameWrap #gacha .orbitalStage150:hover .rigOuter150{
+    box-shadow:inset 0 0 0 2px #626f75,inset 0 0 0 8px #0a1013,0 0 0 2px #020405,0 29px 52px #000d!important;
+  }
+  #gameWrap #gacha .orbitalStage150:hover .crystalCore150{
+    filter:brightness(1.2);
+  }
+  #gameWrap #gacha .hardwarePod150,
+  #gameWrap #gacha .orbitalSummon150{
+    transition:transform .2s cubic-bezier(.2,.8,.2,1),border-color .2s ease,box-shadow .2s ease,filter .2s ease;
+  }
+  #gameWrap #gacha .hardwarePod150:hover{
+    transform:translateY(-2px);border-color:#50616a!important;
+  }
+}
+
+/* idle reflections are intentionally sparse */
+#gameWrap #gacha .rigOuter150{
+  position:absolute;
+}
+#gameWrap #gacha .rigOuter150 .dummy{display:none}
+#gameWrap #gacha .orbitalStage150::after{
+  content:"";position:absolute;left:50%;bottom:38px;width:66%;height:60px;transform:translateX(-50%);
+  border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,#5bdaff09 0,transparent 68%);
+  opacity:.7;
+}
+
+@media(max-width:620px),(prefers-reduced-motion:reduce){
+  #gameWrap #gacha .orbitalFacility150,
+  #gameWrap #gacha .orbitalCeiling150,
+  #gameWrap #gacha .orbitalRig150,
+  #gameWrap #gacha .orbitalPlinth150{
+    translate:0 0!important;transition:none!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="app">
@@ -14272,6 +14337,30 @@ function setHomeGachaMachineState(state='',rarity=''){
   },v=map[state]||map.idle;
   if(a)a.textContent=v[0];if(b)b.textContent=v[1];
 }
+
+function initOrbitalGachaParallax(){
+  const stage=document.querySelector('#gacha .orbitalStage150');
+  if(!stage||!window.matchMedia?.('(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)').matches)return;
+  let frame=0,lastEvent=null;
+  const render=()=>{
+    frame=0;if(!lastEvent)return;
+    const r=stage.getBoundingClientRect(),nx=Math.max(-1,Math.min(1,((lastEvent.clientX-r.left)/Math.max(1,r.width)-.5)*2)),ny=Math.max(-1,Math.min(1,((lastEvent.clientY-r.top)/Math.max(1,r.height)-.5)*2));
+    stage.style.setProperty('--orbPx',(nx*4).toFixed(2)+'px');
+    stage.style.setProperty('--orbPy',(ny*3).toFixed(2)+'px');
+    stage.style.setProperty('--orbPxFar',(nx*-7).toFixed(2)+'px');
+    stage.style.setProperty('--orbPyFar',(ny*-4).toFixed(2)+'px');
+    stage.style.setProperty('--orbPxNear',(nx*7).toFixed(2)+'px');
+    stage.style.setProperty('--orbPyNear',(ny*5).toFixed(2)+'px');
+  };
+  stage.addEventListener('pointermove',e=>{lastEvent=e;if(!frame)frame=requestAnimationFrame(render)},{passive:true});
+  stage.addEventListener('pointerleave',()=>{
+    lastEvent=null;
+    stage.style.setProperty('--orbPx','0px');stage.style.setProperty('--orbPy','0px');
+    stage.style.setProperty('--orbPxFar','0px');stage.style.setProperty('--orbPyFar','0px');
+    stage.style.setProperty('--orbPxNear','0px');stage.style.setProperty('--orbPyNear','0px');
+  },{passive:true});
+}
+setTimeout(initOrbitalGachaParallax,0);
 
 function buildCinemaRack(){
   const rack=document.getElementById('cinemaRack');if(!rack)return;
