@@ -8234,6 +8234,153 @@ body.summonActive130 #joystickZone{
   #gameWrap #gacha .consoleMeta150{font-size:7px!important}
 }
 </style>
+<style id="stage159OrbitalLegendReveal">
+/* Stage 15.9 — restrained legendary takeover + reveal continuity */
+
+/* Home legendary: the law of the machine changes locally, not by washing the whole screen gold. */
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .orbitalNav150,
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .orbitalStory150{
+  filter:saturate(.72) brightness(.86);
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .orbitalRig150{
+  filter:drop-shadow(0 24px 30px #000a) drop-shadow(0 0 24px #ffc83b1a);
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .rigOuter150{
+  box-shadow:
+    inset 0 0 0 2px #6e653d,
+    inset 0 0 0 8px #0a1013,
+    0 0 0 2px #020405,
+    0 26px 48px #000d,
+    0 0 28px #ffc83b16!important;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .ceilingCore150{
+  background:#fff6c2!important;
+  box-shadow:0 0 18px #fff2b2,0 0 48px #ffc83b66!important;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .plinthGlow150{
+  background:radial-gradient(circle,#fff0a55c 0,#ffc83b1f 43%,transparent 72%)!important;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .transferRail150 i:nth-child(-n+7){
+  background:linear-gradient(180deg,#ffe38a,#c98d22)!important;
+  border-color:#7f6224!important;
+  box-shadow:0 0 7px #ffc83b3b!important;
+}
+#gameWrap #gacha .orbitalGacha150:has(#gachaMachine.legendary) .outputMouth150{
+  border-color:#8f783e!important;
+}
+
+/* Cinematic legendary: darkness first, then precision gold. */
+#gameWrap #summonCinematic.legendary.phase-delivery-blackout134 .survivorForge135 .summonSceneBody{
+  background:linear-gradient(180deg,#030506,#010203)!important;
+}
+#gameWrap #summonCinematic.legendary.phase-goldleak134 .survivorForge135 .cinemaGlobe,
+#gameWrap #summonCinematic.legendary.phase-heavy-drop134 .survivorForge135 .cinemaGlobe,
+#gameWrap #summonCinematic.legendary.phase-legend .survivorForge135 .cinemaGlobe{
+  background:
+    radial-gradient(circle at 50% 47%,#3d2c0d 0 5%,#171208 18%,#061015 70%)!important;
+}
+#gameWrap #summonCinematic.legendary.phase-goldleak134 .survivorForge135 .cinemaRotor,
+#gameWrap #summonCinematic.legendary.phase-heavy-drop134 .survivorForge135 .cinemaRotor,
+#gameWrap #summonCinematic.legendary.phase-legend .survivorForge135 .cinemaRotor{
+  border-color:#a98537!important;
+  box-shadow:0 0 0 17px #17110655,0 0 27px #ffc83b28!important;
+}
+#gameWrap #summonCinematic.legendary.phase-goldleak134 .survivorForge135 .forgeHeart135>div,
+#gameWrap #summonCinematic.legendary.phase-heavy-drop134 .survivorForge135 .forgeHeart135>div,
+#gameWrap #summonCinematic.legendary.phase-legend .survivorForge135 .forgeHeart135>div{
+  background:radial-gradient(circle,#fff7ce 0 9%,#ffd96f 10% 25%,#9b6b1d 26% 52%,#241805 53%)!important;
+  box-shadow:0 0 12px #fff2ae,0 0 30px #ffc83b55!important;
+}
+
+/* Reveal continuity: same orbital language as the summon stage. */
+#gameWrap #singleReveal .premiumReveal142{
+  background:
+    radial-gradient(circle at 28% 43%,#133647 0 6%,transparent 34%),
+    linear-gradient(180deg,#071017,#03070a)!important;
+}
+#gameWrap #singleReveal .premiumRevealVisual142{
+  overflow:hidden;
+}
+#gameWrap #singleReveal .premiumRevealVisual142::before{
+  width:330px!important;height:330px!important;
+  border:1px solid color-mix(in srgb,var(--revealColor,#62dfff) 26%,transparent)!important;
+  box-shadow:
+    inset 0 0 48px color-mix(in srgb,var(--revealColor,#62dfff) 7%,transparent),
+    0 0 30px #0005!important;
+}
+#gameWrap #singleReveal .premiumRevealVisual142::after{
+  width:272px!important;height:272px!important;
+  border-style:dashed!important;
+  border-color:color-mix(in srgb,var(--revealColor,#62dfff) 22%,transparent)!important;
+}
+#gameWrap #singleReveal .premiumRevealObject142{
+  isolation:isolate;
+}
+#gameWrap #singleReveal .premiumRevealObject142::after{
+  content:"";position:absolute;left:50%;top:50%;width:210px;height:210px;
+  transform:translate(-50%,-50%);border-radius:50%;z-index:-1;
+  background:
+    radial-gradient(circle,color-mix(in srgb,var(--revealColor,#62dfff) 12%,transparent),transparent 68%);
+}
+#gameWrap #singleReveal .premiumRevealEyebrow142{
+  color:#6d8a95!important;font-size:7px!important;letter-spacing:.2em!important;
+}
+#gameWrap #singleReveal .revealName{
+  color:#f3fbfd!important;
+}
+#gameWrap #singleReveal .revealWeapon{
+  color:#d4e3e8!important;
+}
+#gameWrap #singleReveal .revealPassive{
+  color:#8099a3!important;
+}
+#gameWrap #singleReveal .revealRarity{
+  min-width:100px;text-align:center;
+}
+#gameWrap #singleReveal .revealPanel.legendary .premiumRevealVisual142{
+  background:
+    radial-gradient(circle at 50% 46%,#d49b2817 0,transparent 39%),
+    linear-gradient(180deg,#15130c,#070908)!important;
+}
+#gameWrap #singleReveal .revealPanel.legendary .premiumRevealVisual142::before{
+  border-color:#d9b85b55!important;
+  box-shadow:inset 0 0 52px #ffc83b12,0 0 28px #ffc83b12!important;
+}
+#gameWrap #singleReveal .revealPanel.legendary .premiumRevealVisual142::after{
+  border-color:#ffd96b44!important;
+}
+#gameWrap #singleReveal .revealPanel.legendary .revealRarity{
+  background:#151106cc!important;
+  border-color:#8a7330!important;
+  color:#ffe18a!important;
+}
+
+/* Result actions stop looking like generic buttons. */
+#gameWrap #gachaSummaryActions .summonBtn{
+  border-radius:999px!important;
+  min-height:54px!important;
+  padding:0 22px!important;
+  background:linear-gradient(180deg,#0b1d26,#07141b)!important;
+  border-color:#31515f!important;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:.03em!important;
+}
+#gameWrap #gachaSummaryActions .summonBtn.gold{
+  background:linear-gradient(180deg,#211c0c,#110e06)!important;
+  border-color:#6f5b26!important;
+  color:#f5dfa0!important;
+}
+
+/* Keep the cinematic/result transitions elegant on mobile. */
+@media(max-width:700px){
+  #gameWrap #singleReveal .premiumRevealVisual142::before{width:242px!important;height:242px!important}
+  #gameWrap #singleReveal .premiumRevealVisual142::after{width:204px!important;height:204px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #singleReveal .premiumRevealVisual142::after{animation:none!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
