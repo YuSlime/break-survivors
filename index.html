@@ -6907,6 +6907,103 @@ body.summonActive130 #joystickZone{
   }
 }
 </style>
+<style id="stage143PremiumIsolation">
+/* Stage 14.3 — PREMIUM ISOLATION / FINAL SELF-QA
+   Explicitly neutralize legacy pixel-button rules and lock the new premium system. */
+
+#gameWrap #gacha .premiumGacha140,
+#gameWrap #gacha .premiumGacha140 button,
+#gameWrap #singleReveal .premiumReveal142,
+#gameWrap #gachaSummaryActions button{
+  font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+
+/* Legacy .summonBtn used an arcade monospace / 1000 weight. Never allow that into the premium CTA. */
+#gameWrap #gacha .premiumSummon140{
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  font-weight:650!important;
+  letter-spacing:0!important;
+}
+#gameWrap #gacha .premiumSummon140 span{
+  font-weight:760!important;letter-spacing:-.01em!important;
+}
+#gameWrap #gacha .premiumSummon140 em{
+  font-weight:700!important;letter-spacing:.08em!important;
+}
+#gameWrap #gacha .premiumSummon140:not(:disabled):active{
+  box-shadow:inset 0 1px #ffffff08,0 4px 13px #0006!important;
+}
+#gameWrap #gachaSummaryActions .summonBtn{
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  font-weight:700!important;letter-spacing:.01em!important;
+}
+
+/* Ensure old reveal card animations cannot replace the new editorial choreography. */
+#gameWrap #singleReveal.active .revealPanel.revealBurst{
+  animation:awardRevealPanel138 .62s cubic-bezier(.16,.82,.22,1) both!important;
+}
+#gameWrap #singleReveal.active .revealPanel.legendary.revealBurst{
+  animation:awardRevealPanel138 .7s cubic-bezier(.16,.82,.22,1) both!important;
+}
+
+/* Hardware rendering containment without broad expensive filters. */
+#gameWrap #gacha #gachaMachine,
+#gameWrap #gacha .vaultChamber140,
+#gameWrap #summonCinematic .survivorForge135 .cinemaGlobe,
+#gameWrap #singleReveal .premiumRevealVisual142{
+  contain:layout paint;
+}
+#gameWrap #gacha .haloMid140,
+#gameWrap #gacha .haloInner140,
+#gameWrap #gacha .vaultCore140{
+  will-change:transform;
+}
+
+/* Pointer devices get an understated material response; touch does not. */
+@media(hover:hover) and (pointer:fine){
+  #gameWrap #gacha .premiumGacha140::after{
+    content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(118deg,transparent 0 37%,#ffffff05 47%,transparent 57%);
+    transform:translateX(-28%);opacity:0;
+    transition:transform .9s cubic-bezier(.2,.7,.2,1),opacity .35s ease;
+  }
+  #gameWrap #gacha .premiumGacha140:hover::after{transform:translateX(28%);opacity:.7}
+  #gameWrap #gacha .premiumMachine140,
+  #gameWrap #gacha .premiumIntel140,
+  #gameWrap #gacha .premiumActions140,
+  #gameWrap #gacha .premiumTop140{position:relative;z-index:2}
+}
+
+/* Ultra-small mobile: preserve the machine silhouette and tappable CTAs. */
+@media(max-width:390px){
+  #gameWrap #gacha .premiumTop140{padding:13px 10px}
+  #gameWrap #gacha .premiumBrand140 h1{font-size:23px}
+  #gameWrap #gacha .premiumBalance140{min-width:103px}
+  #gameWrap #gacha #gachaMachine{height:348px}
+  #gameWrap #gacha .haloOuter140{width:325px;height:250px}
+  #gameWrap #gacha .haloOuter140::before{width:336px;height:261px}
+  #gameWrap #gacha .haloOuter140::after{width:312px;height:238px}
+  #gameWrap #gacha .haloMid140{width:297px;height:228px}
+  #gameWrap #gacha .haloInner140{width:274px;height:205px}
+  #gameWrap #gacha .vaultChamber140{width:272px;height:202px}
+  #gameWrap #gacha .vaultChamber140 .gashaCapsule{transform:scale(.65)}
+  #gameWrap #gacha .vaultBase140{grid-template-columns:74px 1fr 74px}
+  #gameWrap #gacha .premiumSummon140{min-height:68px!important}
+  #gameWrap #gacha .premiumSummon140 span{font-size:13px!important}
+
+  #gameWrap #singleReveal .revealPanel{width:96vw!important}
+  #gameWrap #singleReveal .premiumRevealData142{padding-left:17px;padding-right:17px}
+  #gameWrap #singleReveal .revealName{font-size:34px!important}
+}
+
+/* Low-power/reduced-motion: still premium without relying on movement. */
+@media(prefers-reduced-motion:reduce){
+  #gameWrap #gacha .haloMid140,
+  #gameWrap #gacha .haloInner140,
+  #gameWrap #gacha .vaultCore140{will-change:auto!important}
+  #gameWrap #gacha .premiumGacha140::after{display:none!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
