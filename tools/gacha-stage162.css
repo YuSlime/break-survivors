@@ -1,0 +1,161 @@
+<style id="stage162OrbitalMobileComposition">
+/* Stage 16.2 — screenshot-driven mobile composition repair + desktop balance */
+
+/* Hide game/admin affordances while the premium gacha is open. */
+body:has(#gacha[style*="display: flex"]) #openSidebar,
+body:has(#gacha[style*="display:flex"]) #openSidebar,
+body:has(#gacha[style*="display: block"]) #openSidebar,
+body:has(#gacha[style*="display:block"]) #openSidebar,
+body:has(#gacha[style*="display: flex"]) #hudMenuBtn,
+body:has(#gacha[style*="display:flex"]) #hudMenuBtn{display:none!important}
+
+/* Desktop: reduce dead space and lock the hero/console relationship. */
+@media(min-width:981px){
+  #gameWrap #gacha .orbitalTop150{height:74px!important;padding-top:14px!important;padding-bottom:14px!important}
+  #gameWrap #gacha .orbitalLayout150{min-height:600px!important}
+  #gameWrap #gacha #gachaMachine.orbitalMachine150{height:532px!important}
+  #gameWrap #gacha .orbitalConsole150{padding-bottom:14px!important}
+  #gameWrap #gacha .hardwareRow150{min-height:92px!important}
+  #gameWrap #gacha .actionRow150{margin-top:4px!important}
+  #gameWrap #gacha .pityRing150{width:84px!important;height:84px!important}
+}
+
+/* Tablet/mobile must be a true single-column composition. */
+@media(max-width:980px){
+  #gameWrap #gacha .orbitalLayout150{
+    display:block!important;
+    grid-template-columns:none!important;
+    width:100%!important;
+    min-height:0!important;
+  }
+  #gameWrap #gacha .orbitalStage150{
+    display:block!important;position:relative!important;width:100%!important;min-width:0!important;
+    overflow:hidden!important;
+  }
+  #gameWrap #gacha .orbitalStory150{
+    position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;height:auto!important;min-height:0!important;
+    border-left:0!important;border-top:1px solid #142a34!important;
+  }
+  #gameWrap #gacha .orbitalConsole150{width:100%!important;clear:both!important}
+}
+
+@media(max-width:620px){
+  /* Header */
+  #gameWrap #gacha .orbitalTop150{
+    height:58px!important;padding:8px 9px!important;gap:8px!important;
+    background:#02070bd9!important;border-bottom:1px solid #132a34!important;
+  }
+  #gameWrap #gacha .orbitalBrand150{gap:7px!important;min-width:0!important}
+  #gameWrap #gacha .orbitalBrand150 span{font-size:9px!important;letter-spacing:.15em!important;white-space:nowrap!important}
+  #gameWrap #gacha .orbitalAccount150{gap:6px!important;flex:none!important}
+  #gameWrap #gacha .orbitalCurrency150{min-width:90px!important;height:38px!important;padding:0 9px!important}
+  #gameWrap #gacha .orbitalClose150{width:40px!important;height:40px!important;min-width:40px!important}
+
+  /* Hero fills the viewport width. */
+  #gameWrap #gacha .orbitalStageHead150{
+    height:29px!important;padding:0 10px!important;font-size:5.5px!important;
+  }
+  #gameWrap #gacha .orbitalStageHead150>span{max-width:54%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #gameWrap #gacha .orbitalStageHead150>div{font-size:5px!important;white-space:nowrap}
+  #gameWrap #gacha #gachaMachine.orbitalMachine150{
+    width:100%!important;height:350px!important;margin:0!important;overflow:hidden!important;
+  }
+  #gameWrap #gacha .orbitalRig150{
+    width:min(356px,94vw)!important;height:262px!important;top:48%!important;
+    scale:.96!important;
+  }
+  #gameWrap #gacha .rigOuter150{width:342px!important;max-width:96vw!important;height:232px!important;border-width:9px!important}
+  #gameWrap #gacha .rigInner150{width:306px!important;max-width:87vw!important;height:201px!important}
+  #gameWrap #gacha .orbitalCeiling150{top:-89px!important;width:408px!important;max-width:108vw!important;height:172px!important}
+  #gameWrap #gacha .ceilingRing150.r1{width:396px!important;max-width:106vw!important;height:142px!important;border-width:11px!important}
+  #gameWrap #gacha .ceilingRing150.r2{width:308px!important;height:100px!important;border-width:6px!important}
+  #gameWrap #gacha .ceilingRing150.r3{width:210px!important;height:62px!important}
+  #gameWrap #gacha .orbitalCrystal150{width:70px!important;height:114px!important;scale:1!important}
+  #gameWrap #gacha .orbitalPlinth150{width:300px!important;height:57px!important}
+  #gameWrap #gacha .plinthRing150{width:232px!important;height:36px!important;border-width:5px!important}
+  #gameWrap #gacha .orbitalMachineState150{bottom:3px!important;font-size:5px!important;gap:7px!important;white-space:nowrap!important}
+
+  /* Metadata becomes three compact progressive-disclosure chips below the hero. */
+  #gameWrap #gacha .orbitalStory150{
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;
+    padding:6px 8px!important;background:#03090dcc!important;
+  }
+  #gameWrap #gacha .orbitalStory150 .storyVisual150,
+  #gameWrap #gacha .orbitalStory150 .storyOnline150,
+  #gameWrap #gacha .orbitalStory150 .storyKicker150,
+  #gameWrap #gacha .orbitalStory150 h2,
+  #gameWrap #gacha .orbitalStory150>p,
+  #gameWrap #gacha .orbitalStory150 blockquote{display:none!important}
+  #gameWrap #gacha .orbitalIntel150{
+    display:block!important;margin:0!important;padding:0 7px!important;min-width:0!important;min-height:40px!important;
+    border:1px solid #17313c!important;border-radius:9px!important;background:#061017!important;opacity:1!important;
+  }
+  #gameWrap #gacha .orbitalIntel150 summary{
+    height:40px!important;min-height:40px!important;padding:0!important;gap:3px!important;
+    font-size:6.5px!important;line-height:1.15!important;white-space:normal!important;
+  }
+  #gameWrap #gacha .orbitalIntel150 summary span{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #gameWrap #gacha .orbitalIntel150 summary b{font-size:6px!important;white-space:nowrap!important}
+  #gameWrap #gacha .orbitalStory150:has(.orbitalIntel150[open]) .orbitalIntel150:not([open]){display:none!important}
+  #gameWrap #gacha .orbitalIntel150[open]{grid-column:1/-1!important;padding:0 10px 8px!important}
+  #gameWrap #gacha .orbitalIntel150[open] summary{height:36px!important}
+  #gameWrap #gacha .orbitalIntel150:not([open])>*:not(summary){display:none!important}
+  #gameWrap #gacha .orbitalIntel150[open] .intelLine150{display:flex!important;font-size:6.5px!important;padding-bottom:4px!important}
+  #gameWrap #gacha .orbitalIntel150[open] .gachaRoster{display:grid!important;grid-template-columns:repeat(3,1fr)!important;padding-bottom:5px!important}
+  #gameWrap #gacha .orbitalIntel150[open] .orbitalRates150{display:grid!important;grid-template-columns:1fr 1fr!important;padding-bottom:5px!important}
+
+  /* Hardware console stays compact and centered. */
+  #gameWrap #gacha .orbitalConsole150{padding:6px 7px 12px!important;background:#020609!important}
+  #gameWrap #gacha .hardwareRow150{
+    display:grid!important;grid-template-columns:76px minmax(0,1fr) 76px!important;gap:6px!important;
+    min-height:62px!important;align-items:center!important;
+  }
+  #gameWrap #gacha .hardwarePod150{height:54px!important;border-radius:28px 28px 10px 10px!important}
+  #gameWrap #gacha .hardwarePod150::before{height:9px!important;top:3px!important}
+  #gameWrap #gacha .hardwareCore150{width:26px!important;height:26px!important;border-width:4px!important}
+  #gameWrap #gacha .hardwareCore150 i{width:10px!important;height:10px!important;margin:4px!important}
+  #gameWrap #gacha .outputMouth150{width:42px!important;height:23px!important;border-width:4px!important}
+  #gameWrap #gacha .hardwarePod150>span{font-size:6.5px!important;margin-top:3px!important}
+  #gameWrap #gacha .hardwarePod150>b{display:none!important}
+  #gameWrap #gacha .transferProtocol150{padding:6px 7px!important;border-radius:9px!important}
+  #gameWrap #gacha .transferTop150{font-size:4.5px!important}
+  #gameWrap #gacha .transferRail150{height:14px!important;margin-top:5px!important;padding:3px!important;gap:2px!important}
+
+  /* Action area: no desktop 3-column leftovers. */
+  #gameWrap #gacha .actionRow150{
+    display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
+    grid-template-columns:none!important;gap:7px!important;margin-top:7px!important;width:100%!important;
+  }
+  #gameWrap #gacha .pityRing150{
+    width:100%!important;height:38px!important;margin:0!important;border-radius:10px!important;
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    background:linear-gradient(90deg,#17150b,#071017 24% 76%,#17150b)!important;
+    box-shadow:inset 0 0 0 1px #3c3a24,0 6px 14px #0005!important;
+  }
+  #gameWrap #gacha .pityRing150::before{
+    inset:3px!important;border-radius:7px!important;background:#050d12!important;border-color:#233d48!important;
+  }
+  #gameWrap #gacha .pityRing150>div{
+    width:100%!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;
+  }
+  #gameWrap #gacha .pityRing150 b{font-size:11px!important}
+  #gameWrap #gacha .pityRing150 span{margin:0!important;font-size:5px!important;line-height:1.1!important;text-align:left!important}
+  #gameWrap #gacha .summonDeck150{
+    width:100%!important;display:grid!important;grid-template-columns:1fr 1.08fr!important;gap:7px!important;margin:0!important;
+  }
+  #gameWrap #gacha .orbitalSummon150{
+    width:100%!important;min-width:0!important;min-height:64px!important;margin:0!important;padding:8px 9px!important;border-radius:15px!important;
+  }
+  #gameWrap #gacha .orbitalSummon150 span{gap:6px!important;white-space:nowrap!important}
+  #gameWrap #gacha .orbitalSummon150 span i{width:28px!important;height:28px!important;min-width:28px!important;font-size:10px!important}
+  #gameWrap #gacha .orbitalSummon150 span b{font-size:12px!important;white-space:nowrap!important}
+  #gameWrap #gacha .orbitalSummon150 em{margin:4px 0 0 34px!important;font-size:5.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #gameWrap #gacha .consoleMeta150{display:none!important}
+}
+
+@media(max-width:340px){
+  #gameWrap #gacha .summonDeck150{grid-template-columns:1fr!important}
+  #gameWrap #gacha .orbitalStory150{grid-template-columns:1fr 1fr!important}
+  #gameWrap #gacha .orbitalStory150 .orbitalIntel150:last-child{grid-column:1/-1!important}
+}
+</style>
