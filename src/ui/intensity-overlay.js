@@ -4,7 +4,7 @@ const MODE_TONES=Object.freeze({
   break:'#ff9d42',
   fever:'#ff6bc8',
   limit:'#b66cff',
-  'boss-final':'ff4f78'
+  'boss-final':'#ff4f78'
 });
 
 const STYLE_ID='premium-intensity-overlay-style';
