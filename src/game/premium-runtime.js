@@ -4,6 +4,7 @@ import {createCameraDirector} from '../directors/camera.js';
 import {createEncounterDirector} from '../directors/encounter.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
+import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 
 const FOUNDATION_FLAGS=Object.freeze({
   intensityDirector:true,
@@ -40,7 +41,8 @@ export function createPremiumRuntime({
   reducedMotion=false,
   vfxProfile='high',
   calmSeconds=8,
-  signatureHud=null
+  signatureHud=null,
+  intensityOverlay=null
 }={}){
   const resolved=resolveFeatureFlags(flags);
   const intensity=createIntensityDirector();
@@ -78,6 +80,9 @@ export function createPremiumRuntime({
     }
     if(resolved.encounterDirector)encounter.update(delta);
     lastIntensity=resolved.intensityDirector?intensity.update(delta,state):20;
+    if(resolved.intensityDirector&&intensityOverlay){
+      intensityOverlay.update({state,intensity:lastIntensity});
+    }
     cameraState=resolved.cameraDirector?camera.update(delta):{...ZERO_CAMERA};
 
     lastSignatureMeter=getSignatureMeterValue(state.characterId,state);
@@ -118,6 +123,9 @@ export function createPremiumRuntime({
     lastSignatureMeter=0;
     lastSignatureLabel='CORE';
     signatureHud?.update?.({characterId:null,signatureMeter:0});
+    if(resolved.intensityDirector&&intensityOverlay){
+      intensityOverlay.update({state:{},intensity:20});
+    }
   }
 
   return {
@@ -147,10 +155,14 @@ function installBrowserRuntime(){
   try{profile=localStorage.getItem('break_survivors_vfx_profile')||profile}catch(_){}
   if(innerWidth<=640 && profile==='high')profile='medium';
 
+  const gameWrap=document.getElementById('gameWrap');
   const signatureHud=flags.premiumHud
-    ? mountSignatureMeterHud({document,parent:document.getElementById('gameWrap')})
+    ? mountSignatureMeterHud({document,parent:gameWrap})
     : null;
-  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud});
+  const intensityOverlay=flags.intensityDirector
+    ? mountIntensityOverlay({document,parent:gameWrap})
+    : null;
+  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,intensityOverlay});
   window.BreakPremiumRuntime=runtime;
   const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','premiumHud'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
