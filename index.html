@@ -16144,7 +16144,9 @@ function premiumFrameState(){
 let last=performance.now(),simAccumulator=0;
 function loop(now){
   const frameDt=Math.max(0,(now-last)/1000);last=now;
-  window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());
+  const premiumFrame=window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());
+  const premiumHitStop=Math.max(0,Number(premiumFrame?.camera?.hitStopMs)||0)/1000;
+  if(premiumHitStop>0)hitStop=Math.max(hitStop,premiumHitStop);
   if(document.body.classList.contains('coreGridOpen')){
     simAccumulator=0;
     requestAnimationFrame(loop);
