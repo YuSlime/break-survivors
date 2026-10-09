@@ -13,6 +13,10 @@ function normalizeProfile(name){
   return VFX_PROFILES[name]?name:'high';
 }
 
+function normalizePriority(priority){
+  return Math.max(1,Math.min(5,Math.floor(Number(priority)||1)));
+}
+
 export function createVfxBudget({profile='high'}={}){
   let profileName=normalizeProfile(profile);
   let limits=VFX_PROFILES[profileName];
@@ -30,15 +34,21 @@ export function createVfxBudget({profile='high'}={}){
     return profileName;
   }
 
-  function trySpawn(kind,priority=1){
+  function reserve(kind,requested=1,priority=1){
     const hard=limits[kind];
-    if(!Number.isFinite(hard))return false;
-    const p=Math.max(1,Math.min(5,Math.floor(Number(priority)||1)));
-    const allowed=Math.max(1,Math.floor(hard*PRIORITY_FRACTION[p]));
+    const amount=Math.max(0,Math.floor(Number(requested)||0));
+    if(!Number.isFinite(hard)||amount<=0)return 0;
+    const p=normalizePriority(priority);
+    const ceiling=Math.max(1,Math.floor(hard*PRIORITY_FRACTION[p]));
     const current=counts[kind]||0;
-    if(current>=allowed)return false;
-    counts[kind]=current+1;
-    return true;
+    const available=Math.max(0,ceiling-current);
+    const granted=Math.min(amount,available);
+    counts[kind]=current+granted;
+    return granted;
+  }
+
+  function trySpawn(kind,priority=1){
+    return reserve(kind,1,priority)===1;
   }
 
   beginFrame();
@@ -48,6 +58,7 @@ export function createVfxBudget({profile='high'}={}){
     counts,
     beginFrame,
     setProfile,
+    reserve,
     trySpawn
   };
 }
