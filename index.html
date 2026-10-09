@@ -14400,20 +14400,22 @@ function draw(){
 
   // Finite-world camera: follows the player, but stops at the world boundaries.
   const grid=48;
-  const halfViewW=W/(2*CAMERA_ZOOM);
-  const halfViewH=H/(2*CAMERA_ZOOM);
+  const premiumWorldZoom=Math.max(.96,Math.min(1.10,Number(premiumCamera?.zoom)||1));
+  const effectiveCameraZoom=CAMERA_ZOOM*premiumWorldZoom;
+  const halfViewW=W/(2*effectiveCameraZoom);
+  const halfViewH=H/(2*effectiveCameraZoom);
   const cameraX=halfViewW*2>=WORLD_W?WORLD_W/2:clamp(player.x,halfViewW,WORLD_W-halfViewW);
   const cameraY=halfViewH*2>=WORLD_H?WORLD_H/2:clamp(player.y,halfViewH,WORLD_H-halfViewH);
 
   ctx.translate(W/2,H/2);
-  ctx.scale(CAMERA_ZOOM,CAMERA_ZOOM);
+  ctx.scale(effectiveCameraZoom,effectiveCameraZoom);
   ctx.translate(-cameraX,-cameraY);
 
   // Battlefield surface; outside this rectangle remains dark.
   ctx.fillStyle='#0b111d';
   ctx.fillRect(0,0,WORLD_W,WORLD_H);
 
-  ctx.strokeStyle='#151f31';ctx.lineWidth=1/CAMERA_ZOOM;
+  ctx.strokeStyle='#151f31';ctx.lineWidth=1/effectiveCameraZoom;
   const gridStartX=Math.max(0,Math.floor((cameraX-halfViewW-grid*2)/grid)*grid);
   const gridEndX=Math.min(WORLD_W,Math.ceil((cameraX+halfViewW+grid*2)/grid)*grid);
   const gridStartY=Math.max(0,Math.floor((cameraY-halfViewH-grid*2)/grid)*grid);
@@ -14423,14 +14425,14 @@ function draw(){
 
   // Strong visible world limit.
   ctx.save();
-  ctx.shadowBlur=fxBlur(28/CAMERA_ZOOM);
+  ctx.shadowBlur=fxBlur(28/effectiveCameraZoom);
   ctx.shadowColor='#5b8dcb';
   ctx.strokeStyle='#5579a8';
-  ctx.lineWidth=8/CAMERA_ZOOM;
+  ctx.lineWidth=8/effectiveCameraZoom;
   ctx.strokeRect(0,0,WORLD_W,WORLD_H);
   ctx.shadowBlur=fxBlur(0);
   ctx.strokeStyle='#a7c9ef';
-  ctx.lineWidth=2/CAMERA_ZOOM;
+  ctx.lineWidth=2/effectiveCameraZoom;
   ctx.strokeRect(0,0,WORLD_W,WORLD_H);
   ctx.restore();
 
