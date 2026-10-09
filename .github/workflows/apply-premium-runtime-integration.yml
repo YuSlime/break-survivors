@@ -21,10 +21,10 @@ jobs:
           node-version: 22
       - name: Apply guarded index integration
         run: node tools/apply-premium-runtime-integration.mjs
-      - name: Verify patch shape
+      - name: Verify patch and complete suite
         run: |
           git diff --check
-          node --test tests/premium-index-integration.test.mjs tests/premium-runtime.test.mjs
+          node --test tests/*.test.mjs
       - name: Commit generated index integration
         run: |
           if git diff --quiet -- index.html; then
