@@ -1,5 +1,5 @@
 // One-shot guarded integrator for the Premium Edition foundation branch.
-// Integration revision 3: full-suite verification trigger after generated index commit.
+// Integration revision 4: expose live character combat state to Premium HUD.
 import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
@@ -24,6 +24,12 @@ replaceOnce(
   'frame-state',
   'let last=performance.now(),simAccumulator=0;\nfunction loop(now){',
   `function premiumFrameState(){\n  const activeEnemies=enemies.filter(e=>!e.dead);\n  const boss=activeEnemies.find(e=>e.type==='boss')||null;\n  return {\n    highDensity:activeEnemies.length>=45,\n    breakActive:breakCombo>=10,\n    eliteActive:activeEnemies.some(e=>e.type==='elite'),\n    feverActive:feverActive(),\n    limitBreakActive:limitBreakLevel>0||!!lbEventState,\n    bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15)\n  };\n}\n\nlet last=performance.now(),simAccumulator=0;\nfunction loop(now){`
+);
+
+replaceOnce(
+  'signature-frame-state',
+  `    bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15)\n  };`,
+  `    bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15),\n    characterId:currentCharacter.id,\n    characterLevel:charLevel(currentCharacter.id),\n    gunnerMomentum,\n    attackCounters\n  };`
 );
 
 replaceOnce(
