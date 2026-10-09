@@ -1,5 +1,5 @@
 // One-shot guarded integrator for the Premium Edition foundation branch.
-// Integration revision 2: re-run after optional-chaining assertion correction.
+// Integration revision 3: full-suite verification trigger after generated index commit.
 import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
