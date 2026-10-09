@@ -10957,6 +10957,7 @@ function showBreakCallout(main,sub='',color='#fff'){
 }
 function startFever(){
   feverTime=FEVER_DURATION+getCoreEffects().feverDuration;
+  window.BreakPremiumRuntime?.signal?.('fever',{direction:{x:0,y:0}});
   breakTimer=Math.max(breakTimer,3.2);
   showBreakCallout('BREAK FEVER!','ATTACK SPEED +35% / MOVE +20% / COINS ×2.2','#ffe15b');
   shake=Math.max(shake,10);
@@ -10969,7 +10970,7 @@ function registerBreakKill(e,meta={}){
   breakTimer=feverActive()?3.1:BREAK_TIMEOUT+getLbRewardStatMultipliers().breakGrace+getCoreEffects().breakGrace;
 
   if(getCoreEffects().shockBurst&&breakCombo>0&&breakCombo%25===0)chainLightning(ps.damage*.72,6,{range:220*ps.area,decay:.88,width:3.5,color:'#9dfcff'});
-  if(breakCombo===10)showBreakCallout('BREAK ×1.2','KEEP KILLING','#73e8ff');
+  if(breakCombo===10){window.BreakPremiumRuntime?.signal?.('break',{direction:{x:0,y:0}});showBreakCallout('BREAK ×1.2','KEEP KILLING','#73e8ff')}
   else if(breakCombo===25)showBreakCallout('BREAK ×2','COIN DROP ×1.4','#a58cff');
   else if(breakCombo===50)showBreakCallout('BREAK ×3','COIN DROP ×1.75','#ff8bdc');
   else if(breakCombo===75 || (breakCombo>75 && breakCombo%75===0))startFever();
@@ -11142,6 +11143,7 @@ let ps = playerStats();
 const player={x:WORLD_W/2,y:WORLD_H/2,r:14,hp:ps.maxHp,attackCd:0,hitCd:0,angle:0};
 
 function resetRun(){
+  window.BreakPremiumRuntime?.reset?.();
   attackType=currentCharacter.attack;
   setAttack(attackType);
   ps=playerStats();
@@ -11263,6 +11265,7 @@ function updateThreatProgression(){
     threatLevel=state.threat;
   }
   if(state.limitBreak>limitBreakLevel){
+    window.BreakPremiumRuntime?.signal?.('limitBreak',{direction:{x:0,y:0}});
     const previousLb=limitBreakLevel;
     queueLimitBreakEvents(previousLb,state.limitBreak);
     limitBreakLevel=state.limitBreak;
@@ -11653,6 +11656,8 @@ function damageEnemy(e,dmg,impact=true){
 function killEnemy(e,meta={}){
   if(e.dead) return;
   e.dead=true;
+  const premiumDeathEvent=e.type==='boss'?'bossKill':e.type==='elite'?'eliteKill':meta.critical?'critical':null;
+  if(premiumDeathEvent)window.BreakPremiumRuntime?.signal?.(premiumDeathEvent,{direction:{x:e.x-player.x,y:e.y-player.y}});
 
   registerLbEventKill(e);
   registerBreakKill(e,meta);
@@ -14376,9 +14381,13 @@ function draw(){
   const shakeProfile=getScreenShakeProfile();
   const visibleShake=Math.min(shakeProfile.maxVisible,Math.max(0,shake)*shakeProfile.renderScale);
   const sx=visibleShake?rnd(-visibleShake,visibleShake):0, sy=visibleShake?rnd(-visibleShake,visibleShake):0;
+  const premiumCamera=window.BreakPremiumRuntime?.cameraState;
+  const premiumShake=Math.max(0,Number(premiumCamera?.shake)||0);
+  const premiumSx=premiumShake?rnd(-premiumShake,premiumShake):0;
+  const premiumSy=premiumShake?rnd(-premiumShake,premiumShake):0;
   shake*=shakeProfile.decay;
   if(shake<.025)shake=0;
-  ctx.translate(sx,sy);
+  ctx.translate(sx+premiumSx+(premiumCamera?.kickX||0),sy+premiumSy+(premiumCamera?.kickY||0));
 
   ctx.clearRect(-20,-20,W+40,H+40);
   ctx.fillStyle='#03060b';ctx.fillRect(-20,-20,W+40,H+40);
@@ -16097,9 +16106,23 @@ document.addEventListener('pointerdown',e=>{
   if(!quickActions.contains(e.target)&&e.target!==hudMenuBtn)closeQuickMenu();
 });
 
+function premiumFrameState(){
+  const activeEnemies=enemies.filter(e=>!e.dead);
+  const boss=activeEnemies.find(e=>e.type==='boss')||null;
+  return {
+    highDensity:activeEnemies.length>=45,
+    breakActive:breakCombo>=10,
+    eliteActive:activeEnemies.some(e=>e.type==='elite'),
+    feverActive:feverActive(),
+    limitBreakActive:limitBreakLevel>0||!!lbEventState,
+    bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15)
+  };
+}
+
 let last=performance.now(),simAccumulator=0;
 function loop(now){
   const frameDt=Math.max(0,(now-last)/1000);last=now;
+  window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());
   if(document.body.classList.contains('coreGridOpen')){
     simAccumulator=0;
     requestAnimationFrame(loop);
@@ -16114,5 +16137,6 @@ function loop(now){
 applyLanguage();syncSettingsUi();buildAttackButtons();buildCharacterList();updateHud();persist();setSidebarVisible(false);requestAnimationFrame(loop);
 })();
 </script>
+<script type="module" src="./src/game/premium-runtime.js"></script>
 </body>
 </html>
