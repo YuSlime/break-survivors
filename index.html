@@ -16115,7 +16115,11 @@ function premiumFrameState(){
     eliteActive:activeEnemies.some(e=>e.type==='elite'),
     feverActive:feverActive(),
     limitBreakActive:limitBreakLevel>0||!!lbEventState,
-    bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15)
+    bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15),
+    characterId:currentCharacter.id,
+    characterLevel:charLevel(currentCharacter.id),
+    gunnerMomentum,
+    attackCounters
   };
 }
 
