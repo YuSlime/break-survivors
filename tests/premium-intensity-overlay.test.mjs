@@ -37,6 +37,13 @@ test('presentation intensity is normalized and clamped',()=>{
   assert.equal(resolveIntensityPresentation({},200).strength,1);
 });
 
+test('presentation precomputes cross-browser opacity and glow values',()=>{
+  const view=resolveIntensityPresentation({limitBreakActive:true},50);
+  assert.equal(view.edgeOpacity,0.14);
+  assert.equal(view.vignetteOpacity,0.08);
+  assert.equal(view.glowPx,64);
+});
+
 test('each climax mode uses a distinct semantic tone',()=>{
   const breakView=resolveIntensityPresentation({breakActive:true},50);
   const feverView=resolveIntensityPresentation({feverActive:true},72);
@@ -58,7 +65,7 @@ test('all battlefield tone tokens are valid six-digit hex colors',()=>{
   }
 });
 
-test('mounted overlay updates state and CSS variables without consuming input',()=>{
+test('mounted overlay updates browser-safe CSS variables without calc multiplication',()=>{
   const document=fakeDocument();
   const parent=new FakeElement('div');
   const overlay=mountIntensityOverlay({document,parent});
@@ -71,6 +78,11 @@ test('mounted overlay updates state and CSS variables without consuming input',(
   assert.equal(overlay.host.dataset.mode,'limit');
   assert.equal(overlay.host.style.values['--premium-strength'],'0.86');
   assert.equal(overlay.host.style.values['--premium-tone'],view.tone);
+  assert.equal(overlay.host.style.values['--premium-edge-opacity'],String(view.edgeOpacity));
+  assert.equal(overlay.host.style.values['--premium-vignette-opacity'],String(view.vignetteOpacity));
+  assert.equal(overlay.host.style.values['--premium-glow-size'],view.glowPx+'px');
+  const css=document.head.children[0]?.textContent||'';
+  assert.doesNotMatch(css,/var\(--premium-strength\)\s*\*/);
 
   overlay.destroy();
   assert.equal(parent.children.length,0);
