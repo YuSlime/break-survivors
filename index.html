@@ -11698,7 +11698,9 @@ function killEnemy(e,meta={}){
   if(meta.overkill)deathShake*=1.35;
   shake=Math.min(16,shake+deathShake);
 
-  rings.push({
+  const premiumVfxPriority=e.type==='boss'?5:e.type==='treasure'?4:e.type==='elite'?3:meta.overkill?2:1;
+  const premiumRingCount=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,premiumVfxPriority)??1;
+  if(premiumRingCount>0)rings.push({
     x:e.x,y:e.y,r:Math.max(3,e.r*.25),
     max:e.r*(e.type==='boss'?3.1:e.type==='treasure'?2.8:e.type==='elite'?2.2:meta.overkill?2.15:1.75),
     life:e.type==='boss'?.42:e.type==='elite'?.28:.18,
@@ -11707,7 +11709,8 @@ function killEnemy(e,meta={}){
   });
 
   const burst=e.type==='boss'?42:e.type==='treasure'?34:e.type==='elite'?26:meta.overkill?20:12;
-  for(let i=0;i<burst;i++) particles.push({
+  const premiumBurst=window.BreakPremiumRuntime?.allowVfxCount?.('particles',burst,premiumVfxPriority)??burst;
+  for(let i=0;i<premiumBurst;i++) particles.push({
     x:e.x,y:e.y,
     vx:rnd(-190,190)*(e.type==='boss'?1.5:e.type==='elite'?1.2:meta.overkill?1.15:1),
     vy:rnd(-190,190)*(e.type==='boss'?1.5:e.type==='elite'?1.2:meta.overkill?1.15:1),
@@ -16120,6 +16123,19 @@ function premiumFrameState(){
     characterLevel:charLevel(currentCharacter.id),
     gunnerMomentum,
     attackCounters
+  };
+}
+
+function premiumFrameState(){
+  const activeEnemies=enemies.filter(e=>!e.dead);
+  const boss=activeEnemies.find(e=>e.type==='boss')||null;
+  return {
+    highDensity:activeEnemies.length>=45,
+    breakActive:breakCombo>=10,
+    eliteActive:activeEnemies.some(e=>e.type==='elite'),
+    feverActive:feverActive(),
+    limitBreakActive:limitBreakLevel>0||!!lbEventState,
+    bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15)
   };
 }
 
