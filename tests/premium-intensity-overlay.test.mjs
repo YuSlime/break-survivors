@@ -47,6 +47,17 @@ test('each climax mode uses a distinct semantic tone',()=>{
   assert.notEqual(limitView.tone,bossView.tone);
 });
 
+test('all battlefield tone tokens are valid six-digit hex colors',()=>{
+  const states=[
+    {},{highDensity:true},{breakActive:true},{feverActive:true},
+    {limitBreakActive:true},{bossFinalPhase:true}
+  ];
+  for(const state of states){
+    const tone=resolveIntensityPresentation(state,80).tone;
+    assert.match(tone,/^#[0-9a-f]{6}$/i);
+  }
+});
+
 test('mounted overlay updates state and CSS variables without consuming input',()=>{
   const document=fakeDocument();
   const parent=new FakeElement('div');
