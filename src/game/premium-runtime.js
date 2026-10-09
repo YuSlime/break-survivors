@@ -101,6 +101,13 @@ export function createPremiumRuntime({
     return vfx.trySpawn(kind,priority);
   }
 
+  function allowVfxCount(kind,requested=1,priority=1){
+    const amount=Math.max(0,Math.floor(Number(requested)||0));
+    if(amount<=0)return 0;
+    if(!resolved.vfxDirector)return amount;
+    return vfx.reserve(kind,amount,priority);
+  }
+
   function reset(){
     intensity.reset();
     camera.reset();
@@ -122,6 +129,7 @@ export function createPremiumRuntime({
     signal,
     updateFrame,
     allowVfx,
+    allowVfxCount,
     reset,
     get intensityValue(){return lastIntensity},
     get cameraState(){return cameraState},
