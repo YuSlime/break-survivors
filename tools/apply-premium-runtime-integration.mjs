@@ -1,5 +1,5 @@
 // One-shot guarded integrator for the Premium Edition foundation branch.
-// Integration revision 5: budget live enemy death VFX by gameplay priority.
+// Integration revision 6: apply transient Premium camera zoom without mutating saved base zoom.
 import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
@@ -42,6 +42,30 @@ replaceOnce(
   'camera-draw',
   `  const sx=visibleShake?rnd(-visibleShake,visibleShake):0, sy=visibleShake?rnd(-visibleShake,visibleShake):0;\n  shake*=shakeProfile.decay;\n  if(shake<.025)shake=0;\n  ctx.translate(sx,sy);`,
   `  const sx=visibleShake?rnd(-visibleShake,visibleShake):0, sy=visibleShake?rnd(-visibleShake,visibleShake):0;\n  const premiumCamera=window.BreakPremiumRuntime?.cameraState;\n  const premiumShake=Math.max(0,Number(premiumCamera?.shake)||0);\n  const premiumSx=premiumShake?rnd(-premiumShake,premiumShake):0;\n  const premiumSy=premiumShake?rnd(-premiumShake,premiumShake):0;\n  shake*=shakeProfile.decay;\n  if(shake<.025)shake=0;\n  ctx.translate(sx+premiumSx+(premiumCamera?.kickX||0),sy+premiumSy+(premiumCamera?.kickY||0));`
+);
+
+replaceOnce(
+  'camera-world-zoom',
+  `  const grid=48;\n  const halfViewW=W/(2*CAMERA_ZOOM);\n  const halfViewH=H/(2*CAMERA_ZOOM);`,
+  `  const grid=48;\n  const premiumWorldZoom=Math.max(.96,Math.min(1.10,Number(premiumCamera?.zoom)||1));\n  const effectiveCameraZoom=CAMERA_ZOOM*premiumWorldZoom;\n  const halfViewW=W/(2*effectiveCameraZoom);\n  const halfViewH=H/(2*effectiveCameraZoom);`
+);
+
+replaceOnce(
+  'camera-world-scale',
+  `  ctx.translate(W/2,H/2);\n  ctx.scale(CAMERA_ZOOM,CAMERA_ZOOM);\n  ctx.translate(-cameraX,-cameraY);`,
+  `  ctx.translate(W/2,H/2);\n  ctx.scale(effectiveCameraZoom,effectiveCameraZoom);\n  ctx.translate(-cameraX,-cameraY);`
+);
+
+replaceOnce(
+  'camera-grid-line-width',
+  `  ctx.strokeStyle='#151f31';ctx.lineWidth=1/CAMERA_ZOOM;`,
+  `  ctx.strokeStyle='#151f31';ctx.lineWidth=1/effectiveCameraZoom;`
+);
+
+replaceOnce(
+  'camera-border-normalization',
+  `  ctx.shadowBlur=fxBlur(28/CAMERA_ZOOM);\n  ctx.shadowColor='#5b8dcb';\n  ctx.strokeStyle='#5579a8';\n  ctx.lineWidth=8/CAMERA_ZOOM;\n  ctx.strokeRect(0,0,WORLD_W,WORLD_H);\n  ctx.shadowBlur=fxBlur(0);\n  ctx.strokeStyle='#a7c9ef';\n  ctx.lineWidth=2/CAMERA_ZOOM;`,
+  `  ctx.shadowBlur=fxBlur(28/effectiveCameraZoom);\n  ctx.shadowColor='#5b8dcb';\n  ctx.strokeStyle='#5579a8';\n  ctx.lineWidth=8/effectiveCameraZoom;\n  ctx.strokeRect(0,0,WORLD_W,WORLD_H);\n  ctx.shadowBlur=fxBlur(0);\n  ctx.strokeStyle='#a7c9ef';\n  ctx.lineWidth=2/effectiveCameraZoom;`
 );
 
 replaceOnce(
