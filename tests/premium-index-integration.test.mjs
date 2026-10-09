@@ -46,8 +46,8 @@ test('draw adds Premium camera feedback without removing legacy shake',()=>{
   const draw=functionSource('draw');
   assert.match(draw,/getScreenShakeProfile\(\)/);
   assert.match(draw,/BreakPremiumRuntime\?\.cameraState/);
-  assert.match(draw,/premiumCamera\.kickX/);
-  assert.match(draw,/premiumCamera\.shake/);
+  assert.match(draw,/premiumCamera\?\.kickX/);
+  assert.match(draw,/premiumCamera\?\.shake/);
 });
 
 test('combat milestones signal the Premium camera director',()=>{
