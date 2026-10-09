@@ -1,5 +1,5 @@
 // One-shot guarded integrator for the Premium Edition foundation branch.
-// Integration revision 6: apply transient Premium camera zoom without mutating saved base zoom.
+// Integration revision 7: bridge one-shot Premium hit stop into the legacy simulation freeze gate.
 import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
@@ -36,6 +36,12 @@ replaceOnce(
   'frame-update',
   '  const frameDt=Math.max(0,(now-last)/1000);last=now;\n',
   '  const frameDt=Math.max(0,(now-last)/1000);last=now;\n  window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());\n'
+);
+
+replaceOnce(
+  'premium-hit-stop',
+  `  window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());\n`,
+  `  const premiumFrame=window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());\n  const premiumHitStop=Math.max(0,Number(premiumFrame?.camera?.hitStopMs)||0)/1000;\n  if(premiumHitStop>0)hitStop=Math.max(hitStop,premiumHitStop);\n`
 );
 
 replaceOnce(
