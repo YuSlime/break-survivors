@@ -1,5 +1,5 @@
 // One-shot guarded integrator for the Premium Edition foundation branch.
-// Integration revision 4: expose live character combat state to Premium HUD.
+// Integration revision 5: budget live enemy death VFX by gameplay priority.
 import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
@@ -48,6 +48,18 @@ replaceOnce(
   'enemy-death-signal',
   `function killEnemy(e,meta={}){\n  if(e.dead) return;\n  e.dead=true;`,
   `function killEnemy(e,meta={}){\n  if(e.dead) return;\n  e.dead=true;\n  const premiumDeathEvent=e.type==='boss'?'bossKill':e.type==='elite'?'eliteKill':meta.critical?'critical':null;\n  if(premiumDeathEvent)window.BreakPremiumRuntime?.signal?.(premiumDeathEvent,{direction:{x:e.x-player.x,y:e.y-player.y}});`
+);
+
+replaceOnce(
+  'enemy-death-vfx-ring',
+  `  rings.push({\n    x:e.x,y:e.y,r:Math.max(3,e.r*.25),\n    max:e.r*(e.type==='boss'?3.1:e.type==='treasure'?2.8:e.type==='elite'?2.2:meta.overkill?2.15:1.75),\n    life:e.type==='boss'?.42:e.type==='elite'?.28:.18,\n    total:e.type==='boss'?.42:e.type==='elite'?.28:.18,\n    color:meta.overkill?'#ffd95e':e.type==='boss'?'#ffd86f':e.color\n  });`,
+  `  const premiumVfxPriority=e.type==='boss'?5:e.type==='treasure'?4:e.type==='elite'?3:meta.overkill?2:1;\n  const premiumRingCount=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,premiumVfxPriority)??1;\n  if(premiumRingCount>0)rings.push({\n    x:e.x,y:e.y,r:Math.max(3,e.r*.25),\n    max:e.r*(e.type==='boss'?3.1:e.type==='treasure'?2.8:e.type==='elite'?2.2:meta.overkill?2.15:1.75),\n    life:e.type==='boss'?.42:e.type==='elite'?.28:.18,\n    total:e.type==='boss'?.42:e.type==='elite'?.28:.18,\n    color:meta.overkill?'#ffd95e':e.type==='boss'?'#ffd86f':e.color\n  });`
+);
+
+replaceOnce(
+  'enemy-death-vfx-particles',
+  `  const burst=e.type==='boss'?42:e.type==='treasure'?34:e.type==='elite'?26:meta.overkill?20:12;\n  for(let i=0;i<burst;i++) particles.push({`,
+  `  const burst=e.type==='boss'?42:e.type==='treasure'?34:e.type==='elite'?26:meta.overkill?20:12;\n  const premiumBurst=window.BreakPremiumRuntime?.allowVfxCount?.('particles',burst,premiumVfxPriority)??burst;\n  for(let i=0;i<premiumBurst;i++) particles.push({`
 );
 
 replaceOnce(
