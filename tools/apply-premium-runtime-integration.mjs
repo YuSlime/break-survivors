@@ -1,3 +1,4 @@
+// One-shot guarded integrator for the Premium Edition foundation branch.
 import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
