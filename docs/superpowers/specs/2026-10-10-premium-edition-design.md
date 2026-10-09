@@ -1,331 +1,237 @@
 # BREAK SURVIVORS — Premium Edition Design Specification
 
-Date: 2026-10-10
-Status: Approved design, implementation not started
-Target: `main` production line, introduced incrementally behind feature flags
+Date: 2026-10-10  
+Status: Approved product/design direction. Implementation has not started.  
+Target: incremental rollout on `main` behind feature flags.
 
 ## 1. Purpose
 
-BREAK SURVIVORS Premium Edition is a full refinement of the existing browser game, not a replacement project. The goal is to turn the current feature-rich prototype into a coherent, high-end game experience where combat feel, visual effects, camera, sound, HUD, progression, build crafting, enemies, bosses, stages, rewards, gacha, mobile controls, and technical architecture all reinforce the same experience.
+BREAK SURVIVORS Premium Edition is a full refinement of the existing browser game, not a replacement project. The goal is to turn the current feature-rich prototype into a coherent, high-end experience where combat feel, VFX, camera, sound, HUD, progression, build crafting, enemies, bosses, stages, rewards, gacha, mobile controls, and technical structure all reinforce one another.
 
-The redesign must preserve the identity and existing investment in BREAK SURVIVORS. Existing systems such as BREAK, FEVER, Threat, LIMIT BREAK events, Chaos Events, Treasure enemies, bosses, character growth, CORE GRID, ULTs, gacha, and audio are retained where useful and refined rather than discarded.
+Existing strengths — BREAK, FEVER, Threat, LIMIT BREAK events, Chaos Events, Treasure enemies, bosses, character growth, CORE GRID, ULTs, gacha, and the current audio foundation — are retained and improved rather than discarded.
 
 The intended experience is:
 
-> Every second of combat should feel responsive; every 20–30 seconds should create a meaningful shift; every few minutes should produce a memorable climax.
+> Every second of combat feels responsive; every 20–30 seconds creates a meaningful shift; every few minutes produces a memorable climax.
 
-The game should feel like a polished premium indie title while remaining a fast-loading browser game that works on both PC and mobile.
+The final product should feel like a polished premium indie title while remaining a fast-loading Canvas browser game that works on PC and mobile.
 
-## 2. Success Criteria
+## 2. Product Pillars
 
-Premium Edition is successful when the following are true:
+### Combat Feel
+Every attack, impact, kill, BREAK, and boss event must feel responsive and readable.
 
-- Normal combat is readable, responsive, and satisfying without relying on constant screen-filling effects.
-- BREAK, FEVER, LIMIT BREAK, and boss phases feel progressively more intense and clearly distinct.
-- Players can understand important combat information at a glance.
-- Character choice meaningfully changes play style.
-- Run upgrades can create dramatically different builds from run to run.
-- Strong upgrade synergies and rare "broken" builds are possible without making every run identical.
-- Enemies create different tactical problems rather than being mostly HP/speed variants.
-- Bosses are multi-phase encounters rather than large-health normal enemies.
-- Stages change gameplay as well as appearance.
-- Long-term progression, character progression, and in-run progression have clearly separated roles.
-- Existing save data remains valid and migrates automatically.
-- The game remains practical on mobile and lower-performance devices.
-- New systems can be disabled independently through feature flags if regressions occur.
-- Future development no longer requires adding every feature directly into a single monolithic file.
+### Build Crafting
+Runs should create meaningfully different builds through modifiers, synergies, and rare evolutions. Very strong or occasionally “broken” builds are allowed because build completion should feel exciting.
 
-## 3. Core Experience Model
+### Long-Term Growth
+Character growth, CORE GRID, difficulty, collection, and gacha provide reasons to return without replacing skill, build choice, or moment-to-moment play.
 
-### 3.1 Three intensity scales
+## 3. Success Criteria
 
-The moment-to-moment experience is designed on three layers.
+Premium Edition is successful when:
 
-### MICRO — 0.1 to 2 seconds
+- normal combat is satisfying without constant screen-filling effects;
+- BREAK, FEVER, LIMIT BREAK, and boss phases feel progressively stronger and visually distinct;
+- important information is understandable at a glance;
+- character choice meaningfully changes play style;
+- in-run upgrades create different builds from run to run;
+- enemies create different tactical problems rather than mostly changing HP/speed;
+- bosses are multi-phase encounters rather than high-HP normal enemies;
+- stages change gameplay as well as appearance;
+- in-run, character-specific, and account-wide progression have clearly different roles;
+- old save data migrates automatically without losing progression;
+- mobile remains practical and readable;
+- new systems can be disabled independently if regressions occur;
+- future development no longer requires placing every feature directly in one monolithic file.
 
-Examples:
-- weapon fire
-- sword impacts
-- critical hits
-- small enemy deaths
-- pickup attraction
-- short camera kicks
+## 4. Experience Hierarchy
 
-These effects must be fast and controlled. Ordinary actions should feel good without exhausting the visual hierarchy.
+Presentation is designed on three scales.
 
-### MOMENT — 5 to 30 seconds
+### MICRO — 0.1–2 seconds
+Weapon fire, sword impacts, critical hits, ordinary enemy deaths, pickups, short camera kicks.
 
-Examples:
-- BREAK milestones
-- Elite encounters
-- Treasure enemies
-- level-up choices
-- completed synergies
-- local hazards
+### MOMENT — 5–30 seconds
+BREAK milestones, Elites, Treasure enemies, level-up choices, completed synergies, local hazards.
 
-These create short spikes in attention and reward.
+### CLIMAX — 1–3 minutes
+FEVER, LIMIT BREAK, major anomalies, boss phases, boss kills, major reward sequences.
 
-### CLIMAX — 1 to 3 minutes
+A central **Intensity Director** represents the current presentation intensity from 0–100.
 
-Examples:
-- BREAK FEVER
-- LIMIT BREAK
-- major anomaly events
-- boss encounters
-- final boss phases
-- major reward sequences
+Recommended ranges:
 
-These are allowed to transform the entire presentation.
-
-### 3.2 Intensity ladder
-
-A central Intensity Director maintains a conceptual intensity value from 0 to 100. Systems do not need to share an exact numerical curve, but they must follow the same hierarchy.
-
-Suggested targets:
-
-- calm exploration/combat: 15–25
-- high-density combat: 30–40
+- calm/normal combat: 15–25
+- dense combat: 30–40
 - BREAK: 40–55
-- Elite or major anomaly: 50–65
+- major anomaly / Elite peak: 50–65
 - FEVER: 65–75
 - LIMIT BREAK: 80–90
 - boss final phase / major climax: 95–100
 
-The purpose is not to make every scene louder. The normal game must remain restrained enough that the highest states still feel exceptional.
+The normal game deliberately remains restrained so that maximum intensity still feels exceptional.
 
-## 4. Art Direction
+## 5. Visual Direction
 
-### 4.1 Core visual identity
+The Premium Edition art direction is:
 
-The visual direction remains rooted in:
+- dark science-fantasy / cyber-survivor atmosphere;
+- neon energy accents;
+- pixel/digital motifs;
+- strong silhouettes;
+- premium but readable UI;
+- dark backgrounds with selective high-energy highlights.
 
-- dark science-fantasy / cyber-survivor atmosphere
-- neon energy accents
-- pixel/digital motifs
-- strong silhouettes
-- premium but readable UI
-- restrained background values with selective high-energy highlights
+The game must avoid making every element glow equally. Brightness, saturation, motion, flash, and camera shake are treated as limited resources.
 
-The game must avoid the failure mode of making every element glow equally. Brightness, saturation, animation, and screen shake are treated as scarce resources.
+### Color language
 
-### 4.2 Combat state color language
+- blue/cyan: standard energy, technology, ordinary abilities;
+- orange: BREAK;
+- pink/magenta: FEVER;
+- violet/purple: LIMIT BREAK, VOID, reality distortion;
+- red: immediate danger, boss threats, lethal telegraphs;
+- gold: Legendary, Jackpot, exceptional success.
 
-Colors communicate gameplay state:
+This meaning remains consistent across VFX, HUD, warning lines, screen treatments, and reward sequences.
 
-- blue/cyan: standard energy, technology, ordinary abilities
-- orange: BREAK
-- pink/magenta: FEVER
-- purple/violet: LIMIT BREAK, VOID, reality distortion
-- red: immediate danger, boss threats, lethal telegraphs
-- gold: Legendary, Jackpot, rare rewards, exceptional success
+## 6. Stages
 
-The same meaning should remain consistent across VFX, HUD, warning lines, audio-linked pulses, and reward sequences.
-
-## 5. Battlefield and Stage Presentation
-
-Stages must be more than background palettes. Each stage receives a visual identity, gameplay gimmick, enemy emphasis, ambience, and music treatment.
-
-Initial Premium Edition stage set:
+Stages are gameplay spaces, not palette swaps.
 
 ### NEON RUINS
-
-Theme:
-- ruined urban district
-- wet pavement
-- broken signage
-- power cables and abandoned machinery
-
-Gameplay identity:
-- destructible or activatable power units can stun nearby enemies
-- supports fast swarm-heavy encounters
+Visual: ruined city, wet pavement, broken signage, cables, abandoned machinery.  
+Gameplay: activatable/destructible power units can stun enemies; supports fast swarm pressure.
 
 ### RESEARCH ZERO
-
-Theme:
-- damaged laboratory
-- pale cyan lighting
-- broken containment systems
-- emergency warning lights
-
-Gameplay identity:
-- optional experimental devices can increase enemy danger in exchange for better rewards
+Visual: damaged laboratory, cyan lighting, containment systems, warning lights.  
+Gameplay: optional experimental devices increase danger in exchange for better rewards.
 
 ### ASH WASTELAND
-
-Theme:
-- red-black wasteland
-- heat shimmer
-- ashfall
-- unstable ground
-
-Gameplay identity:
-- periodic environmental strikes can hurt both player and enemies
-- positioning matters more strongly
+Visual: red-black wasteland, heat shimmer, ashfall, unstable ground.  
+Gameplay: periodic environmental strikes can hurt both player and enemies.
 
 ### VOID SECTOR
+Visual: fragmented space, floating debris, violet-black lighting, reality distortion.  
+Gameplay: stable/safe zones shift; intended for later-run and LIMIT BREAK pressure.
 
-Theme:
-- fragmented space
-- floating debris
-- violet-black lighting
-- reality distortion
+Each stage receives its own ambience, enemy emphasis, music treatment, and gameplay gimmick.
 
-Gameplay identity:
-- safe or stable zones can shift
-- designed for late-run and LIMIT BREAK escalation
+## 7. HUD
 
-## 6. HUD Design
-
-The HUD follows one rule:
+Rule:
 
 > Important information may become prominent; unimportant information must get out of the way.
 
-### 6.1 PC layout
+### PC
 
 Top-left:
-- character portrait
-- HP
-- level
-- temporary buffs
-- ULT readiness
+- character portrait;
+- HP;
+- level;
+- temporary buffs;
+- ULT readiness.
 
 Top-center:
-- time
-- kills
-- Threat
-- stage/run state
+- time;
+- kills;
+- Threat;
+- stage/run state.
 
 Top-right:
-- contextual system area
-- normally restrained Threat/event information
-- transforms into boss information during boss fights
+- contextual event/Threat information;
+- transforms into boss information during boss encounters.
 
 Bottom-center:
-- BREAK / FEVER progress
-- becomes visually stronger only near important thresholds
+- BREAK / FEVER progress.
 
-Center screen:
-- normally kept clear
-- reserved for major calls such as BREAK, FEVER, WARNING, LIMIT BREAK, BOSS, PHASE CHANGE
+Center:
+- normally clear;
+- reserved for BREAK, FEVER, WARNING, LIMIT BREAK, BOSS, PHASE CHANGE, major reward calls.
 
-### 6.2 Mobile layout
+### Mobile
 
-Mobile must not simply be a smaller PC interface.
+Mobile gets a dedicated layout rather than a scaled-down desktop layout:
 
-It should prioritize:
-- HP and essential status at the top
-- minimal run information
-- joystick/skill controls near thumbs
-- ULT on the opposite side
-- BREAK state along the bottom
+- essential HP/status at top;
+- compact run information;
+- movement and combat controls near thumb zones;
+- ULT on the opposite side;
+- BREAK state along the bottom;
+- secondary information collapses or appears contextually.
 
-Secondary information can collapse or appear contextually.
+Boss information replaces lower-priority information instead of stacking another permanent panel.
 
-### 6.3 Dynamic hierarchy
+## 8. Damage Numbers and Readability
 
-When a boss appears, boss information replaces less important status rather than stacking another permanent panel.
+Damage presentation has levels:
 
-When LIMIT BREAK begins, ordinary event panels reduce emphasis.
+- normal hit: small, brief;
+- critical: brighter and more forceful;
+- overkill: larger and optionally labeled;
+- weak point: distinct label/treatment;
+- boss critical moment: limited special styling.
 
-When no major event exists, the center of the battlefield remains visually open.
+The renderer aggregates, suppresses, or prioritizes damage numbers under heavy load instead of drawing one label for every hit.
 
-## 7. Damage Numbers and Combat Readability
+## 9. Combat Feel
 
-Damage numbers communicate event importance.
+A satisfying impact is built from multiple small signals:
 
-Recommended hierarchy:
+- target reaction/flash;
+- impact VFX;
+- impact sound;
+- limited damage text;
+- directional debris;
+- camera kick where appropriate;
+- hit stop only for high-value impacts.
 
-- normal hit: small, brief, low visual weight
-- critical: brighter, stronger animation, exclamation/accent
-- overkill: larger and optionally labeled
-- weak point: distinct label and color treatment
-- boss critical event: limited special styling
+Recommended hit-stop starting points:
 
-Damage text must be budgeted. The renderer should aggregate, suppress, or prioritize numbers when combat density is high rather than drawing one label for every hit.
+- normal hit: 0 ms;
+- critical: ~15 ms;
+- Elite kill: ~25 ms;
+- BREAK activation: ~40 ms;
+- boss kill / cinematic climax: ~70–100 ms.
 
-This improves readability and performance simultaneously.
+These are tuning values, not permanent constants.
 
-## 8. Combat Feel
+### Death signatures
 
-### 8.1 Hit response
+Normal: small fragmentation and restrained light burst.  
+Runner: fragments preserve movement direction.  
+Tank: heavier pause and larger pieces.  
+Elite: visible core break / signature destruction and stronger shockwave.  
+Boss: dedicated multi-step death sequence, brief audio drop, core/crack failure, major shockwave, reward burst, arena recovery.
 
-A good hit is a combination of several small signals:
+## 10. Camera Director
 
-- target flash/react
-- impact VFX
-- impact sound
-- limited damage text
-- directional debris
-- camera kick when appropriate
-- optional hit stop for high-value impacts
+Scattered camera effects are consolidated into a Camera Director responsible for:
 
-No single signal should carry the entire impact.
+- shake;
+- directional kick;
+- zoom;
+- focus;
+- short slow-motion cues;
+- hit-stop coordination.
 
-### 8.2 Hit stop
+Starting presentation rules:
 
-Suggested values:
+- normal attacks: no camera movement;
+- strong attack: 1–3 px directional kick;
+- Elite death: controlled medium shake;
+- BREAK: short 100% → 103% → 100% pulse;
+- FEVER: subtle energized framing;
+- LIMIT BREAK: pull back to reveal the battlefield, then snap back into combat;
+- boss introduction: brief focus without taking control for too long;
+- boss death: highest permitted camera response.
 
-- normal hit: 0 ms
-- critical hit: ~15 ms
-- Elite kill: ~25 ms
-- BREAK activation: ~40 ms
-- boss kill / cinematic climax: ~70–100 ms
+Reduced Motion modifies these effects without changing gameplay.
 
-Hit stop must remain short enough not to make controls feel sluggish.
+## 11. VFX Director
 
-### 8.3 Enemy death signatures
-
-Normal:
-- small fragmentation
-- restrained light burst
-
-Runner:
-- debris retains directional velocity
-
-Tank:
-- heavier pause and larger fragments
-
-Elite:
-- visible core break or signature destruction
-- larger shockwave
-
-Boss:
-- dedicated multi-step death sequence
-- momentary audio drop
-- cracks/core failure
-- large shockwave
-- reward burst
-- arena recovery/relief
-
-## 9. Camera Director
-
-Replace scattered camera shake logic with a Camera Director responsible for:
-
-- shake
-- kick
-- zoom
-- focus
-- slow-motion cues
-- hit stop integration
-
-Suggested presentation:
-
-- normal attacks: no camera movement
-- strong attack: 1–3 px directional kick
-- Elite death: 3–5 px shake equivalent
-- BREAK: short 100% → 103% → 100% pulse
-- FEVER: subtle wider/energized framing
-- LIMIT BREAK: pull back, present the battlefield, then snap back into combat
-- boss introduction: brief focus without excessively stealing control
-- boss death: highest permitted camera response
-
-Camera must support reduced-motion settings.
-
-## 10. VFX Director
-
-Gameplay systems should stop directly managing low-level effect arrays wherever practical.
-
-Desired API style:
+Gameplay systems should no longer directly manage every particle/ring effect. Presentation moves toward calls such as:
 
 ```js
 VFX.enemyDeath(enemy)
@@ -335,196 +241,137 @@ VFX.eliteDeath(enemy)
 VFX.bossDeath(boss)
 ```
 
-The VFX Director chooses effect strength based on:
+The VFX Director chooses effect strength using:
 
-- event type
-- Intensity Director state
-- platform
-- graphics/performance profile
-- current VFX budget
+- event importance;
+- Intensity Director state;
+- platform;
+- graphics/performance profile;
+- current VFX budget.
 
-### 10.1 VFX priority
+Priority order:
 
-Priority example:
+1. ordinary weapon effects;
+2. critical effects;
+3. Elite effects;
+4. BREAK/FEVER effects;
+5. LIMIT BREAK/boss-critical effects.
 
-1. ordinary weapon effects
-2. critical effects
-3. Elite effects
-4. BREAK/FEVER effects
-5. LIMIT BREAK/boss critical effects
+When performance drops, low-priority decorative effects are reduced before gameplay-critical effects.
 
-When performance is under pressure, low-priority effects are reduced first.
+Explicit caps are supported for particles, damage text, rings, beams, explosions, and temporary overlays. Mobile/low, medium, high, and optional ultra profiles use different budgets.
 
-### 10.2 VFX budgets
+## 12. BREAK and FEVER
 
-Budgets should be tuned empirically, but the architecture must support explicit caps for:
+BREAK remains a central identity.
 
-- particles
-- damage text
-- rings
-- beams
-- explosions
-- temporary overlays
+As BREAK rises:
 
-Separate presets are required for mobile/low, medium, high, and optional ultra settings.
+- orange accent becomes stronger;
+- combat audio gains energy;
+- low-level VFX rise slightly;
+- HUD increasingly signals the next milestone;
+- reward multipliers become more legible.
 
-## 11. BREAK and FEVER
-
-BREAK remains one of the game's core identities.
-
-### BREAK progression
-
-As BREAK climbs:
-- orange accent becomes more noticeable
-- combat audio gains additional energy
-- minor VFX intensity rises
-- HUD begins signaling proximity to a milestone
-- reward multipliers become more legible
-
-The presentation should escalate gradually rather than flip instantly from calm to maximum.
+The transition is gradual.
 
 ### FEVER
 
-FEVER is a whole-game state change:
+FEVER changes the whole presentation:
 
-- HUD shifts to pink/gold emphasis
-- background saturation rises slightly
-- character trails intensify
-- attack trails improve
-- enemy death effects become stronger
-- coin/pickup attraction becomes more celebratory
-- an additional music layer appears
-- combo presentation becomes larger
+- HUD becomes pink/gold;
+- background saturation rises slightly;
+- character trails intensify;
+- attacks gain stronger trails;
+- enemy death VFX increase;
+- pickups feel more celebratory;
+- an extra music layer appears;
+- combo display becomes more prominent.
 
-FEVER must fade back to normal smoothly rather than ending abruptly.
+FEVER fades smoothly back to normal.
 
-## 12. LIMIT BREAK
+## 13. LIMIT BREAK
 
-LIMIT BREAK becomes a signature BREAK SURVIVORS event rather than only a difficult wave.
+LIMIT BREAK becomes a signature chapter in the run.
 
-Recommended sequence:
+Sequence:
 
-1. music energy drops briefly
-2. battlefield darkens
-3. LIMIT BREAK title appears
-4. low-frequency impact / digital distortion cue
-5. enemy entry zones telegraph
-6. battlefield shifts toward violet/VOID treatment
-7. wave spawns
-8. dedicated music layer or drop begins
+1. music energy briefly drops;
+2. battlefield darkens;
+3. LIMIT BREAK title appears;
+4. low-frequency/digital-distortion cue;
+5. enemy entry zones telegraph;
+6. battlefield shifts toward VOID/violet treatment;
+7. wave spawns;
+8. dedicated music layer/drop begins.
 
-Existing Mega, Dominion, Apocalypse, execution, reward, and escalation concepts should be preserved and refined.
+Existing Mega, Dominion, Apocalypse, execution, reward, and escalation concepts are retained and refined.
 
-LIMIT BREAK must feel like entering a new chapter of the run.
+## 14. Boss Design
 
-## 13. Boss Design
+Bosses are multi-phase encounters.
 
-Bosses must no longer feel like ordinary enemies with more HP.
+Typical structure:
 
-Each major boss should have at least three distinct phases when appropriate:
+- Phase 1: establish core pattern;
+- Phase 2: introduce arena pressure or a new mechanic;
+- Phase 3: combine/intensify mechanics;
+- Final phase: low-health transformation with new presentation and move set.
 
-- phase 1: establish core pattern
-- phase 2: introduce arena pressure or new mechanic
-- phase 3: combine or intensify patterns
-- optional final phase: low-health transformation with new presentation and move set
+### VOID TYRANT reference design
 
-Example: VOID TYRANT
+- Phase 1: pursuit + baseline attacks;
+- Phase 2 (~70% HP): Void Zones;
+- Phase 3 (~40% HP): summons + projectile pressure;
+- Final (~15% HP): VOID COLLAPSE, transformed background/audio/pacing.
 
-- Phase 1: pursuit and baseline attacks
-- Phase 2 (~70% HP): Void Zones
-- Phase 3 (~40% HP): summons plus projectile pressure
-- Final (~15% HP): VOID COLLAPSE, transformed background/audio/attack pacing
+Boss telegraphs remain readable even at maximum intensity.
 
-Boss telegraphs must remain readable even when the battle is visually intense.
+Boss defeat creates a dedicated Boss Chest/reward sequence. Reward categories can include:
 
-Boss defeat grants a dedicated Boss Chest/reward sequence rather than only ordinary drops.
+- Legendary in-run upgrade;
+- Gems;
+- character progression material;
+- skin fragment;
+- CORE resource.
 
-Possible reward categories:
-- Legendary in-run upgrade
-- Gems
-- character progression material
-- skin fragment
-- CORE resource
+## 15. Run Structure
 
-## 14. Run Structure
-
-The run should feel authored even though combat remains dynamic.
-
-Suggested pacing model:
+The run should feel authored without becoming fully scripted.
 
 ### 0:00–0:30 — BUILD
-
-- simple enemies
-- first upgrades
-- establish direction
+Simple enemies, first upgrades, establish direction.
 
 ### 0:30–1:00 — ESCALATION
-
-- Runner/Tank mix
-- rising density
-- first Elite opportunities
+Runner/Tank mix, rising density, first Elite opportunities.
 
 ### 1:00–1:30 — BREAK
-
-- stronger composition
-- meaningful reward opportunity
-- BREAK should become realistically achievable
+Stronger composition, reward opportunity, BREAK becomes realistic.
 
 ### 1:30–2:00 — CRISIS
-
-- Elite groups
-- Treasure chance
-- stage gimmicks
-- build begins to feel complete
+Elite groups, Treasure chance, stage gimmicks, build starts to feel complete.
 
 ### 2:00+ — LIMIT / ENDLESS ESCALATION
+LIMIT BREAK chapters, changing compositions, anomalies, recurring bosses, higher risk/reward.
 
-- LIMIT BREAK chapters
-- changing compositions
-- stage/anomaly pressure
-- recurring bosses
-- higher risk and rewards
+Exact timings are balance variables.
 
-Exact times remain tuning variables, not hard permanent rules.
+## 16. In-Run Upgrades
 
-## 15. In-Run Upgrade System
-
-Run upgrades are divided into four conceptual tiers.
+Run upgrades have four conceptual levels.
 
 ### STAT
-
-Simple numerical improvements, still necessary but not dominant.
-
-Examples:
-- damage
-- attack speed
-- area
-- HP
+Numerical growth: damage, attack speed, area, HP.
 
 ### MODIFY
-
-Changes how an attack behaves.
-
-Examples:
-- Ricochet
-- Piercing Core
-- Split Shot
-- Execution
+Changes behavior: Ricochet, Piercing Core, Split Shot, Execution.
 
 ### SYNERGY
-
-Combines mechanics into a more specific build identity.
-
-Examples:
-- critical hits trigger chain lightning
-- BREAK kills cause secondary explosions
-- missiles mark targets that amplify beam damage
+Combines mechanics: criticals trigger lightning, BREAK kills cause explosions, marked enemies amplify another weapon type.
 
 ### EVOLUTION
+Rare build-defining transformations, normally one or two per run.
 
-Rare build-defining transformations, generally only one or two per run.
-
-Examples:
 - Gunner → RAILSTORM
 - Bomb Cat → NUCLEAR CASCADE
 - Thunder Fox → THUNDER GOD
@@ -532,331 +379,249 @@ Examples:
 - Nova → SUPERNOVA
 - Missile Queen → TOTAL ANNIHILATION
 
-The game should allow occasional extremely powerful builds. Perfect power equality is not the goal; memorable build completion is.
+The game deliberately permits memorable high-power combinations instead of forcing every build toward identical output.
 
-## 16. Upgrade Choice Quality
+## 17. Upgrade Choice Quality
 
-Upgrade selection should reflect game state.
+Recommended starting rules:
 
-Suggested rules:
+- normal level-up: 3 choices;
+- BREAK: 4 choices or improved rarity opportunity;
+- boss reward: wider/high-rarity selection;
+- LIMIT BREAK clear: special risk/reward choice.
 
-- normal level-up: 3 choices
-- BREAK: 4 choices or improved rarity opportunity
-- boss reward: wider/high-rarity selection
-- LIMIT BREAK clear: special risk/reward choice
+Example LIMIT choices:
 
-Example LIMIT choice:
+- enemies +25%, rewards +40%;
+- much higher Elite presence, improved rare reward opportunity;
+- stronger next boss, doubled boss reward class.
 
-- increase enemy danger +25%, rewards +40%
-- greatly increase Elite presence, improve rare reward chances
-- strengthen next boss, double boss reward class
+Players can intentionally raise danger to increase reward.
 
-Players should be able to deliberately make the run more dangerous in exchange for better rewards.
-
-## 17. Character Identity
+## 18. Character Identity
 
 Changing character should feel close to changing the game.
 
 ### Gunner
-
-Identity: speed and precision
-
-Mechanics:
-- rapid fire
-- criticals
-- piercing
-- ricochet
-- heat/momentum
-
-Signature meter: MOMENTUM
-
-Evolution target: RAILSTORM
+Identity: speed + precision.  
+Mechanics: rapid fire, criticals, piercing, ricochet, heat/momentum.  
+Signature meter: **MOMENTUM**.  
+Evolution: **RAILSTORM**.
 
 ### Bomb Cat
-
-Identity: explosion and chain reactions
-
-Mechanics:
-- bombs
-- mines
-- cluster effects
-- chain detonations
-
-Signature meter: CHAIN
-
-Evolution target: NUCLEAR CASCADE
+Identity: explosions + chain reactions.  
+Mechanics: bombs, mines, clusters, chain detonations.  
+Signature meter: **CHAIN**.  
+Evolution: **NUCLEAR CASCADE**.
 
 ### Thunder Fox
-
-Identity: lightning and crowd control
-
-Mechanics:
-- chain lightning
-- shock
-- stun
-- storm fields
-
-Signature meter: VOLTAGE
-
-Evolution target: THUNDER GOD
+Identity: lightning + crowd control.  
+Mechanics: chain lightning, shock, stun, storm fields.  
+Signature meter: **VOLTAGE**.  
+Evolution: **THUNDER GOD**.
 
 ### Blademaster
-
-Identity: high-risk close combat
-
-Mechanics:
-- dash
-- slash
-- parry
-- execution
-
-Signature meter: combat-flow / edge meter (final name to be chosen during implementation planning)
-
-Evolution target: VOID BLADE
+Identity: high-risk close combat.  
+Mechanics: dash, slash, parry, execution.  
+Signature meter: **FLOW** — maintained by aggressive movement, clean hits, and successful close-range play; drops when combat rhythm is broken.  
+Evolution: **VOID BLADE**.
 
 ### Nova
-
-Identity: charged energy and area destruction
-
-Mechanics:
-- charge
-- orbs
-- gravity
-- nova explosions
-
-Signature meter: energy/core charge (final name to be chosen during implementation planning)
-
-Evolution target: SUPERNOVA
+Identity: charged energy + area destruction.  
+Mechanics: charge, orbs, gravity, nova explosions.  
+Signature meter: **RESONANCE** — builds through charged/linked energy events and empowers large releases at high values.  
+Evolution: **SUPERNOVA**.
 
 ### Missile Queen
+Identity: lock-on + battlefield targeting.  
+Mechanics: homing missiles, multi-lock, air strike, cluster missiles.  
+Signature meter: **TARGET LOCK** — accumulates through maintained target acquisition and is spent on high-value multi-target salvos.  
+Evolution: **TOTAL ANNIHILATION**.
 
-Identity: lock-on and battlefield targeting
-
-Mechanics:
-- homing missiles
-- multi-lock
-- air strike
-- cluster missiles
-
-Signature meter: lock/arsenal meter (final name to be chosen during implementation planning)
-
-Evolution target: TOTAL ANNIHILATION
-
-## 18. Progression Layers
-
-Progression must be easy to understand.
+## 19. Progression Layers
 
 ### Run Upgrade
-
-Temporary. Exists only for the current run.
+Temporary and exists only for the current run.
 
 ### Character Growth
+Permanent and character-specific. Existing concepts remain:
 
-Permanent and character-specific.
-
-Current concepts remain valid:
-- character level
-- Lv20 branch
-- Lv30 ULT
-- Lv50 awakening
-- star rank
+- character level;
+- Lv20 branch;
+- Lv30 ULT;
+- Lv50 awakening;
+- star rank.
 
 ### CORE GRID
+Permanent broad/account progression. It should contain meaningful endpoints, not only incremental statistics.
 
-Permanent account-wide or broad progression.
+Example branch identities:
 
-CORE GRID should contain clear end goals, not only incremental statistics.
+- Survival: HP → Shield → Revive → PHOENIX CORE;
+- Attack: Damage → Critical → Overkill → ANNIHILATION CORE;
+- BREAK: duration → FEVER strength → combo protection → ETERNAL BREAK.
 
-Possible branch examples:
+The exact node graph is a balance/design deliverable for the CORE phase; these branch identities are fixed.
 
-Survival:
-HP → Shield → Revive → PHOENIX CORE
+## 20. Enemy Roles
 
-Attack:
-Damage → Critical → Overkill → ANNIHILATION CORE
+Enemy categories:
 
-BREAK:
-BREAK duration → FEVER strength → combo protection → ETERNAL BREAK
+- Swarm: fills space and fuels mass kills;
+- Runner: fast pressure;
+- Tank: blocks space;
+- Shooter: ranged pressure;
+- Support: buffs enemies;
+- Assassin: sudden high-priority pressure;
+- Summoner: creates additional enemies;
+- Shielder: protects nearby units;
+- Elite: special mechanics.
 
-The exact node graph remains a later balancing/design task, but the branch identity is fixed by this specification.
+Enemy combinations should create questions such as “what must I kill first?” rather than simply increasing total HP.
 
-## 19. Enemy Roles
+## 21. Elite Expansion
 
-Enemy design is role-based.
+Existing Berserker, Titan, and Gold remain.
 
-Required categories over time:
+Additional Elite identities:
 
-- Swarm: fills space and fuels satisfying mass kills
-- Runner: fast pressure
-- Tank: blocks space
-- Shooter: ranged pressure
-- Support: buffs enemies
-- Assassin: sudden approach / high priority
-- Summoner: creates additional enemies
-- Shielder: protects nearby units
-- Elite: special mechanics
-
-Enemy combinations should create tactical questions such as "what must I kill first?" rather than only increasing total HP.
-
-## 20. Elite Expansion
-
-Existing Berserker, Titan, and Gold concepts remain and are expanded.
-
-Additional candidates:
-
-- Mirror: partial attack reflection or directional counter mechanic
-- Void: buffs nearby enemies
-- Reaper: persistent player hunter
-- Overload: becomes stronger over time
+- Mirror: directional/partial reflection mechanic;
+- Void: strengthens nearby enemies;
+- Reaper: persistent player hunter;
+- Overload: becomes stronger over time.
 
 Every Elite must be visually identifiable before its mechanic becomes dangerous.
 
-## 21. Chaos / Anomaly Events
+## 22. Chaos / Anomaly Events
 
-Chaos events become more interactive.
-
-Instead of every anomaly being purely automatic, some events present player choice.
+Some anomalies become player choices instead of purely automatic events.
 
 Example:
 
-ANOMALY DETECTED
+- BLOOD MOON: enemies +50%, player damage +30%, rewards +50%;
+- GOLD RUSH: increased Gold enemy activity;
+- VOID STORM: increased Elite density and Gem rewards.
 
-- BLOOD MOON: enemies +50%, player damage +30%, rewards +50%
-- GOLD RUSH: increased Gold enemy activity
-- VOID STORM: increased Elite density and Gem rewards
+Not every event requires a menu; pacing must remain fast.
 
-Not every event needs a menu; event pacing must remain fast.
-
-## 22. Treasure Design
-
-Treasure enemies remain short-lived priority targets.
+## 23. Treasure
 
 Flow:
 
-1. TREASURE SIGNAL
-2. enemy attempts escape
-3. defeat creates meaningful jackpot feedback
-4. player receives a concise reward choice or treasure reward
+1. TREASURE SIGNAL;
+2. target attempts escape;
+3. defeat creates jackpot feedback;
+4. player receives a concise treasure reward or choice.
 
-Possible reward choice categories:
-- Coins
-- Gems
-- random upgrade / higher-risk reward
+Reward categories can include Coins, Gems, or a random/high-rarity upgrade opportunity.
 
-## 23. Gacha and Collection
+## 24. Gacha and Collection
 
-Gacha remains part of long-term progression but must not become the sole determinant of combat power.
+Gacha unlocks play styles and supports collection/progression; it must not become the sole determinant of combat success.
 
-Primary purposes:
-- unlock new characters/play styles
-- collection progression
-- star-rank duplicate progression
+- new characters are the highest-value outcome;
+- duplicates advance star progression;
+- excess duplicates convert into a flexible progression currency instead of becoming worthless.
 
-Duplicate handling:
-- duplicates advance star progress
-- duplicates beyond useful progression convert into a flexible progression currency rather than becoming worthless
+Legendary reveal:
 
-Legendary presentation:
-- first acquisition: full reveal sequence
-- repeats: shortened sequence
-- settings: skip option
+- first acquisition: full sequence;
+- repeated acquisition: shortened sequence;
+- settings: skip option.
 
-The existing Orbital Summon visual identity should be retained and brought into the same Premium Edition presentation language.
+The current Orbital Summon identity remains and is restyled into the same Premium Edition language.
 
-## 24. Results and Replay Motivation
+## 25. Results and Replay Motivation
 
-Run results should show more than score totals.
+Run results show:
 
-Suggested summary:
-- character
-- final build/evolution
-- survival time
-- kills
-- damage
-- highest BREAK
-- LIMIT BREAK level
-- bosses
-- rare drops
-- new records
+- character;
+- final build/evolution;
+- survival time;
+- kills;
+- damage;
+- highest BREAK;
+- LIMIT BREAK level;
+- bosses;
+- rare drops;
+- new records.
 
-The player's completed build should be shown as a compact visual summary so the player is encouraged to try a different route next run.
+The final build is displayed as a compact summary/card so players can immediately compare runs and want to try another route.
 
-## 25. Difficulty and Risk
+## 26. Difficulty and Risk
 
-Long-term challenge modes can include:
+Challenge modes:
 
-- Standard
-- Danger
-- Nightmare
-- Abyss
+- Standard;
+- Danger;
+- Nightmare;
+- Abyss.
 
 Higher modes raise risk and rewards rather than only multiplying HP.
 
-Optional run modifiers may include mechanics such as:
+Optional run modifiers can include:
 
-- Glass Cannon: lower HP, much higher damage
-- Elite Hunt: increased Elite frequency and rewards
-- Void Debt: stronger future waves in exchange for immediate rewards
+- Glass Cannon: lower HP, much higher damage;
+- Elite Hunt: more Elites and better Elite rewards;
+- Void Debt: stronger future waves in exchange for immediate rewards.
 
-Exact values remain balancing work.
+Exact numerical values are balancing parameters.
 
-## 26. Reward Hierarchy
+## 27. Reward Hierarchy
 
-Reward intensity follows the same hierarchy as presentation intensity.
+Reward presentation follows intensity:
 
-- small: normal enemy kill
-- medium: BREAK milestones / normal upgrades
-- large: Elite / Treasure
-- very large: boss
-- jackpot: LIMIT BREAK milestone / major rare reward
+- small: ordinary kill;
+- medium: BREAK milestone / ordinary upgrade;
+- large: Elite / Treasure;
+- very large: boss;
+- jackpot: LIMIT BREAK milestone / major rare reward.
 
-Reward size, sound, camera, VFX, and UI presentation must agree with one another.
+Reward value, sound, camera, VFX, and UI must agree.
 
-## 27. Audio Director
+## 28. Audio Director
 
-Preserve and expand the current Web Audio foundation.
+Preserve and expand the Web Audio foundation.
 
 Logical buses:
 
-- Master
-- Music
-- Weapon
-- Impact
-- Enemy
-- UI
-- Ambience
+- Master;
+- Music;
+- Weapon;
+- Impact;
+- Enemy;
+- UI;
+- Ambience.
 
-Music is layered based on game state.
+Music layers react to game state:
 
-Example:
-- normal: base layer
-- BREAK: add percussion/energy
-- FEVER: add synth/high-energy layer
-- LIMIT BREAK: dedicated layer/theme
-- Boss: boss theme with phase-aware changes
+- normal: base layer;
+- BREAK: percussion/energy layer;
+- FEVER: higher-energy synth layer;
+- LIMIT BREAK: dedicated layer/theme;
+- Boss: phase-aware boss theme.
 
-Audio intensity is controlled by the same event hierarchy as VFX and camera.
+Audio follows the same event hierarchy as VFX and camera.
 
-## 28. Encounter Director
+## 29. Encounter Director
 
 Threat, Chaos Events, Treasure, Boss, and LIMIT BREAK remain separate gameplay systems but are coordinated by an Encounter Director.
 
 Responsibilities:
-- prevent incompatible major events from stacking unintentionally
-- create deliberate pacing
-- coordinate warning periods
-- schedule opportunities for calm after major peaks
-- respect run stage and current player pressure
 
-This is not a fully deterministic timeline. It is a pacing coordinator.
+- prevent incompatible major events from stacking unintentionally;
+- create deliberate pacing;
+- coordinate warnings;
+- create short recovery periods after major peaks;
+- account for run stage and current player pressure.
 
-## 29. Technical Architecture
+It is a pacing coordinator, not a fully deterministic timeline.
 
-The game remains Canvas 2D + browser JavaScript. A full engine migration is explicitly out of scope for Premium Edition.
+## 30. Technical Architecture
 
-The project will move away from a single-file architecture incrementally.
+Canvas 2D + browser JavaScript remains the engine. Phaser/Pixi/Unity/Godot migration is out of scope.
 
-Target structure:
+The single-file architecture is dismantled incrementally toward:
 
 ```text
 index.html
@@ -917,67 +682,59 @@ assets/
 tests/
 ```
 
-This is a target architecture, not a mandate to perform a one-shot rewrite.
+This is a target architecture, not a one-shot rewrite requirement.
 
-## 30. Game Logic vs Presentation
+## 31. Game Logic vs Presentation
 
-Core principle:
+Principle:
 
 > Gameplay decides what happened. Presentation decides how it looks, sounds, and feels.
 
-Example: enemy death
+Enemy death example:
 
-Gameplay responsibilities:
-- mark dead
-- award kill
-- calculate reward
-- update BREAK
-- update progression
+Gameplay:
+- mark dead;
+- register kill;
+- calculate reward;
+- update BREAK;
+- update progression.
 
-Presentation listeners:
-- VFX death signature
-- camera response
-- audio response
-- HUD/combo response
+Presentation:
+- VFX death signature;
+- camera response;
+- audio response;
+- HUD/combo response.
 
-Changing an explosion should not change reward logic.
+Changing an explosion must not change reward logic.
 
-## 31. Save Compatibility
+## 32. Save Compatibility
 
 Existing saves must be preserved.
 
-Introduce:
+Introduce `saveVersion` and a migration flow:
 
-```js
-saveVersion
-```
+1. read data;
+2. detect version;
+3. migrate forward;
+4. validate essential fields;
+5. persist the new format only after a successful migration.
 
-Save loading becomes:
+Migration tests must preserve at minimum:
 
-1. read existing data
-2. detect version
-3. migrate forward
-4. validate essential fields
-5. persist new format only after successful migration
+- Coins;
+- Gems;
+- owned characters;
+- star ranks;
+- character levels;
+- branch/awakening progression where applicable;
+- CORE progression;
+- settings.
 
-Migration tests must confirm that at minimum the following remain equivalent:
+Premium Edition must not require a save reset.
 
-- Coins
-- Gems
-- owned characters
-- star ranks
-- character levels
-- branch/awakening progression where applicable
-- CORE progression
-- settings
+## 33. Feature Flags
 
-No Premium Edition release may intentionally require a save reset unless a future explicit design decision overrides this specification.
-
-## 32. Feature Flags
-
-Major new systems are independently switchable during rollout.
-
-Example:
+Major systems roll out independently.
 
 ```js
 PREMIUM_FEATURES = {
@@ -992,243 +749,144 @@ PREMIUM_FEATURES = {
 }
 ```
 
-Flags are development/rollout safety tools, not permanent user-facing options.
+These are rollout/development safety controls, not permanent player settings.
 
-## 33. Performance Strategy
+## 34. Performance Strategy
 
-Premium Edition must look better without assuming unlimited GPU/CPU resources.
+Rules:
 
-Key rules:
+- prefer high-value effects over huge quantities;
+- pool frequently created temporary objects where measurements justify it;
+- cap low-value particles and damage text;
+- reduce low-priority presentation before critical presentation;
+- never hide boss telegraphs under decorative effects;
+- profile mobile separately from desktop.
 
-- prefer high-value effects over huge quantities
-- object-pool frequently created temporary objects where useful
-- cap low-value particles and damage text
-- degrade low-priority presentation before critical gameplay presentation
-- avoid hiding boss telegraphs under decorative effects
-- measure mobile separately from desktop
+Primary pooling candidates:
 
-Potential pooling candidates:
-- bullets
-- particles
-- damage numbers
-- rings
-- pickups
-- missiles
+- bullets;
+- particles;
+- damage numbers;
+- rings;
+- pickups;
+- missiles.
 
-Automatic performance adaptation may lower presentation density if sustained FPS falls below configured thresholds. Manual quality override remains desirable.
+Automatic quality adaptation may reduce presentation density after sustained low FPS; manual quality override should remain available.
 
-## 34. Accessibility and Motion
+## 35. Reduced Motion
 
-Add a Reduced Motion option.
+Add Reduced Motion.
 
-It may reduce:
-- screen shake
-- flash intensity
-- zoom pulses
-- decorative particles
+It can lower:
 
-It must not modify game difficulty or hide gameplay-critical telegraphs.
+- screen shake;
+- flash intensity;
+- zoom pulses;
+- decorative particles.
 
-## 35. Testing Strategy
+It must never change difficulty or hide critical telegraphs.
 
-The existing Threat and LIMIT BREAK tests remain useful and should be expanded into system-level coverage.
+## 36. Testing
 
-Required categories over the migration:
+Expand the current Threat/LIMIT BREAK test base into coverage for:
 
-- combat
-- Threat
-- BREAK / FEVER
-- LIMIT BREAK
-- upgrade selection
-- characters
-- enemies
-- boss phases
-- loot/rewards
-- save/storage
-- migrations
-- gacha
-- HUD state where practical
+- combat;
+- Threat;
+- BREAK/FEVER;
+- LIMIT BREAK;
+- upgrade selection;
+- characters;
+- enemies;
+- boss phases;
+- loot/rewards;
+- save/storage;
+- migrations;
+- gacha;
+- HUD state where practical.
 
-### 35.1 Save regression tests
+### Save regression
+Old save fixtures load and retain equivalent progression.
 
-Old fixtures must load and preserve progression.
+### Balance simulations
+Deterministic or lightweight multi-run simulations compare characters/builds and detect extreme outliers. These are diagnostic tools, not a requirement for equal DPS.
 
-### 35.2 Balance simulations
+### Performance scenarios
+Measure at least normal wave, high Threat, FEVER, dense LIMIT BREAK, projectile-heavy boss, and mobile viewport.
 
-Lightweight simulations should compare characters/builds across many runs or deterministic combat scenarios to identify extreme outliers.
-
-These are diagnostic tools, not an attempt to make every character numerically identical.
-
-### 35.3 Performance regression checks
-
-Key scenarios:
-- normal wave
-- high Threat
-- FEVER
-- LIMIT BREAK dense wave
-- boss plus projectiles
-- mobile viewport
-
-## 36. Implementation Sequence
-
-Implementation is intentionally incremental.
+## 37. Implementation Sequence
 
 ### Phase 0 — FREEZE / BASELINE
-
-- record current behavior
-- preserve current build
-- validate existing saves
-- establish baseline FPS and major screen states
+Record current behavior, preserve current build, validate saves, establish FPS and key-screen baselines.
 
 ### Phase 1 — FOUNDATION
-
-- modular boundaries
-- save layer and migrations
-- feature flags
-- game state/event foundation
-
-Minimal presentation changes.
+Create modular boundaries, save/migration layer, feature flags, game-state/event foundation. Keep visible changes minimal.
 
 ### Phase 2 — FEEL
-
-- Camera Director
-- hit stop
-- VFX Director
-- Audio Director integration
-- damage number improvements
-- enemy death signatures
+Camera Director, hit stop, VFX Director, Audio Director integration, damage-number improvements, enemy death signatures.
 
 ### Phase 3 — HUD
-
-- Premium HUD
-- dynamic information hierarchy
-- BREAK/FEVER/Threat/Boss integration
-- dedicated mobile layout
+Premium HUD, dynamic hierarchy, BREAK/FEVER/Threat/Boss integration, dedicated mobile layout.
 
 ### Phase 4 — COMBAT 2.0
-
-- character meters
-- MODIFY upgrades
-- SYNERGY upgrades
-- EVOLUTION upgrades
-- upgraded level-up selection
+Character meters, MODIFY, SYNERGY, EVOLUTION, improved level-up selection.
 
 ### Phase 5 — ENEMIES 2.0
-
-- additional enemy roles
-- Elite expansion
-- encounter composition improvements
+Additional roles, Elite expansion, encounter composition improvements.
 
 ### Phase 6 — STAGES
-
-- Neon Ruins
-- Research Zero
-- Ash Wasteland
-- Void Sector
-- gameplay gimmicks and presentation
+Neon Ruins, Research Zero, Ash Wasteland, Void Sector and their gameplay gimmicks.
 
 ### Phase 7 — BOSS 2.0
-
-- multi-phase bosses
-- new boss UI/audio/presentation
-- dedicated boss reward sequence
+Multi-phase bosses, boss UI/audio/presentation, dedicated boss rewards.
 
 ### Phase 8 — LIMIT BREAK 2.0
-
-- premium presentation
-- pacing integration
-- refined milestone/reward experience
+Premium presentation, pacing integration, milestone/reward refinement.
 
 ### Phase 9 — META
-
-- Character Growth refinement
-- CORE GRID refinement
-- difficulty/risk modes
-- economy tuning
+Character Growth refinement, CORE GRID refinement, difficulty/risk, economy tuning.
 
 ### Phase 10 — GACHA / COLLECTION
-
-- Orbital Summon integration with final art direction
-- duplicate conversion improvements
-- reveal variants
+Final Orbital Summon integration, duplicate conversion, reveal variants.
 
 ### Phase 11 — OPTIMIZATION
-
-- FPS
-- memory pressure
-- mobile
-- loading
-- audio voice budgets
-- VFX budgets
+FPS, memory, mobile, loading, audio voices, VFX budgets.
 
 ### Phase 12 — FINAL POLISH
+Review boot, menu, combat, BREAK, FEVER, LIMIT BREAK, boss, death, results, characters, CORE GRID, and gacha as finished product states.
 
-Review each major screen/state as a finished product:
+## 38. Definition of Done for a Major Feature
 
-- boot
-- menu
-- normal combat
-- BREAK
-- FEVER
-- LIMIT BREAK
-- boss
-- death
-- results
-- characters
-- CORE GRID
-- gacha
+A major feature is complete only after review of:
 
-## 37. Definition of Done for a New Major Feature
+1. Gameplay;
+2. Visuals;
+3. Audio;
+4. Camera;
+5. UI/UX;
+6. Performance;
+7. Mobile behavior;
+8. Tests where applicable.
 
-A feature is not considered complete because its gameplay logic works.
+A new boss, for example, is not complete when its attacks merely function. Telegraphs, HUD, audio/music, phase transitions, defeat sequence, rewards, mobile readability, performance, and regression behavior are part of the same feature.
 
-Every major feature must be reviewed across:
-
-1. Gameplay
-2. Visuals
-3. Audio
-4. Camera
-5. UI/UX
-6. Performance
-7. Mobile behavior
-8. Tests where applicable
-
-Example: a new boss is not complete until attacks, telegraphs, HUD, music/audio, phase transitions, defeat sequence, rewards, mobile readability, performance, and regression behavior are acceptable.
-
-## 38. Explicit Non-Goals
+## 39. Explicit Non-Goals
 
 Premium Edition does not require:
 
-- migration to Phaser, PixiJS, Unity, Godot, or another engine
-- rewriting every current system before visible improvements begin
-- deleting existing progression
-- turning the game into a photorealistic title
-- maximizing effect count
-- perfectly equalizing all character builds
-- making every encounter deterministic
-
-## 39. Product Pillars
-
-All implementation decisions should be checked against three pillars:
-
-### Combat Feel
-
-Every attack and kill should feel responsive and satisfying.
-
-### Build Crafting
-
-Each run should create meaningful choices and potentially surprising synergies.
-
-### Long-Term Growth
-
-Character growth, CORE GRID, collection, challenges, and difficulty progression should give players a reason to return without invalidating skill and build choice.
+- migration to another game engine;
+- rewriting every current system before visible improvements begin;
+- deleting or resetting current progression;
+- photorealistic rendering;
+- maximum possible particle count;
+- perfectly equal character builds;
+- a fully deterministic encounter timeline.
 
 ## 40. Final Experience Statement
 
-BREAK SURVIVORS Premium Edition should feel like a game whose world progressively awakens as the player succeeds:
+BREAK SURVIVORS Premium Edition should feel like a world that progressively awakens as the player succeeds:
 
-Normal Combat → BREAK → FEVER → LIMIT BREAK → BOSS / CLIMAX
+**Normal Combat → BREAK → FEVER → LIMIT BREAK → BOSS / CLIMAX**
 
-The increase is not only visual. Enemy behavior, rewards, audio, camera, HUD, build power, and player decision-making should all rise together.
+This escalation is not only visual. Enemy behavior, rewards, audio, camera, HUD, build power, and player decision-making rise together.
 
-The final product should preserve what already makes BREAK SURVIVORS recognizable while making the experience feel deliberate, premium, readable, replayable, and technically sustainable.
+The final game must preserve what already makes BREAK SURVIVORS recognizable while making it deliberate, premium, readable, replayable, and technically sustainable.
