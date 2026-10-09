@@ -3,12 +3,14 @@ import {createIntensityDirector} from '../directors/intensity.js';
 import {createCameraDirector} from '../directors/camera.js';
 import {createEncounterDirector} from '../directors/encounter.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
+import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 
 const FOUNDATION_FLAGS=Object.freeze({
   intensityDirector:true,
   cameraDirector:true,
   vfxDirector:true,
-  encounterDirector:true
+  encounterDirector:true,
+  premiumHud:true
 });
 
 const ZERO_CAMERA=Object.freeze({shake:0,zoom:1,kickX:0,kickY:0,hitStopMs:0});
@@ -37,7 +39,8 @@ export function createPremiumRuntime({
   flags={},
   reducedMotion=false,
   vfxProfile='high',
-  calmSeconds=8
+  calmSeconds=8,
+  signatureHud=null
 }={}){
   const resolved=resolveFeatureFlags(flags);
   const intensity=createIntensityDirector();
@@ -46,6 +49,8 @@ export function createPremiumRuntime({
   const vfx=createVfxBudget({profile:vfxProfile});
   let cameraState={...ZERO_CAMERA};
   let lastIntensity=20;
+  let lastSignatureMeter=0;
+  let lastSignatureLabel='CORE';
 
   function signal(type,payload={}){
     if(!resolved.cameraDirector)return false;
@@ -74,11 +79,20 @@ export function createPremiumRuntime({
     if(resolved.encounterDirector)encounter.update(delta);
     lastIntensity=resolved.intensityDirector?intensity.update(delta,state):20;
     cameraState=resolved.cameraDirector?camera.update(delta):{...ZERO_CAMERA};
+
+    lastSignatureMeter=getSignatureMeterValue(state.characterId,state);
+    lastSignatureLabel=getSignatureMeterDefinition(state.characterId).label;
+    if(resolved.premiumHud&&signatureHud){
+      signatureHud.update({characterId:state.characterId,signatureMeter:lastSignatureMeter});
+    }
+
     return {
       intensity:lastIntensity,
       camera:cameraState,
       vfxProfile:vfx.profile,
-      recovery:encounter.recovery
+      recovery:encounter.recovery,
+      signatureMeter:lastSignatureMeter,
+      signatureLabel:lastSignatureLabel
     };
   }
 
@@ -94,6 +108,9 @@ export function createPremiumRuntime({
     vfx.beginFrame();
     cameraState={...ZERO_CAMERA};
     lastIntensity=20;
+    lastSignatureMeter=0;
+    lastSignatureLabel='CORE';
+    signatureHud?.update?.({characterId:null,signatureMeter:0});
   }
 
   return {
@@ -107,7 +124,9 @@ export function createPremiumRuntime({
     allowVfx,
     reset,
     get intensityValue(){return lastIntensity},
-    get cameraState(){return cameraState}
+    get cameraState(){return cameraState},
+    get signatureMeter(){return lastSignatureMeter},
+    get signatureLabel(){return lastSignatureLabel}
   };
 }
 
@@ -119,9 +138,13 @@ function installBrowserRuntime(){
   let profile='high';
   try{profile=localStorage.getItem('break_survivors_vfx_profile')||profile}catch(_){}
   if(innerWidth<=640 && profile==='high')profile='medium';
-  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile});
+
+  const signatureHud=flags.premiumHud
+    ? mountSignatureMeterHud({document,parent:document.getElementById('gameWrap')})
+    : null;
+  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud});
   window.BreakPremiumRuntime=runtime;
-  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector'].some(k=>flags[k]);
+  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','premiumHud'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
   return runtime;
 }
