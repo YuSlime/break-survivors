@@ -9,15 +9,16 @@ const MODE_TONES=Object.freeze({
 
 const STYLE_ID='premium-intensity-overlay-style';
 const CSS=`
-.premiumIntensityOverlay{--premium-strength:.2;--premium-tone:#6ee7ff;position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;opacity:1;transition:filter .28s ease}
+.premiumIntensityOverlay{--premium-strength:.2;--premium-tone:#6ee7ff;--premium-edge-opacity:.074;--premium-vignette-opacity:.032;--premium-glow-size:42px;position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;opacity:1;transition:filter .28s ease}
 .premiumIntensityOverlay::before,.premiumIntensityOverlay::after{content:"";position:absolute;inset:0;pointer-events:none;transition:opacity .24s ease,box-shadow .24s ease,background .24s ease}
-.premiumIntensityOverlay::before{opacity:calc(.03 + var(--premium-strength)*.22);box-shadow:inset 0 0 calc(28px + 72px*var(--premium-strength)) color-mix(in srgb,var(--premium-tone) calc(24% + 28%*var(--premium-strength)),transparent)}
-.premiumIntensityOverlay::after{opacity:calc(var(--premium-strength)*.16);background:radial-gradient(circle at 50% 48%,transparent 34%,color-mix(in srgb,var(--premium-tone) 14%,transparent) 72%,color-mix(in srgb,var(--premium-tone) 26%,transparent) 100%);mix-blend-mode:screen}
-.premiumIntensityOverlay[data-mode="calm"]::before{opacity:.02}.premiumIntensityOverlay[data-mode="pressure"]::before{opacity:.07}.premiumIntensityOverlay[data-mode="break"]::before{opacity:calc(.08 + var(--premium-strength)*.18)}.premiumIntensityOverlay[data-mode="fever"]::after{opacity:calc(.05 + var(--premium-strength)*.18)}.premiumIntensityOverlay[data-mode="limit"]::before{box-shadow:inset 0 0 calc(60px + 85px*var(--premium-strength)) color-mix(in srgb,var(--premium-tone) 45%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--premium-tone) 50%,transparent)}.premiumIntensityOverlay[data-mode="boss-final"]::before{box-shadow:inset 0 0 calc(75px + 100px*var(--premium-strength)) color-mix(in srgb,var(--premium-tone) 48%,transparent),inset 0 0 0 2px color-mix(in srgb,var(--premium-tone) 56%,transparent)}
+.premiumIntensityOverlay::before{opacity:var(--premium-edge-opacity);box-shadow:inset 0 0 var(--premium-glow-size) color-mix(in srgb,var(--premium-tone) 40%,transparent)}
+.premiumIntensityOverlay::after{opacity:var(--premium-vignette-opacity);background:radial-gradient(circle at 50% 48%,transparent 34%,color-mix(in srgb,var(--premium-tone) 14%,transparent) 72%,color-mix(in srgb,var(--premium-tone) 26%,transparent) 100%);mix-blend-mode:screen}
+.premiumIntensityOverlay[data-mode="calm"]::before{opacity:.02}.premiumIntensityOverlay[data-mode="pressure"]::before{opacity:.07}.premiumIntensityOverlay[data-mode="break"]::before{box-shadow:inset 0 0 var(--premium-glow-size) color-mix(in srgb,var(--premium-tone) 44%,transparent)}.premiumIntensityOverlay[data-mode="fever"]::after{background:radial-gradient(circle at 50% 48%,transparent 30%,color-mix(in srgb,var(--premium-tone) 17%,transparent) 70%,color-mix(in srgb,var(--premium-tone) 30%,transparent) 100%)}.premiumIntensityOverlay[data-mode="limit"]::before{box-shadow:inset 0 0 var(--premium-glow-size) color-mix(in srgb,var(--premium-tone) 45%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--premium-tone) 50%,transparent)}.premiumIntensityOverlay[data-mode="boss-final"]::before{box-shadow:inset 0 0 var(--premium-glow-size) color-mix(in srgb,var(--premium-tone) 48%,transparent),inset 0 0 0 2px color-mix(in srgb,var(--premium-tone) 56%,transparent)}
 @media(prefers-reduced-motion:reduce){.premiumIntensityOverlay,.premiumIntensityOverlay::before,.premiumIntensityOverlay::after{transition:none!important}}
 `;
 
 const clamp01=value=>Math.max(0,Math.min(1,(Number(value)||0)/100));
+const round3=value=>Math.round(value*1000)/1000;
 
 export function resolveIntensityPresentation(state={},intensity=20){
   let mode='calm';
@@ -26,7 +27,24 @@ export function resolveIntensityPresentation(state={},intensity=20){
   if(state.feverActive)mode='fever';
   if(state.limitBreakActive)mode='limit';
   if(state.bossFinalPhase)mode='boss-final';
-  return Object.freeze({mode,tone:MODE_TONES[mode],strength:clamp01(intensity)});
+  const strength=clamp01(intensity);
+  return Object.freeze({
+    mode,
+    tone:MODE_TONES[mode],
+    strength,
+    edgeOpacity:round3(.03+strength*.22),
+    vignetteOpacity:round3(strength*.16),
+    glowPx:Math.round(28+72*strength)
+  });
+}
+
+function applyView(host,view){
+  host.dataset.mode=view.mode;
+  host.style.setProperty?.('--premium-strength',String(view.strength));
+  host.style.setProperty?.('--premium-tone',view.tone);
+  host.style.setProperty?.('--premium-edge-opacity',String(view.edgeOpacity));
+  host.style.setProperty?.('--premium-vignette-opacity',String(view.vignetteOpacity));
+  host.style.setProperty?.('--premium-glow-size',view.glowPx+'px');
 }
 
 function ensureStyle(document){
@@ -45,16 +63,12 @@ export function mountIntensityOverlay({document=globalThis.document,parent=null}
   ensureStyle(document);
   const host=document.createElement('div');
   host.className='premiumIntensityOverlay';
-  host.dataset.mode='calm';
-  host.style.setProperty?.('--premium-strength','0.2');
-  host.style.setProperty?.('--premium-tone',MODE_TONES.calm);
+  applyView(host,resolveIntensityPresentation({},20));
   parent.append(host);
 
   function update({state={},intensity=20}={}){
     const view=resolveIntensityPresentation(state,intensity);
-    host.dataset.mode=view.mode;
-    host.style.setProperty?.('--premium-strength',String(view.strength));
-    host.style.setProperty?.('--premium-tone',view.tone);
+    applyView(host,view);
     return view;
   }
 
