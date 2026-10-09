@@ -20,6 +20,13 @@ test('premium query opt-in enables only foundation systems',()=>{
   assert.equal(flags.bossV2,false);
 });
 
+test('combat V2 requires a second explicit query opt-in during development',()=>{
+  const flags=resolveRuntimeFeatureOverrides({search:'?premium=1&premiumCombat=1',stored:null});
+  assert.equal(flags.intensityDirector,true);
+  assert.equal(flags.combatV2,true);
+  assert.equal(flags.bossV2,false);
+});
+
 test('stored overrides can selectively change premium systems',()=>{
   const flags=resolveRuntimeFeatureOverrides({
     search:'',
@@ -57,6 +64,14 @@ test('signals map major combat moments into camera impulses',()=>{
 test('vfx budget is bypassed when vfx director is disabled',()=>{
   const runtime=createPremiumRuntime({flags:{vfxDirector:false}});
   for(let i=0;i<1000;i++)assert.equal(runtime.allowVfx('particles',1),true);
+});
+
+test('tactical enemy picker is completely disabled unless combat V2 is enabled',()=>{
+  const safe=createPremiumRuntime({flags:{combatV2:false}});
+  assert.equal(safe.pickTacticalEnemy({gameTime:200,threat:5,roll:.01}),null);
+
+  const combat=createPremiumRuntime({flags:{combatV2:true}});
+  assert.equal(combat.pickTacticalEnemy({gameTime:95,threat:2,roll:.05}),'support');
 });
 
 test('runtime reset returns directors to calm state',()=>{
