@@ -8,6 +8,7 @@ export const DEFAULT_FEATURE_FLAGS=Object.freeze({
   combatV2:false,
   bossV2:false,
   limitBreakV2:false,
+  stagesV2:false,
   saveV2:false
 });
 
