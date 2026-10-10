@@ -46,6 +46,24 @@ test('controller writes semantic roles to existing HUD elements without replacin
   assert.equal(elements.threatHud.dataset.premiumHudRole,'quiet');
 });
 
+test('controller injects Premium HUD emphasis styling once when a DOM head is available',()=>{
+  const elements={breakHud:{dataset:{}},threatHud:{dataset:{}},eventHud:{dataset:{}},bossHud:{dataset:{}},lbEventHud:{dataset:{}}};
+  const styles=[];
+  const document={
+    head:{append:node=>styles.push(node)},
+    createElement:tag=>({tagName:tag.toUpperCase(),id:'',textContent:''}),
+    getElementById:id=>elements[id]||styles.find(node=>node.id===id)||null
+  };
+  createHudFocusController({document});
+  createHudFocusController({document});
+  assert.equal(styles.length,1);
+  assert.equal(styles[0].id,'premium-hud-focus-style');
+  assert.match(styles[0].textContent,/data-premium-hud-role="focus"/);
+  assert.match(styles[0].textContent,/data-premium-hud-role="secondary"/);
+  assert.match(styles[0].textContent,/data-premium-hud-role="quiet"/);
+  assert.match(styles[0].textContent,/opacity:\.14/);
+});
+
 test('controller reset returns legacy HUD elements to unmanaged state',()=>{
   const elements={breakHud:{dataset:{}},threatHud:{dataset:{}},eventHud:{dataset:{}},bossHud:{dataset:{}},lbEventHud:{dataset:{}}};
   const document={getElementById:id=>elements[id]||null};
