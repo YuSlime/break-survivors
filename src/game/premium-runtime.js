@@ -7,6 +7,7 @@ import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
+import {createHudFocusController} from '../ui/hud-focus.js';
 import {getPremiumEnemyArchetype,pickPremiumEnemyArchetype,resolvePremiumEnemyAuras} from '../data/enemies-premium.js';
 import {resolveVoidTyrantPhase,getVoidTyrantPhaseDefinition,buildVoidTyrantAttackPlan} from '../bosses/void-tyrant.js';
 import {buildBossChestChoices,createBossRewardState,applyBossRewardChoice} from '../rewards/boss-chest.js';
@@ -51,6 +52,7 @@ export function createPremiumRuntime({
   vfxProfile='high',
   calmSeconds=8,
   signatureHud=null,
+  hudFocus=null,
   intensityOverlay=null,
   bossRewardUi=null
 }={}){
@@ -63,6 +65,7 @@ export function createPremiumRuntime({
   let cameraState={...ZERO_CAMERA};
   let lastIntensity=20;
   let lastAudioMix=null;
+  let lastHudFocus=null;
   let lastSignatureMeter=0;
   let lastSignatureLabel='CORE';
   let bossRewardState=createBossRewardState();
@@ -99,6 +102,8 @@ export function createPremiumRuntime({
     }
     cameraState=resolved.cameraDirector?camera.update(delta):{...ZERO_CAMERA};
     lastAudioMix=resolved.audioDirector?audio.update(delta,state,lastIntensity):null;
+    const hudView=resolved.premiumHud&&hudFocus?hudFocus.update(state):null;
+    lastHudFocus=hudView?.focus??null;
 
     lastSignatureMeter=getSignatureMeterValue(state.characterId,state);
     lastSignatureLabel=getSignatureMeterDefinition(state.characterId).label;
@@ -110,6 +115,7 @@ export function createPremiumRuntime({
       intensity:lastIntensity,
       camera:cameraState,
       audio:lastAudioMix,
+      hudFocus:lastHudFocus,
       vfxProfile:vfx.profile,
       recovery:encounter.recovery,
       signatureMeter:lastSignatureMeter,
@@ -193,11 +199,13 @@ export function createPremiumRuntime({
     cameraState={...ZERO_CAMERA};
     lastIntensity=20;
     lastAudioMix=resolved.audioDirector?audio.update(0,{},20):null;
+    lastHudFocus=null;
     lastSignatureMeter=0;
     lastSignatureLabel='CORE';
     bossRewardState=createBossRewardState();
     bossRewardOpen=false;
     bossRewardUi?.hide?.();
+    if(resolved.premiumHud)hudFocus?.reset?.();
     signatureHud?.update?.({characterId:null,signatureMeter:0});
     if(resolved.intensityDirector&&intensityOverlay){
       intensityOverlay.update({state:{},intensity:20});
@@ -227,6 +235,7 @@ export function createPremiumRuntime({
     get intensityValue(){return lastIntensity},
     get cameraState(){return cameraState},
     get audioMix(){return lastAudioMix},
+    get hudFocus(){return lastHudFocus},
     get signatureMeter(){return lastSignatureMeter},
     get signatureLabel(){return lastSignatureLabel},
     get bossRewardState(){return bossRewardState},
@@ -247,13 +256,16 @@ function installBrowserRuntime(){
   const signatureHud=flags.premiumHud
     ? mountSignatureMeterHud({document,parent:gameWrap})
     : null;
+  const hudFocus=flags.premiumHud
+    ? createHudFocusController({document})
+    : null;
   const intensityOverlay=flags.intensityDirector
     ? mountIntensityOverlay({document,parent:gameWrap})
     : null;
   const bossRewardUi=flags.bossV2
     ? mountBossRewardOverlay({document,parent:gameWrap})
     : null;
-  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,intensityOverlay,bossRewardUi});
+  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,hudFocus,intensityOverlay,bossRewardUi});
   window.BreakPremiumRuntime=runtime;
   const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','audioDirector','premiumHud','combatV2','bossV2'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
