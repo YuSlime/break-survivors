@@ -10,7 +10,7 @@ import {resolveDamageNumber as resolveDamageNumberProfile} from '../presentation
 import {buildBossDeathSequence} from '../presentation/boss-death-sequence.js';
 import {buildFeverTransition} from '../presentation/fever-transition.js';
 import {buildLimitBreakTransition} from '../presentation/limit-break-transition.js';
-import {getStageEnvironment as getStageEnvironmentProfile,resolveStageEnvironmentId as resolveStageEnvironmentIdProfile} from '../data/stages-premium.js';
+import {getStageEnvironment as getStageEnvironmentProfile,resolveStageEnvironmentId as resolveStageEnvironmentIdProfile,getStageTransitionCue as getStageTransitionCueProfile} from '../data/stages-premium.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
@@ -201,6 +201,11 @@ export function createPremiumRuntime({
     return getStageEnvironmentProfile(id);
   }
 
+  function getStageTransitionCue(context={}){
+    if(!resolved.stagesV2)return null;
+    return getStageTransitionCueProfile(context);
+  }
+
   function pickTacticalEnemy(context={}){
     if(!resolved.combatV2)return null;
     return pickPremiumEnemyArchetype(context);
@@ -304,6 +309,7 @@ export function createPremiumRuntime({
     getLimitBreakTransition,
     getStageEnvironment,
     resolveStageEnvironment,
+    getStageTransitionCue,
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
     getTacticalEnemyMarker,
