@@ -39,14 +39,24 @@ test('runner tank and elite deaths have distinct live motion branches',()=>{
   assert.match(source,/premiumDeathFx\.coreBurst/);
 });
 
+test('Runner and Tank get restrained dedicated death cues without duplicating Elite audio',()=>{
+  assert.match(source,/PREMIUM DEATH AUDIO V1/);
+  assert.match(source,/if\(premiumDeathFx\.audioCue\)playPremiumCombatFeedbackSfx\(premiumDeathFx\.audioCue\)/);
+  assert.ok(source.includes("'death-runner'"));
+  assert.ok(source.includes("'death-tank'"));
+  assert.match(source,/cue==='death-runner'/);
+  assert.match(source,/cue==='death-tank'/);
+});
+
 test('legacy death VFX remains as fallback for enemy roles outside the new four profiles',()=>{
   assert.match(source,/if\(premiumDeathFx\)\{/);
   assert.match(source,/\}else\{\n    const premiumVfxPriority=/);
 });
 
-test('integrator is guarded by a dedicated marker for idempotent reruns',()=>{
+test('integrator is guarded by dedicated presentation and audio markers for idempotent reruns',()=>{
   assert.ok(fs.existsSync(integratorUrl),'death presentation integrator missing');
   const integrator=fs.readFileSync(integratorUrl,'utf8');
   assert.match(integrator,/PREMIUM DEATH PRESENTATION V1/);
+  assert.match(integrator,/PREMIUM DEATH AUDIO V1/);
   assert.match(integrator,/already integrated/);
 });
