@@ -8,6 +8,7 @@ on:
       - tools/apply-premium-combat-v2-review-fixes.mjs
       - tools/apply-premium-boss-v2-integration.mjs
       - tools/apply-premium-boss-reward-integration.mjs
+      - tools/apply-premium-audio-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -33,6 +34,7 @@ jobs:
           node tools/apply-premium-combat-v2-review-fixes.mjs
           node tools/apply-premium-boss-v2-integration.mjs
           node tools/apply-premium-boss-reward-integration.mjs
+          node tools/apply-premium-audio-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
