@@ -190,6 +190,28 @@ export function resolveStageEnvironmentId({limitBreakLevel=0}={}){
   return 'neon-ruins';
 }
 
+export function getStageTransitionCue({fromLimitBreak=0,toLimitBreak=0}={}){
+  const fromRaw=Number(fromLimitBreak);
+  const toRaw=Number(toLimitBreak);
+  if(!Number.isFinite(fromRaw)||!Number.isFinite(toRaw))return null;
+  const from=Math.floor(fromRaw),to=Math.floor(toRaw);
+  if(from<0||to<0||to<=from)return null;
+  const fromId=resolveStageEnvironmentId({limitBreakLevel:from});
+  const toId=resolveStageEnvironmentId({limitBreakLevel:to});
+  if(fromId===toId)return null;
+  const stage=getStageEnvironment(toId);
+  return Object.freeze({
+    title:'SECTOR SHIFT',
+    stageId:stage.id,
+    stageName:stage.name,
+    color:stage.accent,
+    fromLimitBreak:from,
+    toLimitBreak:to,
+    delayMs:300,
+    displayMs:560
+  });
+}
+
 export function getStageEnvironment(id='neon-ruins'){
   return STAGES[id]||NEON_RUINS;
 }
