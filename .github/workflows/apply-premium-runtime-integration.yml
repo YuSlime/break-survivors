@@ -9,6 +9,7 @@ on:
       - tools/apply-premium-boss-v2-integration.mjs
       - tools/apply-premium-boss-reward-integration.mjs
       - tools/apply-premium-audio-integration.mjs
+      - tools/apply-premium-frame-state-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -35,6 +36,7 @@ jobs:
           node tools/apply-premium-boss-v2-integration.mjs
           node tools/apply-premium-boss-reward-integration.mjs
           node tools/apply-premium-audio-integration.mjs
+          node tools/apply-premium-frame-state-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
