@@ -74,6 +74,23 @@ test('tactical enemy picker is completely disabled unless combat V2 is enabled',
   assert.equal(combat.pickTacticalEnemy({gameTime:95,threat:2,roll:.05}),'support');
 });
 
+test('tactical aura bridge is neutral unless combat V2 is explicitly enabled',()=>{
+  const target={type:'normal',x:20,y:0,dead:false};
+  const support={type:'support',x:0,y:0,dead:false};
+  const shielder={type:'shielder',x:30,y:0,dead:false};
+
+  const safe=createPremiumRuntime({flags:{combatV2:false}});
+  assert.deepEqual(safe.resolveTacticalAuras(target,[target,support,shielder]),{
+    speedMul:1,touchMul:1,damageTakenMul:1
+  });
+
+  const combat=createPremiumRuntime({flags:{combatV2:true}});
+  const active=combat.resolveTacticalAuras(target,[target,support,shielder]);
+  assert.ok(active.speedMul>1);
+  assert.ok(active.touchMul>1);
+  assert.ok(active.damageTakenMul<1);
+});
+
 test('runtime reset returns directors to calm state',()=>{
   const runtime=createPremiumRuntime({flags:{intensityDirector:true,cameraDirector:true,encounterDirector:true}});
   runtime.signal('limitBreak');
