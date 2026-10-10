@@ -15163,7 +15163,8 @@ function draw(){
   ctx.scale(effectiveCameraZoom,effectiveCameraZoom);
   ctx.translate(-cameraX,-cameraY);
 
-  const premiumStageEnvironment=window.BreakPremiumRuntime?.getStageEnvironment?.('neon-ruins');
+  /* PREMIUM STAGE PROGRESSION V1 */
+  const premiumStageEnvironment=window.BreakPremiumRuntime?.resolveStageEnvironment?.({limitBreakLevel});
   if(premiumStageEnvironment){
     drawPremiumStageEnvironment(premiumStageEnvironment,cameraX,cameraY,halfViewW,halfViewH,effectiveCameraZoom);
   }else{
