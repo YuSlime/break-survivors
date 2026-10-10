@@ -14207,7 +14207,7 @@ function update(dt,refreshHud=true){
     }else if(e.type==='shooter'||e.type==='boss'){
       const range=d.range;
       let dir= l>range?1 : l<range*.68?-1:0;
-      const bossSpeed=(e.type==='boss'&&e.phase===2?e.speed*1.22:e.speed)*pursuitBoost;
+      const bossSpeed=(e.type==='boss'&&e.phase===2?premiumSpeed*1.22:premiumSpeed)*pursuitBoost;
       e.x+=dx/l*bossSpeed*dir*dt;e.y+=dy/l*bossSpeed*dir*dt;
       e.shootCd-=dt;
       if(e.shootCd<=0){
