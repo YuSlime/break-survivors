@@ -10,6 +10,12 @@ test('live spawn table asks Premium runtime for tactical enemies only through co
   assert.match(source,/const premiumTacticalType=/);
 });
 
+test('live spawn table reports active tactical counts so late-run caps are enforced',()=>{
+  assert.match(source,/const premiumTacticalCounts=\{support:0,assassin:0,summoner:0,shielder:0\};/);
+  assert.match(source,/enemy\.premiumDef&&premiumTacticalCounts\[enemy\.type\]!==undefined/);
+  assert.match(source,/activeCounts:premiumTacticalCounts/);
+});
+
 test('live enemy spawn can materialize tactical archetype definitions without duplicating Premium data',()=>{
   assert.match(source,/getTacticalEnemyDefinition\?\.\(type\)/);
   assert.match(source,/premiumDef\.radius/);
