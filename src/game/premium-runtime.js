@@ -6,6 +6,7 @@ import {createAudioDirector} from '../directors/audio.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
 import {resolveCombatFeedback as resolveCombatFeedbackProfile} from '../presentation/combat-feedback.js';
 import {resolveDeathPresentation as resolveDeathPresentationProfile} from '../presentation/death-presentation.js';
+import {resolveDamageNumber as resolveDamageNumberProfile} from '../presentation/damage-numbers.js';
 import {buildBossDeathSequence} from '../presentation/boss-death-sequence.js';
 import {buildFeverTransition} from '../presentation/fever-transition.js';
 import {buildLimitBreakTransition} from '../presentation/limit-break-transition.js';
@@ -167,6 +168,11 @@ export function createPremiumRuntime({
     return resolveDeathPresentationProfile(context);
   }
 
+  function resolveDamageNumber(context={}){
+    if(!resolved.vfxDirector)return null;
+    return resolveDamageNumberProfile(context);
+  }
+
   function getBossDeathSequence(){
     if(!resolved.vfxDirector)return null;
     return buildBossDeathSequence({reducedMotion});
@@ -279,6 +285,7 @@ export function createPremiumRuntime({
     allowVfxCount,
     resolveCombatFeedback,
     resolveDeathPresentation,
+    resolveDamageNumber,
     getBossDeathSequence,
     getFeverTransition,
     getLimitBreakTransition,
