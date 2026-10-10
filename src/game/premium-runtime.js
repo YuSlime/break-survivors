@@ -6,6 +6,7 @@ import {createAudioDirector} from '../directors/audio.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
 import {resolveCombatFeedback as resolveCombatFeedbackProfile} from '../presentation/combat-feedback.js';
 import {resolveDeathPresentation as resolveDeathPresentationProfile} from '../presentation/death-presentation.js';
+import {buildBossDeathSequence} from '../presentation/boss-death-sequence.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
@@ -164,6 +165,11 @@ export function createPremiumRuntime({
     return resolveDeathPresentationProfile(context);
   }
 
+  function getBossDeathSequence(){
+    if(!resolved.vfxDirector)return null;
+    return buildBossDeathSequence({reducedMotion});
+  }
+
   function pickTacticalEnemy(context={}){
     if(!resolved.combatV2)return null;
     return pickPremiumEnemyArchetype(context);
@@ -261,6 +267,7 @@ export function createPremiumRuntime({
     allowVfxCount,
     resolveCombatFeedback,
     resolveDeathPresentation,
+    getBossDeathSequence,
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
     getTacticalEnemyMarker,
