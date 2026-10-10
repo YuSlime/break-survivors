@@ -4,6 +4,7 @@ import * as premiumEnemyModel from '../src/data/enemies-premium.js';
 import {
   PREMIUM_ENEMY_ARCHETYPES,
   PREMIUM_ACTIVE_TACTICAL_ARCHETYPES,
+  PREMIUM_TACTICAL_SPAWN_LIMITS,
   getPremiumEnemyArchetype,
   pickPremiumEnemyArchetype,
   getPremiumEnemyPressureScore
@@ -28,8 +29,11 @@ test('Premium tactical enemies have distinct readable combat roles',()=>{
   assert.equal(PREMIUM_ENEMY_ARCHETYPES.shielder.mechanic,'shield-aura');
 });
 
-test('current combat V2 rollout activates Support and Assassin only',()=>{
-  assert.deepEqual([...PREMIUM_ACTIVE_TACTICAL_ARCHETYPES],['support','assassin']);
+test('combat V2 phase B activates all four reviewed tactical archetypes',()=>{
+  assert.deepEqual([...PREMIUM_ACTIVE_TACTICAL_ARCHETYPES],['support','assassin','summoner','shielder']);
+  assert.equal(PREMIUM_TACTICAL_SPAWN_LIMITS.total,5);
+  assert.equal(PREMIUM_TACTICAL_SPAWN_LIMITS.summoner,1);
+  assert.equal(PREMIUM_TACTICAL_SPAWN_LIMITS.shielder,1);
 });
 
 test('role tuning exposes the gameplay parameters required by each mechanic',()=>{
@@ -58,28 +62,41 @@ test('tactical enemies do not enter the run before escalation has developed',()=
   }
 });
 
-test('active spawn table introduces Support before Assassin and keeps later archetypes dormant',()=>{
+test('spawn table introduces all four roles progressively with recovery space',()=>{
   assert.equal(pickPremiumEnemyArchetype({gameTime:95,threat:2,roll:.05}),'support');
   assert.equal(pickPremiumEnemyArchetype({gameTime:95,threat:2,roll:.95}),null);
+  assert.equal(pickPremiumEnemyArchetype({gameTime:130,threat:3,roll:.15}),'assassin');
+  assert.equal(pickPremiumEnemyArchetype({gameTime:160,threat:3,roll:.24}),'summoner');
+  assert.equal(pickPremiumEnemyArchetype({gameTime:190,threat:4,roll:.31}),'shielder');
 
   const later=new Set();
   for(let i=0;i<100;i++)later.add(pickPremiumEnemyArchetype({gameTime:190,threat:4,roll:i/100}));
-  assert.ok(later.has('support'));
-  assert.ok(later.has('assassin'));
+  for(const id of required)assert.ok(later.has(id),id);
   assert.ok(later.has(null));
-  assert.equal(later.has('summoner'),false);
-  assert.equal(later.has('shielder'),false);
 });
 
-test('pressure scores preserve future tactical tuning without forcing dormant roles into live runs',()=>{
+test('tactical spawn caps stop support-role pileups in dense late runs',()=>{
+  const cappedTotal={support:2,assassin:1,summoner:1,shielder:1};
+  assert.equal(pickPremiumEnemyArchetype({gameTime:220,threat:5,roll:.05,activeCounts:cappedTotal}),null);
+
+  const cappedSummoner={support:0,assassin:0,summoner:1,shielder:0};
+  assert.equal(pickPremiumEnemyArchetype({gameTime:220,threat:5,roll:.25,activeCounts:cappedSummoner}),null);
+
+  const cappedShielder={support:0,assassin:0,summoner:0,shielder:1};
+  assert.equal(pickPremiumEnemyArchetype({gameTime:220,threat:5,roll:.33,activeCounts:cappedShielder}),null);
+});
+
+test('pressure scores keep Summoner and Shielder as highest-priority tactical targets',()=>{
   const normal=getPremiumEnemyPressureScore('normal');
   const support=getPremiumEnemyPressureScore('support');
+  const assassin=getPremiumEnemyPressureScore('assassin');
   const summoner=getPremiumEnemyPressureScore('summoner');
   const shielder=getPremiumEnemyPressureScore('shielder');
   assert.equal(normal,1);
   assert.ok(support>normal);
-  assert.ok(summoner>=support);
-  assert.ok(shielder>=support);
+  assert.ok(assassin>=support);
+  assert.ok(summoner>assassin);
+  assert.ok(shielder>assassin);
 });
 
 test('support and shielder auras only affect nearby allies and preserve counterplay',()=>{
