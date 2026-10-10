@@ -3,6 +3,7 @@ const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 const IMPULSES=Object.freeze({
   strongHit:{shake:1.4,zoom:.008,kick:2,hitStopMs:0},
   critical:{shake:2.2,zoom:.012,kick:2.8,hitStopMs:15},
+  tacticalKill:{shake:3.4,zoom:.015,kick:0,hitStopMs:18},
   eliteKill:{shake:4.8,zoom:.018,kick:0,hitStopMs:25},
   break:{shake:5.5,zoom:.03,kick:0,hitStopMs:40},
   fever:{shake:6.5,zoom:.045,kick:0,hitStopMs:30},
