@@ -11897,6 +11897,66 @@ const MAX_LIGHTNING_VOICES = 8;
 const MAX_EVENT_VOICES = 3;
 let attackSfxVolume = clamp(Number(localStorage.getItem('break_survivors_attack_sfx_volume') ?? 44) / 100, 0, 1);
 
+let premiumAtmosBus = null;
+let premiumAtmosFilter = null;
+let premiumSubOsc = null;
+let premiumAirOsc = null;
+let premiumSubGain = null;
+let premiumAirGain = null;
+
+function ensurePremiumAtmosphere(){
+  if(!audioUnlocked||!audioCtx||!audioMaster)return false;
+  if(premiumAtmosBus)return true;
+
+  premiumAtmosBus=audioCtx.createGain();
+  premiumAtmosBus.gain.value=0;
+  premiumAtmosFilter=audioCtx.createBiquadFilter();
+  premiumAtmosFilter.type='lowpass';
+  premiumAtmosFilter.frequency.value=620;
+  premiumAtmosFilter.Q.value=.45;
+
+  premiumSubOsc = audioCtx.createOscillator();
+  premiumSubOsc.type='sine';
+  premiumSubOsc.frequency.value=52;
+  premiumSubGain=audioCtx.createGain();
+  premiumSubGain.gain.value=.42;
+
+  premiumAirOsc = audioCtx.createOscillator();
+  premiumAirOsc.type='triangle';
+  premiumAirOsc.frequency.value=104;
+  premiumAirGain=audioCtx.createGain();
+  premiumAirGain.gain.value=.08;
+
+  premiumSubOsc.connect(premiumSubGain).connect(premiumAtmosFilter);
+  premiumAirOsc.connect(premiumAirGain).connect(premiumAtmosFilter);
+  premiumAtmosFilter.connect(premiumAtmosBus);
+  premiumAtmosBus.connect(audioMaster);
+  premiumSubOsc.start();
+  premiumAirOsc.start();
+  return true;
+}
+
+function applyPremiumAudioMix(mix){
+  if(!audioCtx||!attackFilter||!attackBus)return;
+  const now=audioCtx.currentTime;
+  if(!mix||!soundEnabled){
+    attackFilter.frequency.setTargetAtTime(8500,now,.08);
+    attackBus.gain.setTargetAtTime(soundEnabled?attackSfxVolume:0,now,.08);
+    if(premiumAtmosBus)premiumAtmosBus.gain.setTargetAtTime(0,now,.06);
+    return;
+  }
+  if(!ensurePremiumAtmosphere())return;
+
+  attackFilter.frequency.setTargetAtTime(mix.cutoffHz,now,.06);
+  attackBus.gain.setTargetAtTime(clamp(attackSfxVolume*mix.attackPresence,0,1.25),now,.06);
+  premiumSubOsc.frequency.setTargetAtTime(mix.subHz,now,.08);
+  premiumAirOsc.frequency.setTargetAtTime(mix.airHz,now,.08);
+  premiumAtmosFilter.frequency.setTargetAtTime(clamp(mix.cutoffHz*.075,480,980),now,.10);
+  const pulse=.82+.18*Math.sin((performance.now()/1000)*Math.PI*2*mix.pulseHz);
+  const targetAtmosphere=clamp(mix.atmosphereGain*pulse,0,.08);
+  premiumAtmosBus.gain.setTargetAtTime(targetAtmosphere,now,.08);
+}
+
 function getAudio(){
   const AC = window.AudioContext || window.webkitAudioContext;
   if(!AC) return null;
@@ -16358,8 +16418,8 @@ function premiumFrameState(){
 let last=performance.now(),simAccumulator=0;
 function loop(now){
   const frameDt=Math.max(0,(now-last)/1000);last=now;
-  window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());
   const premiumFrame=window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());
+  applyPremiumAudioMix(premiumFrame?.audio);
   const premiumHitStop=Math.max(0,Number(premiumFrame?.camera?.hitStopMs)||0)/1000;
   if(premiumHitStop>0)hitStop=Math.max(hitStop,premiumHitStop);
   if(document.body.classList.contains('coreGridOpen')){
