@@ -5,6 +5,7 @@ import {createEncounterDirector} from '../directors/encounter.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
+import {mountBossRewardOverlay} from '../ui/boss-reward.js';
 import {getPremiumEnemyArchetype,pickPremiumEnemyArchetype,resolvePremiumEnemyAuras} from '../data/enemies-premium.js';
 import {resolveVoidTyrantPhase,getVoidTyrantPhaseDefinition,buildVoidTyrantAttackPlan} from '../bosses/void-tyrant.js';
 import {buildBossChestChoices,createBossRewardState,applyBossRewardChoice} from '../rewards/boss-chest.js';
@@ -48,7 +49,8 @@ export function createPremiumRuntime({
   vfxProfile='high',
   calmSeconds=8,
   signatureHud=null,
-  intensityOverlay=null
+  intensityOverlay=null,
+  bossRewardUi=null
 }={}){
   const resolved=resolveFeatureFlags(flags);
   const intensity=createIntensityDirector();
@@ -60,6 +62,7 @@ export function createPremiumRuntime({
   let lastSignatureMeter=0;
   let lastSignatureLabel='CORE';
   let bossRewardState=createBossRewardState();
+  let bossRewardOpen=false;
 
   function signal(type,payload={}){
     if(!resolved.cameraDirector)return false;
@@ -162,6 +165,19 @@ export function createPremiumRuntime({
     return bossRewardState;
   }
 
+  function presentBossChest(context={},onResolved=()=>{}){
+    if(!resolved.bossV2||!bossRewardUi?.show)return false;
+    const choices=prepareBossChest(context);
+    if(!choices.length)return false;
+    bossRewardOpen=true;
+    bossRewardUi.show(choices,choice=>{
+      const state=claimBossReward(choice,context);
+      bossRewardOpen=false;
+      onResolved({choice,state});
+    });
+    return true;
+  }
+
   function reset(){
     intensity.reset();
     camera.reset();
@@ -172,6 +188,8 @@ export function createPremiumRuntime({
     lastSignatureMeter=0;
     lastSignatureLabel='CORE';
     bossRewardState=createBossRewardState();
+    bossRewardOpen=false;
+    bossRewardUi?.hide?.();
     signatureHud?.update?.({characterId:null,signatureMeter:0});
     if(resolved.intensityDirector&&intensityOverlay){
       intensityOverlay.update({state:{},intensity:20});
@@ -195,12 +213,14 @@ export function createPremiumRuntime({
     nextBossAttack,
     prepareBossChest,
     claimBossReward,
+    presentBossChest,
     reset,
     get intensityValue(){return lastIntensity},
     get cameraState(){return cameraState},
     get signatureMeter(){return lastSignatureMeter},
     get signatureLabel(){return lastSignatureLabel},
-    get bossRewardState(){return bossRewardState}
+    get bossRewardState(){return bossRewardState},
+    get bossRewardOpen(){return bossRewardOpen}
   };
 }
 
@@ -220,7 +240,10 @@ function installBrowserRuntime(){
   const intensityOverlay=flags.intensityDirector
     ? mountIntensityOverlay({document,parent:gameWrap})
     : null;
-  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,intensityOverlay});
+  const bossRewardUi=flags.bossV2
+    ? mountBossRewardOverlay({document,parent:gameWrap})
+    : null;
+  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,intensityOverlay,bossRewardUi});
   window.BreakPremiumRuntime=runtime;
   const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','premiumHud','combatV2','bossV2'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
