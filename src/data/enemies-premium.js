@@ -23,6 +23,8 @@ export const PREMIUM_ENEMY_ARCHETYPES=freeze({
   })
 });
 
+export const PREMIUM_ACTIVE_TACTICAL_ARCHETYPES=freeze(['support','assassin']);
+
 const PRESSURE=freeze({normal:1,runner:1.15,tank:1.35,shooter:1.4,elite:2.2,support:2.45,assassin:2.7,summoner:3.4,shielder:3.1});
 
 export function getPremiumEnemyArchetype(id){
@@ -42,11 +44,10 @@ export function pickPremiumEnemyArchetype({gameTime=0,threat=0,roll=Math.random(
   const table=[];
   table.push(['support',Math.min(.14,.08+level*.01)]);
   if(time>=120&&level>=3)table.push(['assassin',.10]);
-  if(time>=150&&level>=3)table.push(['summoner',.10]);
-  if(time>=175&&level>=4)table.push(['shielder',.08]);
 
   let edge=0;
   for(const [id,weight] of table){
+    if(!PREMIUM_ACTIVE_TACTICAL_ARCHETYPES.includes(id))continue;
     edge+=weight;
     if(r<edge)return id;
   }
