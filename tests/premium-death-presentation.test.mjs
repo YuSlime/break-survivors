@@ -12,6 +12,7 @@ test('normal death stays light and compact',()=>{
   assert.ok(fx.ringScale<1.9);
   assert.equal(fx.secondaryRing,false);
   assert.equal(fx.hitStopMs,0);
+  assert.equal(fx.audioCue,null);
 });
 
 test('runner death shears forward with higher shard speed but stays lightweight',()=>{
@@ -22,6 +23,7 @@ test('runner death shears forward with higher shard speed but stays lightweight'
   assert.ok(fx.directionalBias>=.65);
   assert.ok(fx.sizeMax<5);
   assert.equal(fx.secondaryRing,false);
+  assert.equal(fx.audioCue,'death-runner');
 });
 
 test('tank death reads as heavy chunks with a slower secondary shock ring',()=>{
@@ -34,6 +36,7 @@ test('tank death reads as heavy chunks with a slower secondary shock ring',()=>{
   assert.ok(fx.speedMax<runner.speedMax);
   assert.ok(fx.ringLife>=.26);
   assert.ok(fx.hitStopMs>=14);
+  assert.equal(fx.audioCue,'death-tank');
 });
 
 test('elite death exposes and ruptures a core before the widest two-stage shockwave',()=>{
@@ -46,6 +49,7 @@ test('elite death exposes and ruptures a core before the widest two-stage shockw
   assert.ok(fx.particleCount>tank.particleCount);
   assert.ok(fx.ringScale>tank.ringScale);
   assert.ok(fx.hitStopMs>=25);
+  assert.equal(fx.audioCue,null,'Elite already owns its gated elite-kill cue');
 });
 
 test('unhandled enemy roles keep their existing death presentation',()=>{
@@ -58,6 +62,7 @@ test('overkill amplifies a known death profile without changing its identity',()
   const base=profile('tank');
   const overkill=resolveDeathPresentation({enemyType:'tank',overkill:true,color:'#7fd8ff'});
   assert.equal(overkill.style,base.style);
+  assert.equal(overkill.audioCue,base.audioCue);
   assert.ok(overkill.particleCount>base.particleCount);
   assert.ok(overkill.ringScale>base.ringScale);
   assert.ok(overkill.speedMax>base.speedMax);
