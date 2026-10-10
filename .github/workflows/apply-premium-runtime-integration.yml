@@ -13,6 +13,7 @@ on:
       - tools/apply-premium-tactical-cap-integration.mjs
       - tools/apply-premium-tactical-readability-integration.mjs
       - tools/apply-premium-combat-feedback-integration.mjs
+      - tools/apply-premium-death-presentation-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -43,6 +44,7 @@ jobs:
           node tools/apply-premium-tactical-cap-integration.mjs
           node tools/apply-premium-tactical-readability-integration.mjs
           node tools/apply-premium-combat-feedback-integration.mjs
+          node tools/apply-premium-death-presentation-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
