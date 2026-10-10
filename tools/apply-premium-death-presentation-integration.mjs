@@ -2,20 +2,19 @@ import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
 let source=fs.readFileSync(path,'utf8');
+let changed=false;
 const marker='// PREMIUM DEATH PRESENTATION V1';
-
-if(source.includes(marker)){
-  console.log('Premium death presentation already integrated');
-  process.exit(0);
-}
+const audioMarker='// PREMIUM DEATH AUDIO V1';
 
 function replaceOnce(label,from,to){
   const count=source.split(from).length-1;
   if(count!==1)throw new Error(`${label}: expected exactly one target, found ${count}`);
   source=source.replace(from,to);
+  changed=true;
 }
 
-const from=`  const premiumVfxPriority=e.type==='boss'?5:e.type==='treasure'?4:e.type==='elite'?3:meta.overkill?2:1;
+if(!source.includes(marker)){
+  const from=`  const premiumVfxPriority=e.type==='boss'?5:e.type==='treasure'?4:e.type==='elite'?3:meta.overkill?2:1;
   const premiumRingCount=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,premiumVfxPriority)??1;
   if(premiumRingCount>0)rings.push({
     x:e.x,y:e.y,r:Math.max(3,e.r*.25),
@@ -36,7 +35,7 @@ const from=`  const premiumVfxPriority=e.type==='boss'?5:e.type==='treasure'?4:e
     color:meta.overkill?(i%2?'#ffd35c':e.color):e.color
   });`;
 
-const to=`  // PREMIUM DEATH PRESENTATION V1
+  const to=`  // PREMIUM DEATH PRESENTATION V1
   const premiumDeathFx=window.BreakPremiumRuntime?.resolveDeathPresentation?.({enemyType:e.type,overkill:meta.overkill,color:e.color});
   if(premiumDeathFx){
     if(premiumDeathFx.hitStopMs>0)hitStop=Math.max(hitStop,premiumDeathFx.hitStopMs/1000);
@@ -113,6 +112,34 @@ const to=`  // PREMIUM DEATH PRESENTATION V1
     });
   }`;
 
-replaceOnce('premium-death-presentation',from,to);
-fs.writeFileSync(path,source);
-console.log('Applied Premium death presentation integration');
+  replaceOnce('premium-death-presentation',from,to);
+}else{
+  console.log('Premium death presentation already integrated');
+}
+
+if(!source.includes(audioMarker)){
+  replaceOnce(
+    'premium-death-audio-trigger',
+    `  if(premiumDeathFx){\n    if(premiumDeathFx.hitStopMs>0)hitStop=Math.max(hitStop,premiumDeathFx.hitStopMs/1000);`,
+    `  if(premiumDeathFx){\n    ${audioMarker}\n    if(premiumDeathFx.audioCue)playPremiumCombatFeedbackSfx(premiumDeathFx.audioCue);\n    if(premiumDeathFx.hitStopMs>0)hitStop=Math.max(hitStop,premiumDeathFx.hitStopMs/1000);`
+  );
+
+  replaceOnce(
+    'premium-death-audio-gates',
+    `  const gaps={\n    critical:72,'elite-kill':170,\n    'tactical-support':120,'tactical-assassin':110,\n    'tactical-summoner':145,'tactical-shielder':145\n  };`,
+    `  const gaps={\n    critical:72,'elite-kill':170,\n    'death-runner':105,'death-tank':180,\n    'tactical-support':120,'tactical-assassin':110,\n    'tactical-summoner':145,'tactical-shielder':145\n  };`
+  );
+
+  replaceOnce(
+    'premium-death-audio-cues',
+    `  if(cue==='critical'){\n    oscTone(760,.055,'triangle',.013,1180);\n    metallicPing(1480,.010,.045);\n  }else if(cue==='elite-kill'){`,
+    `  if(cue==='critical'){\n    oscTone(760,.055,'triangle',.013,1180);\n    metallicPing(1480,.010,.045);\n  }else if(cue==='death-runner'){\n    oscTone(540,.055,'triangle',.010,920);\n    noiseBurst(.035,.007,'highpass',1800,.005);\n  }else if(cue==='death-tank'){\n    oscTone(86,.15,'sine',.030,48);\n    noiseBurst(.10,.014,'lowpass',420,.012);\n  }else if(cue==='elite-kill'){`
+  );
+}
+
+if(changed){
+  fs.writeFileSync(path,source);
+  console.log('Applied Premium death presentation integration');
+}else{
+  console.log('Premium death presentation already integrated');
+}
