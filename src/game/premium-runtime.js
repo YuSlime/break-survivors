@@ -4,6 +4,7 @@ import {createCameraDirector} from '../directors/camera.js';
 import {createEncounterDirector} from '../directors/encounter.js';
 import {createAudioDirector} from '../directors/audio.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
+import {resolveCombatFeedback as resolveCombatFeedbackProfile} from '../presentation/combat-feedback.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
@@ -79,6 +80,7 @@ export function createPremiumRuntime({
     const cameraType={
       strongHit:'strongHit',
       critical:'critical',
+      tacticalKill:'tacticalKill',
       eliteKill:'eliteKill',
       break:'break',
       fever:'fever',
@@ -147,6 +149,13 @@ export function createPremiumRuntime({
     if(amount<=0)return 0;
     if(!resolved.vfxDirector)return amount;
     return vfx.reserve(kind,amount,priority);
+  }
+
+  function resolveCombatFeedback(context={}){
+    const feedback=resolveCombatFeedbackProfile(context);
+    if(!feedback)return null;
+    if(feedback.event==='tacticalKill'&&!resolved.combatV2)return null;
+    return feedback;
   }
 
   function pickTacticalEnemy(context={}){
@@ -244,6 +253,7 @@ export function createPremiumRuntime({
     updateFrame,
     allowVfx,
     allowVfxCount,
+    resolveCombatFeedback,
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
     getTacticalEnemyMarker,
