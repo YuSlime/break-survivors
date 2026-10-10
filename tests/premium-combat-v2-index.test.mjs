@@ -13,6 +13,7 @@ test('live spawn table asks Premium runtime for tactical enemies only through co
 test('live spawn table reports active tactical counts and Elite count so overlap caps are enforced',()=>{
   assert.match(source,/const premiumTacticalCounts=\{support:0,assassin:0,summoner:0,shielder:0\};/);
   assert.match(source,/enemy\.premiumDef&&premiumTacticalCounts\[enemy\.type\]!==undefined/);
+  assert.ok(source.includes('// PREMIUM TACTICAL ELITE CAP'));
   assert.match(source,/const premiumEliteCount=enemies\.reduce/);
   assert.match(source,/activeCounts:premiumTacticalCounts/);
   assert.match(source,/eliteCount:premiumEliteCount/);
@@ -48,11 +49,13 @@ test('live combat contains readable assassin dash and summoner reinforcement beh
   assert.match(source,/spawnEnemy\(d\.summonType\|\|'normal'/);
 });
 
-test('tactical enemies have dedicated visual silhouettes aura cues and role markers',()=>{
-  for(const marker of ['PREMIUM SUPPORT','PREMIUM ASSASSIN','PREMIUM SUMMONER','PREMIUM SHIELDER','PREMIUM ROLE MARKER']){
+test('tactical enemies have dedicated visual silhouettes aura cues and world-space role markers',()=>{
+  for(const marker of ['PREMIUM SUPPORT','PREMIUM ASSASSIN','PREMIUM SUMMONER','PREMIUM SHIELDER','PREMIUM ROLE MARKER V2']){
     assert.ok(source.includes(marker),marker);
   }
   assert.match(source,/getTacticalEnemyMarker\?\.\(e\.type\)/);
+  assert.match(source,/const markerY=e\.y-e\.r-14/);
+  assert.match(source,/ctx\.fillText\(roleMarker\.code,e\.x,markerY\)/);
 });
 
 test('combat V2 integrator recognizes the reviewed tactical block on rerun',()=>{
