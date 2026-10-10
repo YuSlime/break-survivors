@@ -45,10 +45,10 @@ test('runtime exposes stage environment data only when stages V2 is enabled',()=
   assert.match(runtime,/getStageEnvironment,\n/);
 });
 
-test('live draw path renders NEON RUINS through a dedicated deterministic helper with legacy fallback',()=>{
+test('live draw path renders the resolved Premium stage through a dedicated deterministic helper with legacy fallback',()=>{
   const draw=functionSource('draw');
   const stageDraw=functionSource('drawPremiumStageEnvironment');
-  assert.match(draw,/BreakPremiumRuntime\?\.getStageEnvironment\?\.\('neon-ruins'\)/);
+  assert.match(draw,/BreakPremiumRuntime\?\.resolveStageEnvironment\?\.\(\{limitBreakLevel\}\)/);
   assert.match(draw,/drawPremiumStageEnvironment\(/);
   assert.match(draw,/premiumStageEnvironment/);
   assert.match(draw,/#0b111d/,'legacy surface fallback must remain');
