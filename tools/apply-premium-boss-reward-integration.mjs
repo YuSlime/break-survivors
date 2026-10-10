@@ -5,8 +5,9 @@ const path=new URL('../index.html',import.meta.url);
 let source=fs.readFileSync(path,'utf8');
 let changed=false;
 
-function replaceOnce(label,from,to){
+function replaceOnce(label,from,to,alreadyAppliedMarker=null){
   if(source.includes(to))return;
+  if(alreadyAppliedMarker&&source.includes(alreadyAppliedMarker))return;
   const count=source.split(from).length-1;
   if(count!==1)throw new Error(`${label}: expected exactly one target, found ${count}`);
   source=source.replace(from,to);
@@ -34,7 +35,8 @@ replaceOnce(
 replaceOnce(
   'boss-reward-open-on-kill',
   `  if(e.type==='boss'){\n    bossTimer=0;bossPending=false;playEventSfx('treasure_kill',.56,.88);\n  }`,
-  `  if(e.type==='boss'){\n    bossTimer=0;bossPending=false;playEventSfx('treasure_kill',.56,.88);\n    window.BreakPremiumRuntime?.presentBossChest?.({\n      bossesDefeated:runBosses,\n      threat:threatLevel,\n      hp:player.hp,\n      maxHp:ps.maxHp,\n      ultCharge\n    },applyPremiumBossRewardResult);\n  }`
+  `  if(e.type==='boss'){\n    bossTimer=0;bossPending=false;playEventSfx('treasure_kill',.56,.88);\n    window.BreakPremiumRuntime?.presentBossChest?.({\n      bossesDefeated:runBosses,\n      threat:threatLevel,\n      hp:player.hp,\n      maxHp:ps.maxHp,\n      ultCharge\n    },applyPremiumBossRewardResult);\n  }`,
+  '// PREMIUM BOSS DEATH SEQUENCE V1'
 );
 
 if(changed){
