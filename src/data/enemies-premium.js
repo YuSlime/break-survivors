@@ -23,7 +23,15 @@ export const PREMIUM_ENEMY_ARCHETYPES=freeze({
   })
 });
 
-export const PREMIUM_ACTIVE_TACTICAL_ARCHETYPES=freeze(['support','assassin']);
+export const PREMIUM_ACTIVE_TACTICAL_ARCHETYPES=freeze(['support','assassin','summoner','shielder']);
+
+export const PREMIUM_TACTICAL_SPAWN_LIMITS=freeze({
+  total:5,
+  support:2,
+  assassin:2,
+  summoner:1,
+  shielder:1
+});
 
 const PRESSURE=freeze({normal:1,runner:1.15,tank:1.35,shooter:1.4,elite:2.2,support:2.45,assassin:2.7,summoner:3.4,shielder:3.1});
 
@@ -35,21 +43,37 @@ export function getPremiumEnemyPressureScore(id){
   return PRESSURE[String(id||'').toLowerCase()]||1;
 }
 
-export function pickPremiumEnemyArchetype({gameTime=0,threat=0,roll=Math.random()}={}){
+function sanitizeActiveCounts(activeCounts={}){
+  const counts={};
+  for(const id of PREMIUM_ACTIVE_TACTICAL_ARCHETYPES){
+    counts[id]=Math.max(0,Math.floor(Number(activeCounts?.[id])||0));
+  }
+  return counts;
+}
+
+export function pickPremiumEnemyArchetype({gameTime=0,threat=0,roll=Math.random(),activeCounts={}}={}){
   const time=Math.max(0,Number(gameTime)||0);
   const level=Math.max(0,Math.floor(Number(threat)||0));
   const r=Math.max(0,Math.min(.999999,Number(roll)||0));
   if(time<75||level<2)return null;
 
+  const counts=sanitizeActiveCounts(activeCounts);
+  const activeTotal=Object.values(counts).reduce((sum,value)=>sum+value,0);
+  if(activeTotal>=PREMIUM_TACTICAL_SPAWN_LIMITS.total)return null;
+
   const table=[];
-  table.push(['support',Math.min(.14,.08+level*.01)]);
+  table.push(['support',Math.min(.13,.08+level*.01)]);
   if(time>=120&&level>=3)table.push(['assassin',.10]);
+  if(time>=150&&level>=3)table.push(['summoner',.07]);
+  if(time>=175&&level>=4)table.push(['shielder',.06]);
 
   let edge=0;
   for(const [id,weight] of table){
-    if(!PREMIUM_ACTIVE_TACTICAL_ARCHETYPES.includes(id))continue;
     edge+=weight;
-    if(r<edge)return id;
+    if(r>=edge)continue;
+    if(!PREMIUM_ACTIVE_TACTICAL_ARCHETYPES.includes(id))return null;
+    if(counts[id]>=PREMIUM_TACTICAL_SPAWN_LIMITS[id])return null;
+    return id;
   }
   return null;
 }
