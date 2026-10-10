@@ -59,6 +59,8 @@ jobs:
         run: node tools/apply-premium-limit-break-transition-integration.mjs
       - name: Prepare Premium damage numbers
         run: node tools/apply-premium-damage-numbers-integration.mjs
+      - name: Prepare Premium stage environment
+        run: node tools/apply-premium-stage-environment-integration.mjs
       - name: Verify generated inline JavaScript
         run: node --test tests/index-inline-syntax.test.mjs
       - name: Run FEVER regression tests
@@ -67,6 +69,8 @@ jobs:
         run: node --test tests/premium-limit-break-transition.test.mjs tests/premium-limit-break-transition-index.test.mjs
       - name: Run damage number regression tests
         run: node --test tests/premium-damage-numbers.test.mjs tests/premium-damage-numbers-index.test.mjs
+      - name: Run stage environment regression tests
+        run: node --test tests/premium-stage-environment.test.mjs tests/premium-stage-environment-index.test.mjs
       - name: Run boss reward reintegration regression
         run: node --test tests/premium-boss-reward-integrator.test.mjs
       - name: Run Premium index tests
