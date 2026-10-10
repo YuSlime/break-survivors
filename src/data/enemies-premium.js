@@ -52,3 +52,26 @@ export function pickPremiumEnemyArchetype({gameTime=0,threat=0,roll=Math.random(
   }
   return null;
 }
+
+export function resolvePremiumEnemyAuras(target,enemies=[]){
+  const result={speedMul:1,touchMul:1,damageTakenMul:1};
+  if(!target||target.dead)return result;
+
+  for(const source of enemies||[]){
+    if(!source||source.dead||source===target)continue;
+    const def=getPremiumEnemyArchetype(source.type);
+    if(!def)continue;
+    const dx=(Number(target.x)||0)-(Number(source.x)||0);
+    const dy=(Number(target.y)||0)-(Number(source.y)||0);
+    const distance=Math.hypot(dx,dy);
+
+    if(source.type==='support'&&distance<=def.auraRadius){
+      result.speedMul=Math.max(result.speedMul,def.allySpeedMul);
+      result.touchMul=Math.max(result.touchMul,def.allyDamageMul);
+    }
+    if(source.type==='shielder'&&distance<=def.auraRadius){
+      result.damageTakenMul=Math.min(result.damageTakenMul,1-def.damageReduction);
+    }
+  }
+  return result;
+}
