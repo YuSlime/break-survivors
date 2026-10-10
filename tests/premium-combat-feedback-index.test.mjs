@@ -30,6 +30,7 @@ test('kill path gives tactical and Elite enemies distinct feedback without doubl
   assert.match(source,/allowVfxCount\?\.\('rings',1,premiumKillFeedback\.priority\)/);
   assert.match(source,/allowVfxCount\?\.\('particles',premiumKillFeedback\.particleCount,premiumKillFeedback\.priority\)/);
   assert.match(source,/premiumKillFeedback\.label\+' \/\/ '\+premiumKillFeedback\.rewardLabel/);
+  assert.match(source,/if\(!premiumKillFeedback&&!premiumDeathEvent\)shake=Math\.min\(16,shake\+deathShake\);/);
 });
 
 test('live feedback audio keeps separate gated cues for crit Elite and all tactical roles',()=>{
