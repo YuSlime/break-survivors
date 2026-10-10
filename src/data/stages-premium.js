@@ -180,6 +180,16 @@ const STAGES=Object.freeze({
   'void-sector':VOID_SECTOR
 });
 
+export function resolveStageEnvironmentId({limitBreakLevel=0}={}){
+  const raw=Number(limitBreakLevel);
+  if(!Number.isFinite(raw)||raw<0)return 'neon-ruins';
+  const lb=Math.floor(raw);
+  if(lb>=10)return 'void-sector';
+  if(lb>=5)return 'ash-wasteland';
+  if(lb>=3)return 'research-zero';
+  return 'neon-ruins';
+}
+
 export function getStageEnvironment(id='neon-ruins'){
   return STAGES[id]||NEON_RUINS;
 }
