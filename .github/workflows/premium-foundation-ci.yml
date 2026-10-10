@@ -38,6 +38,7 @@ jobs:
           node tools/apply-premium-combat-v2-review-fixes.mjs
           node tools/apply-premium-boss-v2-integration.mjs
           node tools/apply-premium-boss-reward-integration.mjs
+          node tools/apply-premium-audio-integration.mjs
       - name: Run complete test suite
         run: |
           git diff --check
