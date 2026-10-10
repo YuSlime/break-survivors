@@ -25,7 +25,11 @@ jobs:
           node-version: 22
       - name: Apply guarded index integration
         run: |
-          node tools/apply-premium-runtime-integration.mjs
+          if grep -q "PREMIUM SUPPORT" index.html; then
+            echo "Premium foundation/combat V2 integration already present"
+          else
+            node tools/apply-premium-runtime-integration.mjs
+          fi
           node tools/apply-premium-combat-v2-review-fixes.mjs
           node tools/apply-premium-boss-v2-integration.mjs
           node tools/apply-premium-boss-reward-integration.mjs
