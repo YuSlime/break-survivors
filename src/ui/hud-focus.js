@@ -6,6 +6,58 @@ const ELEMENT_IDS=Object.freeze({
   boss:'bossHud',
   limit:'lbEventHud'
 });
+const STYLE_ID='premium-hud-focus-style';
+const HUD_SELECTOR=':is(#breakHud,#threatHud,#eventHud,#bossHud,#lbEventHud)';
+const CSS=`
+${HUD_SELECTOR}[data-premium-hud-role]{
+  transform-origin:50% 0%;
+  transition:opacity .22s ease,filter .22s ease,transform .22s ease;
+  will-change:opacity,transform;
+}
+${HUD_SELECTOR}[data-premium-hud-role="focus"]{
+  opacity:1!important;
+  filter:none!important;
+  transform:translateX(-50%) scale(1)!important;
+  z-index:13!important;
+}
+${HUD_SELECTOR}[data-premium-hud-role="secondary"]{
+  opacity:.62!important;
+  filter:saturate(.78) brightness(.92)!important;
+  transform:translateX(-50%) scale(.92)!important;
+  z-index:8!important;
+}
+${HUD_SELECTOR}[data-premium-hud-role="quiet"]{
+  opacity:.14!important;
+  filter:saturate(.42) brightness(.72)!important;
+  transform:translateX(-50%) scale(.84)!important;
+  z-index:3!important;
+}
+${HUD_SELECTOR}[data-premium-hud-variant="fever"][data-premium-hud-role="focus"]{
+  filter:brightness(1.08) saturate(1.10)!important;
+}
+${HUD_SELECTOR}[data-premium-hud-variant="boss-final"][data-premium-hud-role="focus"]{
+  filter:brightness(1.10) saturate(1.16) drop-shadow(0 0 12px #ff4f7866)!important;
+  transform:translateX(-50%) scale(1.025)!important;
+}
+@media(max-width:520px){
+  ${HUD_SELECTOR}[data-premium-hud-role="secondary"]{transform:translateX(-50%) scale(.95)!important;opacity:.66!important}
+  ${HUD_SELECTOR}[data-premium-hud-role="quiet"]{transform:translateX(-50%) scale(.90)!important;opacity:.12!important}
+}
+@media(prefers-reduced-motion:reduce){
+  ${HUD_SELECTOR}[data-premium-hud-role]{transition:none!important}
+}
+`;
+
+function ensureStyle(document){
+  if(!document?.createElement)return null;
+  const existing=document.getElementById?.(STYLE_ID);
+  if(existing)return existing;
+  const style=document.createElement('style');
+  style.id=STYLE_ID;
+  style.textContent=CSS;
+  document.head?.append?.(style);
+  return style;
+}
 
 function activeMap(state={}){
   return {
@@ -30,12 +82,12 @@ export function resolveHudFocus(state={}){
   const roles={break:'quiet',threat:'quiet',event:'quiet',boss:'quiet',limit:'quiet'};
   if(focus!=='calm')roles[focus]='focus';
 
-  // Major states stay readable even when something stronger takes focus.
+  // Major concurrent states stay visible but stop competing with the current focus.
   if(active.limit&&focus!=='limit')roles.limit='secondary';
   if(active.boss&&focus!=='boss')roles.boss='secondary';
   if(active.break&&focus!=='break')roles.break='secondary';
 
-  // During calm gameplay the baseline BREAK meter remains unobtrusive rather than suppressed.
+  // BREAK remains a subtle baseline meter during calm play.
   if(focus==='calm')roles.break='secondary';
 
   return Object.freeze({
@@ -47,6 +99,7 @@ export function resolveHudFocus(state={}){
 }
 
 export function createHudFocusController({document=globalThis.document}={}){
+  const style=ensureStyle(document);
   const elements={};
   for(const key of HUD_KEYS)elements[key]=document?.getElementById?.(ELEMENT_IDS[key])||null;
 
@@ -72,5 +125,5 @@ export function createHudFocusController({document=globalThis.document}={}){
     }
   }
 
-  return {update,reset,elements};
+  return {update,reset,elements,style};
 }
