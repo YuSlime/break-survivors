@@ -10,10 +10,18 @@ test('live spawn table asks Premium runtime for tactical enemies only through co
   assert.match(source,/const premiumTacticalType=/);
 });
 
-test('live spawn table reports active tactical counts so late-run caps are enforced',()=>{
+test('live spawn table reports active tactical counts and Elite count so overlap caps are enforced',()=>{
   assert.match(source,/const premiumTacticalCounts=\{support:0,assassin:0,summoner:0,shielder:0\};/);
   assert.match(source,/enemy\.premiumDef&&premiumTacticalCounts\[enemy\.type\]!==undefined/);
+  assert.match(source,/const premiumEliteCount=enemies\.reduce/);
   assert.match(source,/activeCounts:premiumTacticalCounts/);
+  assert.match(source,/eliteCount:premiumEliteCount/);
+});
+
+test('frame state exposes tactical counts Elite pressure and boss overlap to the Premium HUD',()=>{
+  assert.match(source,/activeTacticalCounts:premiumTacticalCounts/);
+  assert.match(source,/eliteCount:premiumEliteCount/);
+  assert.match(source,/bossActive:!!boss/);
 });
 
 test('live enemy spawn can materialize tactical archetype definitions without duplicating Premium data',()=>{
@@ -40,10 +48,11 @@ test('live combat contains readable assassin dash and summoner reinforcement beh
   assert.match(source,/spawnEnemy\(d\.summonType\|\|'normal'/);
 });
 
-test('tactical enemies have dedicated visual silhouettes and aura cues',()=>{
-  for(const marker of ['PREMIUM SUPPORT','PREMIUM ASSASSIN','PREMIUM SUMMONER','PREMIUM SHIELDER']){
+test('tactical enemies have dedicated visual silhouettes aura cues and role markers',()=>{
+  for(const marker of ['PREMIUM SUPPORT','PREMIUM ASSASSIN','PREMIUM SUMMONER','PREMIUM SHIELDER','PREMIUM ROLE MARKER']){
     assert.ok(source.includes(marker),marker);
   }
+  assert.match(source,/getTacticalEnemyMarker\?\.\(e\.type\)/);
 });
 
 test('combat V2 integrator recognizes the reviewed tactical block on rerun',()=>{
