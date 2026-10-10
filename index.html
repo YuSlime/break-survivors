@@ -11881,6 +11881,8 @@ function killEnemy(e,meta={}){
   // PREMIUM DEATH PRESENTATION V1
   const premiumDeathFx=window.BreakPremiumRuntime?.resolveDeathPresentation?.({enemyType:e.type,overkill:meta.overkill,color:e.color});
   if(premiumDeathFx){
+    // PREMIUM DEATH AUDIO V1
+    if(premiumDeathFx.audioCue)playPremiumCombatFeedbackSfx(premiumDeathFx.audioCue);
     if(premiumDeathFx.hitStopMs>0)hitStop=Math.max(hitStop,premiumDeathFx.hitStopMs/1000);
 
     const premiumDeathRingCount=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,premiumDeathFx.priority)??1;
@@ -13094,6 +13096,7 @@ function playPremiumCombatFeedbackSfx(cue){
   const now=performance.now();
   const gaps={
     critical:72,'elite-kill':170,
+    'death-runner':105,'death-tank':180,
     'tactical-support':120,'tactical-assassin':110,
     'tactical-summoner':145,'tactical-shielder':145
   };
@@ -13102,6 +13105,12 @@ function playPremiumCombatFeedbackSfx(cue){
   if(cue==='critical'){
     oscTone(760,.055,'triangle',.013,1180);
     metallicPing(1480,.010,.045);
+  }else if(cue==='death-runner'){
+    oscTone(540,.055,'triangle',.010,920);
+    noiseBurst(.035,.007,'highpass',1800,.005);
+  }else if(cue==='death-tank'){
+    oscTone(86,.15,'sine',.030,48);
+    noiseBurst(.10,.014,'lowpass',420,.012);
   }else if(cue==='elite-kill'){
     oscTone(92,.16,'sine',.035,54);
     oscTone(420,.13,'triangle',.020,780,.025);
