@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const source=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const integrator=fs.readFileSync(new URL('../tools/apply-premium-runtime-integration.mjs',import.meta.url),'utf8');
 
 test('live spawn table asks Premium runtime for tactical enemies only through combat V2 bridge',()=>{
   assert.match(source,/pickTacticalEnemy\?\.\(\{\s*gameTime,\s*threat:threatLevel,/s);
@@ -37,4 +38,9 @@ test('tactical enemies have dedicated visual silhouettes and aura cues',()=>{
   for(const marker of ['PREMIUM SUPPORT','PREMIUM ASSASSIN','PREMIUM SUMMONER','PREMIUM SHIELDER']){
     assert.ok(source.includes(marker),marker);
   }
+});
+
+test('combat V2 integrator recognizes the reviewed tactical block on rerun',()=>{
+  assert.match(integrator,/tactical-update-behavior[\s\S]*Premium tactical behavior already moved this enemy\./);
+  assert.match(integrator,/alreadyAppliedMarker/);
 });
