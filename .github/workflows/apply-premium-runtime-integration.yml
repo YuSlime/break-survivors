@@ -6,6 +6,7 @@ on:
     paths:
       - tools/apply-premium-runtime-integration.mjs
       - tools/apply-premium-combat-v2-review-fixes.mjs
+      - tools/apply-premium-boss-v2-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -25,6 +26,7 @@ jobs:
         run: |
           node tools/apply-premium-runtime-integration.mjs
           node tools/apply-premium-combat-v2-review-fixes.mjs
+          node tools/apply-premium-boss-v2-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
