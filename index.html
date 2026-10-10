@@ -11761,7 +11761,22 @@ function damageEnemy(e,dmg,impact=true){
         x:e.x,y:e.y-12,text:'CRIT '+Math.ceil(actualDmg),
         color:'#fff06c',life:.48,total:.48,vy:-62,size:crit?17:13,weight:1000
       });
-      shake=Math.min(14,shake+1.5);
+    }
+
+    const premiumHitFeedback=window.BreakPremiumRuntime?.resolveCombatFeedback?.({event:'hit',critical:crit,enemyType:e.type});
+    if(premiumHitFeedback){
+      window.BreakPremiumRuntime?.signal?.(premiumHitFeedback.cameraSignal,{direction:{x:e.x-player.x,y:e.y-player.y}});
+      playPremiumCombatFeedbackSfx(premiumHitFeedback.audioCue);
+      const premiumHitRingCount=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,premiumHitFeedback.priority)??1;
+      if(premiumHitRingCount>0)rings.push({
+        x:e.x,y:e.y,r:2,max:Math.max(18,e.r*premiumHitFeedback.ringScale),
+        life:premiumHitFeedback.ringLife,total:premiumHitFeedback.ringLife,color:premiumHitFeedback.color
+      });
+      const premiumHitBurst=window.BreakPremiumRuntime?.allowVfxCount?.('particles',premiumHitFeedback.particleCount,premiumHitFeedback.priority)??premiumHitFeedback.particleCount;
+      for(let i=0;i<premiumHitBurst;i++)particles.push({
+        x:e.x,y:e.y,vx:rnd(-145,145),vy:rnd(-145,145),
+        life:rnd(.10,.22),size:rnd(1.5,4.2),color:premiumHitFeedback.color
+      });
     }
   }
 
@@ -11794,13 +11809,32 @@ function applyPremiumBossRewardResult({choice,state}={}){
 function killEnemy(e,meta={}){
   if(e.dead) return;
   e.dead=true;
-  const premiumDeathEvent=e.type==='boss'?'bossKill':e.type==='elite'?'eliteKill':meta.critical?'critical':null;
+  const premiumDeathEvent=e.type==='boss'?'bossKill':null;
   if(premiumDeathEvent)window.BreakPremiumRuntime?.signal?.(premiumDeathEvent,{direction:{x:e.x-player.x,y:e.y-player.y}});
 
   registerLbEventKill(e);
   registerBreakKill(e,meta);
 
   const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()*eventCoinMultiplier()));
+  const premiumKillFeedback=window.BreakPremiumRuntime?.resolveCombatFeedback?.({event:'kill',enemyType:e.type,coinGain});
+  if(premiumKillFeedback){
+    window.BreakPremiumRuntime?.signal?.(premiumKillFeedback.cameraSignal,{direction:{x:e.x-player.x,y:e.y-player.y}});
+    playPremiumCombatFeedbackSfx(premiumKillFeedback.audioCue);
+    const premiumKillRingCount=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,premiumKillFeedback.priority)??1;
+    if(premiumKillRingCount>0)rings.push({
+      x:e.x,y:e.y,r:Math.max(4,e.r*.2),max:e.r*premiumKillFeedback.ringScale,
+      life:premiumKillFeedback.ringLife,total:premiumKillFeedback.ringLife,color:premiumKillFeedback.color
+    });
+    const premiumKillBurst=window.BreakPremiumRuntime?.allowVfxCount?.('particles',premiumKillFeedback.particleCount,premiumKillFeedback.priority)??premiumKillFeedback.particleCount;
+    for(let i=0;i<premiumKillBurst;i++)particles.push({
+      x:e.x,y:e.y,vx:rnd(-220,220),vy:rnd(-220,220),
+      life:rnd(.18,.46),size:rnd(2,6),color:premiumKillFeedback.color
+    });
+    if(floatingTexts.length<42)floatingTexts.push({
+      x:e.x,y:e.y-22,text:premiumKillFeedback.label+' // '+premiumKillFeedback.rewardLabel,
+      color:premiumKillFeedback.color,life:.72,total:.72,vy:-52,size:14,weight:1000
+    });
+  }
   runKills++;
   if(e.type==='elite')runElites++;
   if(e.type==='boss')runBosses++;
@@ -12994,6 +13028,40 @@ function playWeaponImpactSfx(kind,strong=false){
   if(kind==='slash')return
   if(kind==='pierce'&&currentCharacter.id==='gunner')return
   playAttackSample(pickWeaponSfx(kind,'hit'),base*(strong?1.03:1),1);
+}
+
+// PREMIUM COMBAT FEEDBACK V1
+const premiumCombatFeedbackSfxAt={};
+function playPremiumCombatFeedbackSfx(cue){
+  if(!soundEnabled)return;
+  const now=performance.now();
+  const gaps={
+    critical:72,'elite-kill':170,
+    'tactical-support':120,'tactical-assassin':110,
+    'tactical-summoner':145,'tactical-shielder':145
+  };
+  if(now-(premiumCombatFeedbackSfxAt[cue]||0)<(gaps[cue]||100))return;
+  premiumCombatFeedbackSfxAt[cue]=now;
+  if(cue==='critical'){
+    oscTone(760,.055,'triangle',.013,1180);
+    metallicPing(1480,.010,.045);
+  }else if(cue==='elite-kill'){
+    oscTone(92,.16,'sine',.035,54);
+    oscTone(420,.13,'triangle',.020,780,.025);
+    noiseBurst(.08,.018,'bandpass',900,.025);
+  }else if(cue==='tactical-support'){
+    oscTone(260,.09,'sine',.017,520);
+    metallicPing(860,.009,.030);
+  }else if(cue==='tactical-assassin'){
+    oscTone(390,.065,'triangle',.014,960);
+    noiseBurst(.045,.010,'highpass',2100,.012);
+  }else if(cue==='tactical-summoner'){
+    oscTone(150,.11,'sine',.021,360);
+    oscTone(300,.08,'triangle',.012,620,.025);
+  }else if(cue==='tactical-shielder'){
+    oscTone(110,.12,'sine',.026,72);
+    metallicPing(620,.012,.040);
+  }
 }
 
 function playGachaSfx(kind){
