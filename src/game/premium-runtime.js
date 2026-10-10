@@ -10,6 +10,7 @@ import {resolveDamageNumber as resolveDamageNumberProfile} from '../presentation
 import {buildBossDeathSequence} from '../presentation/boss-death-sequence.js';
 import {buildFeverTransition} from '../presentation/fever-transition.js';
 import {buildLimitBreakTransition} from '../presentation/limit-break-transition.js';
+import {getStageEnvironment as getStageEnvironmentProfile} from '../data/stages-premium.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
@@ -48,6 +49,7 @@ export function resolveRuntimeFeatureOverrides({search='',stored=null}={}){
     if(params.get('premium')==='1')Object.assign(overrides,FOUNDATION_FLAGS);
     if(params.get('premiumCombat')==='1')overrides.combatV2=true;
     if(params.get('premiumBoss')==='1')overrides.bossV2=true;
+    if(params.get('premiumStage')==='1')overrides.stagesV2=true;
   }catch(_){}
   Object.assign(overrides,parseStoredOverrides(stored));
   return resolveFeatureFlags(overrides);
@@ -188,6 +190,11 @@ export function createPremiumRuntime({
     return buildLimitBreakTransition({reducedMotion});
   }
 
+  function getStageEnvironment(id='neon-ruins'){
+    if(!resolved.stagesV2)return null;
+    return getStageEnvironmentProfile(id);
+  }
+
   function pickTacticalEnemy(context={}){
     if(!resolved.combatV2)return null;
     return pickPremiumEnemyArchetype(context);
@@ -289,6 +296,7 @@ export function createPremiumRuntime({
     getBossDeathSequence,
     getFeverTransition,
     getLimitBreakTransition,
+    getStageEnvironment,
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
     getTacticalEnemyMarker,
@@ -338,7 +346,7 @@ function installBrowserRuntime(){
     : null;
   const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,hudFocus,intensityOverlay,tacticalThreatHud,bossRewardUi});
   window.BreakPremiumRuntime=runtime;
-  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','audioDirector','premiumHud','combatV2','bossV2'].some(k=>flags[k]);
+  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','audioDirector','premiumHud','combatV2','bossV2','stagesV2'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
   return runtime;
 }
