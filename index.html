@@ -11329,11 +11329,14 @@ function pickThreatSpawnType(state){
       premiumTacticalCounts[enemy.type]++;
     }
   }
+  // PREMIUM TACTICAL ELITE CAP
+  const premiumEliteCount=enemies.reduce((count,enemy)=>count+(!enemy.dead&&enemy.type==='elite'?1:0),0);
   const premiumTacticalType=window.BreakPremiumRuntime?.pickTacticalEnemy?.({
     gameTime,
     threat:threatLevel,
     roll:Math.random(),
-    activeCounts:premiumTacticalCounts
+    activeCounts:premiumTacticalCounts,
+    eliteCount:premiumEliteCount
   });
   if(premiumTacticalType)return premiumTacticalType;
   const r=Math.random();
@@ -14924,6 +14927,21 @@ function draw(){
       ctx.strokeStyle=e.phase===2?'#ff5b83':'#e583ff';ctx.lineWidth=3;ctx.globalAlpha=.35+.55*pct;
       ctx.beginPath();ctx.arc(e.x,e.y,e.r+20+pct*52,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
     }
+    if(e.premiumDef){
+      // PREMIUM ROLE MARKER
+      const roleMarker=window.BreakPremiumRuntime?.getTacticalEnemyMarker?.(e.type);
+      if(roleMarker){
+        ctx.save();
+        ctx.font='1000 8px ui-monospace,SFMono-Regular,Menlo,monospace';
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        const markerWidth=Math.max(24,ctx.measureText(roleMarker.code).width+10);
+        const markerY=-e.r-14;
+        ctx.globalAlpha=.92;ctx.fillStyle='#060a12dd';ctx.fillRect(-markerWidth/2,markerY-7,markerWidth,13);
+        ctx.strokeStyle=roleMarker.color;ctx.lineWidth=1.5;ctx.strokeRect(-markerWidth/2,markerY-7,markerWidth,13);
+        ctx.fillStyle=roleMarker.color;ctx.shadowBlur=8;ctx.shadowColor=roleMarker.color;ctx.fillText(roleMarker.code,0,markerY);
+        ctx.restore();
+      }
+    }
     if(e.type==='elite'||e.type==='boss'){
       const w=e.r*2.2;ctx.fillStyle='#1b2130';ctx.fillRect(e.x-w/2,e.y-e.r-10,w,5);
       ctx.fillStyle=e.color;ctx.fillRect(e.x-w/2,e.y-e.r-10,w*clamp(e.hp/e.maxHp,0,1),5);
@@ -16395,10 +16413,16 @@ document.addEventListener('pointerdown',e=>{
 function premiumFrameState(){
   const activeEnemies=enemies.filter(e=>!e.dead);
   const boss=activeEnemies.find(e=>e.type==='boss')||null;
+  const premiumTacticalCounts={support:0,assassin:0,summoner:0,shielder:0};
+  let premiumEliteCount=0;
+  for(const enemy of activeEnemies){
+    if(enemy.type==='elite')premiumEliteCount++;
+    if(enemy.premiumDef&&premiumTacticalCounts[enemy.type]!==undefined)premiumTacticalCounts[enemy.type]++;
+  }
   return {
     highDensity:activeEnemies.length>=45,
     breakActive:breakCombo>=10,
-    eliteActive:activeEnemies.some(e=>e.type==='elite'),
+    eliteActive:premiumEliteCount>0,
     feverActive:feverActive(),
     limitBreakActive:limitBreakLevel>0||!!lbEventState,
     bossActive:!!boss,
@@ -16406,6 +16430,8 @@ function premiumFrameState(){
     eventActive:!!activeEvent,
     threatActive:threatLevel>0,
     bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15),
+    activeTacticalCounts:premiumTacticalCounts,
+    eliteCount:premiumEliteCount,
     characterId:currentCharacter.id,
     characterLevel:charLevel(currentCharacter.id),
     gunnerMomentum,
