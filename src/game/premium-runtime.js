@@ -5,7 +5,7 @@ import {createEncounterDirector} from '../directors/encounter.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
-import {pickPremiumEnemyArchetype,resolvePremiumEnemyAuras} from '../data/enemies-premium.js';
+import {getPremiumEnemyArchetype,pickPremiumEnemyArchetype,resolvePremiumEnemyAuras} from '../data/enemies-premium.js';
 
 const FOUNDATION_FLAGS=Object.freeze({
   intensityDirector:true,
@@ -121,6 +121,11 @@ export function createPremiumRuntime({
     return pickPremiumEnemyArchetype(context);
   }
 
+  function getTacticalEnemyDefinition(id){
+    if(!resolved.combatV2)return null;
+    return getPremiumEnemyArchetype(id);
+  }
+
   function resolveTacticalAuras(target,enemies=[]){
     if(!resolved.combatV2)return {...NEUTRAL_TACTICAL_AURAS};
     return resolvePremiumEnemyAuras(target,enemies);
@@ -152,6 +157,7 @@ export function createPremiumRuntime({
     allowVfx,
     allowVfxCount,
     pickTacticalEnemy,
+    getTacticalEnemyDefinition,
     resolveTacticalAuras,
     reset,
     get intensityValue(){return lastIntensity},
