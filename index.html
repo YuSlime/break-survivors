@@ -11875,7 +11875,8 @@ function killEnemy(e,meta={}){
 
   let deathShake={normal:1.4,runner:1.5,tank:2.5,shooter:1.9,elite:4.8,treasure:6.2,boss:9}[e.type]||1.8;
   if(meta.overkill)deathShake*=1.35;
-  shake=Math.min(16,shake+deathShake);
+  // PREMIUM COMBAT FEEDBACK SHAKE GUARD
+  if(!premiumKillFeedback&&!premiumDeathEvent)shake=Math.min(16,shake+deathShake);
 
   const premiumVfxPriority=e.type==='boss'?5:e.type==='treasure'?4:e.type==='elite'?3:meta.overkill?2:1;
   const premiumRingCount=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,premiumVfxPriority)??1;
