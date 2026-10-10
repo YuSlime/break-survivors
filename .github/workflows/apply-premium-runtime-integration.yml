@@ -15,6 +15,7 @@ on:
       - tools/apply-premium-combat-feedback-integration.mjs
       - tools/apply-premium-death-presentation-integration.mjs
       - tools/apply-premium-boss-death-integration.mjs
+      - tools/apply-premium-fever-transition-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -47,6 +48,7 @@ jobs:
           node tools/apply-premium-combat-feedback-integration.mjs
           node tools/apply-premium-death-presentation-integration.mjs
           node tools/apply-premium-boss-death-integration.mjs
+          node tools/apply-premium-fever-transition-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
