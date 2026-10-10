@@ -113,6 +113,24 @@ test('tactical aura bridge is neutral unless combat V2 is explicitly enabled',()
   assert.ok(active.damageTakenMul<1);
 });
 
+test('combat V2 frame state drives the tactical danger HUD',()=>{
+  const updates=[];
+  const tacticalThreatHud={update:view=>updates.push(view),hide:()=>updates.push({hidden:true})};
+  const combat=createPremiumRuntime({flags:{combatV2:true},tacticalThreatHud});
+  const frame=combat.updateFrame(.016,{
+    activeTacticalCounts:{support:1,assassin:1},
+    eliteCount:1,
+    bossActive:false
+  });
+  assert.equal(frame.tacticalThreat.visible,true);
+  assert.equal(frame.tacticalThreat.level,'danger');
+  assert.equal(updates.at(-1).level,'danger');
+
+  const safe=createPremiumRuntime({flags:{combatV2:false},tacticalThreatHud});
+  const safeFrame=safe.updateFrame(.016,{activeTacticalCounts:{support:2},eliteCount:2});
+  assert.equal(safeFrame.tacticalThreat.visible,false);
+});
+
 test('boss V2 phase and move bridges are completely disabled unless explicitly enabled',()=>{
   const safe=createPremiumRuntime({flags:{bossV2:false}});
   assert.equal(safe.resolveBossState({type:'boss',hp:39,maxHp:100}),null);
