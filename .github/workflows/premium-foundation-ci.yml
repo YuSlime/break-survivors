@@ -53,6 +53,8 @@ jobs:
           node tools/apply-premium-death-presentation-integration.mjs
       - name: Prepare Premium boss death integration
         run: node tools/apply-premium-boss-death-integration.mjs
+      - name: Prepare Premium FEVER transition
+        run: node tools/apply-premium-fever-transition-integration.mjs
       - name: Run complete test suite
         run: |
           git diff --check
