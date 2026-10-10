@@ -21,6 +21,10 @@ test('live combat applies tactical aura speed touch and shield multipliers',()=>
   assert.match(source,/premiumAuraState\.touchMul/);
 });
 
+test('support speed aura also affects ranged and boss distance-keeping movement',()=>{
+  assert.match(source,/const bossSpeed=\(e\.type==='boss'&&e\.phase===2\?premiumSpeed\*1\.22:premiumSpeed\)\*pursuitBoost;/);
+});
+
 test('live combat contains readable assassin dash and summoner reinforcement behaviors',()=>{
   assert.match(source,/e\.type==='assassin'/);
   assert.match(source,/premiumDashTime/);
