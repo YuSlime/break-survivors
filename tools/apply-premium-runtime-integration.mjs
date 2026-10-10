@@ -1,5 +1,5 @@
 // One-shot guarded integrator for the Premium Edition foundation branch.
-// Integration revision 7: bridge one-shot Premium hit stop into the legacy simulation freeze gate.
+// Integration revision 8: wire explicitly opted-in combat V2 tactical enemies into the live game.
 import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
@@ -72,6 +72,54 @@ replaceOnce(
   'camera-border-normalization',
   `  ctx.shadowBlur=fxBlur(28/CAMERA_ZOOM);\n  ctx.shadowColor='#5b8dcb';\n  ctx.strokeStyle='#5579a8';\n  ctx.lineWidth=8/CAMERA_ZOOM;\n  ctx.strokeRect(0,0,WORLD_W,WORLD_H);\n  ctx.shadowBlur=fxBlur(0);\n  ctx.strokeStyle='#a7c9ef';\n  ctx.lineWidth=2/CAMERA_ZOOM;`,
   `  ctx.shadowBlur=fxBlur(28/effectiveCameraZoom);\n  ctx.shadowColor='#5b8dcb';\n  ctx.strokeStyle='#5579a8';\n  ctx.lineWidth=8/effectiveCameraZoom;\n  ctx.strokeRect(0,0,WORLD_W,WORLD_H);\n  ctx.shadowBlur=fxBlur(0);\n  ctx.strokeStyle='#a7c9ef';\n  ctx.lineWidth=2/effectiveCameraZoom;`
+);
+
+replaceOnce(
+  'tactical-spawn-definition',
+  `function spawnEnemy(type='normal',opts={}){\n  const d=enemyDefs[type]; if(!d)return null;`,
+  `function spawnEnemy(type='normal',opts={}){\n  const premiumDef=window.BreakPremiumRuntime?.getTacticalEnemyDefinition?.(type)||null;\n  const d=enemyDefs[type]||(premiumDef?{...premiumDef,r:premiumDef.radius}:null); if(!d)return null;`
+);
+
+replaceOnce(
+  'tactical-spawn-state',
+  `    lbEventTier:opts.lbEventTier??null,lbEventPhase:opts.lbEventPhase??null,\n    eliteVariant:opts.eliteVariant??null,lbKillCredited:false\n  };`,
+  `    lbEventTier:opts.lbEventTier??null,lbEventPhase:opts.lbEventPhase??null,\n    eliteVariant:opts.eliteVariant??null,lbKillCredited:false,\n    premiumDef:premiumDef?d:null,\n    premiumDashTime:0,premiumDashDx:0,premiumDashDy:0,\n    premiumSpecialCd:type==='assassin'?rnd(1.0,2.0):0,\n    premiumSummonCd:type==='summoner'?rnd(2.8,d.summonInterval||5.4):0\n  };`
+);
+
+replaceOnce(
+  'tactical-spawn-picker',
+  `function pickThreatSpawnType(state){\n  if(eventActive('swarm'))return Math.random()<.58?'runner':'normal';\n  if(gameTime>120&&Math.random()<getThreatEliteChance(state,gameTime))return 'elite';\n  const r=Math.random();`,
+  `function pickThreatSpawnType(state){\n  if(eventActive('swarm'))return Math.random()<.58?'runner':'normal';\n  if(gameTime>120&&Math.random()<getThreatEliteChance(state,gameTime))return 'elite';\n  const premiumTacticalType=window.BreakPremiumRuntime?.pickTacticalEnemy?.({\n    gameTime,\n    threat:threatLevel,\n    roll:Math.random()\n  });\n  if(premiumTacticalType)return premiumTacticalType;\n  const r=Math.random();`
+);
+
+replaceOnce(
+  'tactical-damage-aura',
+  `  if(impact&&core.doubleStrikeChance>0&&Math.random()<core.doubleStrikeChance)actualDmg*=2;\n  e.hp-=actualDmg;`,
+  `  if(impact&&core.doubleStrikeChance>0&&Math.random()<core.doubleStrikeChance)actualDmg*=2;\n  const premiumAuraState=window.BreakPremiumRuntime?.resolveTacticalAuras?.(e,enemies)||{speedMul:1,touchMul:1,damageTakenMul:1};\n  actualDmg*=premiumAuraState.damageTakenMul;\n  e.hp-=actualDmg;`
+);
+
+replaceOnce(
+  'tactical-update-behavior',
+  `    const d=enemyDefs[e.type];\n    const dx=player.x-e.x,dy=player.y-e.y,l=Math.hypot(dx,dy)||1;\n    // Global aggro: every enemy always knows the player's current position.\n    // Very distant enemies get catch-up speed only until they reach the active battle.\n    const pursuitBoost=l>2200?2.55:l>1500?2.10:l>900?1.55:1;\n    const eliteHandled=updateEliteVariantBehavior(e,dt,dx,dy,l);\n    if(eliteHandled){`,
+  `    const d=e.premiumDef||enemyDefs[e.type];\n    const dx=player.x-e.x,dy=player.y-e.y,l=Math.hypot(dx,dy)||1;\n    // Global aggro: every enemy always knows the player's current position.\n    // Very distant enemies get catch-up speed only until they reach the active battle.\n    const pursuitBoost=l>2200?2.55:l>1500?2.10:l>900?1.55:1;\n    const premiumAuraState=window.BreakPremiumRuntime?.resolveTacticalAuras?.(e,enemies)||{speedMul:1,touchMul:1,damageTakenMul:1};\n    const premiumSpeed=e.speed*premiumAuraState.speedMul;\n    let premiumTacticalHandled=false;\n    if(e.type==='assassin'&&e.premiumDef){\n      premiumTacticalHandled=true;\n      e.premiumSpecialCd=Math.max(0,(e.premiumSpecialCd||0)-dt);\n      if(e.premiumDashTime>0){\n        e.x+=e.premiumDashDx*d.dashSpeed*dt;e.y+=e.premiumDashDy*d.dashSpeed*dt;\n        e.premiumDashTime=Math.max(0,e.premiumDashTime-dt);\n      }else if(e.telegraph>0){\n        const previousTelegraph=e.telegraph;\n        e.telegraph=Math.max(0,e.telegraph-dt);e.flash=Math.max(e.flash,.12);\n        if(previousTelegraph>0&&e.telegraph===0){\n          e.premiumDashDx=dx/l;e.premiumDashDy=dy/l;e.premiumDashTime=d.dashDuration;e.premiumSpecialCd=d.dashCooldown;\n        }\n      }else if(e.premiumSpecialCd<=0&&l<620){\n        e.telegraph=d.telegraphSeconds;\n      }else{\n        e.x+=dx/l*premiumSpeed*pursuitBoost*dt;e.y+=dy/l*premiumSpeed*pursuitBoost*dt;\n      }\n    }else if((e.type==='support'||e.type==='summoner'||e.type==='shielder')&&e.premiumDef){\n      premiumTacticalHandled=true;\n      const preferred=d.preferredRange||220;\n      const tacticalDir=l>preferred?1:l<preferred*.72?-1:0;\n      e.x+=dx/l*premiumSpeed*pursuitBoost*tacticalDir*dt;e.y+=dy/l*premiumSpeed*pursuitBoost*tacticalDir*dt;\n      if(e.type==='summoner'){\n        e.premiumSummonCd=Math.max(0,(e.premiumSummonCd||0)-dt);\n        if(e.premiumSummonCd<=0){\n          const summonCount=Math.max(1,d.summonCount||2);\n          for(let i=0;i<summonCount;i++){\n            const a=Math.PI*2*i/summonCount+rnd(-.25,.25),rr=rnd(42,78);\n            spawnEnemy(d.summonType||'normal',{position:{x:clamp(e.x+Math.cos(a)*rr,24,WORLD_W-24),y:clamp(e.y+Math.sin(a)*rr,24,WORLD_H-24)}});\n          }\n          e.premiumSummonCd=d.summonInterval||5.4;\n          rings.push({x:e.x,y:e.y,r:8,max:72,life:.32,total:.32,color:e.color});\n        }\n      }\n    }\n    const eliteHandled=premiumTacticalHandled?false:updateEliteVariantBehavior(e,dt,dx,dy,l);\n    if(premiumTacticalHandled){\n      // Premium tactical behavior already moved this enemy.\n    }else if(eliteHandled){`
+);
+
+replaceOnce(
+  'tactical-normal-speed',
+  `    } else {e.x+=dx/l*e.speed*pursuitBoost*dt;e.y+=dy/l*e.speed*pursuitBoost*dt}\n    e.x=clamp(e.x,e.r+WORLD_EDGE_PAD,WORLD_W-e.r-WORLD_EDGE_PAD);`,
+  `    } else {e.x+=dx/l*premiumSpeed*pursuitBoost*dt;e.y+=dy/l*premiumSpeed*pursuitBoost*dt}\n    e.x=clamp(e.x,e.r+WORLD_EDGE_PAD,WORLD_W-e.r-WORLD_EDGE_PAD);`
+);
+
+replaceOnce(
+  'tactical-touch-damage',
+  `      lastDamageSource=e.type==='boss'?'VOID TYRANT':e.type==='elite'?(e.eliteVariant?e.eliteVariant.toUpperCase()+' ELITE':'ELITE ENEMY'):e.type.toUpperCase()+' ENEMY';\n      player.hp-=e.touch;player.hitCd=.4;shake=6;`,
+  `      lastDamageSource=e.type==='boss'?'VOID TYRANT':e.type==='elite'?(e.eliteVariant?e.eliteVariant.toUpperCase()+' ELITE':'ELITE ENEMY'):e.type.toUpperCase()+' ENEMY';\n      player.hp-=e.touch*premiumAuraState.touchMul;player.hitCd=.4;shake=6;`
+);
+
+replaceOnce(
+  'tactical-draw-silhouettes',
+  `    const bodyColor=e.flash?'#fff':e.gold?'#ffd75b':e.type==='boss'&&e.phase===2?'#ff4f93':e.color;\n    ctx.fillStyle=bodyColor;ctx.shadowBlur=fxBlur(e.type==='treasure'?28:e.type==='boss'?22:e.gold?13:0);ctx.shadowColor=bodyColor;\n    if(e.type==='treasure'){`,
+  `    const bodyColor=e.flash?'#fff':e.gold?'#ffd75b':e.type==='boss'&&e.phase===2?'#ff4f93':e.color;\n    ctx.fillStyle=bodyColor;ctx.shadowBlur=fxBlur(e.type==='treasure'?28:e.type==='boss'?22:e.gold?13:0);ctx.shadowColor=bodyColor;\n    if(e.type==='support'){\n      // PREMIUM SUPPORT\n      ctx.save();ctx.globalAlpha=.18;ctx.strokeStyle=e.color;ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,e.premiumDef?.auraRadius||190,0,Math.PI*2);ctx.stroke();ctx.restore();\n      ctx.fillRect(-e.r*.78,-e.r*.22,e.r*1.56,e.r*.44);ctx.fillRect(-e.r*.22,-e.r*.78,e.r*.44,e.r*1.56);\n      ctx.beginPath();ctx.arc(0,0,e.r*.62,0,Math.PI*2);ctx.strokeStyle='#d8fff0';ctx.lineWidth=2;ctx.stroke();\n    }else if(e.type==='assassin'){\n      // PREMIUM ASSASSIN\n      ctx.rotate(Math.PI/4);ctx.fillRect(-e.r*.72,-e.r*.72,e.r*1.44,e.r*1.44);ctx.rotate(-Math.PI/4);\n      if(e.telegraph>0){ctx.save();ctx.strokeStyle='#ff9cc8';ctx.globalAlpha=.72;ctx.lineWidth=3;ctx.setLineDash([10,8]);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(player.x-e.x,player.y-e.y);ctx.stroke();ctx.restore()}\n    }else if(e.type==='summoner'){\n      // PREMIUM SUMMONER\n      ctx.beginPath();for(let i=0;i<6;i++){const a=-Math.PI/2+i*Math.PI/3,x=Math.cos(a)*e.r,y=Math.sin(a)*e.r;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.closePath();ctx.fill();\n      ctx.strokeStyle='#e6d6ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,e.r*.55,0,Math.PI*2);ctx.stroke();\n      for(let i=0;i<3;i++){const a=gameTime*1.7+i*Math.PI*2/3;ctx.fillRect(Math.cos(a)*e.r*1.35-2,Math.sin(a)*e.r*1.35-2,4,4)}\n    }else if(e.type==='shielder'){\n      // PREMIUM SHIELDER\n      ctx.beginPath();ctx.arc(0,0,e.r,0,Math.PI*2);ctx.fill();\n      ctx.save();ctx.globalAlpha=.22;ctx.strokeStyle=e.color;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,e.premiumDef?.auraRadius||175,0,Math.PI*2);ctx.stroke();ctx.restore();\n      ctx.strokeStyle='#d9efff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,e.r*1.16,-Math.PI*.72,Math.PI*.72);ctx.stroke();\n    }else if(e.type==='treasure'){`
 );
 
 replaceOnce(
