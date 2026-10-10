@@ -11194,7 +11194,8 @@ function getWorldSpawnPoint(type='normal'){
 }
 
 function spawnEnemy(type='normal',opts={}){
-  const d=enemyDefs[type]; if(!d)return null;
+  const premiumDef=window.BreakPremiumRuntime?.getTacticalEnemyDefinition?.(type)||null;
+  const d=enemyDefs[type]||(premiumDef?{...premiumDef,r:premiumDef.radius}:null); if(!d)return null;
   const pos=opts.position||getWorldSpawnPoint(type);
   const x=pos.x,y=pos.y;
 
@@ -11211,7 +11212,11 @@ function spawnEnemy(type='normal',opts={}){
     phase:type==='boss'?1:null,phaseTriggered:false,specialCd:type==='boss'?3.4:null,telegraph:0,novaReady:false,
     lbEventInstanceId:opts.lbEventInstanceId??null,lbEventType:opts.lbEventType??null,
     lbEventTier:opts.lbEventTier??null,lbEventPhase:opts.lbEventPhase??null,
-    eliteVariant:opts.eliteVariant??null,lbKillCredited:false
+    eliteVariant:opts.eliteVariant??null,lbKillCredited:false,
+    premiumDef:premiumDef?d:null,
+    premiumDashTime:0,premiumDashDx:0,premiumDashDy:0,
+    premiumSpecialCd:type==='assassin'?rnd(1.0,2.0):0,
+    premiumSummonCd:type==='summoner'?rnd(2.8,d.summonInterval||5.4):0
   };
   enemies.push(e);return e;
 }
@@ -11219,6 +11224,12 @@ function spawnEnemy(type='normal',opts={}){
 function pickThreatSpawnType(state){
   if(eventActive('swarm'))return Math.random()<.58?'runner':'normal';
   if(gameTime>120&&Math.random()<getThreatEliteChance(state,gameTime))return 'elite';
+  const premiumTacticalType=window.BreakPremiumRuntime?.pickTacticalEnemy?.({
+    gameTime,
+    threat:threatLevel,
+    roll:Math.random()
+  });
+  if(premiumTacticalType)return premiumTacticalType;
   const r=Math.random();
   if(gameTime>70&&r<.15)return 'shooter';
   if(gameTime>40&&r<.30)return 'tank';
@@ -11609,6 +11620,8 @@ function damageEnemy(e,dmg,impact=true){
   if((e.type==='elite'||e.type==='boss')&&core.eliteDamage>0)actualDmg*=1+core.eliteDamage;
   if(core.executeThreshold>0&&e.hp/Math.max(1,e.maxHp)<=core.executeThreshold)actualDmg*=1+core.executeBonus;
   if(impact&&core.doubleStrikeChance>0&&Math.random()<core.doubleStrikeChance)actualDmg*=2;
+  const premiumAuraState=window.BreakPremiumRuntime?.resolveTacticalAuras?.(e,enemies)||{speedMul:1,touchMul:1,damageTakenMul:1};
+  actualDmg*=premiumAuraState.damageTakenMul;
   e.hp-=actualDmg;
 
   if(impact){
@@ -14143,13 +14156,53 @@ function update(dt,refreshHud=true){
     if(e.dead) continue;
     e.flash=Math.max(0,e.flash-dt);
     if(lbWorldFrozen)continue;
-    const d=enemyDefs[e.type];
+    const d=e.premiumDef||enemyDefs[e.type];
     const dx=player.x-e.x,dy=player.y-e.y,l=Math.hypot(dx,dy)||1;
     // Global aggro: every enemy always knows the player's current position.
     // Very distant enemies get catch-up speed only until they reach the active battle.
     const pursuitBoost=l>2200?2.55:l>1500?2.10:l>900?1.55:1;
-    const eliteHandled=updateEliteVariantBehavior(e,dt,dx,dy,l);
-    if(eliteHandled){
+    const premiumAuraState=window.BreakPremiumRuntime?.resolveTacticalAuras?.(e,enemies)||{speedMul:1,touchMul:1,damageTakenMul:1};
+    const premiumSpeed=e.speed*premiumAuraState.speedMul;
+    let premiumTacticalHandled=false;
+    if(e.type==='assassin'&&e.premiumDef){
+      premiumTacticalHandled=true;
+      e.premiumSpecialCd=Math.max(0,(e.premiumSpecialCd||0)-dt);
+      if(e.premiumDashTime>0){
+        e.x+=e.premiumDashDx*d.dashSpeed*dt;e.y+=e.premiumDashDy*d.dashSpeed*dt;
+        e.premiumDashTime=Math.max(0,e.premiumDashTime-dt);
+      }else if(e.telegraph>0){
+        const previousTelegraph=e.telegraph;
+        e.telegraph=Math.max(0,e.telegraph-dt);e.flash=Math.max(e.flash,.12);
+        if(previousTelegraph>0&&e.telegraph===0){
+          e.premiumDashDx=dx/l;e.premiumDashDy=dy/l;e.premiumDashTime=d.dashDuration;e.premiumSpecialCd=d.dashCooldown;
+        }
+      }else if(e.premiumSpecialCd<=0&&l<620){
+        e.telegraph=d.telegraphSeconds;
+      }else{
+        e.x+=dx/l*premiumSpeed*pursuitBoost*dt;e.y+=dy/l*premiumSpeed*pursuitBoost*dt;
+      }
+    }else if((e.type==='support'||e.type==='summoner'||e.type==='shielder')&&e.premiumDef){
+      premiumTacticalHandled=true;
+      const preferred=d.preferredRange||220;
+      const tacticalDir=l>preferred?1:l<preferred*.72?-1:0;
+      e.x+=dx/l*premiumSpeed*pursuitBoost*tacticalDir*dt;e.y+=dy/l*premiumSpeed*pursuitBoost*tacticalDir*dt;
+      if(e.type==='summoner'){
+        e.premiumSummonCd=Math.max(0,(e.premiumSummonCd||0)-dt);
+        if(e.premiumSummonCd<=0){
+          const summonCount=Math.max(1,d.summonCount||2);
+          for(let i=0;i<summonCount;i++){
+            const a=Math.PI*2*i/summonCount+rnd(-.25,.25),rr=rnd(42,78);
+            spawnEnemy(d.summonType||'normal',{position:{x:clamp(e.x+Math.cos(a)*rr,24,WORLD_W-24),y:clamp(e.y+Math.sin(a)*rr,24,WORLD_H-24)}});
+          }
+          e.premiumSummonCd=d.summonInterval||5.4;
+          rings.push({x:e.x,y:e.y,r:8,max:72,life:.32,total:.32,color:e.color});
+        }
+      }
+    }
+    const eliteHandled=premiumTacticalHandled?false:updateEliteVariantBehavior(e,dt,dx,dy,l);
+    if(premiumTacticalHandled){
+      // Premium tactical behavior already moved this enemy.
+    }else if(eliteHandled){
       // Dedicated Stage 11.1 Elite behavior already moved this enemy.
     }else if(e.type==='shooter'||e.type==='boss'){
       const range=d.range;
@@ -14166,12 +14219,12 @@ function update(dt,refreshHud=true){
           }
         }else enemyBullets.push({x:e.x,y:e.y,vx:dx/l*210,vy:dy/l*210,r:5,life:4,dmg:8});
       }
-    } else {e.x+=dx/l*e.speed*pursuitBoost*dt;e.y+=dy/l*e.speed*pursuitBoost*dt}
+    } else {e.x+=dx/l*premiumSpeed*pursuitBoost*dt;e.y+=dy/l*premiumSpeed*pursuitBoost*dt}
     e.x=clamp(e.x,e.r+WORLD_EDGE_PAD,WORLD_W-e.r-WORLD_EDGE_PAD);
     e.y=clamp(e.y,e.r+WORLD_EDGE_PAD,WORLD_H-e.r-WORLD_EDGE_PAD);
     if(Math.hypot(player.x-e.x,player.y-e.y)<player.r+e.r && player.hitCd<=0 && !god && dashInvuln<=0){
       lastDamageSource=e.type==='boss'?'VOID TYRANT':e.type==='elite'?(e.eliteVariant?e.eliteVariant.toUpperCase()+' ELITE':'ELITE ENEMY'):e.type.toUpperCase()+' ENEMY';
-      player.hp-=e.touch;player.hitCd=.4;shake=6;
+      player.hp-=e.touch*premiumAuraState.touchMul;player.hitCd=.4;shake=6;
     }
   }
 
@@ -14618,7 +14671,26 @@ function draw(){
     ctx.save();ctx.translate(e.x,e.y);
     const bodyColor=e.flash?'#fff':e.gold?'#ffd75b':e.type==='boss'&&e.phase===2?'#ff4f93':e.color;
     ctx.fillStyle=bodyColor;ctx.shadowBlur=fxBlur(e.type==='treasure'?28:e.type==='boss'?22:e.gold?13:0);ctx.shadowColor=bodyColor;
-    if(e.type==='treasure'){
+    if(e.type==='support'){
+      // PREMIUM SUPPORT
+      ctx.save();ctx.globalAlpha=.18;ctx.strokeStyle=e.color;ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,e.premiumDef?.auraRadius||190,0,Math.PI*2);ctx.stroke();ctx.restore();
+      ctx.fillRect(-e.r*.78,-e.r*.22,e.r*1.56,e.r*.44);ctx.fillRect(-e.r*.22,-e.r*.78,e.r*.44,e.r*1.56);
+      ctx.beginPath();ctx.arc(0,0,e.r*.62,0,Math.PI*2);ctx.strokeStyle='#d8fff0';ctx.lineWidth=2;ctx.stroke();
+    }else if(e.type==='assassin'){
+      // PREMIUM ASSASSIN
+      ctx.rotate(Math.PI/4);ctx.fillRect(-e.r*.72,-e.r*.72,e.r*1.44,e.r*1.44);ctx.rotate(-Math.PI/4);
+      if(e.telegraph>0){ctx.save();ctx.strokeStyle='#ff9cc8';ctx.globalAlpha=.72;ctx.lineWidth=3;ctx.setLineDash([10,8]);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(player.x-e.x,player.y-e.y);ctx.stroke();ctx.restore()}
+    }else if(e.type==='summoner'){
+      // PREMIUM SUMMONER
+      ctx.beginPath();for(let i=0;i<6;i++){const a=-Math.PI/2+i*Math.PI/3,x=Math.cos(a)*e.r,y=Math.sin(a)*e.r;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#e6d6ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,e.r*.55,0,Math.PI*2);ctx.stroke();
+      for(let i=0;i<3;i++){const a=gameTime*1.7+i*Math.PI*2/3;ctx.fillRect(Math.cos(a)*e.r*1.35-2,Math.sin(a)*e.r*1.35-2,4,4)}
+    }else if(e.type==='shielder'){
+      // PREMIUM SHIELDER
+      ctx.beginPath();ctx.arc(0,0,e.r,0,Math.PI*2);ctx.fill();
+      ctx.save();ctx.globalAlpha=.22;ctx.strokeStyle=e.color;ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,e.premiumDef?.auraRadius||175,0,Math.PI*2);ctx.stroke();ctx.restore();
+      ctx.strokeStyle='#d9efff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,e.r*1.16,-Math.PI*.72,Math.PI*.72);ctx.stroke();
+    }else if(e.type==='treasure'){
       ctx.rotate(gameTime*1.8);
       ctx.beginPath();
       for(let i=0;i<8;i++){
@@ -16144,6 +16216,7 @@ function premiumFrameState(){
 let last=performance.now(),simAccumulator=0;
 function loop(now){
   const frameDt=Math.max(0,(now-last)/1000);last=now;
+  window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());
   const premiumFrame=window.BreakPremiumRuntime?.updateFrame?.(frameDt,premiumFrameState());
   const premiumHitStop=Math.max(0,Number(premiumFrame?.camera?.hitStopMs)||0)/1000;
   if(premiumHitStop>0)hitStop=Math.max(hitStop,premiumHitStop);
