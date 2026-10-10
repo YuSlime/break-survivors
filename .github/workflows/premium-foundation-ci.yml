@@ -63,6 +63,8 @@ jobs:
         run: node tools/apply-premium-stage-environment-integration.mjs
       - name: Prepare Premium stage progression
         run: node tools/apply-premium-stage-progression-integration.mjs
+      - name: Prepare Premium SECTOR SHIFT transition
+        run: node tools/apply-premium-stage-transition-integration.mjs
       - name: Verify generated inline JavaScript
         run: node --test tests/index-inline-syntax.test.mjs
       - name: Run FEVER regression tests
@@ -72,7 +74,7 @@ jobs:
       - name: Run damage number regression tests
         run: node --test tests/premium-damage-numbers.test.mjs tests/premium-damage-numbers-index.test.mjs
       - name: Run stage environment regression tests
-        run: node --test tests/premium-stage-environment.test.mjs tests/premium-stage-environment-index.test.mjs tests/premium-stage-progression.test.mjs tests/premium-stage-progression-index.test.mjs
+        run: node --test tests/premium-stage-environment.test.mjs tests/premium-stage-environment-index.test.mjs tests/premium-stage-progression.test.mjs tests/premium-stage-progression-index.test.mjs tests/premium-stage-transition.test.mjs tests/premium-stage-transition-index.test.mjs
       - name: Run boss reward reintegration regression
         run: node --test tests/premium-boss-reward-integrator.test.mjs
       - name: Run Premium index tests
