@@ -11905,7 +11905,19 @@ function damageEnemy(e,dmg,impact=true){
       e.x+=dx/l*kb;e.y+=dy/l*kb;
     }
 
-    if(crit && floatingTexts.length<42){
+    /* PREMIUM DAMAGE NUMBERS V1 */
+    const premiumDamageNumber=window.BreakPremiumRuntime?.resolveDamageNumber?.({
+      damage:actualDmg,crit,existingCount:floatingTexts.length,impact
+    });
+    if(premiumDamageNumber){
+      floatingTexts.push({
+        x:e.x,y:e.y-12,text:premiumDamageNumber.text,
+        color:premiumDamageNumber.color,
+        life:premiumDamageNumber.life,total:premiumDamageNumber.life,
+        vy:premiumDamageNumber.vy,size:premiumDamageNumber.size,
+        weight:premiumDamageNumber.weight,shadow:premiumDamageNumber.shadow
+      });
+    }else if(!window.BreakPremiumRuntime?.flags?.vfxDirector && crit && floatingTexts.length<42){
       floatingTexts.push({
         x:e.x,y:e.y-12,text:'CRIT '+Math.ceil(actualDmg),
         color:'#fff06c',life:.48,total:.48,vy:-62,size:crit?17:13,weight:1000
