@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Prepare generated Premium integration
+      - name: Prepare Premium foundation integrations
         run: |
           if grep -q "PREMIUM SUPPORT" index.html; then
             echo "Premium foundation/combat V2 integration already present"
@@ -40,11 +40,14 @@ jobs:
           node tools/apply-premium-boss-reward-integration.mjs
           node tools/apply-premium-audio-integration.mjs
           node tools/apply-premium-frame-state-integration.mjs
+      - name: Prepare Premium combat presentation integrations
+        run: |
           node tools/apply-premium-tactical-cap-integration.mjs
           node tools/apply-premium-tactical-readability-integration.mjs
           node tools/apply-premium-combat-feedback-integration.mjs
           node tools/apply-premium-death-presentation-integration.mjs
-          node tools/apply-premium-boss-death-integration.mjs
+      - name: Prepare Premium boss death integration
+        run: node tools/apply-premium-boss-death-integration.mjs
       - name: Run complete test suite
         run: |
           git diff --check
