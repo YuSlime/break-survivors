@@ -8,7 +8,8 @@ const BASE=freeze({
     sizeMin:1.5,sizeMax:4.2,
     lifeMin:.18,lifeMax:.38,
     directionalBias:0,
-    secondaryRing:false,coreBurst:false,hitStopMs:0
+    secondaryRing:false,coreBurst:false,hitStopMs:0,
+    audioCue:null
   }),
   runner:freeze({
     style:'runner-shear',priority:1,particleCount:10,
@@ -17,7 +18,8 @@ const BASE=freeze({
     sizeMin:1.2,sizeMax:3.8,
     lifeMin:.14,lifeMax:.30,
     directionalBias:.72,
-    secondaryRing:false,coreBurst:false,hitStopMs:0
+    secondaryRing:false,coreBurst:false,hitStopMs:0,
+    audioCue:'death-runner'
   }),
   tank:freeze({
     style:'heavy-crack',priority:2,particleCount:9,
@@ -26,7 +28,8 @@ const BASE=freeze({
     sizeMin:3.8,sizeMax:8.8,
     lifeMin:.30,lifeMax:.70,
     directionalBias:.10,
-    secondaryRing:true,coreBurst:false,hitStopMs:16
+    secondaryRing:true,coreBurst:false,hitStopMs:16,
+    audioCue:'death-tank'
   }),
   elite:freeze({
     style:'core-rupture',priority:4,particleCount:15,
@@ -35,7 +38,8 @@ const BASE=freeze({
     sizeMin:2.4,sizeMax:7.4,
     lifeMin:.26,lifeMax:.68,
     directionalBias:0,
-    secondaryRing:true,coreBurst:true,hitStopMs:28
+    secondaryRing:true,coreBurst:true,hitStopMs:28,
+    audioCue:null
   })
 });
 
