@@ -14928,17 +14928,17 @@ function draw(){
       ctx.beginPath();ctx.arc(e.x,e.y,e.r+20+pct*52,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=1;
     }
     if(e.premiumDef){
-      // PREMIUM ROLE MARKER
+      // PREMIUM ROLE MARKER V2
       const roleMarker=window.BreakPremiumRuntime?.getTacticalEnemyMarker?.(e.type);
       if(roleMarker){
         ctx.save();
         ctx.font='1000 8px ui-monospace,SFMono-Regular,Menlo,monospace';
         ctx.textAlign='center';ctx.textBaseline='middle';
         const markerWidth=Math.max(24,ctx.measureText(roleMarker.code).width+10);
-        const markerY=-e.r-14;
-        ctx.globalAlpha=.92;ctx.fillStyle='#060a12dd';ctx.fillRect(-markerWidth/2,markerY-7,markerWidth,13);
-        ctx.strokeStyle=roleMarker.color;ctx.lineWidth=1.5;ctx.strokeRect(-markerWidth/2,markerY-7,markerWidth,13);
-        ctx.fillStyle=roleMarker.color;ctx.shadowBlur=8;ctx.shadowColor=roleMarker.color;ctx.fillText(roleMarker.code,0,markerY);
+        const markerY=e.y-e.r-14;
+        ctx.globalAlpha=.92;ctx.fillStyle='#060a12dd';ctx.fillRect(e.x-markerWidth/2,markerY-7,markerWidth,13);
+        ctx.strokeStyle=roleMarker.color;ctx.lineWidth=1.5;ctx.strokeRect(e.x-markerWidth/2,markerY-7,markerWidth,13);
+        ctx.fillStyle=roleMarker.color;ctx.shadowBlur=8;ctx.shadowColor=roleMarker.color;ctx.fillText(roleMarker.code,e.x,markerY);
         ctx.restore();
       }
     }
