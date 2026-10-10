@@ -11,6 +11,7 @@ on:
       - tools/apply-premium-audio-integration.mjs
       - tools/apply-premium-frame-state-integration.mjs
       - tools/apply-premium-tactical-cap-integration.mjs
+      - tools/apply-premium-tactical-readability-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -39,6 +40,7 @@ jobs:
           node tools/apply-premium-audio-integration.mjs
           node tools/apply-premium-frame-state-integration.mjs
           node tools/apply-premium-tactical-cap-integration.mjs
+          node tools/apply-premium-tactical-readability-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
