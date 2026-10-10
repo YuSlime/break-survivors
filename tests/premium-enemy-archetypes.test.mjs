@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import * as premiumEnemyModel from '../src/data/enemies-premium.js';
 import {
   PREMIUM_ENEMY_ARCHETYPES,
   getPremiumEnemyArchetype,
@@ -74,6 +75,25 @@ test('pressure scores make summoners and shielders high-priority tactical target
   assert.ok(support>normal);
   assert.ok(summoner>=support);
   assert.ok(shielder>=support);
+});
+
+test('support and shielder auras only affect nearby allies and preserve counterplay',()=>{
+  const resolver=premiumEnemyModel.resolvePremiumEnemyAuras;
+  assert.equal(typeof resolver,'function');
+
+  const target={type:'normal',x:20,y:0,dead:false};
+  const support={type:'support',x:0,y:0,dead:false};
+  const shielder={type:'shielder',x:30,y:0,dead:false};
+  const near=resolver(target,[target,support,shielder]);
+  assert.equal(near.speedMul,PREMIUM_ENEMY_ARCHETYPES.support.allySpeedMul);
+  assert.equal(near.touchMul,PREMIUM_ENEMY_ARCHETYPES.support.allyDamageMul);
+  assert.equal(near.damageTakenMul,1-PREMIUM_ENEMY_ARCHETYPES.shielder.damageReduction);
+
+  const ownShield=resolver(shielder,[target,support,shielder]);
+  assert.equal(ownShield.damageTakenMul,1,'shielder must remain directly punishable');
+
+  const far=resolver({type:'normal',x:1000,y:1000,dead:false},[support,shielder]);
+  assert.deepEqual(far,{speedMul:1,touchMul:1,damageTakenMul:1});
 });
 
 test('unknown archetypes fail safely',()=>{
