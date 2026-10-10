@@ -4,6 +4,7 @@ export const DEFAULT_FEATURE_FLAGS=Object.freeze({
   vfxDirector:false,
   premiumHud:false,
   encounterDirector:false,
+  audioDirector:false,
   combatV2:false,
   bossV2:false,
   limitBreakV2:false,
