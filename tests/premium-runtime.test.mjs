@@ -27,6 +27,13 @@ test('combat V2 requires a second explicit query opt-in during development',()=>
   assert.equal(flags.bossV2,false);
 });
 
+test('boss V2 requires its own explicit query opt-in during development',()=>{
+  const flags=resolveRuntimeFeatureOverrides({search:'?premium=1&premiumBoss=1',stored:null});
+  assert.equal(flags.intensityDirector,true);
+  assert.equal(flags.bossV2,true);
+  assert.equal(flags.combatV2,false);
+});
+
 test('stored overrides can selectively change premium systems',()=>{
   const flags=resolveRuntimeFeatureOverrides({
     search:'',
@@ -100,6 +107,20 @@ test('tactical aura bridge is neutral unless combat V2 is explicitly enabled',()
   assert.ok(active.speedMul>1);
   assert.ok(active.touchMul>1);
   assert.ok(active.damageTakenMul<1);
+});
+
+test('boss V2 phase and move bridges are completely disabled unless explicitly enabled',()=>{
+  const safe=createPremiumRuntime({flags:{bossV2:false}});
+  assert.equal(safe.resolveBossState({type:'boss',hp:39,maxHp:100}),null);
+  assert.equal(safe.nextBossAttack({type:'boss',hp:10,maxHp:100,roll:.99}),null);
+
+  const boss=createPremiumRuntime({flags:{bossV2:true}});
+  const state=boss.resolveBossState({type:'boss',hp:39,maxHp:100});
+  assert.equal(state.phase,'phase3');
+  assert.equal(state.definition.id,'phase3');
+  const attack=boss.nextBossAttack({type:'boss',hp:10,maxHp:100,roll:.99});
+  assert.equal(attack.phase,'final');
+  assert.equal(attack.move,'void-collapse');
 });
 
 test('runtime reset returns directors to calm state',()=>{
