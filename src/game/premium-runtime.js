@@ -7,6 +7,7 @@ import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHu
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {getPremiumEnemyArchetype,pickPremiumEnemyArchetype,resolvePremiumEnemyAuras} from '../data/enemies-premium.js';
 import {resolveVoidTyrantPhase,getVoidTyrantPhaseDefinition,buildVoidTyrantAttackPlan} from '../bosses/void-tyrant.js';
+import {buildBossChestChoices,createBossRewardState,applyBossRewardChoice} from '../rewards/boss-chest.js';
 
 const FOUNDATION_FLAGS=Object.freeze({
   intensityDirector:true,
@@ -58,6 +59,7 @@ export function createPremiumRuntime({
   let lastIntensity=20;
   let lastSignatureMeter=0;
   let lastSignatureLabel='CORE';
+  let bossRewardState=createBossRewardState();
 
   function signal(type,payload={}){
     if(!resolved.cameraDirector)return false;
@@ -148,6 +150,18 @@ export function createPremiumRuntime({
     return buildVoidTyrantAttackPlan({phase:state.phase,roll:boss.roll});
   }
 
+  function prepareBossChest(context={}){
+    if(!resolved.bossV2)return [];
+    const rolls=Array.isArray(context.rolls)?context.rolls:[Math.random(),Math.random(),Math.random()];
+    return buildBossChestChoices({...context,rolls});
+  }
+
+  function claimBossReward(choice,context={}){
+    if(!resolved.bossV2)return null;
+    bossRewardState=applyBossRewardChoice(bossRewardState,choice,context);
+    return bossRewardState;
+  }
+
   function reset(){
     intensity.reset();
     camera.reset();
@@ -157,6 +171,7 @@ export function createPremiumRuntime({
     lastIntensity=20;
     lastSignatureMeter=0;
     lastSignatureLabel='CORE';
+    bossRewardState=createBossRewardState();
     signatureHud?.update?.({characterId:null,signatureMeter:0});
     if(resolved.intensityDirector&&intensityOverlay){
       intensityOverlay.update({state:{},intensity:20});
@@ -178,11 +193,14 @@ export function createPremiumRuntime({
     resolveTacticalAuras,
     resolveBossState,
     nextBossAttack,
+    prepareBossChest,
+    claimBossReward,
     reset,
     get intensityValue(){return lastIntensity},
     get cameraState(){return cameraState},
     get signatureMeter(){return lastSignatureMeter},
-    get signatureLabel(){return lastSignatureLabel}
+    get signatureLabel(){return lastSignatureLabel},
+    get bossRewardState(){return bossRewardState}
   };
 }
 
