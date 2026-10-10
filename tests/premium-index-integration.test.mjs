@@ -60,13 +60,15 @@ test('draw adds Premium camera feedback without removing legacy shake',()=>{
   assert.match(draw,/premiumCamera\?\.shake/);
 });
 
-test('combat milestones signal the Premium camera director',()=>{
+test('combat milestones signal the Premium camera director through their presentation owners',()=>{
   const kill=functionSource('killEnemy');
   const fever=functionSource('startFever');
+  const feverTransition=functionSource('beginPremiumFeverTransition');
   const progression=functionSource('updateThreatProgression');
   assert.match(kill,/premiumDeathEvent/);
   assert.match(kill,/BreakPremiumRuntime\?\.signal\?\.\(premiumDeathEvent/);
-  assert.match(fever,/BreakPremiumRuntime\?\.signal\?\.\('fever'/);
+  assert.match(fever,/beginPremiumFeverTransition\(\)/,'startFever delegates staged presentation');
+  assert.match(feverTransition,/BreakPremiumRuntime\?\.signal\?\.\('fever'/,'FEVER camera impulse belongs to staged burst');
   assert.match(progression,/BreakPremiumRuntime\?\.signal\?\.\('limitBreak'/);
 });
 
