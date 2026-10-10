@@ -8,6 +8,7 @@ test('runtime defaults to safe disabled flags',()=>{
   assert.equal(runtime.flags.cameraDirector,false);
   assert.equal(runtime.flags.vfxDirector,false);
   assert.equal(runtime.flags.encounterDirector,false);
+  assert.equal(runtime.flags.audioDirector,false);
 });
 
 test('premium query opt-in enables only foundation systems',()=>{
@@ -16,6 +17,7 @@ test('premium query opt-in enables only foundation systems',()=>{
   assert.equal(flags.cameraDirector,true);
   assert.equal(flags.vfxDirector,true);
   assert.equal(flags.encounterDirector,true);
+  assert.equal(flags.audioDirector,true);
   assert.equal(flags.combatV2,false);
   assert.equal(flags.bossV2,false);
 });
@@ -46,14 +48,16 @@ test('stored overrides can selectively change premium systems',()=>{
   assert.equal('unknown' in flags,false);
 });
 
-test('frame update drives intensity, camera decay, encounter recovery and vfx frame reset',()=>{
+test('frame update drives intensity camera audio encounter recovery and vfx frame reset',()=>{
   const runtime=createPremiumRuntime({
-    flags:{intensityDirector:true,cameraDirector:true,vfxDirector:true,encounterDirector:true}
+    flags:{intensityDirector:true,cameraDirector:true,vfxDirector:true,encounterDirector:true,audioDirector:true}
   });
   runtime.signal('break');
   const first=runtime.updateFrame(.016,{breakActive:true,highDensity:true});
   assert.ok(first.intensity>20);
   assert.ok(first.camera.shake>0);
+  assert.equal(first.audio.mode,'break');
+  assert.ok(first.audio.attackPresence>0);
   assert.equal(runtime.allowVfx('particles',5),true);
   runtime.updateFrame(.016,{breakActive:true});
   assert.equal(runtime.vfx.counts.particles,0);
@@ -124,12 +128,13 @@ test('boss V2 phase and move bridges are completely disabled unless explicitly e
 });
 
 test('runtime reset returns directors to calm state',()=>{
-  const runtime=createPremiumRuntime({flags:{intensityDirector:true,cameraDirector:true,encounterDirector:true}});
+  const runtime=createPremiumRuntime({flags:{intensityDirector:true,cameraDirector:true,encounterDirector:true,audioDirector:true}});
   runtime.signal('limitBreak');
   runtime.updateFrame(.2,{limitBreakActive:true});
   runtime.reset();
   const frame=runtime.updateFrame(0,{});
   assert.equal(frame.intensity,20);
   assert.equal(frame.camera.shake,0);
+  assert.equal(frame.audio.mode,'calm');
   assert.equal(runtime.encounter.activeMajor,null);
 });
