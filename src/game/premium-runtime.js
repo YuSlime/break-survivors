@@ -11,6 +11,7 @@ import {buildBossDeathSequence} from '../presentation/boss-death-sequence.js';
 import {buildFeverTransition} from '../presentation/fever-transition.js';
 import {buildLimitBreakTransition} from '../presentation/limit-break-transition.js';
 import {getStageEnvironment as getStageEnvironmentProfile,resolveStageEnvironmentId as resolveStageEnvironmentIdProfile,getStageTransitionCue as getStageTransitionCueProfile} from '../data/stages-premium.js';
+import {getStageGimmick as getStageGimmickProfile,resolveStageGimmickFrame as resolveStageGimmickFrameProfile} from '../systems/stage-gimmicks.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
@@ -206,6 +207,16 @@ export function createPremiumRuntime({
     return getStageTransitionCueProfile(context);
   }
 
+  function getStageGimmick(stageId='neon-ruins'){
+    if(!resolved.stagesV2)return null;
+    return getStageGimmickProfile(stageId);
+  }
+
+  function resolveStageGimmickFrame(context={}){
+    if(!resolved.stagesV2)return null;
+    return resolveStageGimmickFrameProfile(context);
+  }
+
   function pickTacticalEnemy(context={}){
     if(!resolved.combatV2)return null;
     return pickPremiumEnemyArchetype(context);
@@ -310,6 +321,8 @@ export function createPremiumRuntime({
     getStageEnvironment,
     resolveStageEnvironment,
     getStageTransitionCue,
+    getStageGimmick,
+    resolveStageGimmickFrame,
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
     getTacticalEnemyMarker,
