@@ -11806,6 +11806,53 @@ function applyPremiumBossRewardResult({choice,state}={}){
   updateHud();
 }
 
+// PREMIUM BOSS DEATH SEQUENCE V1
+function playPremiumBossDeathSequence(e,sequence,onComplete){
+  if(!sequence?.stages?.length){onComplete?.();return}
+  const x=e.x,y=e.y,r=e.r,color=e.color;
+  player.hitCd=Math.max(player.hitCd,sequence.playerGuardMs/1000);
+
+  for(const stage of sequence.stages){
+    setTimeout(()=>{
+      if(!running)return;
+      playPremiumCombatFeedbackSfx(stage.cue);
+
+      const ringCount=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,5)??1;
+      if(ringCount>0)rings.push({
+        x,y,r:Math.max(5,r*.14),max:r*stage.ringScale,
+        life:stage.ringLife,total:stage.ringLife,color:stage.color
+      });
+
+      const burst=window.BreakPremiumRuntime?.allowVfxCount?.('particles',stage.particleCount,5)??stage.particleCount;
+      for(let i=0;i<burst;i++){
+        const a=(i/Math.max(1,burst))*Math.PI*2+rnd(-.18,.18);
+        const speed=rnd(stage.speedMin,stage.speedMax);
+        const stageColor=stage.id==='fracture'?(i%3===0?'#ffffff':color):stage.id==='core'?(i%3===0?'#ffffff':stage.color):(i%4===0?'#ffffff':stage.color);
+        particles.push({
+          x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,
+          life:rnd(stage.ringLife*.55,stage.ringLife*1.22),
+          size:rnd(stage.sizeMin,stage.sizeMax),color:stageColor
+        });
+      }
+
+      if(stage.id==='core'){
+        const coreRings=window.BreakPremiumRuntime?.allowVfxCount?.('rings',1,5)??1;
+        if(coreRings>0)rings.push({x,y,r:3,max:r*1.18,life:.24,total:.24,color:'#fffbe8'});
+      }
+
+      if(stage.lootBurst){
+        playEventSfx('treasure_kill',.58,.92);
+        showBreakCallout('VOID TYRANT PURGED','CORE RUPTURE // LOOT BURST','#ffe16b');
+      }
+    },stage.atMs);
+  }
+
+  setTimeout(()=>{
+    if(!running)return;
+    onComplete?.();
+  },sequence.chestDelayMs);
+}
+
 function killEnemy(e,meta={}){
   if(e.dead) return;
   e.dead=true;
@@ -11858,14 +11905,21 @@ function killEnemy(e,meta={}){
     showBreakCallout('JACKPOT!','TREASURE LOOT BURST','#ffe56b');
   }
   if(e.type==='boss'){
-    bossTimer=0;bossPending=false;playEventSfx('treasure_kill',.56,.88);
-    window.BreakPremiumRuntime?.presentBossChest?.({
+    bossTimer=0;bossPending=false;
+    const presentPremiumBossChest=()=>window.BreakPremiumRuntime?.presentBossChest?.({
       bossesDefeated:runBosses,
       threat:threatLevel,
       hp:player.hp,
       maxHp:ps.maxHp,
       ultCharge
     },applyPremiumBossRewardResult);
+    const premiumBossDeathSequence=window.BreakPremiumRuntime?.getBossDeathSequence?.();
+    if(premiumBossDeathSequence){
+      playPremiumBossDeathSequence(e,premiumBossDeathSequence,presentPremiumBossChest);
+    }else{
+      playEventSfx('treasure_kill',.56,.88);
+      presentPremiumBossChest();
+    }
   }
 
   if(charLevel(currentCharacter.id)>=30){
@@ -13097,6 +13151,7 @@ function playPremiumCombatFeedbackSfx(cue){
   const gaps={
     critical:72,'elite-kill':170,
     'death-runner':105,'death-tank':180,
+    'boss-fracture':260,'boss-core':320,'boss-rupture':520,
     'tactical-support':120,'tactical-assassin':110,
     'tactical-summoner':145,'tactical-shielder':145
   };
@@ -13111,6 +13166,16 @@ function playPremiumCombatFeedbackSfx(cue){
   }else if(cue==='death-tank'){
     oscTone(86,.15,'sine',.030,48);
     noiseBurst(.10,.014,'lowpass',420,.012);
+  }else if(cue==='boss-fracture'){
+    noiseBurst(.07,.018,'bandpass',1200);
+    oscTone(220,.08,'triangle',.012,420,.01);
+  }else if(cue==='boss-core'){
+    oscTone(105,.18,'sine',.032,62);
+    metallicPing(720,.012,.045);
+  }else if(cue==='boss-rupture'){
+    oscTone(68,.28,'sine',.050,38);
+    noiseBurst(.15,.028,'highpass',1900,.025);
+    oscTone(340,.16,'triangle',.018,680,.04);
   }else if(cue==='elite-kill'){
     oscTone(92,.16,'sine',.035,54);
     oscTone(420,.13,'triangle',.020,780,.025);
