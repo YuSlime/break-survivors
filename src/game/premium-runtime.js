@@ -5,6 +5,7 @@ import {createEncounterDirector} from '../directors/encounter.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
+import {pickPremiumEnemyArchetype} from '../data/enemies-premium.js';
 
 const FOUNDATION_FLAGS=Object.freeze({
   intensityDirector:true,
@@ -31,6 +32,7 @@ export function resolveRuntimeFeatureOverrides({search='',stored=null}={}){
   try{
     const params=new URLSearchParams(String(search||''));
     if(params.get('premium')==='1')Object.assign(overrides,FOUNDATION_FLAGS);
+    if(params.get('premiumCombat')==='1')overrides.combatV2=true;
   }catch(_){}
   Object.assign(overrides,parseStoredOverrides(stored));
   return resolveFeatureFlags(overrides);
@@ -113,6 +115,11 @@ export function createPremiumRuntime({
     return vfx.reserve(kind,amount,priority);
   }
 
+  function pickTacticalEnemy(context={}){
+    if(!resolved.combatV2)return null;
+    return pickPremiumEnemyArchetype(context);
+  }
+
   function reset(){
     intensity.reset();
     camera.reset();
@@ -138,6 +145,7 @@ export function createPremiumRuntime({
     updateFrame,
     allowVfx,
     allowVfxCount,
+    pickTacticalEnemy,
     reset,
     get intensityValue(){return lastIntensity},
     get cameraState(){return cameraState},
@@ -164,7 +172,7 @@ function installBrowserRuntime(){
     : null;
   const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,intensityOverlay});
   window.BreakPremiumRuntime=runtime;
-  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','premiumHud'].some(k=>flags[k]);
+  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','premiumHud','combatV2'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
   return runtime;
 }
