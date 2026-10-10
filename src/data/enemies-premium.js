@@ -43,6 +43,17 @@ export function getPremiumEnemyPressureScore(id){
   return PRESSURE[String(id||'').toLowerCase()]||1;
 }
 
+export function getPremiumTacticalSpawnLimits({eliteCount=0}={}){
+  const elites=Math.max(0,Math.floor(Number(eliteCount)||0));
+  if(elites>=2){
+    return freeze({...PREMIUM_TACTICAL_SPAWN_LIMITS,total:3,summoner:0,shielder:0});
+  }
+  if(elites===1){
+    return freeze({...PREMIUM_TACTICAL_SPAWN_LIMITS,total:4});
+  }
+  return PREMIUM_TACTICAL_SPAWN_LIMITS;
+}
+
 function sanitizeActiveCounts(activeCounts={}){
   const counts={};
   for(const id of PREMIUM_ACTIVE_TACTICAL_ARCHETYPES){
@@ -51,15 +62,16 @@ function sanitizeActiveCounts(activeCounts={}){
   return counts;
 }
 
-export function pickPremiumEnemyArchetype({gameTime=0,threat=0,roll=Math.random(),activeCounts={}}={}){
+export function pickPremiumEnemyArchetype({gameTime=0,threat=0,roll=Math.random(),activeCounts={},eliteCount=0}={}){
   const time=Math.max(0,Number(gameTime)||0);
   const level=Math.max(0,Math.floor(Number(threat)||0));
   const r=Math.max(0,Math.min(.999999,Number(roll)||0));
   if(time<75||level<2)return null;
 
   const counts=sanitizeActiveCounts(activeCounts);
+  const limits=getPremiumTacticalSpawnLimits({eliteCount});
   const activeTotal=Object.values(counts).reduce((sum,value)=>sum+value,0);
-  if(activeTotal>=PREMIUM_TACTICAL_SPAWN_LIMITS.total)return null;
+  if(activeTotal>=limits.total)return null;
 
   const table=[];
   table.push(['support',Math.min(.13,.08+level*.01)]);
@@ -72,7 +84,8 @@ export function pickPremiumEnemyArchetype({gameTime=0,threat=0,roll=Math.random(
     edge+=weight;
     if(r>=edge)continue;
     if(!PREMIUM_ACTIVE_TACTICAL_ARCHETYPES.includes(id))return null;
-    if(counts[id]>=PREMIUM_TACTICAL_SPAWN_LIMITS[id])return null;
+    if((limits[id]??0)<=0)return null;
+    if(counts[id]>=limits[id])return null;
     return id;
   }
   return null;
