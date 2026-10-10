@@ -74,6 +74,17 @@ test('tactical enemy picker is completely disabled unless combat V2 is enabled',
   assert.equal(combat.pickTacticalEnemy({gameTime:95,threat:2,roll:.05}),'support');
 });
 
+test('tactical enemy definitions stay unavailable unless combat V2 is explicitly enabled',()=>{
+  const safe=createPremiumRuntime({flags:{combatV2:false}});
+  assert.equal(safe.getTacticalEnemyDefinition('support'),null);
+
+  const combat=createPremiumRuntime({flags:{combatV2:true}});
+  const support=combat.getTacticalEnemyDefinition('support');
+  assert.equal(support.id,'support');
+  assert.equal(support.mechanic,'buff-aura');
+  assert.equal(combat.getTacticalEnemyDefinition('missing'),null);
+});
+
 test('tactical aura bridge is neutral unless combat V2 is explicitly enabled',()=>{
   const target={type:'normal',x:20,y:0,dead:false};
   const support={type:'support',x:0,y:0,dead:false};
