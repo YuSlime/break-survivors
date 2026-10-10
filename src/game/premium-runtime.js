@@ -8,6 +8,7 @@ import {resolveCombatFeedback as resolveCombatFeedbackProfile} from '../presenta
 import {resolveDeathPresentation as resolveDeathPresentationProfile} from '../presentation/death-presentation.js';
 import {buildBossDeathSequence} from '../presentation/boss-death-sequence.js';
 import {buildFeverTransition} from '../presentation/fever-transition.js';
+import {buildLimitBreakTransition} from '../presentation/limit-break-transition.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
@@ -176,6 +177,11 @@ export function createPremiumRuntime({
     return buildFeverTransition({reducedMotion});
   }
 
+  function getLimitBreakTransition(){
+    if(!resolved.vfxDirector)return null;
+    return buildLimitBreakTransition({reducedMotion});
+  }
+
   function pickTacticalEnemy(context={}){
     if(!resolved.combatV2)return null;
     return pickPremiumEnemyArchetype(context);
@@ -275,6 +281,7 @@ export function createPremiumRuntime({
     resolveDeathPresentation,
     getBossDeathSequence,
     getFeverTransition,
+    getLimitBreakTransition,
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
     getTacticalEnemyMarker,
