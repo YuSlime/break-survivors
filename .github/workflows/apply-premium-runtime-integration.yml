@@ -5,6 +5,8 @@ on:
     branches: [premium-edition-foundation]
     paths:
       - tools/apply-premium-runtime-integration.mjs
+      - tools/apply-premium-combat-v2-review-fixes.mjs
+      - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
   contents: write
@@ -20,7 +22,9 @@ jobs:
         with:
           node-version: 22
       - name: Apply guarded index integration
-        run: node tools/apply-premium-runtime-integration.mjs
+        run: |
+          node tools/apply-premium-runtime-integration.mjs
+          node tools/apply-premium-combat-v2-review-fixes.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
