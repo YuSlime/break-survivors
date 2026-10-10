@@ -10,6 +10,7 @@ on:
     paths:
       - 'src/**'
       - 'tests/**'
+      - 'tools/**'
       - 'index.html'
       - '.github/workflows/premium-foundation-ci.yml'
 
@@ -27,5 +28,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Prepare generated Premium integration
+        run: |
+          if grep -q "PREMIUM SUPPORT" index.html; then
+            echo "Premium foundation/combat V2 integration already present"
+          else
+            node tools/apply-premium-runtime-integration.mjs
+          fi
+          node tools/apply-premium-combat-v2-review-fixes.mjs
+          node tools/apply-premium-boss-v2-integration.mjs
+          node tools/apply-premium-boss-reward-integration.mjs
       - name: Run complete test suite
-        run: node --test tests/*.test.mjs
+        run: |
+          git diff --check
+          node --test tests/*.test.mjs
