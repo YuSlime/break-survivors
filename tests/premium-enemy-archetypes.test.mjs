@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import * as premiumEnemyModel from '../src/data/enemies-premium.js';
 import {
   PREMIUM_ENEMY_ARCHETYPES,
+  PREMIUM_ACTIVE_TACTICAL_ARCHETYPES,
   getPremiumEnemyArchetype,
   pickPremiumEnemyArchetype,
   getPremiumEnemyPressureScore
@@ -25,6 +26,10 @@ test('Premium tactical enemies have distinct readable combat roles',()=>{
   assert.equal(PREMIUM_ENEMY_ARCHETYPES.assassin.mechanic,'telegraph-dash');
   assert.equal(PREMIUM_ENEMY_ARCHETYPES.summoner.mechanic,'summon-swarm');
   assert.equal(PREMIUM_ENEMY_ARCHETYPES.shielder.mechanic,'shield-aura');
+});
+
+test('current combat V2 rollout activates Support and Assassin only',()=>{
+  assert.deepEqual([...PREMIUM_ACTIVE_TACTICAL_ARCHETYPES],['support','assassin']);
 });
 
 test('role tuning exposes the gameplay parameters required by each mechanic',()=>{
@@ -53,7 +58,7 @@ test('tactical enemies do not enter the run before escalation has developed',()=
   }
 });
 
-test('spawn table introduces roles progressively instead of all at once',()=>{
+test('active spawn table introduces Support before Assassin and keeps later archetypes dormant',()=>{
   assert.equal(pickPremiumEnemyArchetype({gameTime:95,threat:2,roll:.05}),'support');
   assert.equal(pickPremiumEnemyArchetype({gameTime:95,threat:2,roll:.95}),null);
 
@@ -61,12 +66,12 @@ test('spawn table introduces roles progressively instead of all at once',()=>{
   for(let i=0;i<100;i++)later.add(pickPremiumEnemyArchetype({gameTime:190,threat:4,roll:i/100}));
   assert.ok(later.has('support'));
   assert.ok(later.has('assassin'));
-  assert.ok(later.has('summoner'));
-  assert.ok(later.has('shielder'));
   assert.ok(later.has(null));
+  assert.equal(later.has('summoner'),false);
+  assert.equal(later.has('shielder'),false);
 });
 
-test('pressure scores make summoners and shielders high-priority tactical targets',()=>{
+test('pressure scores preserve future tactical tuning without forcing dormant roles into live runs',()=>{
   const normal=getPremiumEnemyPressureScore('normal');
   const support=getPremiumEnemyPressureScore('support');
   const summoner=getPremiumEnemyPressureScore('summoner');
