@@ -11323,10 +11323,17 @@ function spawnEnemy(type='normal',opts={}){
 function pickThreatSpawnType(state){
   if(eventActive('swarm'))return Math.random()<.58?'runner':'normal';
   if(gameTime>120&&Math.random()<getThreatEliteChance(state,gameTime))return 'elite';
+  const premiumTacticalCounts={support:0,assassin:0,summoner:0,shielder:0};
+  for(const enemy of enemies){
+    if(!enemy.dead&&enemy.premiumDef&&premiumTacticalCounts[enemy.type]!==undefined){
+      premiumTacticalCounts[enemy.type]++;
+    }
+  }
   const premiumTacticalType=window.BreakPremiumRuntime?.pickTacticalEnemy?.({
     gameTime,
     threat:threatLevel,
-    roll:Math.random()
+    roll:Math.random(),
+    activeCounts:premiumTacticalCounts
   });
   if(premiumTacticalType)return premiumTacticalType;
   const r=Math.random();
