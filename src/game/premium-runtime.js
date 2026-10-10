@@ -6,6 +6,7 @@ import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {getPremiumEnemyArchetype,pickPremiumEnemyArchetype,resolvePremiumEnemyAuras} from '../data/enemies-premium.js';
+import {resolveVoidTyrantPhase,getVoidTyrantPhaseDefinition,buildVoidTyrantAttackPlan} from '../bosses/void-tyrant.js';
 
 const FOUNDATION_FLAGS=Object.freeze({
   intensityDirector:true,
@@ -34,6 +35,7 @@ export function resolveRuntimeFeatureOverrides({search='',stored=null}={}){
     const params=new URLSearchParams(String(search||''));
     if(params.get('premium')==='1')Object.assign(overrides,FOUNDATION_FLAGS);
     if(params.get('premiumCombat')==='1')overrides.combatV2=true;
+    if(params.get('premiumBoss')==='1')overrides.bossV2=true;
   }catch(_){}
   Object.assign(overrides,parseStoredOverrides(stored));
   return resolveFeatureFlags(overrides);
@@ -131,6 +133,21 @@ export function createPremiumRuntime({
     return resolvePremiumEnemyAuras(target,enemies);
   }
 
+  function resolveBossState(boss={}){
+    if(!resolved.bossV2||boss?.type!=='boss')return null;
+    const maxHp=Math.max(1,Number(boss.maxHp)||1);
+    const hp=Math.max(0,Number(boss.hp)||0);
+    const hpRatio=Math.max(0,Math.min(1,hp/maxHp));
+    const phase=resolveVoidTyrantPhase(hpRatio);
+    return Object.freeze({phase,hpRatio,definition:getVoidTyrantPhaseDefinition(phase)});
+  }
+
+  function nextBossAttack(boss={}){
+    const state=resolveBossState(boss);
+    if(!state)return null;
+    return buildVoidTyrantAttackPlan({phase:state.phase,roll:boss.roll});
+  }
+
   function reset(){
     intensity.reset();
     camera.reset();
@@ -159,6 +176,8 @@ export function createPremiumRuntime({
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
     resolveTacticalAuras,
+    resolveBossState,
+    nextBossAttack,
     reset,
     get intensityValue(){return lastIntensity},
     get cameraState(){return cameraState},
@@ -185,7 +204,7 @@ function installBrowserRuntime(){
     : null;
   const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,intensityOverlay});
   window.BreakPremiumRuntime=runtime;
-  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','premiumHud','combatV2'].some(k=>flags[k]);
+  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','premiumHud','combatV2','bossV2'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
   return runtime;
 }
