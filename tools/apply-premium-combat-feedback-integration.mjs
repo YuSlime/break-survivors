@@ -2,21 +2,21 @@ import fs from 'node:fs';
 
 const path=new URL('../index.html',import.meta.url);
 let source=fs.readFileSync(path,'utf8');
+let changed=false;
 
 const marker='// PREMIUM COMBAT FEEDBACK V1';
-if(source.includes(marker)){
-  console.log('Premium combat feedback already integrated');
-  process.exit(0);
-}
+const shakeGuardMarker='// PREMIUM COMBAT FEEDBACK SHAKE GUARD';
 
 function replaceOnce(label,from,to){
   const count=source.split(from).length-1;
   if(count!==1)throw new Error(`${label}: expected exactly one target, found ${count}`);
   source=source.replace(from,to);
+  changed=true;
 }
 
-const audioAnchor=`function playGachaSfx(kind){`;
-const audioBlock=`// PREMIUM COMBAT FEEDBACK V1
+if(!source.includes(marker)){
+  const audioAnchor=`function playGachaSfx(kind){`;
+  const audioBlock=`// PREMIUM COMBAT FEEDBACK V1
 const premiumCombatFeedbackSfxAt={};
 function playPremiumCombatFeedbackSfx(cue){
   if(!soundEnabled)return;
@@ -51,16 +51,16 @@ function playPremiumCombatFeedbackSfx(cue){
 }
 
 function playGachaSfx(kind){`;
-replaceOnce('combat-feedback-audio',audioAnchor,audioBlock);
+  replaceOnce('combat-feedback-audio',audioAnchor,audioBlock);
 
-const criticalFrom=`    if(crit && floatingTexts.length<42){
+  const criticalFrom=`    if(crit && floatingTexts.length<42){
       floatingTexts.push({
         x:e.x,y:e.y-12,text:'CRIT '+Math.ceil(actualDmg),
         color:'#fff06c',life:.48,total:.48,vy:-62,size:crit?17:13,weight:1000
       });
       shake=Math.min(14,shake+1.5);
     }`;
-const criticalTo=`    if(crit && floatingTexts.length<42){
+  const criticalTo=`    if(crit && floatingTexts.length<42){
       floatingTexts.push({
         x:e.x,y:e.y-12,text:'CRIT '+Math.ceil(actualDmg),
         color:'#fff06c',life:.48,total:.48,vy:-62,size:crit?17:13,weight:1000
@@ -82,16 +82,16 @@ const criticalTo=`    if(crit && floatingTexts.length<42){
         life:rnd(.10,.22),size:rnd(1.5,4.2),color:premiumHitFeedback.color
       });
     }`;
-replaceOnce('combat-feedback-critical',criticalFrom,criticalTo);
+  replaceOnce('combat-feedback-critical',criticalFrom,criticalTo);
 
-replaceOnce(
-  'combat-feedback-legacy-kill-signal',
-  `  const premiumDeathEvent=e.type==='boss'?'bossKill':e.type==='elite'?'eliteKill':meta.critical?'critical':null;`,
-  `  const premiumDeathEvent=e.type==='boss'?'bossKill':null;`
-);
+  replaceOnce(
+    'combat-feedback-legacy-kill-signal',
+    `  const premiumDeathEvent=e.type==='boss'?'bossKill':e.type==='elite'?'eliteKill':meta.critical?'critical':null;`,
+    `  const premiumDeathEvent=e.type==='boss'?'bossKill':null;`
+  );
 
-const coinAnchor=`  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()*eventCoinMultiplier()));`;
-const coinWithFeedback=`  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()*eventCoinMultiplier()));
+  const coinAnchor=`  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()*eventCoinMultiplier()));`;
+  const coinWithFeedback=`  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinMul*breakCoinMultiplier()*eventCoinMultiplier()));
   const premiumKillFeedback=window.BreakPremiumRuntime?.resolveCombatFeedback?.({event:'kill',enemyType:e.type,coinGain});
   if(premiumKillFeedback){
     window.BreakPremiumRuntime?.signal?.(premiumKillFeedback.cameraSignal,{direction:{x:e.x-player.x,y:e.y-player.y}});
@@ -111,7 +111,22 @@ const coinWithFeedback=`  const coinGain=Math.max(1,Math.floor(e.reward*ps.coinM
       color:premiumKillFeedback.color,life:.72,total:.72,vy:-52,size:14,weight:1000
     });
   }`;
-replaceOnce('combat-feedback-kill',coinAnchor,coinWithFeedback);
+  replaceOnce('combat-feedback-kill',coinAnchor,coinWithFeedback);
+}else{
+  console.log('Premium combat feedback already integrated');
+}
 
-fs.writeFileSync(path,source);
-console.log('Applied Premium combat feedback integration');
+if(!source.includes(shakeGuardMarker)){
+  replaceOnce(
+    'combat-feedback-legacy-shake-guard',
+    `  if(meta.overkill)deathShake*=1.35;\n  shake=Math.min(16,shake+deathShake);`,
+    `  if(meta.overkill)deathShake*=1.35;\n  ${shakeGuardMarker}\n  if(!premiumKillFeedback&&!premiumDeathEvent)shake=Math.min(16,shake+deathShake);`
+  );
+}
+
+if(changed){
+  fs.writeFileSync(path,source);
+  console.log('Applied Premium combat feedback integration');
+}else{
+  console.log('Premium combat feedback already integrated');
+}
