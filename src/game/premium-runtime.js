@@ -2,6 +2,7 @@ import {resolveFeatureFlags} from '../config/features.js';
 import {createIntensityDirector} from '../directors/intensity.js';
 import {createCameraDirector} from '../directors/camera.js';
 import {createEncounterDirector} from '../directors/encounter.js';
+import {createAudioDirector} from '../directors/audio.js';
 import {createVfxBudget,recommendVfxProfile} from '../presentation/vfx-budget.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
@@ -15,6 +16,7 @@ const FOUNDATION_FLAGS=Object.freeze({
   cameraDirector:true,
   vfxDirector:true,
   encounterDirector:true,
+  audioDirector:true,
   premiumHud:true
 });
 
@@ -56,9 +58,11 @@ export function createPremiumRuntime({
   const intensity=createIntensityDirector();
   const camera=createCameraDirector({reducedMotion});
   const encounter=createEncounterDirector({calmSeconds});
+  const audio=createAudioDirector();
   const vfx=createVfxBudget({profile:vfxProfile});
   let cameraState={...ZERO_CAMERA};
   let lastIntensity=20;
+  let lastAudioMix=null;
   let lastSignatureMeter=0;
   let lastSignatureLabel='CORE';
   let bossRewardState=createBossRewardState();
@@ -94,6 +98,7 @@ export function createPremiumRuntime({
       intensityOverlay.update({state,intensity:lastIntensity});
     }
     cameraState=resolved.cameraDirector?camera.update(delta):{...ZERO_CAMERA};
+    lastAudioMix=resolved.audioDirector?audio.update(delta,state,lastIntensity):null;
 
     lastSignatureMeter=getSignatureMeterValue(state.characterId,state);
     lastSignatureLabel=getSignatureMeterDefinition(state.characterId).label;
@@ -104,6 +109,7 @@ export function createPremiumRuntime({
     return {
       intensity:lastIntensity,
       camera:cameraState,
+      audio:lastAudioMix,
       vfxProfile:vfx.profile,
       recovery:encounter.recovery,
       signatureMeter:lastSignatureMeter,
@@ -182,9 +188,11 @@ export function createPremiumRuntime({
     intensity.reset();
     camera.reset();
     encounter.reset();
+    audio.reset();
     vfx.beginFrame();
     cameraState={...ZERO_CAMERA};
     lastIntensity=20;
+    lastAudioMix=resolved.audioDirector?audio.update(0,{},20):null;
     lastSignatureMeter=0;
     lastSignatureLabel='CORE';
     bossRewardState=createBossRewardState();
@@ -201,6 +209,7 @@ export function createPremiumRuntime({
     intensity,
     camera,
     encounter,
+    audio,
     vfx,
     signal,
     updateFrame,
@@ -217,6 +226,7 @@ export function createPremiumRuntime({
     reset,
     get intensityValue(){return lastIntensity},
     get cameraState(){return cameraState},
+    get audioMix(){return lastAudioMix},
     get signatureMeter(){return lastSignatureMeter},
     get signatureLabel(){return lastSignatureLabel},
     get bossRewardState(){return bossRewardState},
@@ -245,7 +255,7 @@ function installBrowserRuntime(){
     : null;
   const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,intensityOverlay,bossRewardUi});
   window.BreakPremiumRuntime=runtime;
-  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','premiumHud','combatV2','bossV2'].some(k=>flags[k]);
+  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','audioDirector','premiumHud','combatV2','bossV2'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
   return runtime;
 }
