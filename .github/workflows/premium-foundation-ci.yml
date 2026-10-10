@@ -61,6 +61,10 @@ jobs:
         run: node --test tests/premium-fever-transition.test.mjs tests/premium-fever-transition-index.test.mjs
       - name: Run boss reward reintegration regression
         run: node --test tests/premium-boss-reward-integrator.test.mjs
+      - name: Run Premium index tests
+        run: node --test tests/premium-*-index.test.mjs tests/premium-index-integration.test.mjs
+      - name: Run Premium runtime tests
+        run: node --test tests/premium-runtime*.test.mjs tests/premium-foundation.test.mjs
       - name: Run Premium test group
         run: node --test tests/premium-*.test.mjs
       - name: Run Stage 11 legacy test group
