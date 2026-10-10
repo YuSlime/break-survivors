@@ -33,10 +33,11 @@ test('index loads the Premium runtime module without replacing the legacy game',
   assert.match(source,/requestAnimationFrame\(loop\)/);
 });
 
-test('game loop feeds live run state into the Premium runtime',()=>{
+test('game loop feeds live run state into the Premium runtime exactly once per animation frame',()=>{
   const loop=functionSource('loop');
   const snapshot=functionSource('premiumFrameState');
-  assert.match(loop,/BreakPremiumRuntime\?\.updateFrame\?\.\(frameDt,premiumFrameState\(\)\)/);
+  const updates=loop.match(/BreakPremiumRuntime\?\.updateFrame\?\.\(frameDt,premiumFrameState\(\)\)/g)||[];
+  assert.equal(updates.length,1,'Premium runtime must update exactly once per animation frame');
   for(const token of ['highDensity','breakActive','eliteActive','feverActive','limitBreakActive','bossFinalPhase']){
     assert.match(snapshot,new RegExp(token));
   }
