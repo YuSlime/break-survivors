@@ -32,10 +32,16 @@ function findFunctionRanges(text,name){
 const canonical=`function premiumFrameState(){
   const activeEnemies=enemies.filter(e=>!e.dead);
   const boss=activeEnemies.find(e=>e.type==='boss')||null;
+  const premiumTacticalCounts={support:0,assassin:0,summoner:0,shielder:0};
+  let premiumEliteCount=0;
+  for(const enemy of activeEnemies){
+    if(enemy.type==='elite')premiumEliteCount++;
+    if(enemy.premiumDef&&premiumTacticalCounts[enemy.type]!==undefined)premiumTacticalCounts[enemy.type]++;
+  }
   return {
     highDensity:activeEnemies.length>=45,
     breakActive:breakCombo>=10,
-    eliteActive:activeEnemies.some(e=>e.type==='elite'),
+    eliteActive:premiumEliteCount>0,
     feverActive:feverActive(),
     limitBreakActive:limitBreakLevel>0||!!lbEventState,
     bossActive:!!boss,
@@ -43,6 +49,8 @@ const canonical=`function premiumFrameState(){
     eventActive:!!activeEvent,
     threatActive:threatLevel>0,
     bossFinalPhase:!!(boss&&boss.maxHp>0&&boss.hp/boss.maxHp<=.15),
+    activeTacticalCounts:premiumTacticalCounts,
+    eliteCount:premiumEliteCount,
     characterId:currentCharacter.id,
     characterLevel:charLevel(currentCharacter.id),
     gunnerMomentum,
