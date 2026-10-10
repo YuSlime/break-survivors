@@ -18,6 +18,7 @@ on:
       - tools/apply-premium-fever-transition-integration.mjs
       - tools/apply-premium-limit-break-transition-integration.mjs
       - tools/apply-premium-damage-numbers-integration.mjs
+      - tools/apply-premium-stage-environment-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -53,6 +54,7 @@ jobs:
           node tools/apply-premium-fever-transition-integration.mjs
           node tools/apply-premium-limit-break-transition-integration.mjs
           node tools/apply-premium-damage-numbers-integration.mjs
+          node tools/apply-premium-stage-environment-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
