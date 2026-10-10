@@ -43,6 +43,7 @@ jobs:
           node tools/apply-premium-tactical-cap-integration.mjs
           node tools/apply-premium-tactical-readability-integration.mjs
           node tools/apply-premium-combat-feedback-integration.mjs
+          node tools/apply-premium-death-presentation-integration.mjs
       - name: Run complete test suite
         run: |
           git diff --check
