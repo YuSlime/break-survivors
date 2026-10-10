@@ -7,7 +7,8 @@ import {
   PREMIUM_TACTICAL_SPAWN_LIMITS,
   getPremiumEnemyArchetype,
   pickPremiumEnemyArchetype,
-  getPremiumEnemyPressureScore
+  getPremiumEnemyPressureScore,
+  getPremiumTacticalSpawnLimits
 } from '../src/data/enemies-premium.js';
 
 const required=['support','assassin','summoner','shielder'];
@@ -84,6 +85,24 @@ test('tactical spawn caps stop support-role pileups in dense late runs',()=>{
 
   const cappedShielder={support:0,assassin:0,summoner:0,shielder:1};
   assert.equal(pickPremiumEnemyArchetype({gameTime:220,threat:5,roll:.33,activeCounts:cappedShielder}),null);
+});
+
+test('Elite overlap progressively tightens the tactical spawn budget',()=>{
+  const normal=getPremiumTacticalSpawnLimits({eliteCount:0});
+  const oneElite=getPremiumTacticalSpawnLimits({eliteCount:1});
+  const twoElites=getPremiumTacticalSpawnLimits({eliteCount:2});
+  assert.equal(normal.total,5);
+  assert.equal(oneElite.total,4);
+  assert.equal(twoElites.total,3);
+  assert.equal(twoElites.summoner,0);
+  assert.equal(twoElites.shielder,0);
+});
+
+test('multiple Elites suppress Summoner and Shielder overlap while preserving lighter roles',()=>{
+  assert.equal(pickPremiumEnemyArchetype({gameTime:220,threat:5,roll:.05,eliteCount:2}),'support');
+  assert.equal(pickPremiumEnemyArchetype({gameTime:220,threat:5,roll:.15,eliteCount:2}),'assassin');
+  assert.equal(pickPremiumEnemyArchetype({gameTime:220,threat:5,roll:.25,eliteCount:2}),null);
+  assert.equal(pickPremiumEnemyArchetype({gameTime:220,threat:5,roll:.33,eliteCount:2}),null);
 });
 
 test('pressure scores keep Summoner and Shielder as highest-priority tactical targets',()=>{
