@@ -11224,6 +11224,13 @@ function playerStats(){
   }
   const lbBuff=getLbRewardStatMultipliers();
   damage*=lbBuff.damage;attackRate*=lbBuff.attackRate;move*=lbBuff.move;
+  const bossReward=window.BreakPremiumRuntime?.bossRewardState;
+  if(bossReward){
+    damage*=bossReward.damageMul||1;
+    attackRate*=bossReward.attackRateMul||1;
+    move*=bossReward.moveMul||1;
+    area*=bossReward.areaMul||1;
+  }
   return {
     maxHp:100+core.maxHpAdd,
     damage,attackRate,move,
@@ -11758,6 +11765,22 @@ function damageEnemy(e,dmg,impact=true){
   return false;
 }
 
+function applyPremiumBossRewardResult({choice,state}={}){
+  if(!choice||!state)return;
+  if(choice.category==='resource'){
+    save.coins+=choice.coins;runCoins+=choice.coins;
+    save.gems+=choice.gems;runGems+=choice.gems;
+    persistSoon();
+  }else if(choice.category==='recovery'){
+    if(Number.isFinite(state.hp))player.hp=state.hp;
+    if(Number.isFinite(state.ultCharge))ultCharge=state.ultCharge;
+  }
+  ps=playerStats();
+  player.hp=Math.min(player.hp,ps.maxHp);
+  showBreakCallout('BOSS CORE ACQUIRED',choice.label||'REWARD',choice.color||'#ffe16b');
+  updateHud();
+}
+
 function killEnemy(e,meta={}){
   if(e.dead) return;
   e.dead=true;
@@ -11792,6 +11815,13 @@ function killEnemy(e,meta={}){
   }
   if(e.type==='boss'){
     bossTimer=0;bossPending=false;playEventSfx('treasure_kill',.56,.88);
+    window.BreakPremiumRuntime?.presentBossChest?.({
+      bossesDefeated:runBosses,
+      threat:threatLevel,
+      hp:player.hp,
+      maxHp:ps.maxHp,
+      ultCharge
+    },applyPremiumBossRewardResult);
   }
 
   if(charLevel(currentCharacter.id)>=30){
@@ -14069,6 +14099,7 @@ function useUltimate(){
 
 function update(dt,refreshHud=true){
   if(!running) return;
+  if(window.BreakPremiumRuntime?.bossRewardOpen){if(refreshHud)updateHud();return}
   if(!updateBreakRush(dt)){if(refreshHud)updateHud();return}
   updateLimitBreakEvent(dt);
   if(!running)return;
