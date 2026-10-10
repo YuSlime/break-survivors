@@ -8,6 +8,7 @@ import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHu
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
 import {createHudFocusController} from '../ui/hud-focus.js';
+import {buildTacticalThreatView,getTacticalEnemyMarker as getTacticalEnemyMarkerDefinition,mountTacticalThreatHud} from '../ui/tactical-threat.js';
 import {getPremiumEnemyArchetype,pickPremiumEnemyArchetype,resolvePremiumEnemyAuras} from '../data/enemies-premium.js';
 import {resolveVoidTyrantPhase,getVoidTyrantPhaseDefinition,buildVoidTyrantAttackPlan} from '../bosses/void-tyrant.js';
 import {buildBossChestChoices,createBossRewardState,applyBossRewardChoice} from '../rewards/boss-chest.js';
@@ -54,6 +55,7 @@ export function createPremiumRuntime({
   signatureHud=null,
   hudFocus=null,
   intensityOverlay=null,
+  tacticalThreatHud=null,
   bossRewardUi=null
 }={}){
   const resolved=resolveFeatureFlags(flags);
@@ -68,6 +70,7 @@ export function createPremiumRuntime({
   let lastHudFocus=null;
   let lastSignatureMeter=0;
   let lastSignatureLabel='CORE';
+  let lastTacticalThreat=buildTacticalThreatView();
   let bossRewardState=createBossRewardState();
   let bossRewardOpen=false;
 
@@ -111,6 +114,16 @@ export function createPremiumRuntime({
       signatureHud.update({characterId:state.characterId,signatureMeter:lastSignatureMeter});
     }
 
+    lastTacticalThreat=resolved.combatV2
+      ? buildTacticalThreatView({
+          activeCounts:state.activeTacticalCounts,
+          eliteCount:state.eliteCount,
+          bossActive:state.bossActive
+        })
+      : buildTacticalThreatView();
+    if(resolved.combatV2&&tacticalThreatHud)tacticalThreatHud.update(lastTacticalThreat);
+    else tacticalThreatHud?.hide?.();
+
     return {
       intensity:lastIntensity,
       camera:cameraState,
@@ -119,7 +132,8 @@ export function createPremiumRuntime({
       vfxProfile:vfx.profile,
       recovery:encounter.recovery,
       signatureMeter:lastSignatureMeter,
-      signatureLabel:lastSignatureLabel
+      signatureLabel:lastSignatureLabel,
+      tacticalThreat:lastTacticalThreat
     };
   }
 
@@ -143,6 +157,11 @@ export function createPremiumRuntime({
   function getTacticalEnemyDefinition(id){
     if(!resolved.combatV2)return null;
     return getPremiumEnemyArchetype(id);
+  }
+
+  function getTacticalEnemyMarker(id){
+    if(!resolved.combatV2)return null;
+    return getTacticalEnemyMarkerDefinition(id);
   }
 
   function resolveTacticalAuras(target,enemies=[]){
@@ -202,9 +221,11 @@ export function createPremiumRuntime({
     lastHudFocus=null;
     lastSignatureMeter=0;
     lastSignatureLabel='CORE';
+    lastTacticalThreat=buildTacticalThreatView();
     bossRewardState=createBossRewardState();
     bossRewardOpen=false;
     bossRewardUi?.hide?.();
+    tacticalThreatHud?.hide?.();
     if(resolved.premiumHud)hudFocus?.reset?.();
     signatureHud?.update?.({characterId:null,signatureMeter:0});
     if(resolved.intensityDirector&&intensityOverlay){
@@ -225,6 +246,7 @@ export function createPremiumRuntime({
     allowVfxCount,
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
+    getTacticalEnemyMarker,
     resolveTacticalAuras,
     resolveBossState,
     nextBossAttack,
@@ -238,6 +260,7 @@ export function createPremiumRuntime({
     get hudFocus(){return lastHudFocus},
     get signatureMeter(){return lastSignatureMeter},
     get signatureLabel(){return lastSignatureLabel},
+    get tacticalThreat(){return lastTacticalThreat},
     get bossRewardState(){return bossRewardState},
     get bossRewardOpen(){return bossRewardOpen}
   };
@@ -262,10 +285,13 @@ function installBrowserRuntime(){
   const intensityOverlay=flags.intensityDirector
     ? mountIntensityOverlay({document,parent:gameWrap})
     : null;
+  const tacticalThreatHud=flags.combatV2
+    ? mountTacticalThreatHud({document,parent:gameWrap})
+    : null;
   const bossRewardUi=flags.bossV2
     ? mountBossRewardOverlay({document,parent:gameWrap})
     : null;
-  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,hudFocus,intensityOverlay,bossRewardUi});
+  const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,hudFocus,intensityOverlay,tacticalThreatHud,bossRewardUi});
   window.BreakPremiumRuntime=runtime;
   const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','audioDirector','premiumHud','combatV2','bossV2'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
