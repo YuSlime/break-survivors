@@ -44,6 +44,7 @@ jobs:
           node tools/apply-premium-tactical-readability-integration.mjs
           node tools/apply-premium-combat-feedback-integration.mjs
           node tools/apply-premium-death-presentation-integration.mjs
+          node tools/apply-premium-boss-death-integration.mjs
       - name: Run complete test suite
         run: |
           git diff --check
