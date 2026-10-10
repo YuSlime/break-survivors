@@ -42,6 +42,7 @@ jobs:
           node tools/apply-premium-frame-state-integration.mjs
           node tools/apply-premium-tactical-cap-integration.mjs
           node tools/apply-premium-tactical-readability-integration.mjs
+          node tools/apply-premium-combat-feedback-integration.mjs
       - name: Run complete test suite
         run: |
           git diff --check
