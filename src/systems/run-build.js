@@ -58,6 +58,14 @@ export function buildRunDraft(characterId,state=createRunBuildState(),context={}
 
 export function applyRunChoice(state=createRunBuildState(),choice){
   if(!choice||Math.max(0,Number(state.pending)||0)<=0)return state;
+  if(choice.exclusiveGroup){
+    const locked=state?.exclusive?.[choice.exclusiveGroup];
+    if(locked&&locked!==choice.id)return state;
+  }
+  const requires=Array.isArray(choice.requires)?choice.requires:[];
+  if(requires.some(id=>rank(state,id)<=0))return state;
+  const maxRank=Math.max(1,Number(choice.maxRank)||1);
+  if(rank(state,choice.id)>=maxRank)return state;
   const next=applyUpgrade(state,choice);
   return {...next,pending:Math.max(0,(Number(state.pending)||0)-1)};
 }
@@ -75,9 +83,25 @@ export function deriveRunEffects(characterId,state=createRunBuildState()){
     clusterAdd:0,
     chainChanceAdd:0,
     radiusMul:1,
+    chainAdd:0,
+    lockAdd:0,
     thunderCrit:false,
     smartMines:false,
     breakDetonation:false,
+    stormField:false,
+    overcharge:false,
+    criticalStorm:false,
+    executeThreshold:0,
+    parry:false,
+    cyclone:false,
+    flowExecution:false,
+    gravityPull:false,
+    orbitalCore:false,
+    collapseCore:false,
+    resonantCollapse:false,
+    missileCluster:false,
+    airStrike:false,
+    targetOverpaint:false,
     evolution:null,
     evolutionMomentumThreshold:1
   };
@@ -108,6 +132,53 @@ export function deriveRunEffects(characterId,state=createRunBuildState()){
       fx.chainChanceAdd+=.22;
       fx.radiusMul*=1.32;
       fx.damageMul*=1.22;
+    }
+  }else if(characterId==='thunderfox'){
+    fx.damageMul*=1+rank(state,'thunderfox-charge')*.12;
+    if(rank(state,'thunderfox-chain'))fx.chainAdd+=2;
+    if(rank(state,'thunderfox-stormfield'))fx.stormField=true;
+    if(rank(state,'thunderfox-overcharge'))fx.overcharge=true;
+    if(rank(state,'thunderfox-critstorm'))fx.criticalStorm=true;
+    if(rank(state,'thunderfox-god')){
+      fx.evolution='thunder-god';
+      fx.damageMul*=1.25;
+      fx.chainAdd+=3;
+      fx.radiusMul*=1.18;
+    }
+  }else if(characterId==='blademaster'){
+    fx.damageMul*=1+rank(state,'blade-edge')*.12;
+    if(rank(state,'blade-execution'))fx.executeThreshold=.15;
+    if(rank(state,'blade-parry'))fx.parry=true;
+    if(rank(state,'blade-cyclone'))fx.cyclone=true;
+    if(rank(state,'blade-flowkill'))fx.flowExecution=true;
+    if(rank(state,'blade-void')){
+      fx.evolution='void-blade';
+      fx.damageMul*=1.30;
+      fx.radiusMul*=1.18;
+      fx.executeThreshold=Math.max(fx.executeThreshold,.20);
+    }
+  }else if(characterId==='nova'){
+    fx.damageMul*=1+rank(state,'nova-core')*.12;
+    if(rank(state,'nova-gravity'))fx.gravityPull=true;
+    if(rank(state,'nova-orbit'))fx.orbitalCore=true;
+    if(rank(state,'nova-collapse'))fx.collapseCore=true;
+    if(rank(state,'nova-resonant'))fx.resonantCollapse=true;
+    if(rank(state,'nova-supernova')){
+      fx.evolution='supernova';
+      fx.damageMul*=1.28;
+      fx.radiusMul*=1.35;
+    }
+  }else if(characterId==='missilequeen'){
+    fx.damageMul*=1+rank(state,'mq-warhead')*.12;
+    if(rank(state,'mq-multilock'))fx.lockAdd+=2;
+    if(rank(state,'mq-cluster'))fx.missileCluster=true;
+    if(rank(state,'mq-airstrike'))fx.airStrike=true;
+    if(rank(state,'mq-overpaint'))fx.targetOverpaint=true;
+    if(rank(state,'mq-annihilation')){
+      fx.evolution='total-annihilation';
+      fx.damageMul*=1.25;
+      fx.lockAdd+=4;
+      fx.radiusMul*=1.20;
     }
   }
 
