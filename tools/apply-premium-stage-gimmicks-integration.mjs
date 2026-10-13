@@ -142,8 +142,8 @@ function drawPremiumStageGimmick(frame){
   ctx.restore();
 }
 
-function update(dt){`;
-replaceOnce('stage-gimmick-helpers','function update(dt){',liveHelpers);
+function update(dt,refreshHud=true){`;
+replaceOnce('stage-gimmick-helpers','function update(dt,refreshHud=true){',liveHelpers);
 
 replaceOnce(
   'stage-gimmick-update-call',
