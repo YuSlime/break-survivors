@@ -1,5 +1,14 @@
 # BREAK SURVIVORS
 
-Stage 12: **CORE GRID** — permanent 61-node progression with six branches, sync milestones, reset flow, gacha, character growth, and Stage 11.1 LIMIT BREAK systems.
+Browser game prototype.
 
-Open `index.html` locally or deploy the repository to Vercel.
+## Deployment
+
+This repository is connected to Vercel.
+
+- Production branch: `main`
+- Push to `main` → automatic production deployment
+- No build step is required
+- Entry point: `index.html`
+
+Current game build: Stage 4.0
