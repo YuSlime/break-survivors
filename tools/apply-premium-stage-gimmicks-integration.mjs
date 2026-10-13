@@ -183,8 +183,8 @@ replaceOnce(
 
 replaceOnce(
   'stage-gimmick-draw-call',
-  `  // Visual effects\n`,
-  `  if(premiumStageGimmickFrame)drawPremiumStageGimmick(premiumStageGimmickFrame);\n\n  // Visual effects\n`
+  `  // Stage 10.4 EXP — irregular fireball bloom replaces Bomb Cat ring spam.`,
+  `  if(premiumStageGimmickFrame)drawPremiumStageGimmick(premiumStageGimmickFrame);\n\n  // Stage 10.4 EXP — irregular fireball bloom replaces Bomb Cat ring spam.`
 );
 
 fs.writeFileSync(path,source);
