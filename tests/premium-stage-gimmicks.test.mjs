@@ -39,6 +39,25 @@ test('ASH WASTELAND volcanic strike can damage enemies and has a telegraph befor
   assert.ok(frame.target.y>0&&frame.target.y<700);
 });
 
+test('ASH WASTELAND telegraph points at the next impact location',()=>{
+  const def=getStageGimmick('ash-wasteland');
+  const telegraph=resolveStageGimmickFrame({
+    stageId:'ash-wasteland',
+    time:def.cycleSeconds-def.telegraphSeconds/2,
+    width:1000,
+    height:700
+  });
+  const impact=resolveStageGimmickFrame({
+    stageId:'ash-wasteland',
+    time:def.cycleSeconds+.05,
+    width:1000,
+    height:700
+  });
+  assert.equal(telegraph.phase,'telegraph');
+  assert.equal(impact.phase,'active');
+  assert.deepEqual(telegraph.target,impact.target);
+});
+
 test('VOID SECTOR safe zone moves deterministically and remains inside the arena',()=>{
   const def=getStageGimmick('void-sector');
   const a=resolveStageGimmickFrame({stageId:'void-sector',time:0,width:1000,height:700});
