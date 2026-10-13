@@ -68,7 +68,9 @@ jobs:
       - name: Prepare Premium stage gimmicks
         run: node tools/apply-premium-stage-gimmicks-integration.mjs
       - name: Prepare Premium run build integration
-        run: node tools/apply-premium-run-build-integration.mjs
+        run: |
+          node tools/apply-premium-run-build-integration.mjs
+          node tools/apply-premium-run-build-advanced-integration.mjs
       - name: Verify generated inline JavaScript
         run: node --test tests/index-inline-syntax.test.mjs
       - name: Run FEVER regression tests
