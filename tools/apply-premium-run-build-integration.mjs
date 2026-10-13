@@ -3,6 +3,16 @@ import fs from 'node:fs';
 const file=new URL('../index.html',import.meta.url);
 let html=fs.readFileSync(file,'utf8');
 const MARK='// PREMIUM RUN BUILD LIVE V1';
+const REQUIRED_LIVE_MARKERS=Object.freeze([
+  './src/game/run-build-controller.js',
+  'window.BreakRunBuild?.gainXp?.(e)',
+  'window.BreakRunBuild?.ensureDraft?.()',
+  'window.BreakRunBuild?.open',
+  'controller.presentDraft?.(currentCharacter.id',
+  "window.BreakRunBuild?.getEffects?.('gunner')",
+  "window.BreakRunBuild?.getEffects?.('bombcat')",
+  'premiumRunRateMul'
+]);
 
 function replaceOnce(from,to,label){
   const count=html.split(from).length-1;
@@ -11,8 +21,9 @@ function replaceOnce(from,to,label){
 }
 
 if(html.includes(MARK)){
-  if(!html.includes('./src/game/run-build-controller.js'))throw new Error('Run build marker exists but controller module tag is missing');
-  console.log('Premium run build live integration already present');
+  const missing=REQUIRED_LIVE_MARKERS.filter(marker=>!html.includes(marker));
+  if(missing.length)throw new Error(`Run build marker exists but live integration is incomplete: ${missing.join(', ')}`);
+  console.log('Premium run build live integration already present and validated');
   process.exit(0);
 }
 
