@@ -15,6 +15,11 @@ export function createRunBuildController({runtime=null,ui=null}={}){
     state=runtime.gainRunBuildXp(state,source);
     return getState();
   }
+  function ensureDraft(){
+    if(!enabled())return false;
+    state={...state,pending:Math.max(1,Math.max(0,Number(state.pending)||0))};
+    return true;
+  }
   function getEffects(characterId){
     return runtime?.getRunEffects?.(characterId,state)||null;
   }
@@ -47,7 +52,7 @@ export function createRunBuildController({runtime=null,ui=null}={}){
     return getState();
   }
   return {
-    gainXp,getState,getEffects,prepareDraft,claim,presentDraft,reset,
+    gainXp,ensureDraft,getState,getEffects,prepareDraft,claim,presentDraft,reset,
     get open(){return open},
     get pending(){return Math.max(0,Number(state.pending)||0)}
   };
