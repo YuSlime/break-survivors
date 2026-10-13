@@ -23,6 +23,7 @@ on:
       - tools/apply-premium-stage-transition-integration.mjs
       - tools/apply-premium-stage-gimmicks-integration.mjs
       - tools/apply-premium-run-build-integration.mjs
+      - tools/apply-premium-run-build-advanced-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -63,6 +64,7 @@ jobs:
           node tools/apply-premium-stage-transition-integration.mjs
           node tools/apply-premium-stage-gimmicks-integration.mjs
           node tools/apply-premium-run-build-integration.mjs
+          node tools/apply-premium-run-build-advanced-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
