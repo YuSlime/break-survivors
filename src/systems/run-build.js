@@ -67,6 +67,7 @@ function rank(state,id){return Math.max(0,Number(state?.ranks?.[id])||0)}
 export function deriveRunEffects(characterId,state=createRunBuildState()){
   const fx={
     damageMul:1,
+    attackRateMul:1,
     pierceAdd:0,
     ricochetChance:0,
     ricochetCount:0,
@@ -83,6 +84,7 @@ export function deriveRunEffects(characterId,state=createRunBuildState()){
 
   if(characterId==='gunner'){
     fx.damageMul*=1+rank(state,'gunner-calibration')*.12;
+    fx.attackRateMul*=1+rank(state,'gunner-tempo')*.08;
     if(rank(state,'gunner-ricochet')){fx.ricochetChance=1;fx.ricochetCount=1}
     if(rank(state,'gunner-piercing'))fx.pierceAdd+=3;
     if(rank(state,'gunner-split'))fx.splitChance=.38;
@@ -95,6 +97,7 @@ export function deriveRunEffects(characterId,state=createRunBuildState()){
     }
   }else if(characterId==='bombcat'){
     fx.damageMul*=1+rank(state,'bombcat-payload')*.12;
+    fx.attackRateMul*=1+rank(state,'bombcat-fuse')*.08;
     if(rank(state,'bombcat-cluster'))fx.clusterAdd+=3;
     if(rank(state,'bombcat-mines'))fx.smartMines=true;
     if(rank(state,'bombcat-chain-fuse'))fx.chainChanceAdd+=.34;
