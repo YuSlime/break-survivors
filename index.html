@@ -11392,6 +11392,8 @@ const player={x:WORLD_W/2,y:WORLD_H/2,r:14,hp:ps.maxHp,attackCd:0,hitCd:0,angle:
 
 function resetRun(){
   window.BreakPremiumRuntime?.reset?.();
+  window.BreakRunBuild?.reset?.();
+  window.__premiumRunBossDraftPending=false;
   attackType=currentCharacter.attack;
   setAttack(attackType);
   ps=playerStats();
@@ -11878,7 +11880,7 @@ function drawPickups(){
   ctx.shadowBlur=fxBlur(0);ctx.globalAlpha=1;ctx.textAlign='start';ctx.textBaseline='alphabetic';
 }
 
-function damageEnemy(e,dmg,impact=true){
+function damageEnemy(e,dmg,impact=true,meta={}){
   if(!e || e.dead || isLbWorldFrozen()) return false;
 
   const hpBefore=e.hp;
@@ -11891,6 +11893,10 @@ function damageEnemy(e,dmg,impact=true){
   const premiumAuraState=window.BreakPremiumRuntime?.resolveTacticalAuras?.(e,enemies)||{speedMul:1,touchMul:1,damageTakenMul:1};
   actualDmg*=premiumAuraState.damageTakenMul;
   e.hp-=actualDmg;
+
+  if(crit&&meta.premiumGunner&&meta.premiumThunderCrit){
+    chainLightning(actualDmg*.30,3,{range:185*ps.area,decay:.72,width:2.4,origin:{x:e.x,y:e.y},exclude:e});
+  }
 
   if(impact){
     const weapon=activeWeaponKey();
@@ -12040,9 +12046,48 @@ function applyPremiumBossRewardResult({choice,state}={}){
   updateHud();
 }
 
+// PREMIUM RUN BUILD LIVE V1
+function premiumRunTierColor(tier){
+  return ({stat:'#70d7ff',modify:'#ffbb53',synergy:'#d66cff',evolution:'#ff657e'})[tier]||'#70d7ff';
+}
+function premiumRunMaybeDraft(){
+  const controller=window.BreakRunBuild;
+  if(!running||!controller||controller.open||controller.pending<=0)return false;
+  if(window.BreakPremiumRuntime?.bossRewardOpen)return false;
+  if(typeof isLbWorldFrozen==='function'&&isLbWorldFrozen())return false;
+  const bossReward=!!window.__premiumRunBossDraftPending;
+  const opened=controller.presentDraft?.(currentCharacter.id,{
+    breakActive:breakCombo>=10,
+    bossReward
+  },result=>{
+    const choice=result?.choice;
+    if(choice){
+      showBreakCallout(choice.tier==='evolution'?'EVOLUTION':'UPGRADE ACQUIRED',choice.name||choice.id,premiumRunTierColor(choice.tier));
+      updateHud();
+    }
+  });
+  if(opened)window.__premiumRunBossDraftPending=false;
+  return !!opened;
+}
+function premiumRunGainKillXp(e){
+  const controller=window.BreakRunBuild;
+  if(!controller)return null;
+  const state=controller.gainXp?.(e);
+  if(e?.type==='boss'){
+    controller.ensureDraft?.();
+    window.__premiumRunBossDraftPending=true;
+  }
+  return state;
+}
+function premiumRunEffects(id=currentCharacter.id){
+  return window.BreakRunBuild?.getEffects?.(id)||null;
+}
+
 function killEnemy(e,meta={}){
   if(e.dead) return;
   e.dead=true;
+  window.BreakRunBuild?.gainXp?.(e);
+  if(e.type==='boss'){window.BreakRunBuild?.ensureDraft?.();window.__premiumRunBossDraftPending=true}
   const premiumDeathEvent=e.type==='boss'?'bossKill':null;
   if(premiumDeathEvent)window.BreakPremiumRuntime?.signal?.(premiumDeathEvent,{direction:{x:e.x-player.x,y:e.y-player.y}});
 
@@ -13470,6 +13515,7 @@ function nextAttackCount(id){
 }
 function addBullet(v,dmg,pierce=6,opts={}){
   const core=getCoreEffects(),baseSpeed=(opts.speed||520)*core.projectileSpeedMul;
+  const premiumGunnerFx=opts.gunner&&currentCharacter.id==='gunner'?window.BreakRunBuild?.getEffects?.('gunner'):null;
   const baseAng=Math.atan2(v.y,v.x)+(opts.angle||0);
   const extra=opts.ult||opts.noCoreExtra?0:Math.max(0,Math.floor(core.extraProjectiles||0));
   const shots=1+extra;
@@ -13477,13 +13523,14 @@ function addBullet(v,dmg,pierce=6,opts={}){
     const off=shots===1?0:(i-(shots-1)/2)*.085,ang=baseAng+off;
     bullets.push({
       x:player.x,y:player.y,vx:Math.cos(ang)*baseSpeed,vy:Math.sin(ang)*baseSpeed,
-      r:opts.r||5,life:opts.life||1.7,dmg:dmg*core.projectileDamageMul,pierce:pierce+core.pierceAdd,kind:opts.kind||'pierce',
+      r:opts.r||5,life:opts.life||1.7,dmg:dmg*core.projectileDamageMul*(premiumGunnerFx?.damageMul||1),pierce:pierce+core.pierceAdd+(premiumGunnerFx?.pierceAdd||0),kind:opts.kind||'pierce',
       color:opts.color||null,radius:opts.radius||0,clusterCount:opts.clusterCount||0,
       royalClusterCount:opts.royalClusterCount||0,chainChance:opts.chainChance||0,
       aftershock:!!opts.aftershock,nuke:!!opts.nuke,royal:!!opts.royal,
       bombcat:!!opts.bombcat,bombVisual:!!opts.bombVisual,bombAngle:opts.bombAngle||0,bombSpin:opts.bombSpin||0,
       gunner:!!opts.gunner,ult:!!opts.ult,trail:opts.trail??!!opts.gunner,
-      ricochetChance:core.ricochetChance,ricochetLeft:core.ricochetCount,splitChance:core.splitChance,splitChild:false
+      premiumThunderCrit:!!premiumGunnerFx?.thunderCrit,
+      ricochetChance:Math.min(1,core.ricochetChance+(premiumGunnerFx?.ricochetChance||0)),ricochetLeft:core.ricochetCount+(premiumGunnerFx?.ricochetCount||0),splitChance:Math.min(1,core.splitChance+(premiumGunnerFx?.splitChance||0)),splitChild:false
     });
   }
 }
@@ -13536,9 +13583,11 @@ function firePrimary(force=false){
   }
 
   const core=getCoreEffects();
+  const premiumRunFx=window.BreakRunBuild?.getEffects?.(currentCharacter.id)||null;
+  const premiumRunRateMul=premiumRunFx?.attackRateMul||1;
   const gunnerRate=(currentCharacter.id==='gunner'&&attackType==='pierce'&&ownGrowthActive())?gunnerMomentumMul():1;
   const lowHp=player.hp<=ps.maxHp*.35,breakBoost=breakCombo>=25;
-  const rate=ps.attackRate*(feverActive()?1.35:1)*(itemBuffs.drink>0?2:1)*gunnerRate*(lowHp?1+core.berserkRate:1)*(breakBoost?1+core.breakAttackRate:1);
+  const rate=ps.attackRate*premiumRunRateMul*(feverActive()?1.35:1)*(itemBuffs.drink>0?2:1)*gunnerRate*(lowHp?1+core.berserkRate:1)*(breakBoost?1+core.breakAttackRate:1);
   player.attackCd=1/rate;
   const v=aimVector(); player.angle=Math.atan2(v.y,v.x);
   const base=ps.damage*(lowHp?1+core.berserkDamage:1)*(breakBoost?1+core.breakDamage:1);
@@ -13608,17 +13657,18 @@ function firePrimary(force=false){
     const profile=isBombCat?getBombCatCombatProfile(lv,br,count):{
       clusterCount:0,chainChance:0,aftershock:false,royal:false,royalClusterCount:0,bombScale:1,projectileSpeed:400
     };
-    let radius=70*ps.area;
+    const premiumBombFx=isBombCat?window.BreakRunBuild?.getEffects?.('bombcat'):null;
+    let radius=70*ps.area*(premiumBombFx?.radiusMul||1);
     if(isBombCat&&lv>=5)radius*=1.18;
     if(isBombCat)playBombCatLaunchSfx(profile.royal);
-    addBullet(v,base*.7,0,{
+    addBullet(v,base*.7*(premiumBombFx?.damageMul||1),0,{
       speed:profile.royal?285:profile.projectileSpeed,
       r:profile.royal?16:7*profile.bombScale,
       life:2.0,kind:'explosion',
       radius:profile.royal?radius*2.15:radius,
-      clusterCount:profile.clusterCount,
-      royalClusterCount:profile.royal?profile.royalClusterCount:0,
-      chainChance:profile.chainChance,
+      clusterCount:profile.clusterCount+(premiumBombFx?.clusterAdd||0),
+      royalClusterCount:profile.royal?profile.royalClusterCount+(premiumBombFx?.clusterAdd||0):0,
+      chainChance:Math.min(1,profile.chainChance+(premiumBombFx?.chainChanceAdd||0)),
       aftershock:profile.aftershock,
       royal:profile.royal,
       bombcat:isBombCat,bombVisual:isBombCat,bombSpin:profile.royal?3.2:5.4,
@@ -13898,8 +13948,8 @@ function explode(x,y,r,dmg,color='#ff9f43',opts={}){
 function chainLightning(dmg,count=5,opts={}){
   const core=getCoreEffects();
   count+=core.chainLinks;
-  let src={x:player.x,y:player.y};
-  const used=new Set(), range=(opts.range||190*ps.area)*core.chainRangeMul, decay=opts.decay??.82, hit=[];
+  let src=opts.origin||{x:player.x,y:player.y};
+  const used=new Set(opts.exclude?[opts.exclude]:[]), range=(opts.range||190*ps.area)*core.chainRangeMul, decay=opts.decay??.82, hit=[];
   for(let i=0;i<count;i++){
     let target=null,bd=i===0?9999:range;
     for(const e of enemies){
@@ -14693,6 +14743,8 @@ function drawPremiumStageGimmick(frame){
 function update(dt,refreshHud=true){
   if(!running) return;
   if(window.BreakPremiumRuntime?.bossRewardOpen){if(refreshHud)updateHud();return}
+  if(window.BreakRunBuild?.open){if(refreshHud)updateHud();return}
+  if(premiumRunMaybeDraft()){if(refreshHud)updateHud();return}
   if(!updateBreakRush(dt)){if(refreshHud)updateHud();return}
   updateLimitBreakEvent(dt);
   if(!running)return;
@@ -14748,7 +14800,7 @@ function update(dt,refreshHud=true){
       if(e.dead||b.hit?.has(e)) continue;
       if(Math.hypot(e.x-b.x,e.y-b.y)<=e.r+b.r){
         if(!b.hit) b.hit=new Set(); b.hit.add(e);
-        damageEnemy(e,b.dmg);
+        damageEnemy(e,b.dmg,true,{premiumGunner:!!b.gunner,premiumThunderCrit:!!b.premiumThunderCrit});
         if(b.gunner)gunnerImpactFx(b,e);
         if(!b.splitChild&&b.kind!=='explosion'&&b.splitChance>0&&Math.random()<b.splitChance){
           const baseA=Math.atan2(b.vy,b.vx),spd=Math.hypot(b.vx,b.vy);
@@ -17117,5 +17169,6 @@ applyLanguage();syncSettingsUi();buildAttackButtons();buildCharacterList();updat
 })();
 </script>
 <script type="module" src="./src/game/premium-runtime.js"></script>
+<script type="module" src="./src/game/run-build-controller.js"></script>
 </body>
 </html>
