@@ -3,6 +3,7 @@ const u=(id,tier,name,effect,extra={})=>Object.freeze({id,tier,name,effect,maxRa
 export const PREMIUM_UPGRADES=Object.freeze({
   gunner:Object.freeze([
     u('gunner-calibration','stat','CALIBRATION','Damage +12%',{maxRank:3}),
+    u('gunner-tempo','stat','TRIGGER TEMPO','Attack Speed +8%',{maxRank:3}),
     u('gunner-ricochet','modify','RICOCHET','Shots bounce to another enemy'),
     u('gunner-piercing','modify','PIERCING CORE','Shots pierce additional targets',{exclusiveGroup:'gunner-shot-path'}),
     u('gunner-split','modify','SPLIT SHOT','Hits split into two secondary rounds',{exclusiveGroup:'gunner-shot-path'}),
@@ -11,6 +12,7 @@ export const PREMIUM_UPGRADES=Object.freeze({
   ]),
   bombcat:Object.freeze([
     u('bombcat-payload','stat','HEAVY PAYLOAD','Explosion damage +12%',{maxRank:3}),
+    u('bombcat-fuse','stat','QUICK FUSE','Attack Speed +8%',{maxRank:3}),
     u('bombcat-cluster','modify','CLUSTER BOMB','Bombs split into submunitions'),
     u('bombcat-mines','modify','SMART MINES','Bombs leave armed proximity mines',{exclusiveGroup:'bombcat-payload-path'}),
     u('bombcat-chain-fuse','modify','CHAIN FUSE','Explosions prime nearby enemies',{exclusiveGroup:'bombcat-payload-path'}),
