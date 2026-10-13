@@ -61,11 +61,11 @@ function cyclePhase(time,cycle){
   return ((t%cycle)+cycle)%cycle;
 }
 
-function strikeTarget(stageId,time,width,height,radius){
+function strikeTarget(stageId,time,width,height,radius,indexOffset=0){
   const w=Math.max(radius*2+1,finite(width,960));
   const h=Math.max(radius*2+1,finite(height,540));
   const cycle=GIMMICKS[stageId]?.cycleSeconds||20;
-  const index=Math.floor(Math.max(0,finite(time))/cycle);
+  const index=Math.floor(Math.max(0,finite(time))/cycle)+indexOffset;
   const sx=(Math.sin(index*2.3999632297+1.17)+1)*.5;
   const sy=(Math.sin(index*1.6180339887+2.41)+1)*.5;
   return freeze({
@@ -113,15 +113,15 @@ export function resolveStageGimmickFrame({stageId='neon-ruins',time=0,width=960,
   if(def.kind==='experiment-overdrive'){
     return freeze({
       ...common,
-      phase:active||phaseInCycle<def.activeSeconds?'active':telegraph?'telegraph':'idle',
-      enemySpeedMul:phaseInCycle<def.activeSeconds?def.enemySpeedMul:1,
-      enemyDamageMul:phaseInCycle<def.activeSeconds?def.enemyDamageMul:1,
-      rewardMul:phaseInCycle<def.activeSeconds?def.rewardMul:1
+      phase:active?'active':telegraph?'telegraph':'idle',
+      enemySpeedMul:active?def.enemySpeedMul:1,
+      enemyDamageMul:active?def.enemyDamageMul:1,
+      rewardMul:active?def.rewardMul:1
     });
   }
 
   const target=def.kind==='volcanic-strike'
-    ?strikeTarget(def.stageId,t,width,height,def.radius)
+    ?strikeTarget(def.stageId,t,width,height,def.radius,telegraph&&!active?1:0)
     :freeze({x:finite(width,960)/2,y:finite(height,540)/2});
 
   return freeze({
