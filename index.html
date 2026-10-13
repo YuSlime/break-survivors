@@ -11961,7 +11961,7 @@ function damageEnemy(e,dmg,impact=true,meta={}){
     const overkill=actualDmg>=Math.max(1,hpBefore)*1.45;
     if(overkill)hitStop=Math.max(hitStop,.032);
     else if(crit)hitStop=Math.max(hitStop,.018);
-    killEnemy(e,{crit,overkill,damage:actualDmg});
+    killEnemy(e,{...meta,crit,overkill,damage:actualDmg});
     return true;
   }
   return false;
@@ -12086,6 +12086,16 @@ function premiumRunEffects(id=currentCharacter.id){
 function killEnemy(e,meta={}){
   if(e.dead) return;
   e.dead=true;
+  if(meta.premiumBombCat&&!meta.premiumBreakChain&&breakCombo>=10){
+    const premiumBombFx=window.BreakRunBuild?.getEffects?.('bombcat');
+    if(premiumBombFx?.breakDetonation&&e.type!=='boss'){
+      const now=performance.now();
+      if(now-(window.__premiumBreakDetonationAt||0)>=90){
+        window.__premiumBreakDetonationAt=now;
+        setTimeout(()=>{if(running)explode(e.x,e.y,52*ps.area,ps.damage*.45*(premiumBombFx.damageMul||1),'#ffb85a',{secondary:true,bombcat:true,silent:true,premiumBreakChain:true})},42);
+      }
+    }
+  }
   window.BreakRunBuild?.gainXp?.(e);
   if(e.type==='boss'){window.BreakRunBuild?.ensureDraft?.();window.__premiumRunBossDraftPending=true}
   const premiumDeathEvent=e.type==='boss'?'bossKill':null;
@@ -13513,9 +13523,12 @@ function nextAttackCount(id){
   attackCounters[id]=(attackCounters[id]||0)+1;
   return attackCounters[id];
 }
+// PREMIUM RUN BUILD ADVANCED V1
 function addBullet(v,dmg,pierce=6,opts={}){
-  const core=getCoreEffects(),baseSpeed=(opts.speed||520)*core.projectileSpeedMul;
+  const core=getCoreEffects();
   const premiumGunnerFx=opts.gunner&&currentCharacter.id==='gunner'?window.BreakRunBuild?.getEffects?.('gunner'):null;
+  const premiumRailstorm=!!(premiumGunnerFx?.evolution==='railstorm'&&gunnerMomentum/100>=(premiumGunnerFx?.evolutionMomentumThreshold||.8));
+  const baseSpeed=(opts.speed||520)*core.projectileSpeedMul*(premiumRailstorm?1.14:1);
   const baseAng=Math.atan2(v.y,v.x)+(opts.angle||0);
   const extra=opts.ult||opts.noCoreExtra?0:Math.max(0,Math.floor(core.extraProjectiles||0));
   const shots=1+extra;
@@ -13523,11 +13536,12 @@ function addBullet(v,dmg,pierce=6,opts={}){
     const off=shots===1?0:(i-(shots-1)/2)*.085,ang=baseAng+off;
     bullets.push({
       x:player.x,y:player.y,vx:Math.cos(ang)*baseSpeed,vy:Math.sin(ang)*baseSpeed,
-      r:opts.r||5,life:opts.life||1.7,dmg:dmg*core.projectileDamageMul*(premiumGunnerFx?.damageMul||1),pierce:pierce+core.pierceAdd+(premiumGunnerFx?.pierceAdd||0),kind:opts.kind||'pierce',
-      color:opts.color||null,radius:opts.radius||0,clusterCount:opts.clusterCount||0,
+      r:(opts.r||5)+(premiumRailstorm?1.8:0),life:opts.life||1.7,dmg:dmg*core.projectileDamageMul*(premiumGunnerFx?.damageMul||1),pierce:pierce+core.pierceAdd+(premiumGunnerFx?.pierceAdd||0),kind:premiumRailstorm?'rail':(opts.kind||'pierce'),
+      color:premiumRailstorm?'#edffff':(opts.color||null),radius:opts.radius||0,clusterCount:opts.clusterCount||0,
       royalClusterCount:opts.royalClusterCount||0,chainChance:opts.chainChance||0,
       aftershock:!!opts.aftershock,nuke:!!opts.nuke,royal:!!opts.royal,
       bombcat:!!opts.bombcat,bombVisual:!!opts.bombVisual,bombAngle:opts.bombAngle||0,bombSpin:opts.bombSpin||0,
+      premiumSmartMine:!!opts.premiumSmartMine,premiumBreakDetonation:!!opts.premiumBreakDetonation,premiumNuclear:!!opts.premiumNuclear,premiumMineArmed:!!opts.premiumMineArmed,
       gunner:!!opts.gunner,ult:!!opts.ult,trail:opts.trail??!!opts.gunner,
       premiumThunderCrit:!!premiumGunnerFx?.thunderCrit,
       ricochetChance:Math.min(1,core.ricochetChance+(premiumGunnerFx?.ricochetChance||0)),ricochetLeft:core.ricochetCount+(premiumGunnerFx?.ricochetCount||0),splitChance:Math.min(1,core.splitChance+(premiumGunnerFx?.splitChance||0)),splitChild:false
@@ -13672,7 +13686,10 @@ function firePrimary(force=false){
       aftershock:profile.aftershock,
       royal:profile.royal,
       bombcat:isBombCat,bombVisual:isBombCat,bombSpin:profile.royal?3.2:5.4,
-      color:profile.royal?'#fff0a0':'#ffb24a'
+      premiumSmartMine:!!premiumBombFx?.smartMines,
+      premiumBreakDetonation:!!premiumBombFx?.breakDetonation,
+      premiumNuclear:premiumBombFx?.evolution==='nuclear-cascade',
+      color:premiumBombFx?.evolution==='nuclear-cascade'?'#fff3b0':(profile.royal?'#fff0a0':'#ffb24a')
     });
     if(isBombCat)bombCatMuzzle(v,profile.royal);
     else muzzle('#ffb24a');
@@ -13916,6 +13933,26 @@ function spawnBombExplosionFx(x,y,r,color='#ff9f43',opts={}){
   for(let i=0;i<p.smoke;i+=stride)smoke.push({a:rnd(0,Math.PI*2),dist:rnd(.12,.48)*r,size:rnd(.24,.50)*r,delay:rnd(.10,.24)});
   bombExplosionFx.push({x,y,r,color,life:p.total,total:p.total,core:p.core,royal:!!opts.royal,lobes,shards,smoke});
 }
+function armPremiumBombMine(x,y,r,dmg,nuclear=false){
+  // PREMIUM MINE — proximity arm with a bounded fallback timer.
+  const born=performance.now(),scanRadius=r*1.18;
+  rings.push({x,y,r:4,max:scanRadius*.58,life:.48,total:.48,color:nuclear?'#fff3b0':'#ffbd63'});
+  const scan=()=>{
+    if(!running)return;
+    const elapsed=performance.now()-born;
+    const target=enemies.find(e=>!e.dead&&Math.hypot(e.x-x,e.y-y)<=scanRadius+e.r);
+    if(target||elapsed>=2200){
+      const rr=r*(nuclear?.76:.60),dd=dmg*(nuclear?.72:.52);
+      rings.push({x,y,r:3,max:rr*1.04,life:.24,total:.24,color:nuclear?'#fff3b0':'#ffc66e'});
+      explode(x,y,rr,dd,nuclear?'#fff3b0':'#ffc66e',{secondary:true,bombcat:true,silent:false,premiumBreakChain:true});
+      return;
+    }
+    if(elapsed%540<190)rings.push({x,y,r:3,max:scanRadius*.36,life:.18,total:.18,color:nuclear?'#fff3b0':'#ffbd63'});
+    setTimeout(scan,180);
+  };
+  setTimeout(scan,260);
+}
+
 function explode(x,y,r,dmg,color='#ff9f43',opts={}){
   r*=getCoreEffects().explosionRadiusMul;
   if(!opts.silent){
@@ -13935,7 +13972,7 @@ function explode(x,y,r,dmg,color='#ff9f43',opts={}){
     if(!opts.noShake)shake=Math.min(opts.royal?18:14,shake+(opts.royal?7:opts.secondary?2:4));
   }
   let kills=0;
-  for(const e of enemies) if(!e.dead && Math.hypot(e.x-x,e.y-y)<=r+e.r) if(damageEnemy(e,dmg))kills++;
+  for(const e of enemies) if(!e.dead && Math.hypot(e.x-x,e.y-y)<=r+e.r) if(damageEnemy(e,dmg,true,{premiumBombCat:!!opts.bombcat,premiumBreakChain:!!opts.premiumBreakChain}))kills++;
   const pieces=opts.royal?38:opts.secondary?10:opts.bombcat?24:18;
   for(let i=0;i<pieces;i++) particles.push({
     x,y,vx:rnd(opts.royal?-360:-220,opts.royal?360:220),vy:rnd(opts.royal?-360:-220,opts.royal?360:220),
@@ -14813,7 +14850,14 @@ function update(dt,refreshHud=true){
         }
         if(b.kind==='explosion'){
           const royal=!!(b.royal||b.nuke);
-          const boomDmg=b.dmg*1.5*(royal?3.0:1);
+          const premiumNuclear=!!b.premiumNuclear;
+          const boomDmg=b.dmg*1.5*(royal?3.0:1)*(premiumNuclear?1.18:1);
+          if(premiumNuclear){
+            // PREMIUM NUCLEAR CASCADE — extra presentation peak, not a separate damage loop.
+            hitStop=Math.max(hitStop,.028);bombCatFlash=Math.max(bombCatFlash,.62);
+            rings.push({x:b.x,y:b.y,r:4,max:b.radius*1.30,life:.40,total:.40,color:'#fff3b0'});
+            for(let ni=0;ni<(performanceMode?6:14);ni++){const na=rnd(0,Math.PI*2),ns=rnd(120,320);particles.push({x:b.x,y:b.y,vx:Math.cos(na)*ns,vy:Math.sin(na)*ns,life:rnd(.22,.52),size:rnd(2,7),color:'#fff3b0'})}
+          }
           if(b.bombcat&&royal){
             triggerBombCatRoyalNuke(
               b.x,b.y,b.radius,boomDmg,
@@ -14821,7 +14865,7 @@ function update(dt,refreshHud=true){
               b.chainChance,b.aftershock
             );
           }else{
-            const kills=explode(b.x,b.y,b.radius,boomDmg,royal?'#fff1a0':'#ffb24a',{
+            const kills=explode(b.x,b.y,b.radius*(premiumNuclear?1.10:1),boomDmg,premiumNuclear?'#fff3b0':(royal?'#fff1a0':'#ffb24a'),{
               aftershock:b.aftershock,bombcat:b.bombcat,royal
             });
             if(b.bombcat&&b.clusterCount)spawnBombCatCluster(b.x,b.y,b.radius,boomDmg,b.clusterCount,b.chainChance,false);
@@ -14833,6 +14877,7 @@ function update(dt,refreshHud=true){
             }
             if(b.bombcat&&b.chainChance&&kills>0&&Math.random()<b.chainChance)triggerBombCatChainReaction(b.x,b.y,b.radius,boomDmg);
           }
+          if(b.bombcat&&b.premiumSmartMine&&!b.premiumMineArmed)armPremiumBombMine(b.x,b.y,b.radius,boomDmg,premiumNuclear);
           b.life=0;break
         }
         b.pierce--;
