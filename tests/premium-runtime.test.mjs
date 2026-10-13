@@ -9,6 +9,7 @@ test('runtime defaults to safe disabled flags',()=>{
   assert.equal(runtime.flags.vfxDirector,false);
   assert.equal(runtime.flags.encounterDirector,false);
   assert.equal(runtime.flags.audioDirector,false);
+  assert.equal(runtime.flags.upgradeSystemV2,false);
 });
 
 test('premium query opt-in enables only foundation systems',()=>{
@@ -20,6 +21,7 @@ test('premium query opt-in enables only foundation systems',()=>{
   assert.equal(flags.audioDirector,true);
   assert.equal(flags.combatV2,false);
   assert.equal(flags.bossV2,false);
+  assert.equal(flags.upgradeSystemV2,false);
 });
 
 test('combat V2 requires a second explicit query opt-in during development',()=>{
@@ -36,14 +38,23 @@ test('boss V2 requires its own explicit query opt-in during development',()=>{
   assert.equal(flags.combatV2,false);
 });
 
+test('run upgrades require their own explicit query opt-in during development',()=>{
+  const safe=resolveRuntimeFeatureOverrides({search:'?premium=1',stored:null});
+  const enabled=resolveRuntimeFeatureOverrides({search:'?premium=1&premiumUpgrades=1',stored:null});
+  assert.equal(safe.upgradeSystemV2,false);
+  assert.equal(enabled.upgradeSystemV2,true);
+  assert.equal(enabled.intensityDirector,true);
+});
+
 test('stored overrides can selectively change premium systems',()=>{
   const flags=resolveRuntimeFeatureOverrides({
     search:'',
-    stored:JSON.stringify({cameraDirector:true,premiumHud:true,bossV2:true,unknown:true})
+    stored:JSON.stringify({cameraDirector:true,premiumHud:true,bossV2:true,upgradeSystemV2:true,unknown:true})
   });
   assert.equal(flags.cameraDirector,true);
   assert.equal(flags.premiumHud,true);
   assert.equal(flags.bossV2,true);
+  assert.equal(flags.upgradeSystemV2,true);
   assert.equal(flags.intensityDirector,false);
   assert.equal('unknown' in flags,false);
 });
@@ -75,6 +86,36 @@ test('signals map major combat moments into camera impulses',()=>{
 test('vfx budget is bypassed when vfx director is disabled',()=>{
   const runtime=createPremiumRuntime({flags:{vfxDirector:false}});
   for(let i=0;i<1000;i++)assert.equal(runtime.allowVfx('particles',1),true);
+});
+
+test('run build bridge is neutral unless upgrade system V2 is enabled',()=>{
+  const safe=createPremiumRuntime({flags:{upgradeSystemV2:false}});
+  const safeState=safe.createRunBuild();
+  const unchanged=safe.gainRunBuildXp(safeState,{type:'boss'});
+  assert.deepEqual(unchanged,safeState);
+  assert.deepEqual(safe.buildRunDraft('gunner',safeState,{bossReward:true}),[]);
+  assert.deepEqual(safe.getRunEffects('gunner',safeState),{
+    damageMul:1,attackRateMul:1,pierceAdd:0,ricochetChance:0,ricochetCount:0,splitChance:0,
+    clusterAdd:0,chainChanceAdd:0,radiusMul:1,chainAdd:0,lockAdd:0,
+    thunderCrit:false,smartMines:false,breakDetonation:false,stormField:false,overcharge:false,
+    criticalStorm:false,executeThreshold:0,parry:false,cyclone:false,flowExecution:false,
+    gravityPull:false,orbitalCore:false,collapseCore:false,resonantCollapse:false,
+    missileCluster:false,airStrike:false,targetOverpaint:false,evolution:null,evolutionMomentumThreshold:1
+  });
+});
+
+test('run build bridge awards combat XP and exposes drafts when upgrade system V2 is enabled',()=>{
+  const runtime=createPremiumRuntime({flags:{upgradeSystemV2:true}});
+  let state=runtime.createRunBuild();
+  state=runtime.gainRunBuildXp(state,{type:'boss'});
+  assert.equal(state.level,1);
+  assert.equal(state.pending,1);
+  const draft=runtime.buildRunDraft('gunner',state,{bossReward:true,rng:()=>0});
+  assert.equal(draft.length,5);
+  const chosen=runtime.applyRunChoice(state,draft[0]);
+  assert.equal(chosen.pending,0);
+  const fx=runtime.getRunEffects('gunner',chosen);
+  assert.ok(fx.damageMul>=1);
 });
 
 test('tactical enemy picker is completely disabled unless combat V2 is enabled',()=>{
