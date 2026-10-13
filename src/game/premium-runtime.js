@@ -12,6 +12,7 @@ import {buildFeverTransition} from '../presentation/fever-transition.js';
 import {buildLimitBreakTransition} from '../presentation/limit-break-transition.js';
 import {getStageEnvironment as getStageEnvironmentProfile,resolveStageEnvironmentId as resolveStageEnvironmentIdProfile,getStageTransitionCue as getStageTransitionCueProfile} from '../data/stages-premium.js';
 import {getStageGimmick as getStageGimmickProfile,resolveStageGimmickFrame as resolveStageGimmickFrameProfile} from '../systems/stage-gimmicks.js';
+import {createRunBuildState as createRunBuildStateProfile,gainRunXp as gainRunXpProfile,xpForEnemy as xpForEnemyProfile,buildRunDraft as buildRunDraftProfile,applyRunChoice as applyRunChoiceProfile,deriveRunEffects as deriveRunEffectsProfile} from '../systems/run-build.js';
 import {getSignatureMeterDefinition,getSignatureMeterValue,mountSignatureMeterHud} from '../ui/signature-meter.js';
 import {mountIntensityOverlay} from '../ui/intensity-overlay.js';
 import {mountBossRewardOverlay} from '../ui/boss-reward.js';
@@ -32,6 +33,7 @@ const FOUNDATION_FLAGS=Object.freeze({
 
 const ZERO_CAMERA=Object.freeze({shake:0,zoom:1,kickX:0,kickY:0,hitStopMs:0});
 const NEUTRAL_TACTICAL_AURAS=Object.freeze({speedMul:1,touchMul:1,damageTakenMul:1});
+const NEUTRAL_RUN_EFFECTS=deriveRunEffectsProfile(null,createRunBuildStateProfile());
 
 function parseStoredOverrides(stored){
   if(!stored)return {};
@@ -51,6 +53,7 @@ export function resolveRuntimeFeatureOverrides({search='',stored=null}={}){
     if(params.get('premiumCombat')==='1')overrides.combatV2=true;
     if(params.get('premiumBoss')==='1')overrides.bossV2=true;
     if(params.get('premiumStage')==='1')overrides.stagesV2=true;
+    if(params.get('premiumUpgrades')==='1')overrides.upgradeSystemV2=true;
   }catch(_){}
   Object.assign(overrides,parseStoredOverrides(stored));
   return resolveFeatureFlags(overrides);
@@ -217,6 +220,31 @@ export function createPremiumRuntime({
     return resolveStageGimmickFrameProfile(context);
   }
 
+  function createRunBuild(){
+    return createRunBuildStateProfile();
+  }
+
+  function gainRunBuildXp(state=createRunBuildStateProfile(),source=0){
+    if(!resolved.upgradeSystemV2)return state;
+    const amount=typeof source==='number'?source:xpForEnemyProfile(source||{});
+    return gainRunXpProfile(state,amount);
+  }
+
+  function buildRunDraft(characterId,state=createRunBuildStateProfile(),context={}){
+    if(!resolved.upgradeSystemV2)return [];
+    return buildRunDraftProfile(characterId,state,context);
+  }
+
+  function applyRunChoice(state=createRunBuildStateProfile(),choice=null){
+    if(!resolved.upgradeSystemV2)return state;
+    return applyRunChoiceProfile(state,choice);
+  }
+
+  function getRunEffects(characterId,state=createRunBuildStateProfile()){
+    if(!resolved.upgradeSystemV2)return NEUTRAL_RUN_EFFECTS;
+    return deriveRunEffectsProfile(characterId,state);
+  }
+
   function pickTacticalEnemy(context={}){
     if(!resolved.combatV2)return null;
     return pickPremiumEnemyArchetype(context);
@@ -323,6 +351,11 @@ export function createPremiumRuntime({
     getStageTransitionCue,
     getStageGimmick,
     resolveStageGimmickFrame,
+    createRunBuild,
+    gainRunBuildXp,
+    buildRunDraft,
+    applyRunChoice,
+    getRunEffects,
     pickTacticalEnemy,
     getTacticalEnemyDefinition,
     getTacticalEnemyMarker,
@@ -372,7 +405,7 @@ function installBrowserRuntime(){
     : null;
   const runtime=createPremiumRuntime({flags,reducedMotion,vfxProfile:profile,signatureHud,hudFocus,intensityOverlay,tacticalThreatHud,bossRewardUi});
   window.BreakPremiumRuntime=runtime;
-  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','audioDirector','premiumHud','combatV2','bossV2','stagesV2'].some(k=>flags[k]);
+  const active=['intensityDirector','cameraDirector','vfxDirector','encounterDirector','audioDirector','premiumHud','combatV2','bossV2','stagesV2','upgradeSystemV2'].some(k=>flags[k]);
   document.documentElement.dataset.premiumFoundation=active?'on':'off';
   return runtime;
 }
