@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
+import {
+  createRunUpgradeState,
+  grantRunXp,
+  buildCharacterUpgradeChoices,
+  applyCharacterUpgrade,
+  resolveRunStatModifiers
+} from '../src/systems/run-upgrades.js';
 
-async function importSource(path){
-  const src=fs.readFileSync(new URL(path,import.meta.url),'utf8');
-  return import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'));
-}
-
-test('run upgrade state starts neutral with a readable first XP target',async()=>{
-  const {createRunUpgradeState}=await importSource('../src/systems/run-upgrades.js');
+test('run upgrade state starts neutral with a readable first XP target',()=>{
   const state=createRunUpgradeState();
   assert.equal(state.level,1);
   assert.equal(state.xp,0);
@@ -17,8 +17,7 @@ test('run upgrade state starts neutral with a readable first XP target',async()=
   assert.deepEqual(state.exclusive,{});
 });
 
-test('granting XP can cross multiple levels without losing overflow XP',async()=>{
-  const {createRunUpgradeState,grantRunXp}=await importSource('../src/systems/run-upgrades.js');
+test('granting XP can cross multiple levels without losing overflow XP',()=>{
   const start=createRunUpgradeState();
   const result=grantRunXp(start,100);
   assert.ok(result.levelsGained>=3);
@@ -26,8 +25,7 @@ test('granting XP can cross multiple levels without losing overflow XP',async()=
   assert.ok(result.state.xp>=0&&result.state.xp<result.state.xpNext);
 });
 
-test('choice count follows normal BREAK and boss reward contexts',async()=>{
-  const {createRunUpgradeState,buildCharacterUpgradeChoices}=await importSource('../src/systems/run-upgrades.js');
+test('choice count follows normal BREAK and boss reward contexts',()=>{
   const state=createRunUpgradeState();
   const rng=()=>0;
   assert.equal(buildCharacterUpgradeChoices('gunner',state,{},{rng}).length,3);
@@ -35,8 +33,7 @@ test('choice count follows normal BREAK and boss reward contexts',async()=>{
   assert.equal(buildCharacterUpgradeChoices('gunner',state,{bossReward:true},{rng}).length,5);
 });
 
-test('applying a Premium upgrade respects prerequisites and exclusive branches',async()=>{
-  const {createRunUpgradeState,applyCharacterUpgrade}=await importSource('../src/systems/run-upgrades.js');
+test('applying a Premium upgrade respects prerequisites and exclusive branches',()=>{
   let state=createRunUpgradeState();
   let blocked=applyCharacterUpgrade('gunner',state,'gunner-railstorm');
   assert.equal(blocked.applied,false);
@@ -50,8 +47,7 @@ test('applying a Premium upgrade respects prerequisites and exclusive branches',
   assert.equal(split.applied,false);
 });
 
-test('STAT ranks resolve into actual primary damage multipliers',async()=>{
-  const {createRunUpgradeState,applyCharacterUpgrade,resolveRunStatModifiers}=await importSource('../src/systems/run-upgrades.js');
+test('STAT ranks resolve into actual primary damage multipliers',()=>{
   let state=createRunUpgradeState();
   state=applyCharacterUpgrade('gunner',state,'gunner-calibration').state;
   state=applyCharacterUpgrade('gunner',state,'gunner-calibration').state;
