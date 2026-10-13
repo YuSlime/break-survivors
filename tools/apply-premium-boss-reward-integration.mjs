@@ -23,13 +23,15 @@ replaceOnce(
 replaceOnce(
   'boss-reward-pause-simulation',
   `function update(dt,refreshHud=true){\n  if(!running) return;\n  if(!updateBreakRush(dt)){if(refreshHud)updateHud();return}`,
-  `function update(dt,refreshHud=true){\n  if(!running) return;\n  if(window.BreakPremiumRuntime?.bossRewardOpen){if(refreshHud)updateHud();return}\n  if(!updateBreakRush(dt)){if(refreshHud)updateHud();return}`
+  `function update(dt,refreshHud=true){\n  if(!running) return;\n  if(window.BreakPremiumRuntime?.bossRewardOpen){if(refreshHud)updateHud();return}\n  if(!updateBreakRush(dt)){if(refreshHud)updateHud();return}`,
+  `if(window.BreakPremiumRuntime?.bossRewardOpen){if(refreshHud)updateHud();return}`
 );
 
 replaceOnce(
   'boss-reward-result-handler',
   `function killEnemy(e,meta={}){`,
-  `function applyPremiumBossRewardResult({choice,state}={}){\n  if(!choice||!state)return;\n  if(choice.category==='resource'){\n    save.coins+=choice.coins;runCoins+=choice.coins;\n    save.gems+=choice.gems;runGems+=choice.gems;\n    persistSoon();\n  }else if(choice.category==='recovery'){\n    if(Number.isFinite(state.hp))player.hp=state.hp;\n    if(Number.isFinite(state.ultCharge))ultCharge=state.ultCharge;\n  }\n  ps=playerStats();\n  player.hp=Math.min(player.hp,ps.maxHp);\n  showBreakCallout('BOSS CORE ACQUIRED',choice.label||'REWARD',choice.color||'#ffe16b');\n  updateHud();\n}\n\nfunction killEnemy(e,meta={}){`
+  `function applyPremiumBossRewardResult({choice,state}={}){\n  if(!choice||!state)return;\n  if(choice.category==='resource'){\n    save.coins+=choice.coins;runCoins+=choice.coins;\n    save.gems+=choice.gems;runGems+=choice.gems;\n    persistSoon();\n  }else if(choice.category==='recovery'){\n    if(Number.isFinite(state.hp))player.hp=state.hp;\n    if(Number.isFinite(state.ultCharge))ultCharge=state.ultCharge;\n  }\n  ps=playerStats();\n  player.hp=Math.min(player.hp,ps.maxHp);\n  showBreakCallout('BOSS CORE ACQUIRED',choice.label||'REWARD',choice.color||'#ffe16b');\n  updateHud();\n}\n\nfunction killEnemy(e,meta={}`,
+  `function applyPremiumBossRewardResult({choice,state}={}){`
 );
 
 replaceOnce(
