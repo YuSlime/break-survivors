@@ -11897,6 +11897,10 @@ function damageEnemy(e,dmg,impact=true,meta={}){
   if(crit&&meta.premiumGunner&&meta.premiumThunderCrit){
     chainLightning(actualDmg*.30,3,{range:185*ps.area,decay:.72,width:2.4,origin:{x:e.x,y:e.y},exclude:e});
   }
+  if(crit&&meta.premiumThunder&&meta.premiumCriticalStorm&&!meta.criticalStormCharged){
+    meta.criticalStormCharged=true;
+    attackCounters.thunderfox=(attackCounters.thunderfox||0)+1;
+  }
 
   if(impact){
     const weapon=activeWeaponKey();
@@ -13695,15 +13699,29 @@ function firePrimary(force=false){
     else muzzle('#ffb24a');
   }
   else if(attackType==='lightning'){
-    const count=own&&currentCharacter.id==='thunderfox'?nextAttackCount('thunderfox'):0;
+    const isThunderFox=own&&currentCharacter.id==='thunderfox';
+    const count=isThunderFox?nextAttackCount('thunderfox'):0;
+    const premiumThunderFx=isThunderFox?window.BreakRunBuild?.getEffects?.('thunderfox'):null;
     let links=currentCharacter.id==='thunderfox'?6:5, range=190*ps.area, decay=.82;
-    if(own&&currentCharacter.id==='thunderfox'&&lv>=5)links+=2;
-    if(own&&currentCharacter.id==='thunderfox'&&lv>=20&&br==='network'){links+=3;range*=1.25}
-    if(own&&currentCharacter.id==='thunderfox'&&lv>=20&&br==='overcharge')decay=.92;
-    if(own&&currentCharacter.id==='thunderfox'&&lv>=50)links+=4;
-    chainLightning(base,links,{range,decay,width:lv>=50&&own?5.5:4,echo:own&&currentCharacter.id==='thunderfox'&&lv>=40});
-    if(own&&currentCharacter.id==='thunderfox'&&lv>=10&&count%(lv>=50?3:4)===0){
-      chainLightning(base*(lv>=50?.82:.68),Math.max(4,links-1),{range,decay,width:3.5,echo:false});
+    if(isThunderFox&&lv>=5)links+=2;
+    if(isThunderFox&&lv>=20&&br==='network'){links+=3;range*=1.25}
+    if(isThunderFox&&lv>=20&&br==='overcharge')decay=.92;
+    if(isThunderFox&&lv>=50)links+=4;
+    links+=premiumThunderFx?.chainAdd||0;
+    let premiumVoltage=count>0?(((count-1)%4)+1)/4:0;
+    const premiumOvercharged=!!(premiumThunderFx?.overcharge&&premiumVoltage>=.75);
+    const premiumThunderDamage=base*(premiumThunderFx?.damageMul||1)*(premiumOvercharged?1.25:1);
+    const premiumThunderMeta={premiumThunder:isThunderFox,premiumCriticalStorm:!!premiumThunderFx?.criticalStorm,criticalStormCharged:false};
+    const premiumThunderHits=chainLightning(premiumThunderDamage,links,{
+      range,decay,width:lv>=50&&own?5.5:4,echo:isThunderFox&&lv>=40,damageMeta:premiumThunderMeta
+    });
+    if(premiumThunderFx?.stormField&&premiumThunderHits.length)spawnPremiumStormField(premiumThunderHits.at(-1),premiumThunderDamage*.22,premiumThunderFx);
+    premiumVoltage=Math.max(premiumVoltage,(attackCounters.thunderfox||0)>0?((((attackCounters.thunderfox||0)-1)%4)+1)/4:0);
+    if(premiumThunderFx?.evolution==='thunder-god'&&premiumVoltage>=1){
+      startPremiumThunderGod(premiumThunderHits.at(-1)||player,premiumThunderFx,base);
+    }
+    if(isThunderFox&&lv>=10&&count%(lv>=50?3:4)===0){
+      chainLightning(premiumThunderDamage*(lv>=50?.82:.68),Math.max(4,links-1),{range,decay,width:3.5,echo:false,damageMeta:premiumThunderMeta});
     }
     player.attackCd=0.48/Math.max(1,rate/2.7);
   }
@@ -13982,9 +14000,45 @@ function explode(x,y,r,dmg,color='#ff9f43',opts={}){
   return kills;
 }
 
+// PREMIUM RUN BUILD THUNDERFOX V1
+function spawnPremiumStormField(target,dmg,fx){
+  if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y))return;
+  const x=target.x,y=target.y,radius=74*ps.area*(fx?.radiusMul||1);
+  for(let pulse=0;pulse<3;pulse++)setTimeout(()=>{
+    if(!running||currentCharacter.id!=='thunderfox')return;
+    rings.push({x,y,r:3,max:radius*(.82+pulse*.08),life:.22,total:.22,color:'#9dfcff'});
+    for(const e of enemies){
+      if(e.dead||Math.hypot(e.x-x,e.y-y)>radius+e.r)continue;
+      damageEnemy(e,dmg*(1-pulse*.08),false,{premiumThunderField:true});
+    }
+  },pulse*180);
+}
+
+function startPremiumThunderGod(origin,fx,baseDamage){
+  // PREMIUM THUNDER GOD — a short roaming storm that follows nearby targets.
+  let x=Number.isFinite(origin?.x)?origin.x:player.x,y=Number.isFinite(origin?.y)?origin.y:player.y;
+  showBreakCallout('THUNDER GOD','VOLTAGE MAX','#c9fbff');
+  for(let pulse=0;pulse<4;pulse++)setTimeout(()=>{
+    if(!running||currentCharacter.id!=='thunderfox')return;
+    let target=null,best=520;
+    for(const e of enemies){
+      if(e.dead)continue;
+      const d=Math.hypot(e.x-x,e.y-y);
+      if(d<best){best=d;target=e}
+    }
+    if(target){x+=(target.x-x)*.72;y+=(target.y-y)*.72}
+    rings.push({x,y,r:5,max:68*ps.area*(fx?.radiusMul||1),life:.24,total:.24,color:'#d9ffff'});
+    chainLightning(baseDamage*.42*(fx?.damageMul||1),3+(fx?.chainAdd||0),{
+      origin:{x,y},range:185*ps.area*(fx?.radiusMul||1),decay:.80,width:4.6,color:'#d9ffff',silentSfx:true,
+      damageMeta:{premiumThunder:true,premiumCriticalStorm:false,criticalStormCharged:true}
+    });
+  },pulse*220);
+}
+
 function chainLightning(dmg,count=5,opts={}){
   const core=getCoreEffects();
   count+=core.chainLinks;
+  const damageMeta=opts.damageMeta||null;
   let src=opts.origin||{x:player.x,y:player.y};
   const used=new Set(opts.exclude?[opts.exclude]:[]), range=(opts.range||190*ps.area)*core.chainRangeMul, decay=opts.decay??.82, hit=[];
   for(let i=0;i<count;i++){
@@ -13997,13 +14051,13 @@ function chainLightning(dmg,count=5,opts={}){
     if(!target) break;
     lightnings.push({x1:src.x,y1:src.y,x2:target.x,y2:target.y,life:.12,total:.12,width:opts.width||4,color:opts.color||'#9dfcff'});
     const dealt=dmg*Math.pow(decay,i);
-    damageEnemy(target,dealt);
+    damageEnemy(target,dealt,true,damageMeta||{});
     hit.push(target);used.add(target);src=target;
     if(opts.echo&&Math.random()<.30){
       setTimeout(()=>{
         if(!running||target.dead)return;
         lightnings.push({x1:target.x+rnd(-45,45),y1:target.y-95,x2:target.x,y2:target.y,life:.10,total:.10,width:3,color:'#e3fbff'});
-        damageEnemy(target,dealt*.55);
+        damageEnemy(target,dealt*.55,true,damageMeta||{});
       },90);
     }
   }
@@ -14623,7 +14677,11 @@ function useUltimate(){
     startBombCatCataclysm();
   }else if(id==='thunderfox'){
     playLightningUltimateSurge();
-    for(let w=0;w<4;w++)setTimeout(()=>{if(running)chainLightning(ps.damage*1.35,18,{range:280*ps.area,decay:.94,width:6,color:'#e4ffff',echo:true,silentSfx:true})},w*130);
+    const premiumThunderFx=window.BreakRunBuild?.getEffects?.('thunderfox');
+    for(let w=0;w<4;w++)setTimeout(()=>{if(running)chainLightning(ps.damage*1.35*(premiumThunderFx?.damageMul||1),18+(premiumThunderFx?.chainAdd||0),{
+      range:280*ps.area*(premiumThunderFx?.radiusMul||1),decay:.94,width:6,color:'#e4ffff',echo:true,silentSfx:true,
+      damageMeta:{premiumThunder:true,premiumCriticalStorm:!!premiumThunderFx?.criticalStorm,criticalStormCharged:false}
+    })},w*130);
   }else if(id==='blademaster'){
     for(let i=0;i<10;i++)setTimeout(()=>{
       if(!running)return;
