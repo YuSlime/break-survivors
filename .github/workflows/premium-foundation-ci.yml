@@ -71,6 +71,7 @@ jobs:
         run: |
           node tools/apply-premium-run-build-integration.mjs
           node tools/apply-premium-run-build-advanced-integration.mjs
+          node tools/apply-premium-run-build-thunderfox-integration.mjs
       - name: Verify generated inline JavaScript
         run: node --test tests/index-inline-syntax.test.mjs
       - name: Run FEVER regression tests
