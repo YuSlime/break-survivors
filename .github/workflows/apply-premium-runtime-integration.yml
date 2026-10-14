@@ -25,6 +25,7 @@ on:
       - tools/apply-premium-run-build-integration.mjs
       - tools/apply-premium-run-build-advanced-integration.mjs
       - tools/apply-premium-run-build-thunderfox-integration.mjs
+      - tools/apply-premium-run-build-blademaster-integration.mjs
       - .github/workflows/apply-premium-runtime-integration.yml
 
 permissions:
@@ -67,6 +68,7 @@ jobs:
           node tools/apply-premium-run-build-integration.mjs
           node tools/apply-premium-run-build-advanced-integration.mjs
           node tools/apply-premium-run-build-thunderfox-integration.mjs
+          node tools/apply-premium-run-build-blademaster-integration.mjs
       - name: Verify patch and complete suite
         run: |
           git diff --check
