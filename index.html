@@ -10019,7 +10019,9 @@ let attackType=currentCharacter.attack, god=false, dmgMul=1, spawnMul=1;
 let enemies=[], bullets=[], bombFragments=[], bombExplosionFx=[], novaUltCores=[], missileQueenFx=[], enemyBullets=[], particles=[], beams=[], slashFx=[], rings=[], missiles=[], lightnings=[], pickups=[], floatingTexts=[];
 let keys = {};
 let mobileMoveX=0,mobileMoveY=0;
+// PREMIUM RUN BUILD BLADEMASTER V1
 let dashCooldown=0,dashInvuln=0,specialCooldown=0;
+let premiumBladeParryWindow=0;
 let joystickPointerId=null;
 let uiLanguage=localStorage.getItem('break_survivors_language')||'ja';
 if(!['ja','en'].includes(uiLanguage))uiLanguage='ja';
@@ -11400,7 +11402,7 @@ function resetRun(){
   player.x=WORLD_W/2;player.y=WORLD_H/2;player.hp=ps.maxHp;player.attackCd=0;player.hitCd=0;
   enemies=[];bullets=[];bombFragments=[];bombExplosionFx=[];novaUltCores=[];missileQueenFx=[];enemyBullets=[];particles=[];beams=[];slashFx=[];rings=[];missiles=[];lightnings=[];pickups=[];floatingTexts=[];
   gameTime=0;runKills=0;runCoins=0;runGems=0;runElites=0;runBosses=0;lastDamageSource='ENEMY SWARM';spawnTimer=0;bossTimer=0;running=true;ultCharge=0;attackCounters={};
-  mobileMoveX=0;mobileMoveY=0;dashCooldown=0;dashInvuln=0;specialCooldown=0;
+  mobileMoveX=0;mobileMoveY=0;dashCooldown=0;dashInvuln=0;specialCooldown=0;premiumBladeParryWindow=0;
   threatLevel=0;limitBreakLevel=0;threatFlash=0;
   lbRunGeneration++;lbEventState=null;lbEventQueue=[];lbRewardBuffs=[];stopLbEventMusic();hideLbSplash();
   document.getElementById('deathTitle').textContent='RUN OVER';
@@ -11892,6 +11894,14 @@ function damageEnemy(e,dmg,impact=true,meta={}){
   if(impact&&core.doubleStrikeChance>0&&Math.random()<core.doubleStrikeChance)actualDmg*=2;
   const premiumAuraState=window.BreakPremiumRuntime?.resolveTacticalAuras?.(e,enemies)||{speedMul:1,touchMul:1,damageTakenMul:1};
   actualDmg*=premiumAuraState.damageTakenMul;
+  let premiumBladeExecuted=false;
+  if(meta.premiumBlade&&meta.premiumBladeFx?.executeThreshold>0&&e.type!=='boss'){
+    const threshold=Math.max(0,Math.min(.5,meta.premiumBladeFx.executeThreshold));
+    const projected=e.hp-actualDmg;
+    if(projected>0&&projected<=e.maxHp*threshold){
+      actualDmg=e.hp;premiumBladeExecuted=true;meta.premiumBladeExecuted=true;
+    }
+  }
   e.hp-=actualDmg;
 
   if(crit&&meta.premiumGunner&&meta.premiumThunderCrit){
@@ -12090,6 +12100,11 @@ function premiumRunEffects(id=currentCharacter.id){
 function killEnemy(e,meta={}){
   if(e.dead) return;
   e.dead=true;
+  if(meta.premiumBladeExecuted&&meta.premiumBladeFx?.flowExecution){
+    attackCounters.blademaster=(attackCounters.blademaster||0)+1;
+    dashCooldown=Math.max(0,dashCooldown-.75);
+    rings.push({x:e.x,y:e.y,r:3,max:42,life:.16,total:.16,color:'#c9a7ff'});
+  }
   if(meta.premiumBombCat&&!meta.premiumBreakChain&&breakCombo>=10){
     const premiumBombFx=window.BreakRunBuild?.getEffects?.('bombcat');
     if(premiumBombFx?.breakDetonation&&e.type!=='boss'){
@@ -13740,6 +13755,11 @@ function firePrimary(force=false){
       const radiusMul=(lv>=5?1.18:1)*(lv>=50?1.16:1);
       const waveRange=(lv>=5?1.15:1);
       const awakened=lv>=50;
+      const premiumBladeFx=window.BreakRunBuild?.getEffects?.('blademaster');
+      if(premiumBladeFx?.evolution==='void-blade'&&stage===comboLen){
+        // PREMIUM VOID BLADE — full Flow opens one long piercing line, once per combo.
+        setTimeout(()=>{if(running&&currentCharacter.id==='blademaster')doBladeWave(base*.78,{len:780,width:46,color:'#a978ff',heavy:true,life:.24,finisher:true,silentSfx:true})},36);
+      }
 
       // 1: 円月斬り — 360° close-range control.
       if(stage===1){
@@ -14067,13 +14087,15 @@ function chainLightning(dmg,count=5,opts={}){
 }
 
 function doSlash(dmg,opts={}){
-  const r=96*ps.area*(opts.radiusMul||1);
+  const premiumBladeFx=currentCharacter.id==='blademaster'?window.BreakRunBuild?.getEffects?.('blademaster'):null;
+  const premiumBladeDamage=dmg*(premiumBladeFx?.damageMul||1);
+  const r=96*ps.area*(opts.radiusMul||1)*(premiumBladeFx?.radiusMul||1);
   const color=opts.color||'#d8f2ff';
   rings.push({x:player.x,y:player.y,r:r*.70,max:r,life:opts.life||.18,total:opts.life||.18,color,slash:true,phase:rnd(0,Math.PI*2)});
   let hitCount=0;
   for(const e of enemies){
     if(!e.dead && dist(player,e)<=r+e.r){
-      damageEnemy(e,dmg);hitCount++;
+      damageEnemy(e,premiumBladeDamage,true,{premiumBlade:!!premiumBladeFx,premiumBladeFx});hitCount++;
     }
   }
   if(hitCount&&!opts.silentSfx)playBladeHitSfx(!!opts.finisher);
@@ -14085,6 +14107,9 @@ function doSlash(dmg,opts={}){
 }
 
 function doSlashLine(dmg,angle,len,width,color='#eaf8ff',opts={}){
+  const premiumBladeFx=currentCharacter.id==='blademaster'?window.BreakRunBuild?.getEffects?.('blademaster'):null;
+  const premiumBladeDamage=dmg*(premiumBladeFx?.damageMul||1);
+  len*=premiumBladeFx?.radiusMul||1;width*=premiumBladeFx?.radiusMul||1;
   const centered=!!opts.centered;
   const half=centered?len*.5:0;
   const dx=Math.cos(angle),dy=Math.sin(angle);
@@ -14108,11 +14133,11 @@ function doSlashLine(dmg,angle,len,width,color='#eaf8ff',opts={}){
     const t=clamp(((e.x-x1)*vx+(e.y-y1)*vy)/l2,0,1);
     const cx=x1+vx*t,cy=y1+vy*t;
     if(Math.hypot(e.x-cx,e.y-cy)<=width+e.r){
-      let dealt=dmg;
+      let dealt=premiumBladeDamage;
       if(opts.edgeBossBonus&&(e.type==='boss'||e.type==='elite')){
-        dealt+=Math.min(dmg*.55,e.maxHp*.012);
+        dealt+=Math.min(premiumBladeDamage*.55,e.maxHp*.012);
       }
-      damageEnemy(e,dealt);hitCount++;
+      damageEnemy(e,dealt,true,{premiumBlade:!!premiumBladeFx,premiumBladeFx});hitCount++;
     }
   }
   if(hitCount&&!opts.silentSfx)playBladeHitSfx(!!opts.finisher);
@@ -14578,6 +14603,17 @@ function useMobileSkill(){
   specialCooldown=6*getCoreEffects().specialCooldownMul;
   specialAttack();
 }
+function triggerPremiumBladeParry(e,premiumBladeFx){
+  // PREMIUM PERFECT PARRY — a narrow dash-timing counter, not passive invulnerability.
+  premiumBladeParryWindow=0;
+  player.hitCd=Math.max(player.hitCd,.22);
+  dashInvuln=Math.max(dashInvuln,.12);
+  dashCooldown=Math.max(0,dashCooldown-.35);
+  rings.push({x:player.x,y:player.y,r:5,max:82*ps.area,life:.20,total:.20,color:'#efe4ff'});
+  playBladeTechniqueSfx('heavy',{gate:'premium_blade_parry',gap:180,volume:.64,rate:1.08});
+  if(e&&!e.dead)damageEnemy(e,ps.damage*.82,true,{premiumBlade:true,premiumBladeFx,premiumBladeCounter:true});
+}
+
 function useDash(){
   if(!running||dashCooldown>0||lbEventState?.mode==='failed')return;
   let dx=mobileMoveX,dy=mobileMoveY;
@@ -14592,7 +14628,13 @@ function useDash(){
   player.x=clamp(player.x+dx*distance,player.r+WORLD_EDGE_PAD,WORLD_W-player.r-WORLD_EDGE_PAD);
   player.y=clamp(player.y+dy*distance,player.r+WORLD_EDGE_PAD,WORLD_H-player.r-WORLD_EDGE_PAD);
   dashCooldown=2.5*core.dashCooldownMul;dashInvuln=.15+core.dashInvulnAdd;
+  const premiumBladeFx=currentCharacter.id==='blademaster'?window.BreakRunBuild?.getEffects?.('blademaster'):null;
+  if(premiumBladeFx?.parry)premiumBladeParryWindow=.18;
   if(core.dashStrike>0)explode(player.x,player.y,86*ps.area,ps.damage*core.dashStrike,'#9f8cff',{silent:true,noShake:true});
+  if(premiumBladeFx?.cyclone){
+    // PREMIUM CYCLONE STEP — one restrained circular slash per dash.
+    doSlash(ps.damage*.58,{radiusMul:.94,color:'#b98aff',quiet:true,life:.16,silentSfx:true});
+  }
   rings.push({x:player.x,y:player.y,r:10,max:68,life:.22,total:.22,color:'#a995ff'});
   for(let i=0;i<(performanceMode?6:14);i++)particles.push({x:player.x,y:player.y,vx:rnd(-150,150),vy:rnd(-150,150),life:rnd(.12,.28),size:rnd(2,5),color:i%2?'#d9d0ff':'#7ebfff'});
 }
@@ -14847,7 +14889,7 @@ function update(dt,refreshHud=true){
   if(!lbWorldFrozen)updateLbRewardBuffs(dt);
   gameTime+=dt; player.attackCd-=dt; player.hitCd-=dt;
   updatePremiumStageGimmick(dt,lbWorldFrozen);
-  dashCooldown=Math.max(0,dashCooldown-dt);dashInvuln=Math.max(0,dashInvuln-dt);specialCooldown=Math.max(0,specialCooldown-dt);
+  dashCooldown=Math.max(0,dashCooldown-dt);dashInvuln=Math.max(0,dashInvuln-dt);specialCooldown=Math.max(0,specialCooldown-dt);premiumBladeParryWindow=Math.max(0,premiumBladeParryWindow-dt);
   for(const k of ['boots','drink','sword'])if(itemBuffs[k]>0)itemBuffs[k]=Math.max(0,itemBuffs[k]-dt);
 
   gunnerRecoil=Math.max(0,gunnerRecoil-dt*8.5);
@@ -15102,9 +15144,14 @@ function update(dt,refreshHud=true){
     } else {e.x+=dx/l*premiumSpeed*pursuitBoost*dt;e.y+=dy/l*premiumSpeed*pursuitBoost*dt}
     e.x=clamp(e.x,e.r+WORLD_EDGE_PAD,WORLD_W-e.r-WORLD_EDGE_PAD);
     e.y=clamp(e.y,e.r+WORLD_EDGE_PAD,WORLD_H-e.r-WORLD_EDGE_PAD);
-    if(Math.hypot(player.x-e.x,player.y-e.y)<player.r+e.r && player.hitCd<=0 && !god && dashInvuln<=0){
-      lastDamageSource=e.type==='boss'?'VOID TYRANT':e.type==='elite'?(e.eliteVariant?e.eliteVariant.toUpperCase()+' ELITE':'ELITE ENEMY'):e.type.toUpperCase()+' ENEMY';
-      player.hp-=e.touch*premiumAuraState.touchMul*premiumStageEnemyDamageMul;player.hitCd=.4;shake=6;
+    if(Math.hypot(player.x-e.x,player.y-e.y)<player.r+e.r && player.hitCd<=0 && !god){
+      const premiumBladeFx=currentCharacter.id==='blademaster'?window.BreakRunBuild?.getEffects?.('blademaster'):null;
+      if(premiumBladeFx?.parry&&premiumBladeParryWindow>0){
+        triggerPremiumBladeParry(e,premiumBladeFx);
+      }else if(dashInvuln<=0){
+        lastDamageSource=e.type==='boss'?'VOID TYRANT':e.type==='elite'?(e.eliteVariant?e.eliteVariant.toUpperCase()+' ELITE':'ELITE ENEMY'):e.type.toUpperCase()+' ENEMY';
+        player.hp-=e.touch*premiumAuraState.touchMul*premiumStageEnemyDamageMul;player.hitCd=.4;shake=6;
+      }
     }
   }
 
